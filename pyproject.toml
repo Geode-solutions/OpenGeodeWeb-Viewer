@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "OpenGeodeWeb-Viewer"
+version = "0.0.1"
+authors = [
+  { name="Geode-solutions", email="contact@geode-solutions.com" },
+]
+description = "OpenGeodeWeb-Viewer is an open source framework that proposes handy python functions and wrappers for vtk"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "wslink[ssl]",
+    "numpy",
+    "vtk"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"
+"Bug Tracker" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.semantic_release.branches.master]
+version_variable = "pyproject.toml:version"
+version_source = "commit"
+prerelease = false
+
+[tool.semantic_release.branches.next]
+version_variable = "pyproject.toml:version"
+version_source = "commit"
+prerelease_tag = "rc"
+prerelease = true
