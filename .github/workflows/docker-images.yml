@@ -1,0 +1,13 @@
+name: Docker Image CD
+
+on:
+    push:
+        branches: [ master, next ] 
+jobs:
+    docker-build-squash-push:
+        uses: Geode-solutions/actions/.github/workflows/docker-build-squash-push.yml@master
+        with:
+            image_name: 'opengeodeweb_viewer'
+            tag: ${{ github.ref_name }}
+        secrets: 
+            TOKEN: ${{secrets.GITHUB_TOKEN}}
