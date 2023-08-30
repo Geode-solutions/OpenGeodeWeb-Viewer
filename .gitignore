@@ -1,2 +1,7 @@
 .pytest_cache
 dist
+env/
+venv/
+.vscode/
+__pycache__/
+data/

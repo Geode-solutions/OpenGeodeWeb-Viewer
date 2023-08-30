@@ -155,6 +155,31 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
         print("reset")
 
+    @exportRpc("toggle_edge_visibility")
+    def setEdgeVisibility(self, params):
+        print(f"{params=}", flush=True)
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetEdgeVisibility(visibility)
+        self.render()
+
+    @exportRpc("toggle_point_visibility")
+    def setPointVisibility(self, params):
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetVertexVisibility(visibility)
+        self.render()
+
+    @exportRpc("point_size")
+    def setPointSize(self, params):
+        id = params["id"]
+        size = float(params["size"])
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetPointSize(size)
+        self.render()
+
     def getProtocol(self, name):
         for p in self.coreServer.getLinkProtocols():
             if type(p).__name__ == name:
