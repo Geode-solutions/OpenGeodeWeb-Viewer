@@ -36,21 +36,22 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             file_name = params["file_name"]
 
             actor = vtk.vtkActor()
-            mapper = vtk.vtkDataSetMapper()
-            actor.SetMapper(mapper)
             if ".vtm" in file_name:
                 reader = vtk.vtkXMLMultiBlockDataReader()
-                filter = vtk.vtkCompositeDataGeometryFilter()
+                filter = vtk.vtkGeometryFilter()
                 filter.SetInputConnection(reader.GetOutputPort())
+                mapper = vtk.vtkCompositePolyDataMapper()
                 mapper.SetInputConnection(filter.GetOutputPort())
                 self.register_object(id, reader, filter, actor, mapper, {})
             else:
                 reader = vtk.vtkXMLGenericDataObjectReader()
+                mapper = vtk.vtkDataSetMapper()
                 mapper.SetInputConnection(reader.GetOutputPort())
                 self.register_object(id, reader, {}, actor, mapper, {})
 
             reader.SetFileName(f"/data/{file_name}")
 
+            actor.SetMapper(mapper)
             mapper.SetColorModeToMapScalars()
             mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
             mapper.SetResolveCoincidentTopologyPolygonOffsetParameters(2, 0)
