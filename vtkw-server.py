@@ -99,7 +99,7 @@ class _Server(vtk_wslink.ServerProtocol):
             axes = vtk.vtkAxesActor()
             widget.SetOrientationMarker(axes)
             widget.EnabledOn()
-            widget.InteractiveOn()
+            widget.InteractiveOff()
             self.setSharedObject("marker", widget)
 
 
