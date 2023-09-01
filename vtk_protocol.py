@@ -181,6 +181,28 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         actor.GetProperty().SetPointSize(size)
         self.render()
 
+    @exportRpc("set_color")
+    def setColor(self, params):
+        id = params["id"]
+        red = params["red"]
+        green = params["green"]
+        blue = params["blue"]
+        self.get_object(id)["mapper"].ScalarVisibilityOff()
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetColor(red, green, blue)
+        self.render()
+
+    @exportRpc("set_vertex_attribute")
+    def setVertexAttribute(self, params):
+        print(f"{params=}", flush=True)
+        id = params["id"]
+        name = params["name"]
+        mapper = self.get_object(id)["mapper"]
+        mapper.SelectColorArray(name)
+        mapper.ScalarVisibilityOn()
+        mapper.SetScalarModeToUsePointFieldData()
+        self.render()
+
     def getProtocol(self, name):
         for p in self.coreServer.getLinkProtocols():
             if type(p).__name__ == name:
