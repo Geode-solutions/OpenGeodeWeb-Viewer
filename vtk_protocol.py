@@ -134,8 +134,18 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
         data = self.get_object(id)
         reader = data["reader"]
-        reader.Modified()
-
+        reader.Update()
+        mapper = data["mapper"]
+        tag = vtk.reference(0)
+        scalars = vtk.vtkAbstractMapper.GetAbstractScalars(
+            reader.GetOutput(),
+            mapper.GetScalarMode(),
+            mapper.GetArrayAccessMode(),
+            mapper.GetArrayId(),
+            mapper.GetArrayName(),
+            tag,
+        )
+        mapper.SetScalarRange(scalars.GetRange())
         self.render()
 
     @exportRpc("get_point_position")
