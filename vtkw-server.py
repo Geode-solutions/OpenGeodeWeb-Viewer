@@ -25,9 +25,9 @@ import sys
 import argparse
 
 # Try handle virtual env if provided
-if '--virtual-env' in sys.argv:
-    virtualEnvPath = sys.argv[sys.argv.index('--virtual-env') + 1]
-    virtualEnv = virtualEnvPath + '/bin/activate_this.py'
+if "--virtual-env" in sys.argv:
+    virtualEnvPath = sys.argv[sys.argv.index("--virtual-env") + 1]
+    virtualEnv = virtualEnvPath + "/bin/activate_this.py"
     with open(virtualEnv) as venv:
         exec(venv.read(), dict(__file__=virtualEnv))
 
@@ -53,8 +53,9 @@ class _Server(vtk_wslink.ServerProtocol):
 
     @staticmethod
     def add_arguments(parser):
-        parser.add_argument("--virtual-env", default=None,
-                            help="Path to virtual environment to use")
+        parser.add_argument(
+            "--virtual-env", default=None, help="Path to virtual environment to use"
+        )
 
     @staticmethod
     def configure(args):
@@ -66,7 +67,8 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
         self.registerVtkWebProtocol(vtk_protocols.vtkWebViewPort())
         self.registerVtkWebProtocol(
-            vtk_protocols.vtkWebPublishImageDelivery(decode=False))
+            vtk_protocols.vtkWebPublishImageDelivery(decode=False)
+        )
         self.setSharedObject("db", dict())
 
         # Custom API
@@ -85,12 +87,21 @@ class _Server(vtk_wslink.ServerProtocol):
             renderWindow.AddRenderer(renderer)
             self.setSharedObject("renderer", renderer)
 
-
             renderWindowInteractor = vtk.vtkRenderWindowInteractor()
             renderWindowInteractor.SetRenderWindow(renderWindow)
             renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
             renderWindowInteractor.EnableRenderOff()
             self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", renderWindow)
+
+            widget = vtk.vtkOrientationMarkerWidget()
+            widget.SetInteractor(renderWindowInteractor)
+            widget.SetViewport(0.0, 0.0, 0.2, 0.2)
+            axes = vtk.vtkAxesActor()
+            widget.SetOrientationMarker(axes)
+            widget.EnabledOn()
+            widget.InteractiveOff()
+            self.setSharedObject("marker", widget)
+
 
 # =============================================================================
 # Main: Parse args and start serverviewId
@@ -105,9 +116,9 @@ if __name__ == "__main__":
     server.add_arguments(parser)
     _Server.add_arguments(parser)
     args = parser.parse_args()
-    print('args :', args)
+    print("args :", args)
     _Server.configure(args)
 
-    print('start')
+    print("start")
     # Start server
     server.start_webserver(options=args, protocol=_Server)

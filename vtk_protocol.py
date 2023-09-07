@@ -36,21 +36,22 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             file_name = params["file_name"]
 
             actor = vtk.vtkActor()
-            mapper = vtk.vtkDataSetMapper()
-            actor.SetMapper(mapper)
             if ".vtm" in file_name:
                 reader = vtk.vtkXMLMultiBlockDataReader()
-                filter = vtk.vtkCompositeDataGeometryFilter()
+                filter = vtk.vtkGeometryFilter()
                 filter.SetInputConnection(reader.GetOutputPort())
+                mapper = vtk.vtkCompositePolyDataMapper()
                 mapper.SetInputConnection(filter.GetOutputPort())
                 self.register_object(id, reader, filter, actor, mapper, {})
             else:
                 reader = vtk.vtkXMLGenericDataObjectReader()
+                mapper = vtk.vtkDataSetMapper()
                 mapper.SetInputConnection(reader.GetOutputPort())
                 self.register_object(id, reader, {}, actor, mapper, {})
 
             reader.SetFileName(f"/data/{file_name}")
 
+            actor.SetMapper(mapper)
             mapper.SetColorModeToMapScalars()
             mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
             mapper.SetResolveCoincidentTopologyPolygonOffsetParameters(2, 0)
@@ -133,8 +134,18 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
         data = self.get_object(id)
         reader = data["reader"]
-        reader.Modified()
-
+        reader.Update()
+        mapper = data["mapper"]
+        tag = vtk.reference(0)
+        scalars = vtk.vtkAbstractMapper.GetAbstractScalars(
+            reader.GetOutput(),
+            mapper.GetScalarMode(),
+            mapper.GetArrayAccessMode(),
+            mapper.GetArrayId(),
+            mapper.GetArrayName(),
+            tag,
+        )
+        mapper.SetScalarRange(scalars.GetRange())
         self.render()
 
     @exportRpc("get_point_position")
@@ -154,6 +165,53 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
         print("reset")
+
+    @exportRpc("toggle_edge_visibility")
+    def setEdgeVisibility(self, params):
+        print(f"{params=}", flush=True)
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetEdgeVisibility(visibility)
+        self.render()
+
+    @exportRpc("toggle_point_visibility")
+    def setPointVisibility(self, params):
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetVertexVisibility(visibility)
+        self.render()
+
+    @exportRpc("point_size")
+    def setPointSize(self, params):
+        id = params["id"]
+        size = float(params["size"])
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetPointSize(size)
+        self.render()
+
+    @exportRpc("set_color")
+    def setColor(self, params):
+        id = params["id"]
+        red = params["red"]
+        green = params["green"]
+        blue = params["blue"]
+        self.get_object(id)["mapper"].ScalarVisibilityOff()
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetColor(red, green, blue)
+        self.render()
+
+    @exportRpc("set_vertex_attribute")
+    def setVertexAttribute(self, params):
+        print(f"{params=}", flush=True)
+        id = params["id"]
+        name = params["name"]
+        mapper = self.get_object(id)["mapper"]
+        mapper.SelectColorArray(name)
+        mapper.ScalarVisibilityOn()
+        mapper.SetScalarModeToUsePointFieldData()
+        self.render()
 
     def getProtocol(self, name):
         for p in self.coreServer.getLinkProtocols():
