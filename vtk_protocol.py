@@ -67,6 +67,18 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         except Exception as e:
             print("error : ", str(e), flush=True)
 
+    @exportRpc("delete_object_pipeline")
+    def delete_object_pipeline(self, params):
+        print(f"{params=}", flush=True)
+        id = params["id"]
+        object = self.get_object(id)
+        actor = object["actor"]
+        renderWindow = self.getView("-1")
+        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        renderer.RemoveActor(actor)
+        self.deregister_object(id)
+        self.render()
+
     @exportRpc("toggle_object_visibility")
     def toggle_object_visibility(self, params):
         print(f"{params=}", flush=True)
