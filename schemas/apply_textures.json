@@ -1,0 +1,18 @@
+{
+  "route": "toggle_object_visibility",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "textures": {
+      "type": "array",
+      "elements": {
+        "type": "string"
+      },
+      "minItems": 1
+    }
+  },
+  "required": ["id", "textures"],
+  "additionalProperties": false
+}

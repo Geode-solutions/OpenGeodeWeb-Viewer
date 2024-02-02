@@ -1,0 +1,14 @@
+{
+  "route": "get_point_position",
+  "type": "object",
+  "properties": {
+    "x": {
+      "type": "int16"
+    },
+    "y": {
+      "type": "int16"
+    }
+  },
+  "required": ["x", "y"],
+  "additionalProperties": false
+}

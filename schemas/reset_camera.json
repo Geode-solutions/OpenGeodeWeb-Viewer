@@ -1,0 +1,7 @@
+{
+  "route": "reset_camera",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}

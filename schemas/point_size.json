@@ -1,0 +1,14 @@
+{
+  "route": "point_size",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "size": {
+      "type": "float64"
+    }
+  },
+  "required": ["id", "size"],
+  "additionalProperties": false
+}
