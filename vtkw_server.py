@@ -21,6 +21,7 @@ r"""
             that the server expects "vtkweb-secret" as secret key.
 
 """
+
 import sys
 import argparse
 
@@ -109,16 +110,10 @@ class _Server(vtk_wslink.ServerProtocol):
 
 
 if __name__ == "__main__":
-    # Create argument parser
-    parser = argparse.ArgumentParser(description="Cone example")
-
-    # Add arguments
+    parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
     _Server.add_arguments(parser)
     args = parser.parse_args()
     print("args :", args)
     _Server.configure(args)
-
-    print("start")
-    # Start server
     server.start_webserver(options=args, protocol=_Server)

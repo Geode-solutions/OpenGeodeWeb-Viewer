@@ -11,18 +11,17 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
+    schemas = os.path.join(os.path.dirname(__file__), "schemas")
 
-schemas = os.path.join(os.path.dirname(__file__), "schemas")
-
-with open(
-    os.path.join(schemas, "create_visualization.json"),
-    "r",
-) as file:
-    create_visualization_json = json.load(file)
+    with open(
+        os.path.join(schemas, "create_visualization.json"),
+        "r",
+    ) as file:
+        create_visualization_json = json.load(file)
 
     @exportRpc(create_visualization_json["route"])
     def create_visualization(self):
-        renderWindow = self.getView("-1")
+        renderWindow = self.getView(self, "-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 
@@ -31,12 +30,11 @@ with open(
 
         return self.reset_camera()
 
-
-with open(
-    os.path.join(schemas, "reset_camera.json"),
-    "r",
-) as file:
-    reset_camera_json = json.load(file)
+    with open(
+        os.path.join(schemas, "reset_camera.json"),
+        "r",
+    ) as file:
+        reset_camera_json = json.load(file)
 
     @exportRpc(reset_camera_json["route"])
     def reset_camera(self):
@@ -46,12 +44,11 @@ with open(
 
         return -1
 
-
-with open(
-    os.path.join(schemas, "create_object_pipeline.json"),
-    "r",
-) as file:
-    create_object_pipeline_json = json.load(file)
+    with open(
+        os.path.join(schemas, "create_object_pipeline.json"),
+        "r",
+    ) as file:
+        create_object_pipeline_json = json.load(file)
 
     @exportRpc(create_object_pipeline_json["route"])
     def create_object_pipeline(self, params):
@@ -92,12 +89,11 @@ with open(
         except Exception as e:
             print("error : ", str(e), flush=True)
 
-
-with open(
-    os.path.join(schemas, "delete_object_pipeline.json"),
-    "r",
-) as file:
-    delete_object_pipeline_json = json.load(file)
+    with open(
+        os.path.join(schemas, "delete_object_pipeline.json"),
+        "r",
+    ) as file:
+        delete_object_pipeline_json = json.load(file)
 
     @exportRpc(delete_object_pipeline_json["route"])
     def delete_object_pipeline(self, params):
@@ -110,12 +106,11 @@ with open(
         self.deregister_object(id)
         self.render()
 
-
-with open(
-    os.path.join(schemas, "toggle_object_visibility.json"),
-    "r",
-) as file:
-    toggle_object_visibility_json = json.load(file)
+    with open(
+        os.path.join(schemas, "toggle_object_visibility.json"),
+        "r",
+    ) as file:
+        toggle_object_visibility_json = json.load(file)
 
     @exportRpc(toggle_object_visibility_json["route"])
     def toggle_object_visibility(self, params):
@@ -126,12 +121,11 @@ with open(
         actor.SetVisibility(is_visible)
         self.render()
 
-
-with open(
-    os.path.join(schemas, "apply_textures.json"),
-    "r",
-) as file:
-    apply_textures_json = json.load(file)
+    with open(
+        os.path.join(schemas, "apply_textures.json"),
+        "r",
+    ) as file:
+        apply_textures_json = json.load(file)
 
     @exportRpc(apply_textures_json["route"])
     def apply_textures(self, params):
@@ -182,12 +176,11 @@ with open(
 
         self.render()
 
-
-with open(
-    os.path.join(schemas, "update_data.json"),
-    "r",
-) as file:
-    update_data_json = json.load(file)
+    with open(
+        os.path.join(schemas, "update_data.json"),
+        "r",
+    ) as file:
+        update_data_json = json.load(file)
 
     @exportRpc(update_data_json["route"])
     def update_data(self, params):
@@ -209,12 +202,11 @@ with open(
         mapper.SetScalarRange(scalars.GetRange())
         self.render()
 
-
-with open(
-    os.path.join(schemas, "get_point_position.json"),
-    "r",
-) as file:
-    get_point_position_json = json.load(file)
+    with open(
+        os.path.join(schemas, "get_point_position.json"),
+        "r",
+    ) as file:
+        get_point_position_json = json.load(file)
 
     @exportRpc(get_point_position_json["route"])
     def get_point_position(self, params):
@@ -226,25 +218,22 @@ with open(
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
-
-with open(
-    os.path.join(schemas, "reset.json"),
-    "r",
-) as file:
-    reset_json = json.load(file)
+    with open(
+        os.path.join(schemas, "reset.json"),
+        "r",
+    ) as file:
+        reset_json = json.load(file)
 
     @exportRpc(reset_json["route"])
     def reset(self):
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
-        print("reset")
 
-
-with open(
-    os.path.join(schemas, "toggle_edge_visibility.json"),
-    "r",
-) as file:
-    toggle_edge_visibility_json = json.load(file)
+    with open(
+        os.path.join(schemas, "toggle_edge_visibility.json"),
+        "r",
+    ) as file:
+        toggle_edge_visibility_json = json.load(file)
 
     @exportRpc(toggle_edge_visibility_json["route"])
     def setEdgeVisibility(self, params):
@@ -255,12 +244,11 @@ with open(
         actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
 
-
-with open(
-    os.path.join(schemas, "toggle_point_visibility.json"),
-    "r",
-) as file:
-    toggle_point_visibility_json = json.load(file)
+    with open(
+        os.path.join(schemas, "toggle_point_visibility.json"),
+        "r",
+    ) as file:
+        toggle_point_visibility_json = json.load(file)
 
     @exportRpc(toggle_point_visibility_json["route"])
     def setPointVisibility(self, params):
@@ -270,12 +258,11 @@ with open(
         actor.GetProperty().SetVertexVisibility(visibility)
         self.render()
 
-
-with open(
-    os.path.join(schemas, "point_size.json"),
-    "r",
-) as file:
-    point_size_json = json.load(file)
+    with open(
+        os.path.join(schemas, "point_size.json"),
+        "r",
+    ) as file:
+        point_size_json = json.load(file)
 
     @exportRpc(point_size_json["route"])
     def setPointSize(self, params):
@@ -285,12 +272,11 @@ with open(
         actor.GetProperty().SetPointSize(size)
         self.render()
 
-
-with open(
-    os.path.join(schemas, "set_color.json"),
-    "r",
-) as file:
-    set_color_json = json.load(file)
+    with open(
+        os.path.join(schemas, "set_color.json"),
+        "r",
+    ) as file:
+        set_color_json = json.load(file)
 
     @exportRpc(set_color_json["route"])
     def setColor(self, params):
@@ -303,12 +289,11 @@ with open(
         actor.GetProperty().SetColor(red, green, blue)
         self.render()
 
-
-with open(
-    os.path.join(schemas, "set_vertex_attribute.json"),
-    "r",
-) as file:
-    set_vertex_attribute_json = json.load(file)
+    with open(
+        os.path.join(schemas, "set_vertex_attribute.json"),
+        "r",
+    ) as file:
+        set_vertex_attribute_json = json.load(file)
 
     @exportRpc(set_vertex_attribute_json["route"])
     def setVertexAttribute(self, params):
