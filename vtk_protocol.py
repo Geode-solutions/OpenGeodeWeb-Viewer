@@ -21,7 +21,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(create_visualization_json["route"])
     def create_visualization(self):
-        renderWindow = self.getView(self, "-1")
+        print("###################")
+        renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 

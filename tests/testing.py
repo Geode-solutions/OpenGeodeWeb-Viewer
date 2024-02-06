@@ -1,7 +1,3 @@
-import pytest
-from pathlib import Path
-
-# from trame_client.utils.testing import FixtureHelper
 import json
 from pathlib import Path
 from xprocess import ProcessStarter
@@ -59,7 +55,6 @@ def enable_testing(server, *state_monitor):
 class FixtureHelper:
     def __init__(self, root_path):
         self.root_path = Path(root_path)
-        print(f"ROOT_PATH: {self.root_path}")
 
     def remove_page_urls(self):
         BASE_PATH = self.root_path / "visual_baseline"
@@ -67,37 +62,75 @@ class FixtureHelper:
             file.unlink()
             print(f" - remove: {file}")
 
-    def get_xprocess_args(self):
-        server_path = "vtkw_server.py"
-
+    def get_xprocess_args(self, server_path):
         class Starter(ProcessStarter):
             terminate_on_interrupt = True
-            pattern = "wslink: Starting factory"
+            pattern = "App running at:"
 
             # command to start process
             args = [
                 "python3",
                 str(self.root_path / server_path),
+                "--server",
                 "--host",
-                "0.0.0.0",
+                "127.0.0.1",
                 "--port",
-                "1234",
+                "0",
             ]
 
         return Path(server_path).name, Starter, TrameServerMonitor
 
 
-ROOT_PATH = Path(__file__).parent.parent.absolute()
-HELPER = FixtureHelper(ROOT_PATH)
+# ---------------------------------------------------------
+# Seleniumbase helper functions
+# ---------------------------------------------------------
 
 
-@pytest.fixture
-def server(xprocess):
-    name, Starter, Monitor = HELPER.get_xprocess_args()
+def set_browser_size(sb, width=300, height=300):
+    delta_width = 0
+    delta_height = 0
+    agent = sb.get_user_agent()
+    if "Firefox" in agent:
+        delta_height = 85
+    elif "Chrome" in agent:
+        delta_height = 0
+    elif "Safari" in agent:
+        delta_height = 0
 
-    # ensure process is running and return its logfile
-    logfile = xprocess.ensure(name, Starter)
-    yield Monitor(logfile[1])
+    sb.set_window_size(width + delta_width, height + delta_height)
+    wait_for_ready(sb)
 
-    # clean up whole process tree afterwards
-    xprocess.getinfo(name).terminate()
+
+def baseline_comparison(sb, check_baseline_path, threshold=0.1):
+    baseline_test = Path(check_baseline_path)
+    baseline_refs = baseline_test.parent.glob("baseline_ref*.png")
+    baseline_diff = baseline_test.with_name("baseline_diff.png")
+
+    img_test = Image.open(baseline_test)
+    min_mismatch = 1000000
+
+    for baseline_ref in baseline_refs:
+        img_ref = Image.open(baseline_ref)
+        img_diff = Image.new("RGBA", img_ref.size)
+        baseline_diff = (
+            baseline_ref.parent / f"baseline_diff{baseline_ref.name[12:-4]}.png"
+        )
+
+        mismatch = pixelmatch(img_ref, img_test, img_diff, threshold=threshold)
+        img_diff.save(baseline_diff)
+        min_mismatch = min(min_mismatch, mismatch)
+
+    sb.assert_true(
+        min_mismatch < threshold,
+        f"Baseline threshold {min_mismatch} < {threshold}",
+    )
+
+
+def wait_for_ready(sb, timeout=60):
+    for i in range(timeout):
+        print(f"wait_for_ready {i}")
+        if sb.is_element_present(".trame__loader"):
+            sb.sleep(1)
+        else:
+            print("Ready")
+            return
