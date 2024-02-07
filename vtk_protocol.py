@@ -6,12 +6,14 @@ from wslink import register as exportRpc
 import vtk
 
 
+schemas = os.path.join(os.path.dirname(__file__), "schemas")
+
+
 class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self):
+        print("***************", flush=True)
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
-
-    schemas = os.path.join(os.path.dirname(__file__), "schemas")
 
     with open(
         os.path.join(schemas, "create_visualization.json"),
@@ -21,7 +23,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(create_visualization_json["route"])
     def create_visualization(self):
-        print("###################")
+        print("###################", flush=True)
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
