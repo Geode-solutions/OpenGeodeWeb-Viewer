@@ -3,9 +3,8 @@ from pathlib import Path
 from websocket import create_connection
 import json
 from xprocess import ProcessStarter
-from PIL import Image
-from pixelmatch.contrib.PIL import pixelmatch
-from vtkmodules.test.Testing import compareImageWithSavedImage
+import vtk
+import os
 
 
 class ServerMonitor:
@@ -37,16 +36,34 @@ class ServerMonitor:
         )
 
     def compare_image(self, nb_messages, path_image):
+        self.call("viewport.image.push", [{"size": [300, 300], "view": -1}])
         for i in range(nb_messages):
-            print(f"{i=}", flush=True)
+            image = self.ws.recv()
+            print(f"{image=}", flush=True)
+        if isinstance(image, bytes):
             response = self.ws.recv()
-            if isinstance(response, bytes):
-                print("isinstance")
-                with open(path_image, "wb") as img:
-                    img.write(response)
-                    img.close()
-        print(compareImageWithSavedImage(path_image, saved_image))
-        # compare with path_image
+            print(f"{response=}", flush=True)
+            format = json.loads(response)["result"]["format"]
+            print(f"{format=}", flush=True)
+            test_filename = os.path.abspath(f"tests/tests_output/test.{format}")
+            print(f"{test_filename=}", flush=True)
+            with open(test_filename, "wb") as f:
+                f.write(image)
+                f.close()
+
+            test_reader = vtk.vtkJPEGReader()
+            test_reader.SetFileName(test_filename)
+
+            answer_reader = vtk.vtkJPEGReader()
+            answer_reader.SetFileName(path_image)
+
+            images_diff = vtk.vtkImageDifference()
+            images_diff.SetInputConnection(test_reader.GetOutputPort())
+            images_diff.SetImageConnection(answer_reader.GetOutputPort())
+            images_diff.Update()
+
+            print(f"{images_diff.GetThresholdedError()=}")
+            return images_diff.GetThresholdedError() == 0.0
 
 
 class FixtureHelper:
