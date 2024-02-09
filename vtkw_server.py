@@ -24,6 +24,8 @@ r"""
 
 import sys
 import argparse
+import config
+import os
 
 # Try handle virtual env if provided
 if "--virtual-env" in sys.argv:
@@ -110,6 +112,14 @@ class _Server(vtk_wslink.ServerProtocol):
 
 
 if __name__ == "__main__":
+    PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
+    if PYTHON_ENV == "prod":
+        config.prod_config()
+    elif PYTHON_ENV == "dev":
+        config.dev_config()
+    elif PYTHON_ENV == "test":
+        config.test_config()
+
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
     _Server.add_arguments(parser)

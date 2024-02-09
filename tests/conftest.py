@@ -38,6 +38,7 @@ class ServerMonitor:
     def compare_image(self, nb_messages, path_image):
         self.call("viewport.image.push", [{"size": [300, 300], "view": -1}])
         for i in range(nb_messages):
+            print(f"{i=}", flush=True)
             image = self.ws.recv()
             print(f"{image=}", flush=True)
         if isinstance(image, bytes):

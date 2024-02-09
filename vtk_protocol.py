@@ -2,16 +2,14 @@ import json
 import os
 from vtk.web import protocols as vtk_protocols
 from wslink import register as exportRpc
-
 import vtk
-
 
 schemas = os.path.join(os.path.dirname(__file__), "schemas")
 
 
 class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self):
-        print("***************", flush=True)
+        DATA_FOLDER_PATH = os.environ["DATA_FOLDER_PATH"]
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
@@ -59,6 +57,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             print(f"{params=}", flush=True)
             id = params["id"]
             file_name = params["file_name"]
+            FOLDER_PATH = os.path.dirname(__file__)
 
             actor = vtk.vtkActor()
             if ".vtm" in file_name:
@@ -74,7 +73,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
                 mapper.SetInputConnection(reader.GetOutputPort())
                 self.register_object(id, reader, {}, actor, mapper, {})
 
-            reader.SetFileName(f"/data/{file_name}")
+            reader.SetFileName(os.path.join(DATA_FOLDER_PATH, file_name))
 
             actor.SetMapper(mapper)
             mapper.SetColorModeToMapScalars()
@@ -85,8 +84,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             renderWindow = self.getView("-1")
             renderer = renderWindow.GetRenderers().GetFirstRenderer()
             renderer.AddActor(actor)
-
             renderer.ResetCamera()
+            renderWindow.Render()
 
             self.render()
         except Exception as e:
@@ -151,7 +150,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
-            image_reader.SetFileName(f"/data/{texture_file_name}")
+            image_reader.SetFileName(os.path.join(DATA_FOLDER_PATH, texture_file_name))
 
             shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"
             polydata_mapper.MapDataArrayToMultiTextureAttribute(
