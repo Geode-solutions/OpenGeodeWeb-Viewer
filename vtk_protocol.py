@@ -9,7 +9,7 @@ schemas = os.path.join(os.path.dirname(__file__), "schemas")
 
 class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self):
-        DATA_FOLDER_PATH = os.environ["DATA_FOLDER_PATH"]
+        self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
@@ -21,7 +21,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(create_visualization_json["route"])
     def create_visualization(self):
-        print("###################", flush=True)
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
@@ -73,7 +72,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
                 mapper.SetInputConnection(reader.GetOutputPort())
                 self.register_object(id, reader, {}, actor, mapper, {})
 
-            reader.SetFileName(os.path.join(DATA_FOLDER_PATH, file_name))
+            reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, file_name))
 
             actor.SetMapper(mapper)
             mapper.SetColorModeToMapScalars()

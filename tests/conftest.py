@@ -5,6 +5,7 @@ import json
 from xprocess import ProcessStarter
 import vtk
 import os
+import config
 
 
 class ServerMonitor:
@@ -38,16 +39,15 @@ class ServerMonitor:
     def compare_image(self, nb_messages, path_image):
         self.call("viewport.image.push", [{"size": [300, 300], "view": -1}])
         for i in range(nb_messages):
-            print(f"{i=}", flush=True)
             image = self.ws.recv()
             print(f"{image=}", flush=True)
         if isinstance(image, bytes):
             response = self.ws.recv()
-            print(f"{response=}", flush=True)
+            # print(f"{response=}", flush=True)
             format = json.loads(response)["result"]["format"]
-            print(f"{format=}", flush=True)
+            # print(f"{format=}", flush=True)
             test_filename = os.path.abspath(f"tests/tests_output/test.{format}")
-            print(f"{test_filename=}", flush=True)
+            # print(f"{test_filename=}", flush=True)
             with open(test_filename, "wb") as f:
                 f.write(image)
                 f.close()
@@ -99,9 +99,10 @@ HELPER = FixtureHelper(ROOT_PATH)
 @pytest.fixture
 def server(xprocess):
     name, Starter, Monitor = HELPER.get_xprocess_args()
-
-    # ensure process is running and return its logfile
+    os.environ["PYTHON_ENV"] = "test"
     xprocess.ensure(name, Starter)
+    config.test_config()
+    print("server", os.environ.get("DATA_FOLDER_PATH"), flush=True)
     yield Monitor()
 
     # clean up whole process tree afterwards
