@@ -22,10 +22,11 @@ class ServerMonitor:
         )
         self.call("viewport.image.push.observer.add", [-1])
         for i in range(5):
+            print(f"__init__ {i=}", flush=True)
             reponse = self.ws.recv()
 
     def call(self, rpc, params=[]):
-        print(f"{rpc=}{params=}", flush=True)
+        print(f"{rpc=} {params=}", flush=True)
         response = self.ws.send(
             json.dumps(
                 {
@@ -39,11 +40,12 @@ class ServerMonitor:
     def compare_image(self, nb_messages, path_image):
         self.call("viewport.image.push", [{"size": [300, 300], "view": -1}])
         for i in range(nb_messages):
+            print(f"{i=}", flush=True)
             image = self.ws.recv()
-            print(f"{image=}", flush=True)
         if isinstance(image, bytes):
+            print(f"{image=}", flush=True)
             response = self.ws.recv()
-            # print(f"{response=}", flush=True)
+            print(f"{response=}", flush=True)
             format = json.loads(response)["result"]["format"]
             # print(f"{format=}", flush=True)
             test_filename = os.path.abspath(f"tests/tests_output/test.{format}")
@@ -100,8 +102,8 @@ HELPER = FixtureHelper(ROOT_PATH)
 def server(xprocess):
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
-    xprocess.ensure(name, Starter)
     config.test_config()
+    xprocess.ensure(name, Starter)
     print("server", os.environ.get("DATA_FOLDER_PATH"), flush=True)
     yield Monitor()
 
