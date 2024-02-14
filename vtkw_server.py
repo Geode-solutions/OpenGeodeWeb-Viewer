@@ -8,6 +8,7 @@ from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
 import vtk
 from vtk_protocol import VtkView
+import dotenv
 
 # =============================================================================
 # Server class
@@ -77,7 +78,11 @@ class _Server(vtk_wslink.ServerProtocol):
 
 
 if __name__ == "__main__":
+    if os.path.isfile("./.env"):
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        dotenv.load_dotenv(os.path.join(basedir, ".env"))
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
+    print(f"{PYTHON_ENV=}", flush=True)
     if PYTHON_ENV == "prod":
         config.prod_config()
     elif PYTHON_ENV == "dev":
