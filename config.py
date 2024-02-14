@@ -20,6 +20,8 @@ def dev_config():
         os.environ["DATA_FOLDER_PATH"] = os.path.join(
             "C:/Users", os.getlogin(), "OpenGeodeWeb_Data"
         )
+    if not os.path.exists(os.environ.get("DATA_FOLDER_PATH")):
+        os.mkdir(os.environ.get("DATA_FOLDER_PATH"))
 
 
 def test_config():
