@@ -5,3 +5,5 @@ venv/
 .vscode/
 __pycache__/
 data/
+/node_modules
+schemas.json
