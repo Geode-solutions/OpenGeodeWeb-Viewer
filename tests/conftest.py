@@ -42,6 +42,11 @@ class ServerMonitor:
         for i in range(nb_messages):
             print(f"{i=}", flush=True)
             image = self.ws.recv()
+            if isinstance(image, bytes):
+                test_filename = os.path.abspath(f"tests/tests_output/test_{i}.jpeg")
+                with open(test_filename, "wb") as f:
+                    f.write(image)
+                    f.close()
         if isinstance(image, bytes):
             print(f"{image=}", flush=True)
             response = self.ws.recv()
@@ -85,10 +90,6 @@ class FixtureHelper:
             args = [
                 "python3",
                 str(self.root_path / server_path),
-                "--host",
-                "0.0.0.0",
-                "--port",
-                "1234",
             ]
 
         return Path(server_path).name, Starter, ServerMonitor

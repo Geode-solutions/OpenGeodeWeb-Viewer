@@ -82,7 +82,6 @@ if __name__ == "__main__":
         basedir = os.path.abspath(os.path.dirname(__file__))
         dotenv.load_dotenv(os.path.join(basedir, ".env"))
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
-    print(f"{PYTHON_ENV=}", flush=True)
     if PYTHON_ENV == "prod":
         config.prod_config()
     elif PYTHON_ENV == "dev":
@@ -90,8 +89,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
+
     _Server.add_arguments(parser)
     args = parser.parse_args()
-    print("args :", args)
+    args.port = os.environ.get("PORT")
+    args.host = os.environ.get("HOST")
+    print(f"{args=}", flush=True)
+
     _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)

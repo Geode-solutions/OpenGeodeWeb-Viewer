@@ -21,14 +21,14 @@ images_dir_path = os.path.abspath("./tests/data/images")
 #     assert server.compare_image(4, abs_path) == True
 
 
-# def test_delete_object_pipeline(server):
-#     server.call("create_object_pipeline", [{"id": "123456789", "file_name": "hat.vtp"}])
-#     abs_path = os.path.join(images_dir_path, "create_object_pipeline.jpeg")
-#     assert server.compare_image(4, abs_path) == True
+def test_delete_object_pipeline(server):
+    server.call("create_object_pipeline", [{"id": "123456789", "file_name": "hat.vtp"}])
+    abs_path = os.path.join(images_dir_path, "create_object_pipeline.jpeg")
+    assert server.compare_image(4, abs_path) == True
 
-#     server.call("delete_object_pipeline", [{"id": "123456789"}])
-#     abs_path = os.path.join(images_dir_path, "delete_object_pipeline.jpeg")
-#     assert server.compare_image(4, abs_path) == True
+    server.call("delete_object_pipeline", [{}])
+    abs_path = os.path.join(images_dir_path, "delete_object_pipeline.jpeg")
+    assert server.compare_image(4, abs_path) == True
 
 
 # def test_toggle_object_visibility(server):
