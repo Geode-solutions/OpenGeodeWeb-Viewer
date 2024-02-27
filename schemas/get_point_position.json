@@ -1,12 +1,12 @@
 {
-  "rpc": ".get_point_position",
+  "rpc": "get_point_position",
   "type": "object",
   "properties": {
     "x": {
-      "type": "int16"
+      "type": "integer"
     },
     "y": {
-      "type": "int16"
+      "type": "integer"
     }
   },
   "required": ["x", "y"],

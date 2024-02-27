@@ -1,5 +1,5 @@
 {
-  "rpc": ".create_object_pipeline",
+  "rpc": "create_object_pipeline",
   "type": "object",
   "properties": {
     "id": {

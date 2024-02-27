@@ -1,5 +1,5 @@
 {
-  "rpc": ".delete_object_pipeline",
+  "rpc": "delete_object_pipeline",
   "type": "object",
   "properties": {
     "id": {
