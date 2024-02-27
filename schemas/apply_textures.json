@@ -1,5 +1,5 @@
 {
-  "route": "toggle_object_visibility",
+  "rpc": ".toggle_object_visibility",
   "type": "object",
   "properties": {
     "id": {

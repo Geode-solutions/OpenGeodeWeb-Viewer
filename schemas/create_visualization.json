@@ -1,5 +1,5 @@
 {
-  "route": "create_visualization",
+  "rpc": ".create_visualization",
   "type": "object",
   "properties": {},
   "required": [],

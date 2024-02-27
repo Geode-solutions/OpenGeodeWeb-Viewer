@@ -1,5 +1,5 @@
 {
-  "route": "toggle_edge_visibility",
+  "rpc": ".toggle_edge_visibility",
   "type": "object",
   "properties": {
     "id": {

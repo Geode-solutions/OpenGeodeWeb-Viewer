@@ -1,5 +1,5 @@
 {
-  "route": "reset_camera",
+  "rpc": ".reset_camera",
   "type": "object",
   "properties": {},
   "required": [],

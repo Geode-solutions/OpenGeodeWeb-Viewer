@@ -1,5 +1,5 @@
 {
-  "route": "set_vertex_attribute",
+  "rpc": ".set_vertex_attribute",
   "type": "object",
   "properties": {
     "id": {

@@ -1,5 +1,5 @@
 {
-  "route": "set_color",
+  "rpc": ".set_color",
   "type": "object",
   "properties": {
     "id": {
