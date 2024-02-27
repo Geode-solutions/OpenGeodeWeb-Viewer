@@ -13,9 +13,6 @@
       "minItems": 1
     }
   },
-  "required": [
-    "id",
-    "textures"
-  ],
+  "required": ["id", "textures"],
   "additionalProperties": false
 }

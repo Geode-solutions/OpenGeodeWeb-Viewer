@@ -9,9 +9,6 @@
       "type": "float64"
     }
   },
-  "required": [
-    "id",
-    "size"
-  ],
+  "required": ["id", "size"],
   "additionalProperties": false
 }

@@ -9,9 +9,6 @@
       "type": "int16"
     }
   },
-  "required": [
-    "x",
-    "y"
-  ],
+  "required": ["x", "y"],
   "additionalProperties": false
 }
