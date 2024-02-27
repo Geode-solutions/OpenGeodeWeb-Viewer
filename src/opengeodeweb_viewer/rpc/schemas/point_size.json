@@ -1,5 +1,5 @@
 {
-  "rpc": ".point_size",
+  "rpc": "point_size",
   "type": "object",
   "properties": {
     "id": {
@@ -9,6 +9,9 @@
       "type": "float64"
     }
   },
-  "required": ["id", "size"],
+  "required": [
+    "id",
+    "size"
+  ],
   "additionalProperties": false
 }

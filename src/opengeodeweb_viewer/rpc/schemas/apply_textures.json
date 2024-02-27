@@ -1,5 +1,5 @@
 {
-  "rpc": ".toggle_object_visibility",
+  "rpc": "toggle_object_visibility",
   "type": "object",
   "properties": {
     "id": {
@@ -13,6 +13,9 @@
       "minItems": 1
     }
   },
-  "required": ["id", "textures"],
+  "required": [
+    "id",
+    "textures"
+  ],
   "additionalProperties": false
 }

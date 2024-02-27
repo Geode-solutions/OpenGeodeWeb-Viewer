@@ -1,5 +1,5 @@
 {
-  "rpc": ".toggle_point_visibility",
+  "rpc": "toggle_point_visibility",
   "type": "object",
   "properties": {
     "id": {
@@ -9,6 +9,9 @@
       "type": "boolean"
     }
   },
-  "required": ["id", "visibility"],
+  "required": [
+    "id",
+    "visibility"
+  ],
   "additionalProperties": false
 }
