@@ -12,7 +12,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
-        print(f"{self.DATA_FOLDER_PATH=}", flush=True)
 
     with open(
         os.path.join(schemas, "create_visualization.json"),
@@ -72,9 +71,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
                 mapper = vtk.vtkDataSetMapper()
                 mapper.SetInputConnection(reader.GetOutputPort())
                 self.register_object(id, reader, {}, actor, mapper, {})
-            print(f"{self.DATA_FOLDER_PATH=}", flush=True)
-            print(f"{file_name=}", flush=True)
-            print("PATH", os.path.join(self.DATA_FOLDER_PATH, file_name), flush=True)
 
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, file_name))
 
