@@ -26,7 +26,7 @@ def test_delete_object_pipeline(server):
     abs_path = os.path.join(images_dir_path, "create_object_pipeline.jpeg")
     assert server.compare_image(4, abs_path) == True
 
-    server.call("delete_object_pipeline", [{}])
+    server.call("delete_object_pipeline", [{"id": "123456789"}])
     abs_path = os.path.join(images_dir_path, "delete_object_pipeline.jpeg")
     assert server.compare_image(4, abs_path) == True
 
