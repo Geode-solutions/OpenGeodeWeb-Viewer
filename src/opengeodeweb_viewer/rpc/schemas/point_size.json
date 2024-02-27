@@ -1,13 +1,17 @@
 {
-  "rpc": "/delete_object_pipeline",
+  "rpc": ".point_size",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
+    },
+    "size": {
+      "type": "float64"
     }
   },
   "required": [
-    "id"
+    "id",
+    "size"
   ],
   "additionalProperties": false
 }

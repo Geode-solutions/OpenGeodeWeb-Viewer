@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
 const process = require("process");
+const { log } = require("console");
 
 const findDirectoryPath = (targetDirectoryName) => {
   const pathToCheck = path.join(process.cwd(), targetDirectoryName);
@@ -14,8 +15,8 @@ const findDirectoryPath = (targetDirectoryName) => {
       name: folder.name,
       path: path.join(pathToCheck, folder.name),
     }));
-  const routesDirectory = path.join(folders[0].path, "routes");
-  return [routesDirectory, folders[0].name];
+  const rpcDirectory = path.join(folders[0].path, "rpc");
+  return [rpcDirectory, folders[0].name];
 };
 
 const [directoryPath, project_name] = findDirectoryPath("src/");
@@ -42,8 +43,8 @@ function return_json_schema(directoryPath, folder_path, project_name) {
           var filename = filePath
             .replace(/^.*[\\/]/, "")
             .replace(/\.[^/.]+$/, "");
-          var route = jsonData["route"];
-          jsonData["$id"] = project_name + folder_path + route;
+          var rpc = jsonData["rpc"];
+          jsonData["$id"] = project_name + folder_path + rpc;
           schemas[filename] = jsonData;
         } catch (error) {
           console.error(

@@ -1,17 +1,13 @@
 {
-  "rpc": "/toggle_point_visibility",
+  "rpc": ".delete_object_pipeline",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
-    },
-    "visibility": {
-      "type": "boolean"
     }
   },
   "required": [
-    "id",
-    "visibility"
+    "id"
   ],
   "additionalProperties": false
 }

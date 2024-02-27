@@ -1,5 +1,5 @@
 {
-  "rpc": "/toggle_edge_visibility",
+  "rpc": ".toggle_point_visibility",
   "type": "object",
   "properties": {
     "id": {

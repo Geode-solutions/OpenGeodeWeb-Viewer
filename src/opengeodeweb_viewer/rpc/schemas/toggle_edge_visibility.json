@@ -1,17 +1,17 @@
 {
-  "rpc": "/toggle_object_visibility",
+  "rpc": ".toggle_edge_visibility",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "is_visible": {
+    "visibility": {
       "type": "boolean"
     }
   },
   "required": [
     "id",
-    "is_visible"
+    "visibility"
   ],
   "additionalProperties": false
 }

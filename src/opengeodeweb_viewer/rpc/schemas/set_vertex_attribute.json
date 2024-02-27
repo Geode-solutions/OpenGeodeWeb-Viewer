@@ -1,17 +1,17 @@
 {
-  "rpc": "/point_size",
+  "rpc": ".set_vertex_attribute",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "size": {
-      "type": "float64"
+    "name": {
+      "type": "string"
     }
   },
   "required": [
     "id",
-    "size"
+    "name"
   ],
   "additionalProperties": false
 }
