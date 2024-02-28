@@ -14,18 +14,17 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
 
-schemas = os.path.join(os.path.dirname(__file__), "schemas")
+schemas = os.path.join(os.path.dirname(__file__), "rpc/schemas")
 with open(
     os.path.join(schemas, "create_visualization.json"),
     "r",
 ) as file:
     create_visualization_json = json.load(file)
 
-validate_schemas(create_visualization_json)
-
 
 @exportRpc(create_visualization_json["rpc"])
-def create_visualization(self):
+def create_visualization(self, params):
+    validate_schemas(params, create_visualization_json)
 
     renderWindow = self.getView("-1")
     renderer = renderWindow.GetRenderers().GetFirstRenderer()
@@ -43,11 +42,10 @@ with open(
 ) as file:
     reset_camera_json = json.load(file)
 
-validate_schemas(reset_camera_json)
-
 
 @exportRpc(reset_camera_json["rpc"])
-def reset_camera(self):
+def reset_camera(self, params):
+    validate_schemas(params, reset_camera_json)
     renderWindow = self.getView("-1")
     renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
     renderWindow.Render()
@@ -61,11 +59,10 @@ with open(
 ) as file:
     create_object_pipeline_json = json.load(file)
 
-validate_schemas(create_object_pipeline_json)
-
 
 @exportRpc(create_object_pipeline_json["rpc"])
 def create_object_pipeline(self, params):
+    validate_schemas(create_object_pipeline_json)
     try:
         print(f"{params=}", flush=True)
         id = params["id"]
@@ -110,11 +107,10 @@ with open(
 ) as file:
     delete_object_pipeline_json = json.load(file)
 
-validate_schemas(delete_object_pipeline_json)
-
 
 @exportRpc(delete_object_pipeline_json["rpc"])
 def delete_object_pipeline(self, params):
+    validate_schemas(params, delete_object_pipeline_json)
     print(f"{params=}", flush=True)
     id = params["id"]
     object = self.get_object(id)
@@ -132,11 +128,10 @@ with open(
 ) as file:
     toggle_object_visibility_json = json.load(file)
 
-validate_schemas(toggle_object_visibility_json)
-
 
 @exportRpc(toggle_object_visibility_json["rpc"])
 def toggle_object_visibility(self, params):
+    validate_schemas(params, toggle_object_visibility_json)
     print(f"{params=}", flush=True)
     id = params["id"]
     is_visible = params["is_visible"]
@@ -152,11 +147,10 @@ with open(
 ) as file:
     apply_textures_json = json.load(file)
 
-validate_schemas(apply_textures_json)
-
 
 @exportRpc(apply_textures_json["rpc"])
 def apply_textures(self, params):
+    validate_schemas(params, apply_textures_json)
     print(f"{params=}", flush=True)
     id = params["id"]
     textures = params["textures"]
@@ -210,11 +204,10 @@ with open(
 ) as file:
     update_data_json = json.load(file)
 
-validate_schemas(update_data_json)
-
 
 @exportRpc(update_data_json["rpc"])
 def update_data(self, params):
+    validate_schemas(params, update_data_json)
     print(f"{params=}", flush=True)
     id = params["id"]
 
@@ -241,11 +234,10 @@ with open(
 ) as file:
     get_point_position_json = json.load(file)
 
-validate_schemas(get_point_position_json)
-
 
 @exportRpc(get_point_position_json["rpc"])
 def get_point_position(self, params):
+    validate_schemas(params, get_point_position_json)
     x = float(params["x"])
     y = float(params["y"])
     print(f"{x=}", flush=True)
@@ -263,11 +255,10 @@ with open(
 ) as file:
     reset_json = json.load(file)
 
-validate_schemas(reset_json)
-
 
 @exportRpc(reset_json["rpc"])
-def reset(self):
+def reset(self, params):
+    validate_schemas(params, reset_json)
     renderWindow = self.getView("-1")
     renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
     print("reset")
@@ -279,11 +270,10 @@ with open(
 ) as file:
     toggle_edge_visibility_json = json.load(file)
 
-validate_schemas(toggle_edge_visibility_json)
-
 
 @exportRpc(toggle_edge_visibility_json["rpc"])
 def setEdgeVisibility(self, params):
+    validate_schemas(params, toggle_edge_visibility_json)
     print(f"{params=}", flush=True)
     id = params["id"]
     visibility = bool(params["visibility"])
@@ -298,11 +288,10 @@ with open(
 ) as file:
     toggle_point_visibility_json = json.load(file)
 
-validate_schemas(toggle_point_visibility_json)
-
 
 @exportRpc(toggle_point_visibility_json["rpc"])
 def setPointVisibility(self, params):
+    validate_schemas(params, toggle_point_visibility_json)
     id = params["id"]
     visibility = bool(params["visibility"])
     actor = self.get_object(id)["actor"]
@@ -316,11 +305,10 @@ with open(
 ) as file:
     point_size_json = json.load(file)
 
-validate_schemas(point_size_json)
-
 
 @exportRpc(point_size_json["rpc"])
 def setPointSize(self, params):
+    validate_schemas(params, point_size_json)
     id = params["id"]
     size = float(params["size"])
     actor = self.get_object(id)["actor"]
@@ -334,11 +322,10 @@ with open(
 ) as file:
     set_color_json = json.load(file)
 
-validate_schemas(set_color_json)
-
 
 @exportRpc(set_color_json["rpc"])
 def setColor(self, params):
+    validate_schemas(params, set_color_json)
     id = params["id"]
     red = params["red"]
     green = params["green"]
@@ -355,11 +342,10 @@ with open(
 ) as file:
     set_vertex_attribute_json = json.load(file)
 
-validate_schemas(set_vertex_attribute_json)
-
 
 @exportRpc(set_vertex_attribute_json["rpc"])
 def setVertexAttribute(self, params):
+    validate_schemas(params, set_vertex_attribute_json)
     print(f"{params=}", flush=True)
     id = params["id"]
     name = params["name"]

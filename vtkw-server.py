@@ -21,6 +21,7 @@ r"""
             that the server expects "vtkweb-secret" as secret key.
 
 """
+
 import sys
 import argparse
 
@@ -39,7 +40,7 @@ from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
 
 import vtk
-from vtk_protocol import VtkView
+from src.opengeodeweb_viewer.vtk_protocol import VtkView
 
 # =============================================================================
 # Server class
