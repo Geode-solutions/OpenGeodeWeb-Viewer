@@ -1,11 +1,9 @@
-import os
-import json
-import jsonschema
 from jsonschema import validate
+from jsonschema.exceptions import ValidationError
 
 
 def validate_schemas(params, schema):
     try:
         validate(instance=params, schema=schema)
-    except jsonschema.exceptions.ValidationError as e:
+    except ValidationError as e:
         print(400, f"Validation error: {e.message}")
