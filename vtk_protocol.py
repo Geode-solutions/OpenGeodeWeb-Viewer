@@ -6,6 +6,35 @@ import vtk
 
 schemas = os.path.join(os.path.dirname(__file__), "schemas")
 
+with open(os.path.join(schemas, "create_visualization.json"), "r") as file:
+    create_visualization_json = json.load(file)
+with open(os.path.join(schemas, "reset_camera.json"), "r") as file:
+    reset_camera_json = json.load(file)
+with open(os.path.join(schemas, "create_object_pipeline.json"), "r") as file:
+    create_object_pipeline_json = json.load(file)
+with open(os.path.join(schemas, "delete_object_pipeline.json"), "r") as file:
+    delete_object_pipeline_json = json.load(file)
+with open(os.path.join(schemas, "toggle_object_visibility.json"), "r") as file:
+    toggle_object_visibility_json = json.load(file)
+with open(os.path.join(schemas, "apply_textures.json"), "r") as file:
+    apply_textures_json = json.load(file)
+with open(os.path.join(schemas, "update_data.json"), "r") as file:
+    update_data_json = json.load(file)
+with open(os.path.join(schemas, "get_point_position.json"), "r") as file:
+    get_point_position_json = json.load(file)
+with open(os.path.join(schemas, "reset.json"), "r") as file:
+    reset_json = json.load(file)
+with open(os.path.join(schemas, "toggle_edge_visibility.json"), "r") as file:
+    toggle_edge_visibility_json = json.load(file)
+with open(os.path.join(schemas, "point_size.json"), "r") as file:
+    point_size_json = json.load(file)
+with open(os.path.join(schemas, "toggle_point_visibility.json"), "r") as file:
+    toggle_point_visibility_json = json.load(file)
+with open(os.path.join(schemas, "set_color.json"), "r") as file:
+    set_color_json = json.load(file)
+with open(os.path.join(schemas, "set_vertex_attribute.json"), "r") as file:
+    set_vertex_attribute_json = json.load(file)
+
 
 class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self):
@@ -13,42 +42,21 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-    with open(
-        os.path.join(schemas, "create_visualization.json"),
-        "r",
-    ) as file:
-        create_visualization_json = json.load(file)
-
     @exportRpc(create_visualization_json["rpc"])
     def create_visualization(self):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
-
         renderer.ResetCamera()
         renderWindow.Render()
-
         return self.reset_camera()
-
-    with open(
-        os.path.join(schemas, "reset_camera.json"),
-        "r",
-    ) as file:
-        reset_camera_json = json.load(file)
 
     @exportRpc(reset_camera_json["rpc"])
     def reset_camera(self):
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
         renderWindow.Render()
-
         return -1
-
-    with open(
-        os.path.join(schemas, "create_object_pipeline.json"),
-        "r",
-    ) as file:
-        create_object_pipeline_json = json.load(file)
 
     @exportRpc(create_object_pipeline_json["rpc"])
     def create_object_pipeline(self, params):
@@ -85,16 +93,9 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             renderer.AddActor(actor)
             renderer.ResetCamera()
             renderWindow.Render()
-
             self.render()
         except Exception as e:
             print("error : ", str(e), flush=True)
-
-    with open(
-        os.path.join(schemas, "delete_object_pipeline.json"),
-        "r",
-    ) as file:
-        delete_object_pipeline_json = json.load(file)
 
     @exportRpc(delete_object_pipeline_json["rpc"])
     def delete_object_pipeline(self, params):
@@ -105,29 +106,19 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(actor)
+        print(f"{object=}", flush=True)
         self.deregister_object(id)
         self.render()
 
-    with open(
-        os.path.join(schemas, "toggle_object_visibility.json"),
-        "r",
-    ) as file:
-        toggle_object_visibility_json = json.load(file)
-
     @exportRpc(toggle_object_visibility_json["rpc"])
     def toggle_object_visibility(self, params):
+        print(f"{params=}", flush=True)
         id = params["id"]
         is_visible = params["is_visible"]
         object = self.get_object(id)
         actor = object["actor"]
         actor.SetVisibility(is_visible)
         self.render()
-
-    with open(
-        os.path.join(schemas, "apply_textures.json"),
-        "r",
-    ) as file:
-        apply_textures_json = json.load(file)
 
     @exportRpc(apply_textures_json["rpc"])
     def apply_textures(self, params):
@@ -145,8 +136,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         poly_data = reader.GetPolyDataOutput()
 
         for index, value in enumerate(textures):
-            texture_name = value["texture_name"]["value"]
-            texture_file_name = value["texture_file_name"]["value"]
+            texture_name = value["texture_name"]
+            texture_file_name = value["texture_file_name"]
 
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
@@ -178,12 +169,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
         self.render()
 
-    with open(
-        os.path.join(schemas, "update_data.json"),
-        "r",
-    ) as file:
-        update_data_json = json.load(file)
-
     @exportRpc(update_data_json["rpc"])
     def update_data(self, params):
         id = params["id"]
@@ -204,12 +189,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         mapper.SetScalarRange(scalars.GetRange())
         self.render()
 
-    with open(
-        os.path.join(schemas, "get_point_position.json"),
-        "r",
-    ) as file:
-        get_point_position_json = json.load(file)
-
     @exportRpc(get_point_position_json["rpc"])
     def get_point_position(self, params):
         x = float(params["x"])
@@ -220,22 +199,10 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
-    with open(
-        os.path.join(schemas, "reset.json"),
-        "r",
-    ) as file:
-        reset_json = json.load(file)
-
     @exportRpc(reset_json["rpc"])
     def reset(self):
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
-
-    with open(
-        os.path.join(schemas, "toggle_edge_visibility.json"),
-        "r",
-    ) as file:
-        toggle_edge_visibility_json = json.load(file)
 
     @exportRpc(toggle_edge_visibility_json["rpc"])
     def setEdgeVisibility(self, params):
@@ -246,12 +213,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
 
-    with open(
-        os.path.join(schemas, "toggle_point_visibility.json"),
-        "r",
-    ) as file:
-        toggle_point_visibility_json = json.load(file)
-
     @exportRpc(toggle_point_visibility_json["rpc"])
     def setPointVisibility(self, params):
         id = params["id"]
@@ -260,12 +221,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         actor.GetProperty().SetVertexVisibility(visibility)
         self.render()
 
-    with open(
-        os.path.join(schemas, "point_size.json"),
-        "r",
-    ) as file:
-        point_size_json = json.load(file)
-
     @exportRpc(point_size_json["rpc"])
     def setPointSize(self, params):
         id = params["id"]
@@ -273,12 +228,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetPointSize(size)
         self.render()
-
-    with open(
-        os.path.join(schemas, "set_color.json"),
-        "r",
-    ) as file:
-        set_color_json = json.load(file)
 
     @exportRpc(set_color_json["rpc"])
     def setColor(self, params):
@@ -291,12 +240,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         actor.GetProperty().SetColor(red, green, blue)
         self.render()
 
-    with open(
-        os.path.join(schemas, "set_vertex_attribute.json"),
-        "r",
-    ) as file:
-        set_vertex_attribute_json = json.load(file)
-
     @exportRpc(set_vertex_attribute_json["rpc"])
     def setVertexAttribute(self, params):
         print(f"{params=}", flush=True)
@@ -307,11 +250,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointFieldData()
         self.render()
-
-    def getProtocol(self, name):
-        for p in self.coreServer.getLinkProtocols():
-            if type(p).__name__ == name:
-                return p
 
     def get_data_base(self):
         return self.getSharedObject("db")
@@ -328,7 +266,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
                 return p
 
     def render(self, view=-1):
-        self.getProtocol("vtkWebPublishImageDelivery").imagePush({"view": view})
+        self.get_protocol("vtkWebPublishImageDelivery").imagePush({"view": view})
 
     def register_object(self, id, reader, filter, actor, mapper, textures):
         self.get_data_base()[id] = {
@@ -338,3 +276,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             "mapper": mapper,
             "textures": textures,
         }
+
+    def deregister_object(self, id):
+        del self.get_data_base()[id]
