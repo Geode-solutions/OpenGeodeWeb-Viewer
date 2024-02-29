@@ -44,7 +44,7 @@ function return_json_schema(directoryPath, folder_path, project_name) {
             .replace(/^.*[\\/]/, "")
             .replace(/\.[^/.]+$/, "");
           var rpc = jsonData["rpc"];
-          jsonData["$id"] = project_name + folder_path + rpc;
+          jsonData["$id"] = project_name + folder_path + "." + rpc;
           schemas[filename] = jsonData;
         } catch (error) {
           console.error(
