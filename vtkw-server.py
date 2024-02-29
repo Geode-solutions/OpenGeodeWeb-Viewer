@@ -40,7 +40,7 @@ from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
 
 import vtk
-from src.opengeodeweb_viewer.vtk_protocol import VtkView
+from vtk_protocol import VtkView
 
 # =============================================================================
 # Server class
