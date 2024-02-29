@@ -9,7 +9,8 @@ import config
 
 
 class ServerMonitor:
-    def __init__(self):
+    def __init__(self, log):
+        self.log = log
         self.ws = create_connection("ws://localhost:1234/ws")
         self.ws.send(
             json.dumps(
@@ -22,7 +23,7 @@ class ServerMonitor:
         )
         self.call("viewport.image.push.observer.add", [-1])
         for i in range(5):
-            print(f"__init__ {i=}", flush=True)
+            print(f"{i=}", flush=True)
             reponse = self.ws.recv()
 
     def call(self, rpc, params=[]):
@@ -37,13 +38,22 @@ class ServerMonitor:
             )
         )
 
+    def print_log(self):
+        output = ""
+        with open(self.log) as f:
+            for line in f:
+                if "@@__xproc_block_delimiter__@@" in line:
+                    output = ""
+                    continue
+                output += line
+        print(output)
+
     def compare_image(self, nb_messages, path_image):
-        self.call("viewport.image.push", [{"size": [300, 300], "view": -1}])
         for i in range(nb_messages):
             print(f"{i=}", flush=True)
             image = self.ws.recv()
             if isinstance(image, bytes):
-                test_filename = os.path.abspath(f"tests/tests_output/test_{i}.jpeg")
+                test_filename = os.path.abspath(f"tests/tests_output/test.jpeg")
                 with open(test_filename, "wb") as f:
                     f.write(image)
                     f.close()
@@ -52,9 +62,7 @@ class ServerMonitor:
             response = self.ws.recv()
             print(f"{response=}", flush=True)
             format = json.loads(response)["result"]["format"]
-            # print(f"{format=}", flush=True)
             test_filename = os.path.abspath(f"tests/tests_output/test.{format}")
-            # print(f"{test_filename=}", flush=True)
             with open(test_filename, "wb") as f:
                 f.write(image)
                 f.close()
@@ -104,9 +112,12 @@ def server(xprocess):
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
     config.test_config()
-    xprocess.ensure(name, Starter)
+    _, log = xprocess.ensure(name, Starter)
+    print(log)
     print("server", os.environ.get("DATA_FOLDER_PATH"), flush=True)
-    yield Monitor()
+    monitor = Monitor(log)
+    yield monitor
 
     # clean up whole process tree afterwards
     xprocess.getinfo(name).terminate()
+    monitor.print_log()
