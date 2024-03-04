@@ -37,6 +37,7 @@ class ServerMonitor:
                 }
             )
         )
+        return response
 
     def print_log(self):
         output = ""

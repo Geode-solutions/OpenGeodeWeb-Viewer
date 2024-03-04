@@ -4,5 +4,4 @@ env/
 venv/
 .vscode/
 __pycache__/
-data/
 .env

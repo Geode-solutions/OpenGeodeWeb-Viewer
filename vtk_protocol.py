@@ -61,7 +61,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     @exportRpc(create_object_pipeline_json["rpc"])
     def create_object_pipeline(self, params):
         try:
-            print(f"{params=}", flush=True)
             id = params["id"]
             file_name = params["file_name"]
             FOLDER_PATH = os.path.dirname(__file__)
@@ -99,7 +98,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(delete_object_pipeline_json["rpc"])
     def delete_object_pipeline(self, params):
-        print(f"{params=}", flush=True)
         id = params["id"]
         object = self.get_object(id)
         actor = object["actor"]
@@ -112,7 +110,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(toggle_object_visibility_json["rpc"])
     def toggle_object_visibility(self, params):
-        print(f"{params=}", flush=True)
         id = params["id"]
         is_visible = params["is_visible"]
         object = self.get_object(id)
@@ -122,7 +119,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(apply_textures_json["rpc"])
     def apply_textures(self, params):
-        print(f"{params=}", flush=True)
         id = params["id"]
         textures = params["textures"]
         textures_array = []
