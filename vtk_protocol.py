@@ -122,6 +122,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(apply_textures_json["rpc"])
     def apply_textures(self, params):
+        print(f"{params=}", flush=True)
         id = params["id"]
         textures = params["textures"]
         textures_array = []
@@ -138,10 +139,13 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         for index, value in enumerate(textures):
             texture_name = value["texture_name"]
             texture_file_name = value["texture_file_name"]
+            print(f"{texture_name=} {texture_file_name=}", flush=True)
 
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
-            image_reader.SetFileName(os.path.join(DATA_FOLDER_PATH, texture_file_name))
+            image_reader.SetFileName(
+                os.path.join(self.DATA_FOLDER_PATH, texture_file_name)
+            )
 
             shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"
             polydata_mapper.MapDataArrayToMultiTextureAttribute(

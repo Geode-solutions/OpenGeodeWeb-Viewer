@@ -1,5 +1,5 @@
 {
-  "rpc": "toggle_object_visibility",
+  "rpc": "apply_textures",
   "type": "object",
   "properties": {
     "id": {
