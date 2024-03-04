@@ -81,14 +81,14 @@ def test_get_point_position(server):
     abs_path = os.path.join(images_dir_path, "get_point_position.jpeg")
     assert server.compare_image(3, abs_path) == True
 
-    assert server.compare_image(3, abs_path) == True
-    response = server.call("get_point_position", [{"x": 0, "y": 0}])
-    print(f"{response=}", flush=True)
-    assert "x" in response
-    x = response["x"]
-    print(f"{x=}", flush=True)
-    assert type(x) is int
-    assert "y" in response
-    assert "z" in response
-
-    print(response, flush=True)
+    server.call("get_point_position", [{"x": 0, "y": 0}])
+    response = server.get_response()
+    assert "x" in response["result"]
+    assert "y" in response["result"]
+    assert "z" in response["result"]
+    x = response["result"]["x"]
+    y = response["result"]["y"]
+    z = response["result"]["z"]
+    assert type(x) is float
+    assert type(y) is float
+    assert type(z) is float

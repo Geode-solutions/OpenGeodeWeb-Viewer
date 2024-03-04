@@ -49,6 +49,10 @@ class ServerMonitor:
                 output += line
         print(output)
 
+    def get_response(self):
+        response = eval(self.ws.recv())
+        return response
+
     def compare_image(self, nb_messages, path_image):
         for i in range(nb_messages):
             print(f"{i=}", flush=True)
