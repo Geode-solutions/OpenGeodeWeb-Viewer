@@ -5,7 +5,7 @@ import json
 from xprocess import ProcessStarter
 import vtk
 import os
-import config
+from src.opengeodeweb_viewer import config
 
 
 class ServerMonitor:
@@ -90,10 +90,12 @@ class ServerMonitor:
 class FixtureHelper:
     def __init__(self, root_path):
         self.root_path = Path(root_path)
-        print(f"ROOT_PATH: {self.root_path}")
+        print(f"{self.root_path=}", flush=True)
 
     def get_xprocess_args(self):
-        server_path = "vtkw_server.py"
+
+        server_path = "src/opengeodeweb_viewer/vtkw_server.py"
+        print(f"{server_path=}", flush=True)
 
         class Starter(ProcessStarter):
             terminate_on_interrupt = True

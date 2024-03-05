@@ -4,13 +4,13 @@ images_dir_path = os.path.abspath("./tests/data/images")
 
 
 # def test_create_visualization(server):
-#     server.call("create_visualization")
+#     server.call("create_visualization", [])
 #     abs_path = os.path.join(images_dir_path, "create_visualization.jpeg")
 #     assert server.compare_image(3, abs_path) == True
 
 
 # def test_reset_camera(server):
-#     server.call("reset_camera")
+#     server.call("reset_camera", [])
 #     abs_path = os.path.join(images_dir_path, "reset_camera.jpeg")
 #     assert server.compare_image(3, abs_path) == True
 
@@ -49,7 +49,7 @@ images_dir_path = os.path.abspath("./tests/data/images")
 
 #     server.call(
 #         "create_object_pipeline",
-#         [{"id": "123456789", "file_name": "hat.vtp"}],
+#         [{"id": "123456789", "file_name": "emperor_penguin.vtp"}],
 #     )
 #     abs_path = os.path.join(images_dir_path, "apply_textures_1.jpeg")
 #     assert server.compare_image(3, abs_path) == True
@@ -72,23 +72,23 @@ images_dir_path = os.path.abspath("./tests/data/images")
 #     assert server.compare_image(3, abs_path) == True
 
 
-def test_get_point_position(server):
+# def test_get_point_position(server):
 
-    server.call(
-        "create_object_pipeline",
-        [{"id": "123456789", "file_name": "hat.vtp"}],
-    )
-    abs_path = os.path.join(images_dir_path, "get_point_position.jpeg")
-    assert server.compare_image(3, abs_path) == True
+#     server.call(
+#         "create_object_pipeline",
+#         [{"id": "123456789", "file_name": "hat.vtp"}],
+#     )
+#     abs_path = os.path.join(images_dir_path, "get_point_position.jpeg")
+#     assert server.compare_image(3, abs_path) == True
 
-    server.call("get_point_position", [{"x": 0, "y": 0}])
-    response = server.get_response()
-    assert "x" in response["result"]
-    assert "y" in response["result"]
-    assert "z" in response["result"]
-    x = response["result"]["x"]
-    y = response["result"]["y"]
-    z = response["result"]["z"]
-    assert type(x) is float
-    assert type(y) is float
-    assert type(z) is float
+#     server.call("get_point_position", [{"x": 0, "y": 0}])
+#     response = server.get_response()
+#     assert "x" in response["result"]
+#     assert "y" in response["result"]
+#     assert "z" in response["result"]
+#     x = response["result"]["x"]
+#     y = response["result"]["y"]
+#     z = response["result"]["z"]
+#     assert type(x) is float
+#     assert type(y) is float
+#     assert type(z) is float

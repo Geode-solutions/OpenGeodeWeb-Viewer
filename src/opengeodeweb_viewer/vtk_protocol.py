@@ -3,8 +3,9 @@ import os
 from vtk.web import protocols as vtk_protocols
 from wslink import register as exportRpc
 import vtk
+from function import validate_schemas
 
-schemas = os.path.join(os.path.dirname(__file__), "schemas")
+schemas = os.path.join(os.path.dirname(__file__), "rpc/schemas")
 
 with open(os.path.join(schemas, "create_visualization.json"), "r") as file:
     create_visualization_json = json.load(file)
@@ -43,7 +44,9 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
     @exportRpc(create_visualization_json["rpc"])
-    def create_visualization(self):
+    def create_visualization(self, params):
+        validate_schemas(params, create_visualization_json)
+
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
@@ -52,7 +55,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         return self.reset_camera()
 
     @exportRpc(reset_camera_json["rpc"])
-    def reset_camera(self):
+    def reset_camera(self, params):
+        validate_schemas(params, reset_camera_json)
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
         renderWindow.Render()
@@ -60,6 +64,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(create_object_pipeline_json["rpc"])
     def create_object_pipeline(self, params):
+        validate_schemas(params, create_object_pipeline_json)
         try:
             id = params["id"]
             file_name = params["file_name"]
@@ -98,6 +103,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(delete_object_pipeline_json["rpc"])
     def delete_object_pipeline(self, params):
+        validate_schemas(params, delete_object_pipeline_json)
+        print(f"{params=}", flush=True)
         id = params["id"]
         object = self.get_object(id)
         actor = object["actor"]
@@ -110,6 +117,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(toggle_object_visibility_json["rpc"])
     def toggle_object_visibility(self, params):
+        validate_schemas(params, toggle_object_visibility_json)
+        print(f"{params=}", flush=True)
         id = params["id"]
         is_visible = params["is_visible"]
         object = self.get_object(id)
@@ -119,6 +128,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(apply_textures_json["rpc"])
     def apply_textures(self, params):
+        validate_schemas(params, apply_textures_json)
+        print(f"{params=}", flush=True)
         id = params["id"]
         textures = params["textures"]
         textures_array = []
@@ -171,6 +182,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(update_data_json["rpc"])
     def update_data(self, params):
+        validate_schemas(params, update_data_json)
+        print(f"{params=}", flush=True)
         id = params["id"]
 
         data = self.get_object(id)
@@ -191,6 +204,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(get_point_position_json["rpc"])
     def get_point_position(self, params):
+        validate_schemas(params, get_point_position_json)
         x = float(params["x"])
         y = float(params["y"])
         xyz = [x, y, 0.0]
@@ -201,11 +215,15 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(reset_json["rpc"])
     def reset(self):
+        print("COUCOU 2")
+
+        # validate_schemas(params, reset_json)
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
 
     @exportRpc(toggle_edge_visibility_json["rpc"])
     def setEdgeVisibility(self, params):
+        validate_schemas(params, toggle_edge_visibility_json)
         print(f"{params=}", flush=True)
         id = params["id"]
         visibility = bool(params["visibility"])
@@ -215,6 +233,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(toggle_point_visibility_json["rpc"])
     def setPointVisibility(self, params):
+        validate_schemas(params, toggle_point_visibility_json)
         id = params["id"]
         visibility = bool(params["visibility"])
         actor = self.get_object(id)["actor"]
@@ -223,6 +242,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(point_size_json["rpc"])
     def setPointSize(self, params):
+        validate_schemas(params, point_size_json)
         id = params["id"]
         size = float(params["size"])
         actor = self.get_object(id)["actor"]
@@ -231,6 +251,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(set_color_json["rpc"])
     def setColor(self, params):
+        validate_schemas(params, set_color_json)
         id = params["id"]
         red = params["red"]
         green = params["green"]
@@ -242,6 +263,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(set_vertex_attribute_json["rpc"])
     def setVertexAttribute(self, params):
+        validate_schemas(params, set_vertex_attribute_json)
         print(f"{params=}", flush=True)
         id = params["id"]
         name = params["name"]

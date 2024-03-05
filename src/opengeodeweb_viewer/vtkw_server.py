@@ -1,30 +1,3 @@
-<<<<<<< HEAD:vtkw_server.py
-=======
-r"""
-    This module is a ParaViewWeb server application.
-    The following command line illustrates how to use it::
-
-        $ vtkpython .../server.py
-
-    Any ParaViewWeb executable script comes with a set of standard arguments that can be overrides if need be::
-
-        --port 8080
-            Port number on which the HTTP server will listen.
-
-        --content /path-to-web-content/
-            Directory that you want to serve as static web content.
-            By default, this variable is empty which means that we rely on another
-            server to deliver the static content and the current process only
-            focuses on the WebSocket connectivity of clients.
-
-        --authKey vtkweb-secret
-            Secret key that should be provided by the client to allow it to make
-            any WebSocket communication. The client will assume if none is given
-            that the server expects "vtkweb-secret" as secret key.
-
-"""
-
->>>>>>> ea4cf8b996857bec06815067f98b044360db3d55:src/opengeodeweb_viewer/vtkw-server.py
 import sys
 import argparse
 import config
