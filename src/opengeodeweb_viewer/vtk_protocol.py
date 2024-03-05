@@ -215,9 +215,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     @exportRpc(reset_json["rpc"])
     def reset(self):
-        print("COUCOU 2")
-
-        # validate_schemas(params, reset_json)
+        validate_schemas(params, reset_json)
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
 
