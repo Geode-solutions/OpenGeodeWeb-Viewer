@@ -49,9 +49,9 @@ def test_apply_textures(server):
 
     server.call(
         "create_object_pipeline",
-        [{"id": "123456789", "file_name": "emperor_penguin.vtp"}],
+        [{"id": "123456789", "file_name": "hat.vtp"}],
     )
-    abs_path = os.path.join(images_dir_path, "apply_textures_1.jpeg")
+    abs_path = os.path.join(images_dir_path, "create_object_pipeline.jpeg")
     assert server.compare_image(3, abs_path) == True
 
     server.call(
@@ -61,14 +61,14 @@ def test_apply_textures(server):
                 "id": "123456789",
                 "textures": [
                     {
-                        "texture_name": "PenguinMat",
-                        "texture_file_name": "penguin_colors.vti",
+                        "texture_name": "lambert2SG",
+                        "texture_file_name": "TopHat.vti",
                     }
                 ],
             }
         ],
     )
-    abs_path = os.path.join(images_dir_path, "apply_textures_2.jpeg")
+    abs_path = os.path.join(images_dir_path, "apply_textures.jpeg")
     assert server.compare_image(3, abs_path) == True
 
 
@@ -78,7 +78,7 @@ def test_get_point_position(server):
         "create_object_pipeline",
         [{"id": "123456789", "file_name": "hat.vtp"}],
     )
-    abs_path = os.path.join(images_dir_path, "get_point_position.jpeg")
+    abs_path = os.path.join(images_dir_path, "create_object_pipeline.jpeg")
     assert server.compare_image(3, abs_path) == True
 
     server.call("get_point_position", [{"x": 0, "y": 0}])
@@ -92,3 +92,31 @@ def test_get_point_position(server):
     assert type(x) is float
     assert type(y) is float
     assert type(z) is float
+
+
+def test_toggle_edge_visibility(server):
+
+    server.call(
+        "create_object_pipeline",
+        [{"id": "123456789", "file_name": "hat.vtp"}],
+    )
+    abs_path = os.path.join(images_dir_path, "create_object_pipeline.jpeg")
+    assert server.compare_image(3, abs_path) == True
+
+    server.call("toggle_edge_visibility", [{"id": "123456789", "visibility": True}])
+    abs_path = os.path.join(images_dir_path, "toggle_edge_visibility.jpeg")
+    assert server.compare_image(3, abs_path) == True
+
+
+def test_set_color(server):
+
+    server.call(
+        "create_object_pipeline",
+        [{"id": "123456789", "file_name": "hat.vtp"}],
+    )
+    abs_path = os.path.join(images_dir_path, "create_object_pipeline.jpeg")
+    assert server.compare_image(3, abs_path) == True
+
+    server.call("set_color", [{"id": "123456789", "red": 50, "green": 2, "blue": 250}])
+    abs_path = os.path.join(images_dir_path, "set_color.jpeg")
+    assert server.compare_image(3, abs_path) == True
