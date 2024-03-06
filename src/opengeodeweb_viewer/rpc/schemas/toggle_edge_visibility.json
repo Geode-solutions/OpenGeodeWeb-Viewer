@@ -9,9 +9,6 @@
       "type": "boolean"
     }
   },
-  "required": [
-    "id",
-    "visibility"
-  ],
+  "required": ["id", "visibility"],
   "additionalProperties": false
 }

@@ -3,15 +3,12 @@
   "type": "object",
   "properties": {
     "x": {
-      "type": "int16"
+      "type": "integer"
     },
     "y": {
-      "type": "int16"
+      "type": "integer"
     }
   },
-  "required": [
-    "x",
-    "y"
-  ],
+  "required": ["x", "y"],
   "additionalProperties": false
 }

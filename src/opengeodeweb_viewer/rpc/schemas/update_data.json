@@ -6,8 +6,6 @@
       "type": "string"
     }
   },
-  "required": [
-    "id"
-  ],
+  "required": ["id"],
   "additionalProperties": false
 }
