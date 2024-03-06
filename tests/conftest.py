@@ -26,7 +26,7 @@ class ServerMonitor:
             print(f"{i=}", flush=True)
             reponse = self.ws.recv()
 
-    def call(self, rpc, params=[]):
+    def call(self, rpc, params=[{}]):
         print(f"{rpc=} {params=}", flush=True)
         response = self.ws.send(
             json.dumps(

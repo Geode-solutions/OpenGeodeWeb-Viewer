@@ -44,14 +44,14 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
     @exportRpc(create_visualization_json["rpc"])
-    def create_visualization(self):
+    def create_visualization(self, params):
         validate_schemas(params, create_visualization_json)
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
         renderer.ResetCamera()
         renderWindow.Render()
-        return self.reset_camera()
+        self.render()
 
     @exportRpc(reset_camera_json["rpc"])
     def reset_camera(self, params):
@@ -60,7 +60,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
         renderWindow.Render()
-        return -1
+        self.render()
 
     @exportRpc(create_object_pipeline_json["rpc"])
     def create_object_pipeline(self, params):
