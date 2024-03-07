@@ -2,6 +2,15 @@
 
 
 
+## v0.1.0 (2024-03-07)
+
+### Unknown
+
+* Merge pull request #14 from Geode-solutions/next
+
+Next ([`6492fa9`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6492fa998cd2ff5d2f5bd48006e796c2a5da2bf0))
+
+
 ## v0.1.0-rc.2 (2024-03-07)
 
 ### Fix
