@@ -15,10 +15,6 @@ const findDirectoryPath = (targetDirectoryName) => {
       path: path.join(pathToCheck, folder.name),
     }));
   const rpcDirectory = path.join(folders[0].path, "rpc");
-
-  console.log("rpcDirectory", rpcDirectory);
-  console.log("folders[0].name", folders[0].name);
-
   return [rpcDirectory, folders[0].name];
 };
 
@@ -36,21 +32,13 @@ function return_json_schema(directoryPath, folder_path, project_name) {
     }));
   var folders_schemas = {};
   folders.forEach((folder) => {
-    console.log("folder", folder);
     if (folder.name == "schemas") {
-      console.log("schemas");
-      console.log("folder.path", folder.path);
-      console.log("test", path.join(folder.path, "/*.json"));
-      var jsonFiles = glob.sync(path.join(folder.path, "/*.json"));
-      console.log("jsonFiles", jsonFiles);
+      const jsonFiles = glob.sync(path.join(folder.path, "**/*.json"));
       var schemas = {};
-
       jsonFiles.forEach((filePath) => {
-        console.log("filePath", filePath);
         try {
           const fileContent = fs.readFileSync(filePath, "utf8");
           var jsonData = JSON.parse(fileContent);
-          console.log("jsonData", jsonData);
           var filename = filePath
             .replace(/^.*[\\/]/, "")
             .replace(/\.[^/.]+$/, "");
