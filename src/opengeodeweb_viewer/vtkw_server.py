@@ -95,6 +95,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.port = os.environ.get("PORT")
     args.host = os.environ.get("HOST")
+    print(f"{args=}", flush=True)
 
     _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)
