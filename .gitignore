@@ -4,4 +4,8 @@ env/
 venv/
 .vscode/
 __pycache__/
+.env
 data/
+/node_modules
+latest_logs
+schemas.json

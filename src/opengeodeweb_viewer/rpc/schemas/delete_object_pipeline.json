@@ -1,0 +1,11 @@
+{
+  "rpc": "delete_object_pipeline",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    }
+  },
+  "required": ["id"],
+  "additionalProperties": false
+}

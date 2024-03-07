@@ -1,45 +1,14 @@
-r"""
-    This module is a ParaViewWeb server application.
-    The following command line illustrates how to use it::
-
-        $ vtkpython .../server.py
-
-    Any ParaViewWeb executable script comes with a set of standard arguments that can be overrides if need be::
-
-        --port 8080
-            Port number on which the HTTP server will listen.
-
-        --content /path-to-web-content/
-            Directory that you want to serve as static web content.
-            By default, this variable is empty which means that we rely on another
-            server to deliver the static content and the current process only
-            focuses on the WebSocket connectivity of clients.
-
-        --authKey vtkweb-secret
-            Secret key that should be provided by the client to allow it to make
-            any WebSocket communication. The client will assume if none is given
-            that the server expects "vtkweb-secret" as secret key.
-
-"""
 import sys
 import argparse
-
-# Try handle virtual env if provided
-if "--virtual-env" in sys.argv:
-    virtualEnvPath = sys.argv[sys.argv.index("--virtual-env") + 1]
-    virtualEnv = virtualEnvPath + "/bin/activate_this.py"
-    with open(virtualEnv) as venv:
-        exec(venv.read(), dict(__file__=virtualEnv))
-
-# from __future__ import absolute_import, division, print_function
+import config
+import os
 
 from wslink import server
-
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
-
 import vtk
 from vtk_protocol import VtkView
+import dotenv
 
 # =============================================================================
 # Server class
@@ -109,16 +78,24 @@ class _Server(vtk_wslink.ServerProtocol):
 
 
 if __name__ == "__main__":
-    # Create argument parser
-    parser = argparse.ArgumentParser(description="Cone example")
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    dot_env_path = os.path.join(basedir, "../../.env")
+    if os.path.isfile(dot_env_path):
+        dotenv.load_dotenv(dot_env_path)
+    PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
+    if PYTHON_ENV == "prod":
+        config.prod_config()
+    elif PYTHON_ENV == "dev":
+        config.dev_config()
 
-    # Add arguments
+    parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
+
     _Server.add_arguments(parser)
     args = parser.parse_args()
-    print("args :", args)
-    _Server.configure(args)
+    args.port = os.environ.get("PORT")
+    args.host = os.environ.get("HOST")
+    print(f"{args=}", flush=True)
 
-    print("start")
-    # Start server
+    _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)
