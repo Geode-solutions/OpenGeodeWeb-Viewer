@@ -214,7 +214,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
     @exportRpc(reset_json["rpc"])
-    def reset(self):
+    def reset(self, params):
         validate_schemas(params, reset_json)
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()

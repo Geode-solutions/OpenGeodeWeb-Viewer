@@ -78,9 +78,10 @@ class _Server(vtk_wslink.ServerProtocol):
 
 
 if __name__ == "__main__":
-    if os.path.isfile("./.env"):
-        basedir = os.path.abspath(os.path.dirname(__file__))
-        dotenv.load_dotenv(os.path.join(basedir, ".env"))
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    dot_env_path = os.path.join(basedir, "../../.env")
+    if os.path.isfile(dot_env_path):
+        dotenv.load_dotenv(dot_env_path)
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
     if PYTHON_ENV == "prod":
         config.prod_config()

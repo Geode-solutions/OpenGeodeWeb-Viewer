@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
 const process = require("process");
-const { log } = require("console");
 
 const findDirectoryPath = (targetDirectoryName) => {
   const pathToCheck = path.join(process.cwd(), targetDirectoryName);
