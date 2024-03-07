@@ -78,10 +78,16 @@ class _Server(vtk_wslink.ServerProtocol):
 
 
 if __name__ == "__main__":
-    if os.path.isfile("./.env"):
-        basedir = os.path.abspath(os.path.dirname(__file__))
-        dotenv.load_dotenv(os.path.join(basedir, ".env"))
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    print(f"{basedir=}", flush=True)
+    if os.path.isfile(os.path.join(basedir, "../../.env")):
+        print("Loading .env file", flush=True)
+        print(f"{basedir=}", flush=True)
+        dotenv.load_dotenv(os.path.join(basedir, "../../.env"))
+    else:
+        print("No .env file found", flush=True)
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
+    print(f"{PYTHON_ENV=}", flush=True)
     if PYTHON_ENV == "prod":
         config.prod_config()
     elif PYTHON_ENV == "dev":
@@ -94,7 +100,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.port = os.environ.get("PORT")
     args.host = os.environ.get("HOST")
-    print(f"{args=}", flush=True)
+    DATA_FOLDER_PATH = os.environ.get("DATA_FOLDER_PATH")
+    print(f"{DATA_FOLDER_PATH=}", flush=True)
 
     _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)
