@@ -19,7 +19,6 @@ r"""
             Secret key that should be provided by the client to allow it to make
             any WebSocket communication. The client will assume if none is given
             that the server expects "vtkweb-secret" as secret key.
-
 """
 
 import sys
