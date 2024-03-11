@@ -30,7 +30,7 @@ dependencies = {file = ["requirements.txt"]}
 where = ["src"]
 
 [tool.setuptools.package-data]
-"opengeodeweb_Viewer.rpc.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.schemas" = ["*.json"]
 
 [tool.semantic_release]
 version_toml = [

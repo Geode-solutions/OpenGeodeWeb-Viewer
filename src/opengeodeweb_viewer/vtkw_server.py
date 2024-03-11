@@ -77,7 +77,7 @@ class _Server(vtk_wslink.ServerProtocol):
 # =============================================================================
 
 
-if __name__ == "__main__":
+def run_server():
     basedir = os.path.abspath(os.path.dirname(__file__))
     dot_env_path = os.path.join(basedir, "../../.env")
     if os.path.isfile(dot_env_path):
@@ -99,3 +99,7 @@ if __name__ == "__main__":
 
     _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)
+
+
+if __name__ == "__main__":
+    run_server()
