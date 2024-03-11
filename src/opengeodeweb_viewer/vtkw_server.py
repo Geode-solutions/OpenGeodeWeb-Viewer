@@ -1,6 +1,6 @@
 import sys
 import argparse
-import config
+from opengeodeweb_viewer import config
 import os
 
 from wslink import server
