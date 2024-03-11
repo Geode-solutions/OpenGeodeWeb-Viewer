@@ -63,11 +63,13 @@ class ServerMonitor:
         for i in range(nb_messages):
             print(f"{i=}", flush=True)
             image = self.ws.recv()
-            # if isinstance(image, bytes):
-            #     file_path = os.path.join(self.test_output_dir, "test.jpeg")
-            #     with open(test_filename, "wb") as f:
-            #         f.write(image)
-            #         f.close()
+            if isinstance(image, bytes):
+                test_file_path = os.path.abspath(
+                    os.path.join(self.test_output_dir, "test.jpeg")
+                )
+                with open(test_file_path, "wb") as f:
+                    f.write(image)
+                    f.close()
         if isinstance(image, bytes):
             print(f"{image=}", flush=True)
             response = self.ws.recv()
