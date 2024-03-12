@@ -1,14 +1,15 @@
 import sys
 import argparse
-from opengeodeweb_viewer import config
 import os
 
 from wslink import server
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
 import vtk
-from vtk_protocol import VtkView
+from .vtk_protocol import VtkView
 import dotenv
+from .config import *
+
 
 # =============================================================================
 # Server class
@@ -84,9 +85,9 @@ def run_server():
         dotenv.load_dotenv(dot_env_path)
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
     if PYTHON_ENV == "prod":
-        config.prod_config()
+        prod_config()
     elif PYTHON_ENV == "dev":
-        config.dev_config()
+        dev_config()
 
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
