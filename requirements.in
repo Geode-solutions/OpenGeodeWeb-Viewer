@@ -1,5 +1,5 @@
 jsonschema
-numpy
+python-dotenv
 vtk
 wslink
 websocket-client
