@@ -111,7 +111,6 @@ class FixtureHelper:
         class Starter(ProcessStarter):
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
-            timeout = 10
 
             # command to start process
             args = [
