@@ -24,7 +24,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
 
 [project.scripts]
-opengeodeweb_viewer-start = "opengeodeweb_viewer.vtkw_server:run_server"
+opengeodeweb-viewer = "opengeodeweb_viewer.vtkw_server:run_server"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
