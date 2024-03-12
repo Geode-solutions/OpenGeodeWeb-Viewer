@@ -15,7 +15,7 @@ jobs:
         python-version: "3.9"
     - name: Test
       run: |
-        pip install pytest xprocess
+        pip install pytest pytest-xprocess
         pip install -r requirements.txt
         pip install .
         pytest
