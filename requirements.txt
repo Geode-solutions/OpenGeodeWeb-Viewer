@@ -66,6 +66,8 @@ six==1.16.0
     # via python-dateutil
 vtk==9.3.0
     # via -r requirements.in
+websocket-client==1.7.0
+    # via -r requirements.in
 wslink==1.12.4
     # via -r requirements.in
 yarl==1.9.4

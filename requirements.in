@@ -2,3 +2,4 @@ jsonschema
 numpy
 vtk
 wslink
+websocket-client
