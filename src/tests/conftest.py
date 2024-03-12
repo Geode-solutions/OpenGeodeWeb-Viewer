@@ -115,7 +115,7 @@ class FixtureHelper:
 
             # command to start process
             args = [
-                "opengeodeweb_viewer-start",
+                "opengeodeweb_viewer",
             ]
 
         return "vtkw_server", Starter, ServerMonitor
