@@ -7,6 +7,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: ghcr.io/geode-solutions/vtk:3.9-cpu
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -19,6 +20,7 @@ jobs:
         pip install -r requirements.txt
         pip install .
         pytest
+
   build:
     runs-on: ubuntu-latest
     needs: test
