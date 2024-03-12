@@ -23,6 +23,9 @@ classifiers = [
 "Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"
 "Bug Tracker" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
 
+[project.scripts]
+opengeodeweb_viewer = "opengeodeweb_viewer.vtkw_server:run_server"
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
@@ -30,7 +33,9 @@ dependencies = {file = ["requirements.txt"]}
 where = ["src"]
 
 [tool.setuptools.package-data]
-"opengeodeweb_Viewer.rpc.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.schemas" = ["*.json"]
+"opengeodeweb_viewer.tests.images" = ["*.*"]
+"opengeodeweb_viewer.tests.data" = ["*.*"]
 
 [tool.semantic_release]
 version_toml = [

@@ -3,7 +3,7 @@ import os
 from vtk.web import protocols as vtk_protocols
 from wslink import register as exportRpc
 import vtk
-from function import validate_schemas
+from .function import validate_schemas
 
 schemas = os.path.join(os.path.dirname(__file__), "rpc/schemas")
 

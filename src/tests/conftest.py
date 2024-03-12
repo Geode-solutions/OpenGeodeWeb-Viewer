@@ -5,13 +5,19 @@ import json
 from xprocess import ProcessStarter
 import vtk
 import os
-from src.opengeodeweb_viewer import config
+from opengeodeweb_viewer import config
 
 
 class ServerMonitor:
     def __init__(self, log):
         self.log = log
         self.ws = create_connection("ws://localhost:1234/ws")
+        self.images_dir_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "data", "images")
+        )
+        self.test_output_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "tests_output")
+        )
         self.ws.send(
             json.dumps(
                 {
@@ -53,13 +59,15 @@ class ServerMonitor:
         response = eval(self.ws.recv())
         return response
 
-    def compare_image(self, nb_messages, path_image):
+    def compare_image(self, nb_messages, filename):
         for i in range(nb_messages):
             print(f"{i=}", flush=True)
             image = self.ws.recv()
             if isinstance(image, bytes):
-                test_filename = os.path.abspath(f"tests/tests_output/test.jpeg")
-                with open(test_filename, "wb") as f:
+                test_file_path = os.path.abspath(
+                    os.path.join(self.test_output_dir, "test.jpeg")
+                )
+                with open(test_file_path, "wb") as f:
                     f.write(image)
                     f.close()
         if isinstance(image, bytes):
@@ -67,14 +75,17 @@ class ServerMonitor:
             response = self.ws.recv()
             print(f"{response=}", flush=True)
             format = json.loads(response)["result"]["format"]
-            test_filename = os.path.abspath(f"tests/tests_output/test.{format}")
-            with open(test_filename, "wb") as f:
+            test_file_path = os.path.abspath(
+                os.path.join(self.test_output_dir, f"test.{format}")
+            )
+            with open(test_file_path, "wb") as f:
                 f.write(image)
                 f.close()
 
             test_reader = vtk.vtkJPEGReader()
-            test_reader.SetFileName(test_filename)
+            test_reader.SetFileName(test_file_path)
 
+            path_image = os.path.join(self.images_dir_path, filename)
             answer_reader = vtk.vtkJPEGReader()
             answer_reader.SetFileName(path_image)
 
@@ -94,20 +105,20 @@ class FixtureHelper:
 
     def get_xprocess_args(self):
 
-        server_path = "src/opengeodeweb_viewer/vtkw_server.py"
+        server_path = "opengeodeweb_viewer/vtkw_server.py"
         print(f"{server_path=}", flush=True)
 
         class Starter(ProcessStarter):
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
+            timeout = 10
 
             # command to start process
             args = [
-                "python3",
-                str(self.root_path / server_path),
+                "opengeodeweb_viewer",
             ]
 
-        return Path(server_path).name, Starter, ServerMonitor
+        return "vtkw_server", Starter, ServerMonitor
 
 
 ROOT_PATH = Path(__file__).parent.parent.absolute()
