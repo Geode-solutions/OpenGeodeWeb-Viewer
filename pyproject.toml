@@ -34,8 +34,8 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "opengeodeweb_viewer.rpc.schemas" = ["*.json"]
-"opengeodeweb_viewer.tests.images" = ["*.*"]
-"opengeodeweb_viewer.tests.data" = ["*.*"]
+"tests.images" = ["*.*"]
+"tests.data" = ["*.*"]
 
 [tool.semantic_release]
 version_toml = [
