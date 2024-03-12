@@ -31,6 +31,7 @@ class ServerMonitor:
         for i in range(5):
             print(f"{i=}", flush=True)
             reponse = self.ws.recv()
+            print(f"{reponse=}", flush=True)
 
     def call(self, rpc, params=[{}]):
         print(f"{rpc=} {params=}", flush=True)
@@ -60,8 +61,8 @@ class ServerMonitor:
         return response
 
     def compare_image(self, nb_messages, filename):
-        for i in range(nb_messages):
-            print(f"{i=}", flush=True)
+        for message in range(nb_messages):
+            print(f"{message=}", flush=True)
             image = self.ws.recv()
             if isinstance(image, bytes):
                 test_file_path = os.path.abspath(
