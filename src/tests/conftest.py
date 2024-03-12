@@ -115,11 +115,10 @@ class FixtureHelper:
 
             # command to start process
             args = [
-                "python3",
-                str(self.root_path / server_path),
+                "opengeodeweb_viewer-start",
             ]
 
-        return Path(server_path).name, Starter, ServerMonitor
+        return "vtkw_server", Starter, ServerMonitor
 
 
 ROOT_PATH = Path(__file__).parent.parent.absolute()

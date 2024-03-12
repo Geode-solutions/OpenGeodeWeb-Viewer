@@ -8,3 +8,5 @@ __pycache__/
 /node_modules
 latest_logs
 schemas.json
+build
+*.egg-info

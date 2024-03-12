@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [master, next, json_import_viewer]
+    branches: [master, next]
 
 jobs:
   build:
