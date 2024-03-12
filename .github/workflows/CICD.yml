@@ -10,15 +10,10 @@ jobs:
     container: ghcr.io/geode-solutions/vtk:3.9-cpu
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.9"
     - name: Test
       run: |
         pip install pytest pytest-xprocess
         pip install -r requirements.txt
-        pip install .
         pytest
 
   build:
