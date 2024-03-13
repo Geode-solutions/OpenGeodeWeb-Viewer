@@ -6,14 +6,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: ghcr.io/geode-solutions/vtk:3.9-cpu
     steps:
-    - uses: actions/checkout@v3
-    - name: Test
-      run: |
-        pip install pytest pytest-xprocess
-        pip install -e .
-        pytest
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Test
+        run: |
+          pip install pytest pytest-xprocess
+          pip install https://www.vtk.org/files/release/9.3/vtk_osmesa-9.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+          pip install -e .
+          pytest
 
   build:
     runs-on: ubuntu-latest
