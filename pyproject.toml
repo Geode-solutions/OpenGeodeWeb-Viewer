@@ -19,6 +19,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+gpu = ["vtk == 9.*"]
+
 [project.urls]
 "Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"
 "Bug Tracker" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
@@ -34,8 +37,6 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "opengeodeweb_viewer.rpc.schemas" = ["*.json"]
-"tests.images" = ["*.*"]
-"tests.data" = ["*.*"]
 
 [tool.semantic_release]
 version_toml = [
