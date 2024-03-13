@@ -2,6 +2,21 @@
 
 
 
+## v0.1.1-rc.2 (2024-03-13)
+
+### Fix
+
+* fix(CPU): handle vtk cpu ([`9fc05dc`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/9fc05dc37c37a7692850e57d5a7a2feea13aef76))
+
+### Unknown
+
+* Merge pull request #18 from Geode-solutions/vtk-cpu
+
+fix(CPU): handle vtk cpu ([`4cc9f76`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/4cc9f7653b571065538723b4502603ef0d8f88ac))
+
+* test ([`6ba1ce5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6ba1ce5c73f1f59a980aee2e8bbb938dc2036838))
+
+
 ## v0.1.1-rc.1 (2024-03-13)
 
 ### Fix
