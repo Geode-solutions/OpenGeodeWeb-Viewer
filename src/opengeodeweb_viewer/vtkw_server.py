@@ -1,14 +1,15 @@
 import sys
 import argparse
-import config
 import os
 
 from wslink import server
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
 import vtk
-from vtk_protocol import VtkView
+from .vtk_protocol import VtkView
 import dotenv
+from .config import *
+
 
 # =============================================================================
 # Server class
@@ -77,16 +78,16 @@ class _Server(vtk_wslink.ServerProtocol):
 # =============================================================================
 
 
-if __name__ == "__main__":
+def run_server():
     basedir = os.path.abspath(os.path.dirname(__file__))
     dot_env_path = os.path.join(basedir, "../../.env")
     if os.path.isfile(dot_env_path):
         dotenv.load_dotenv(dot_env_path)
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
     if PYTHON_ENV == "prod":
-        config.prod_config()
+        prod_config()
     elif PYTHON_ENV == "dev":
-        config.dev_config()
+        dev_config()
 
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
@@ -99,3 +100,7 @@ if __name__ == "__main__":
 
     _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)
+
+
+if __name__ == "__main__":
+    run_server()

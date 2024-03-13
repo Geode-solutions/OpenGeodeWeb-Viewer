@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OpenGeodeWeb-Viewer"
-version = "0.1.0"
+version = "0.1.1-rc.2"
 dynamic = ["dependencies"]
 authors = [
   { name="Geode-solutions", email="team-web@geode-solutions.com" },
@@ -19,9 +19,15 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+gpu = ["vtk == 9.*"]
+
 [project.urls]
 "Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"
 "Bug Tracker" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
+
+[project.scripts]
+opengeodeweb_viewer = "opengeodeweb_viewer.vtkw_server:run_server"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
@@ -30,7 +36,7 @@ dependencies = {file = ["requirements.txt"]}
 where = ["src"]
 
 [tool.setuptools.package-data]
-"opengeodeweb_Viewer.rpc.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.schemas" = ["*.json"]
 
 [tool.semantic_release]
 version_toml = [

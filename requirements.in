@@ -1,4 +1,4 @@
 jsonschema
-numpy
-vtk
+python-dotenv
 wslink
+websocket-client
