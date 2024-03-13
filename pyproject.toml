@@ -21,6 +21,7 @@ classifiers = [
 
 [project.optional-dependencies]
 gpu = ["vtk == 9.*"]
+cpu = ["vtk @ https://www.vtk.org/files/release/9.3/vtk_osmesa-9.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"]
 
 [project.urls]
 "Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"
