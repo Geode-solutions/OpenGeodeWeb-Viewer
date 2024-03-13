@@ -12,14 +12,7 @@ jobs:
     - name: Test
       run: |
         pip install pytest pytest-xprocess
-        pip install -r requirements.txt
-        pip install .
-        echo "toto"
-        ls  /usr/local/lib/python3.9/site-packages/opengeodeweb_viewer
-        echo "tutu"
-        ls  /usr/local/lib/python3.9/site-packages/opengeodeweb_viewer/tests
-        echo "titi"
-        ls  /usr/local/lib/python3.9/site-packages/opengeodeweb_viewer/tests/data
+        pip install -e .
         pytest
 
   build:

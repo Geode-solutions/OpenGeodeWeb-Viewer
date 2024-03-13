@@ -19,6 +19,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+vtk = ["vtk=9.3.0"]
+
 [project.urls]
 "Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"
 "Bug Tracker" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
