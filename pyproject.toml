@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-vtk = ["vtk=9.3.0"]
+vtk = ["vtk == 9.*"]
 
 [project.urls]
 "Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"
