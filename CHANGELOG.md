@@ -2,6 +2,83 @@
 
 
 
+## v0.1.1-rc.1 (2024-03-13)
+
+### Fix
+
+* fix(tests): tests in src and fix paths ([`2688759`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/2688759121f1176bca6b1cec7aa9e054b8f4fd26))
+
+### Unknown
+
+* Merge pull request #17 from Geode-solutions/fix/github_actions
+
+Fix/GitHub actions ([`24b50ee`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/24b50ee0a684590a5cfb6195430c908eec1542ee))
+
+* test remove tests data in package ([`fbc4a97`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/fbc4a973d5ce0e93b7fad0491a908883a3c52896))
+
+* gpu mode ([`27c12ef`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/27c12ef4369888b403a928798bbcd4266bd4bed8))
+
+* test test_config path ([`b2ba02a`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b2ba02a4426fbdc2a6f6600177907d6c3e08446f))
+
+* test optional-dependencies ([`ba98f64`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/ba98f641b2d537b940d0f5421bdb16d23a1ed509))
+
+* test without vtk ([`21758c6`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/21758c636719aa72b3da4d9dfded1f5c3c59322a))
+
+* test on all branches build on next/master ([`37e0234`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/37e0234520a3d07a3117860c3a269b6abb50e691))
+
+* test ([`6b0128c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6b0128cd41ea3af740447524317cc72c318636d3))
+
+* test ([`b12f219`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b12f2193a1757ac30821823f27c4cd3583765cd6))
+
+* no pip install . ([`de9b14c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/de9b14ccc5edd5539c00f8d0339a5fdc3a6d9a2b))
+
+* container ([`58ddf2f`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/58ddf2f24b4f5de35f811b786a1b9bdf7943a32a))
+
+* test print ([`8a2f131`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/8a2f131a01371eb6e5d1b10dc8dbd6607d9ef221))
+
+* test remove timeout ([`f9680d2`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/f9680d2ff167b912dae7ea3be15d30433b8406a6))
+
+* install python-dotenv ([`2c1d428`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/2c1d428487f4fc5b5ab04ea23fdd1a56644eb104))
+
+* install pytest-xprocess ([`8769f65`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/8769f6588be2604fd8bbe372ecd39249088127bf))
+
+* install xprocess ([`1bd3aaa`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1bd3aaa887cf3683028229f98a1b66f8df88de28))
+
+* add websocket-client ([`2de61bb`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/2de61bbe6a349ea83807774f71d14267074cdd9d))
+
+* test pip install . ([`b86f686`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b86f68652b87928066f9167978b992f9c6ff52ae))
+
+* Merge pull request #16 from Geode-solutions/fix/tests
+
+Fix/tests ([`5f20bf7`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/5f20bf7d64746cc4bcbfc7f71eae1f492cd55c63))
+
+* pyproject.toml ([`617833e`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/617833e071e264a08450e582498c7d7827919eb0))
+
+* remove CI ([`e629346`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/e629346646f3556196cd0110f96b87cda6d4556a))
+
+* Merge branch &#39;fix/tests&#39; of https://github.com/Geode-solutions/OpenGeodeWeb-Viewer into fix/tests ([`7fabf4a`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/7fabf4a1632eb9bd6c37bdd93915608ece00e156))
+
+* change start command ([`44b7c51`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/44b7c51c3dd7f98b53001871b69033246aac1fdf))
+
+* Update pyproject.toml
+
+Co-authored-by: Arnaud Botella &lt;arnaud.botella@geode-solutions.com&gt; ([`19fb81b`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/19fb81b78c4c731788f8aeae06d2d170f1d14f45))
+
+* CICD pipeline ([`32dddc6`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/32dddc67d0bb07fa80bc763c37ffffdb8a55ae3e))
+
+* script ([`fb81a0c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/fb81a0c6cefc9b2db8953b238e67501e7942d2d8))
+
+* relative imports ([`c3a4f1e`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/c3a4f1e97791ee688069e15f5d9a1f0223a19c45))
+
+* add CI ([`c1cb848`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/c1cb848f8ad6b4adb3db85d8fc26d5c09ebf8e42))
+
+* add datas ([`0d512f8`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/0d512f8c835367f9ef13f1dab58bf11ceb3929fd))
+
+* uncomment tests ([`bb7f263`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/bb7f2639285fdc996dd5b72b2e60238b26caebe2))
+
+*  ([`25e758c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/25e758c1a340ef92aed8ae60300548fdc507d9da))
+
+
 ## v0.1.0 (2024-03-07)
 
 ### Unknown
