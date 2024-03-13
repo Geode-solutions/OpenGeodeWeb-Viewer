@@ -28,5 +28,5 @@ def test_config():
     default_config()
     print(f"{os.path.dirname(__file__)=}", flush=True)
     os.environ["DATA_FOLDER_PATH"] = os.path.join(
-        os.path.dirname(__file__), "tests", "data"
+        os.path.dirname(__file__), "..", "tests", "data"
     )
