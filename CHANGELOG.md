@@ -2,6 +2,21 @@
 
 
 
+## v0.1.2-rc.1 (2024-05-03)
+
+### Fix
+
+* fix(actions): admin token for actions ([`35e2a56`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/35e2a56bed848908400dde04e466f93cc6d6a56f))
+
+### Unknown
+
+* Merge pull request #20 from Geode-solutions/fix/admin_token
+
+fix(actions): admin token for actions ([`2bc881c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/2bc881ccee9636469a3edbdfcc4934099be2c08b))
+
+*  ([`b7a6367`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b7a63678c77bba82cf36fc13cdea1237e1c33a6d))
+
+
 ## v0.1.1 (2024-03-13)
 
 ### Unknown
