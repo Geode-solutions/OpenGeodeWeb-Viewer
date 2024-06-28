@@ -1,6 +1,18 @@
 # CHANGELOG
 
+## v0.2.0-rc.1 (2024-06-28)
 
+### Feature
+
+* feat(vtkw_server): dynamic port and data_folder_path ([`d1e71a6`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/d1e71a6d480e9156cc4ff957baa38365dcf11404))
+
+### Unknown
+
+* Merge pull request #22 from Geode-solutions/feat/dynamic_run_arguments
+
+feat(vtkw_server): dynamic port and data_folder_path ([`6f8bf75`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6f8bf756d4ab319e72ddf6660ad544ab70e32d58))
+
+*  ([`9d49a8f`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/9d49a8f036d4bab72a56710002e72752cc3fdefd))
 
 ## v0.1.2 (2024-05-03)
 
@@ -9,7 +21,6 @@
 * Merge pull request #21 from Geode-solutions/next
 
 Next ([`fe20c68`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/fe20c689cff02a723b6d58e3ccd17ab1cd770657))
-
 
 ## v0.1.2-rc.1 (2024-05-03)
 
@@ -25,7 +36,6 @@ fix(actions): admin token for actions ([`2bc881c`](https://github.com/Geode-solu
 
 *  ([`b7a6367`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b7a63678c77bba82cf36fc13cdea1237e1c33a6d))
 
-
 ## v0.1.1 (2024-03-13)
 
 ### Unknown
@@ -33,7 +43,6 @@ fix(actions): admin token for actions ([`2bc881c`](https://github.com/Geode-solu
 * Merge pull request #19 from Geode-solutions/next
 
 Next ([`e749534`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/e7495349145826e1ecc874f387a03c0963369e3f))
-
 
 ## v0.1.1-rc.2 (2024-03-13)
 
@@ -48,7 +57,6 @@ Next ([`e749534`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/
 fix(CPU): handle vtk cpu ([`4cc9f76`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/4cc9f7653b571065538723b4502603ef0d8f88ac))
 
 * test ([`6ba1ce5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6ba1ce5c73f1f59a980aee2e8bbb938dc2036838))
-
 
 ## v0.1.1-rc.1 (2024-03-13)
 
@@ -126,7 +134,6 @@ Co-authored-by: Arnaud Botella &lt;arnaud.botella@geode-solutions.com&gt; ([`19f
 
 *  ([`25e758c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/25e758c1a340ef92aed8ae60300548fdc507d9da))
 
-
 ## v0.1.0 (2024-03-07)
 
 ### Unknown
@@ -134,7 +141,6 @@ Co-authored-by: Arnaud Botella &lt;arnaud.botella@geode-solutions.com&gt; ([`19f
 * Merge pull request #14 from Geode-solutions/next
 
 Next ([`6492fa9`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6492fa998cd2ff5d2f5bd48006e796c2a5da2bf0))
-
 
 ## v0.1.0-rc.2 (2024-03-07)
 
@@ -173,7 +179,6 @@ Feat/unit tests ([`48e800f`](https://github.com/Geode-solutions/OpenGeodeWeb-Vie
 * cleanup ([`41e5ac1`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/41e5ac11e16d3f1491a0f4ddd0425241221812cf))
 
 * full from next ([`0e6316d`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/0e6316d136e3f167454802f938714959444aa67d))
-
 
 ## v0.1.0-rc.1 (2024-03-05)
 
