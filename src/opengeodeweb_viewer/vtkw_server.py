@@ -20,11 +20,12 @@ class _Server(vtk_wslink.ServerProtocol):
     # Defaults
     authKey = "wslink-secret"
     view = None
+    debug = False
 
     @staticmethod
     def add_arguments(parser):
         parser.add_argument(
-            "--virtual-env", default=None, help="Path to virtual environment to use"
+            "--data_folder_path", default=os.environ.get("DATA_FOLDER_PATH"), help="Path to the folder where data is stored"
         )
 
     @staticmethod
@@ -70,6 +71,7 @@ class _Server(vtk_wslink.ServerProtocol):
             widget.SetOrientationMarker(axes)
             widget.EnabledOn()
             widget.InteractiveOff()
+            renderWindow.SetOffScreenRendering(not _Server.debug)
             self.setSharedObject("marker", widget)
 
 
@@ -94,10 +96,12 @@ def run_server():
 
     _Server.add_arguments(parser)
     args = parser.parse_args()
-    args.port = os.environ.get("PORT")
+    if not "port" in args or args.port == 8080:
+        args.port = os.environ.get("DEFAULT_PORT")
+    if "data_folder_path" in args:
+        os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
     args.host = os.environ.get("HOST")
     print(f"{args=}", flush=True)
-
     _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)
 

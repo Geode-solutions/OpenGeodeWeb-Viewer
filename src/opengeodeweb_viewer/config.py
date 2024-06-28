@@ -4,7 +4,7 @@ from sys import platform
 
 def default_config():
     os.environ["HOST"] = "0.0.0.0"
-    os.environ["PORT"] = "1234"
+    os.environ["DEFAULT_PORT"] = "1234"
 
 
 def prod_config():
