@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OpenGeodeWeb-Viewer"
-version = "0.1.2"
+version = "0.2.0-rc.2"
 dynamic = ["dependencies"]
 authors = [
   { name="Geode-solutions", email="team-web@geode-solutions.com" },
@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-gpu = ["vtk == 9.*"]
+gpu = ["vtk == 9.3.1"]
 
 [project.urls]
 "Homepage" = "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer"

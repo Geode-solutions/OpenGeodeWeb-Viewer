@@ -1,6 +1,30 @@
 # CHANGELOG
 
+## v0.2.0-rc.2 (2024-07-16)
 
+### Fix
+
+* fix(gpu_mode): hardcode vtk version in gpu mode ([`20f3828`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/20f382897bad7a3e3c62cb0fe7a308ab73dc9625))
+
+### Unknown
+
+* Merge pull request #24 from Geode-solutions/fix/hardcode_vtk_version
+
+fix(gpu_mode): hardcode vtk version in gpu mode ([`7666c0d`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/7666c0dbfa50eda45aed6673f06c9b90827b49f4))
+
+## v0.2.0-rc.1 (2024-06-28)
+
+### Feature
+
+* feat(vtkw_server): dynamic port and data_folder_path ([`d1e71a6`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/d1e71a6d480e9156cc4ff957baa38365dcf11404))
+
+### Unknown
+
+* Merge pull request #22 from Geode-solutions/feat/dynamic_run_arguments
+
+feat(vtkw_server): dynamic port and data_folder_path ([`6f8bf75`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6f8bf756d4ab319e72ddf6660ad544ab70e32d58))
+
+*  ([`9d49a8f`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/9d49a8f036d4bab72a56710002e72752cc3fdefd))
 
 ## v0.1.2 (2024-05-03)
 
@@ -9,7 +33,6 @@
 * Merge pull request #21 from Geode-solutions/next
 
 Next ([`fe20c68`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/fe20c689cff02a723b6d58e3ccd17ab1cd770657))
-
 
 ## v0.1.2-rc.1 (2024-05-03)
 
@@ -25,7 +48,6 @@ fix(actions): admin token for actions ([`2bc881c`](https://github.com/Geode-solu
 
 *  ([`b7a6367`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b7a63678c77bba82cf36fc13cdea1237e1c33a6d))
 
-
 ## v0.1.1 (2024-03-13)
 
 ### Unknown
@@ -33,7 +55,6 @@ fix(actions): admin token for actions ([`2bc881c`](https://github.com/Geode-solu
 * Merge pull request #19 from Geode-solutions/next
 
 Next ([`e749534`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/e7495349145826e1ecc874f387a03c0963369e3f))
-
 
 ## v0.1.1-rc.2 (2024-03-13)
 
@@ -48,7 +69,6 @@ Next ([`e749534`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/
 fix(CPU): handle vtk cpu ([`4cc9f76`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/4cc9f7653b571065538723b4502603ef0d8f88ac))
 
 * test ([`6ba1ce5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6ba1ce5c73f1f59a980aee2e8bbb938dc2036838))
-
 
 ## v0.1.1-rc.1 (2024-03-13)
 
@@ -106,11 +126,11 @@ Fix/tests ([`5f20bf7`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/co
 
 * Merge branch &#39;fix/tests&#39; of https://github.com/Geode-solutions/OpenGeodeWeb-Viewer into fix/tests ([`7fabf4a`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/7fabf4a1632eb9bd6c37bdd93915608ece00e156))
 
-* change start command ([`44b7c51`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/44b7c51c3dd7f98b53001871b69033246aac1fdf))
-
 * Update pyproject.toml
 
 Co-authored-by: Arnaud Botella &lt;arnaud.botella@geode-solutions.com&gt; ([`19fb81b`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/19fb81b78c4c731788f8aeae06d2d170f1d14f45))
+
+* change start command ([`44b7c51`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/44b7c51c3dd7f98b53001871b69033246aac1fdf))
 
 * CICD pipeline ([`32dddc6`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/32dddc67d0bb07fa80bc763c37ffffdb8a55ae3e))
 
@@ -126,7 +146,6 @@ Co-authored-by: Arnaud Botella &lt;arnaud.botella@geode-solutions.com&gt; ([`19f
 
 *  ([`25e758c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/25e758c1a340ef92aed8ae60300548fdc507d9da))
 
-
 ## v0.1.0 (2024-03-07)
 
 ### Unknown
@@ -134,7 +153,6 @@ Co-authored-by: Arnaud Botella &lt;arnaud.botella@geode-solutions.com&gt; ([`19f
 * Merge pull request #14 from Geode-solutions/next
 
 Next ([`6492fa9`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6492fa998cd2ff5d2f5bd48006e796c2a5da2bf0))
-
 
 ## v0.1.0-rc.2 (2024-03-07)
 
@@ -174,7 +192,6 @@ Feat/unit tests ([`48e800f`](https://github.com/Geode-solutions/OpenGeodeWeb-Vie
 
 * full from next ([`0e6316d`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/0e6316d136e3f167454802f938714959444aa67d))
 
-
 ## v0.1.0-rc.1 (2024-03-05)
 
 ### Chore
@@ -207,6 +224,24 @@ Enables an object to be deleted from the viewer ([`5a4df6a`](https://github.com/
 
 Json import viewer ([`cd3b4a0`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/cd3b4a0b8e564b81d15dafac82469c9b4ac974d3))
 
+* remove dockerignore ([`ea38690`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/ea386903ac824235764b36e5b38fcb299557ccc1))
+
+* edit generate_schemas ([`8a9ddc2`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/8a9ddc2bca30d8ec58af76fa99c1823cb765c99d))
+
+* test ([`1c878be`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1c878be022ab96cffb7d146f38ffbd5241d264d2))
+
+* shemas rpc&#39;s ([`e45df6a`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/e45df6a560a5a8d087f72ad6d1070ba003b8f665))
+
+* added new path into the dockerfile ([`9ce3c0c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/9ce3c0cf5f3d143ed6fd10cf4815b80c834d2cfe))
+
+* updates json files ([`415f263`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/415f2630ad2053b51e688b46c133c0e714b16698))
+
+* updates json files ([`da04546`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/da0454656e505f52d3b3570fbb5eb3655baee3c7))
+
+* rpc changes ([`ceefe04`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/ceefe04853f4ce96ea7465065a27e0ea3b501758))
+
+* import json ([`1922ae3`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1922ae3887db7a2a4e8c52b7c6b3282c5932bfb2))
+
 * test_get_point_position ([`c244ca4`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/c244ca461385d2ad212496cc4ca945ea98c45e96))
 
 * Add datas ([`b704167`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b70416763096d0b999a5b0c21ba93cc4c524f5f1))
@@ -221,23 +256,9 @@ Json import viewer ([`cd3b4a0`](https://github.com/Geode-solutions/OpenGeodeWeb-
 
 * move json imports ([`f6e3414`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/f6e3414687bb171f80561c04972c6210fecb830f))
 
-* remove dockerignore ([`ea38690`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/ea386903ac824235764b36e5b38fcb299557ccc1))
-
-* edit generate_schemas ([`8a9ddc2`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/8a9ddc2bca30d8ec58af76fa99c1823cb765c99d))
-
-* test ([`1c878be`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1c878be022ab96cffb7d146f38ffbd5241d264d2))
-
 * fix schemas ([`4da951a`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/4da951a4e1bc11ad3468cecfc00dda94d36f7428))
 
 * remove print ([`954d2c5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/954d2c53decbcc5cf3419d82263806e63f94357d))
-
-* shemas rpc&#39;s ([`e45df6a`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/e45df6a560a5a8d087f72ad6d1070ba003b8f665))
-
-* added new path into the dockerfile ([`9ce3c0c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/9ce3c0cf5f3d143ed6fd10cf4815b80c834d2cfe))
-
-* updates json files ([`415f263`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/415f2630ad2053b51e688b46c133c0e714b16698))
-
-* updates json files ([`da04546`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/da0454656e505f52d3b3570fbb5eb3655baee3c7))
 
 * schemas ([`1f62048`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1f62048fe00335b7d34c298a09e0c0729b7f2cb2))
 
@@ -245,11 +266,7 @@ Json import viewer ([`cd3b4a0`](https://github.com/Geode-solutions/OpenGeodeWeb-
 
 * route becomes rpc ([`6bacedb`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6bacedb228f2cda86a8ea093e82dcfb84558ca42))
 
-* rpc changes ([`ceefe04`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/ceefe04853f4ce96ea7465065a27e0ea3b501758))
-
 * dynamic args ([`a40af27`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/a40af270486d894677ea1cf14a6b4b58acaf6edb))
-
-* import json ([`1922ae3`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1922ae3887db7a2a4e8c52b7c6b3282c5932bfb2))
 
 * dotenv ([`b4fd9a7`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b4fd9a7f2a230589219e11af57354b67e1d18771))
 
