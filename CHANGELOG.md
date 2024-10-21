@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v0.2.1-rc.2 (2024-10-21)
+
+### Bug Fixes
+
+* fix(typo): typo if not "host" in args: ([`fd59543`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/fd59543f92a52758a8d6530894e7b8b6a82748ef))
+
+
 ## v0.2.1-rc.1 (2024-10-21)
 
 ### Bug Fixes
