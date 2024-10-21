@@ -94,7 +94,7 @@ def run_server():
     args = parser.parse_args()
 
     if "host" in args:
-        args.port = os.environ["DEFAULT_HOST"]
+        args.host = os.environ["DEFAULT_HOST"]
     if not "port" in args or args.port == 8080:
         args.port = os.environ.get("DEFAULT_PORT")
     if "data_folder_path" in args:
