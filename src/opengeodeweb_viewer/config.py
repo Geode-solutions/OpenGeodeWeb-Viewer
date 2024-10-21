@@ -3,7 +3,7 @@ from sys import platform
 
 
 def default_config():
-    os.environ["HOST"] = "0.0.0.0"
+    os.environ["DEFAULT_HOST"] = "localhost"
     os.environ["DEFAULT_PORT"] = "1234"
 
 
