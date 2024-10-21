@@ -92,8 +92,8 @@ def run_server():
 
     _Server.add_arguments(parser)
     args = parser.parse_args()
-
-    if "host" in args:
+    
+    if not "host" in args:
         args.host = os.environ["DEFAULT_HOST"]
     if not "port" in args or args.port == 8080:
         args.port = os.environ.get("DEFAULT_PORT")
