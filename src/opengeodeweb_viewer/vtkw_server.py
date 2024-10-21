@@ -28,6 +28,10 @@ class _Server(vtk_wslink.ServerProtocol):
             "--data_folder_path", default=os.environ.get("DATA_FOLDER_PATH"), help="Path to the folder where data is stored"
         )
 
+        parser.add_argument(
+            "--host", default=os.environ.get("DEFAULT_HOST"), help="Host to run on"
+        )
+
     @staticmethod
     def configure(args):
         # Standard args
@@ -81,10 +85,6 @@ class _Server(vtk_wslink.ServerProtocol):
 
 
 def run_server():
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    dot_env_path = os.path.join(basedir, "../../.env")
-    if os.path.isfile(dot_env_path):
-        dotenv.load_dotenv(dot_env_path)
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
     if PYTHON_ENV == "prod":
         prod_config()
@@ -96,11 +96,15 @@ def run_server():
 
     _Server.add_arguments(parser)
     args = parser.parse_args()
+    print("COUCOU", flush=True)
+    if not "host" in args:
+        print(f"Defaulting to {os.environ.get('DEFAULT_HOST')}", flush=True)
+        args.host = os.environ.get("DEFAULT_HOST")
     if not "port" in args or args.port == 8080:
         args.port = os.environ.get("DEFAULT_PORT")
     if "data_folder_path" in args:
         os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
-    args.host = os.environ.get("HOST")
+
     print(f"{args=}", flush=True)
     _Server.configure(args)
     server.start_webserver(options=args, protocol=_Server)
