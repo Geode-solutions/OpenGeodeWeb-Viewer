@@ -28,10 +28,6 @@ class _Server(vtk_wslink.ServerProtocol):
             "--data_folder_path", default=os.environ.get("DATA_FOLDER_PATH"), help="Path to the folder where data is stored"
         )
 
-        # parser.add_argument(
-        #     "--host", default=os.environ.get("DEFAULT_HOST"), help="Host to run on"
-        # )
-
     @staticmethod
     def configure(args):
         # Standard args
@@ -96,6 +92,9 @@ def run_server():
 
     _Server.add_arguments(parser)
     args = parser.parse_args()
+
+    if "host" in args:
+        args.port = os.environ["DEFAULT_HOST"]
     if not "port" in args or args.port == 8080:
         args.port = os.environ.get("DEFAULT_PORT")
     if "data_folder_path" in args:
