@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.2.1 (2024-10-22)
+
+### Unknown
+
+* Merge pull request #26 from Geode-solutions/next
+
+Next ([`1ce50d5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1ce50d5a60d01f3aa2ba736341e5c7f37955f04d))
+
+
 ## v0.2.1-rc.2 (2024-10-21)
 
 ### Bug Fixes
