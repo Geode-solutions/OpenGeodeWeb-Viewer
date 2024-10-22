@@ -1,0 +1,7 @@
+{
+    "rpc": "screenshot",
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
