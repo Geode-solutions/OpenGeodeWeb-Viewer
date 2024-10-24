@@ -1,9 +1,18 @@
+# Standard library imports
 import json
 import os
-from vtk.web import protocols as vtk_protocols
-from wslink import register as exportRpc
+
+# Third party imports
 import vtk
+from vtk.web import protocols as vtk_protocols
+from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
+from vtkmodules.vtkRenderingCore import (vtkWindowToImageFilter)
+from wslink import register as exportRpc
+
+# Local application imports
 from .function import validate_schemas
+
+
 
 schemas = os.path.join(os.path.dirname(__file__), "rpc/schemas")
 
@@ -35,6 +44,8 @@ with open(os.path.join(schemas, "set_color.json"), "r") as file:
     set_color_json = json.load(file)
 with open(os.path.join(schemas, "set_vertex_attribute.json"), "r") as file:
     set_vertex_attribute_json = json.load(file)
+with open(os.path.join(schemas, "take_screenshot.json"), "r") as file:
+    take_screenshot_json = json.load(file)
 
 
 class VtkView(vtk_protocols.vtkWebProtocol):
@@ -270,6 +281,39 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointFieldData()
         self.render()
+
+    @exportRpc(take_screenshot_json["rpc"])
+    def takeScreenshot(self, params):
+        validate_schemas(params, take_screenshot_json)
+        print(f"{params=}", flush=True)
+        filename = params["filename"]
+        output_extension = params["output_extension"]
+        include_background = params["include_background"]
+        renderWindow = self.getView("-1")
+        renderer = self.get_renderer()
+
+        w2if = vtkWindowToImageFilter()
+
+        if not include_background:
+            # renderer.SetBackground([255,255,255])
+            # renderer.SetLayer(1)
+            renderWindow.SetAlphaBitPlanes(1)
+        w2if.SetInput(renderWindow)
+        w2if.SetInputBufferTypeToRGBA() 
+        w2if.ReadFrontBufferOff()
+        w2if.Update()
+        renderWindow.SetAlphaBitPlanes(0)
+
+        if output_extension == "png":
+            writer = vtkPNGWriter()
+        elif output_extension == "jpg":
+            writer = vtkJPEGWriter()
+
+        writer.SetFileName(os.path.join(self.DATA_FOLDER_PATH, filename + '.' + output_extension))
+        writer.SetInputConnection(w2if.GetOutputPort())
+        writer.Write()
+        # renderer.SetLayer(0)
+        return 
 
     def get_data_base(self):
         return self.getSharedObject("db")
