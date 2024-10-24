@@ -5,7 +5,7 @@ import os
 # Third party imports
 import vtk
 from vtk.web import protocols as vtk_protocols
-from vtkmodules.vtkIOImage import vtkPNGWriter
+from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingCore import (vtkWindowToImageFilter)
 from wslink import register as exportRpc
 
@@ -286,17 +286,34 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def takeScreenshot(self, params):
         validate_schemas(params, take_screenshot_json)
         print(f"{params=}", flush=True)
+        filename = params["filename"]
+        output_extension = params["output_extension"]
+        include_background = params["include_background"]
         renderWindow = self.getView("-1")
+        renderer = self.get_renderer()
+
         w2if = vtkWindowToImageFilter()
+
+        if not include_background:
+            # renderer.SetBackground([255,255,255])
+            # renderer.SetLayer(1)
+            renderWindow.SetAlphaBitPlanes(1)
         w2if.SetInput(renderWindow)
-        w2if.SetInputBufferTypeToRGB()
+        w2if.SetInputBufferTypeToRGBA() 
         w2if.ReadFrontBufferOff()
         w2if.Update()
+        renderWindow.SetAlphaBitPlanes(0)
 
-        writer = vtkPNGWriter()
-        writer.SetFileName(os.path.join(self.DATA_FOLDER_PATH, 'screenshot.png'))
+        if output_extension == "png":
+            writer = vtkPNGWriter()
+        elif output_extension == "jpg":
+            writer = vtkJPEGWriter()
+
+        writer.SetFileName(os.path.join(self.DATA_FOLDER_PATH, filename + '.' + output_extension))
         writer.SetInputConnection(w2if.GetOutputPort())
         writer.Write()
+        # renderer.SetLayer(0)
+        return 
 
     def get_data_base(self):
         return self.getSharedObject("db")

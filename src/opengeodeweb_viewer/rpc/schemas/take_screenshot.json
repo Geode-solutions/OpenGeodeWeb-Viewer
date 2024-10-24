@@ -1,7 +1,21 @@
 {
-    "rpc": "screenshot",
-    "type": "object",
-    "properties": {},
-    "required": [],
-    "additionalProperties": false
-  }
+  "rpc": "take_screenshot",
+  "type": "object",
+  "properties": {
+    "filename": {
+      "type": "string"
+    },
+    "output_extension": {
+      "type": "string"
+    },
+    "include_background": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "filename",
+    "output_extension",
+    "include_background"
+  ],
+  "additionalProperties": false
+}
