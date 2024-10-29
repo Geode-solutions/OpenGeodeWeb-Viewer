@@ -295,9 +295,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         w2if = vtkWindowToImageFilter()
 
         if not include_background:
-            # renderer.SetBackground([255,255,255])
-            # renderer.SetLayer(1)
             renderWindow.SetAlphaBitPlanes(1)
+
         w2if.SetInput(renderWindow)
         w2if.SetInputBufferTypeToRGBA() 
         w2if.ReadFrontBufferOff()
@@ -308,12 +307,19 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             writer = vtkPNGWriter()
         elif output_extension == "jpg":
             writer = vtkJPEGWriter()
+        else:
+            raise Exception("output_extension not supported")
 
-        writer.SetFileName(os.path.join(self.DATA_FOLDER_PATH, filename + '.' + output_extension))
+        new_filename = filename + '.' + output_extension
+        file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
+        writer.SetFileName(file_path)
         writer.SetInputConnection(w2if.GetOutputPort())
         writer.Write()
-        # renderer.SetLayer(0)
-        return 
+
+        with open(file_path, "rb") as file:
+            file_content = file.read()
+
+        return {"blob": self.addAttachment(file_content)}
 
     def get_data_base(self):
         return self.getSharedObject("db")

@@ -6,7 +6,11 @@
       "type": "string"
     },
     "output_extension": {
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "png",
+        "jpg"
+      ]
     },
     "include_background": {
       "type": "boolean"

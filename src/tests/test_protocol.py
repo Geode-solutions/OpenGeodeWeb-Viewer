@@ -103,3 +103,26 @@ def test_set_color(server):
 
     server.call("set_color", [{"id": "123456789", "red": 50, "green": 2, "blue": 250}])
     assert server.compare_image(3, "set_color.jpeg") == True
+
+
+
+def test_take_screenshot(server):
+
+    server.call(
+        "create_object_pipeline",
+        [{"id": "123456789", "file_name": "hat.vtp"}],
+    )
+    assert server.compare_image(3, "create_object_pipeline.jpeg") == True
+
+    server.call(
+        "take_screenshot",
+        [{"filename": "screenshot", "output_extension": "png", "include_background": False}],
+    )
+
+    response1 = server.get_response()
+    print(f"{response1=}", flush=True)
+    response2 = server.get_response()
+    print(f"{response2=}", flush=True)
+
+    blob = response2
+    assert type(blob) is bytes
