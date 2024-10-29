@@ -57,9 +57,11 @@ class ServerMonitor:
         print(output)
 
     def get_response(self):
-        return self.ws.recv()
-        response = json.loads(self.ws.recv())
-        return response
+        response = self.ws.recv()
+        if isinstance(response, bytes):
+            return response
+        else:
+            return eval(response)
 
     def compare_image(self, nb_messages, filename):
         for message in range(nb_messages):
