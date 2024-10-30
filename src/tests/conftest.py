@@ -30,8 +30,8 @@ class ServerMonitor:
         self.call("viewport.image.push.observer.add", [-1])
         for i in range(5):
             print(f"{i=}", flush=True)
-            reponse = self.ws.recv()
-            print(f"{reponse=}", flush=True)
+            response = self.ws.recv()
+            print(f"{response=}", flush=True)
 
     def call(self, rpc, params=[{}]):
         print(f"{rpc=} {params=}", flush=True)
@@ -62,6 +62,26 @@ class ServerMonitor:
             return response
         else:
             return eval(response)
+    def images_diff(self, first_image_path, second_image_path):
+        if ".png" in first_image_path:
+            first_reader = vtk.vtkPNGReader()
+        elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
+            first_reader = vtk.vtkJPEGReader()
+        first_reader.SetFileName(first_image_path)
+
+        if ".png" in second_image_path:
+            second_reader = vtk.vtkPNGReader()
+        elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
+            second_reader = vtk.vtkJPEGReader()
+        second_reader.SetFileName(second_image_path)
+
+        images_diff = vtk.vtkImageDifference()
+        images_diff.SetInputConnection(first_reader.GetOutputPort())
+        images_diff.SetImageConnection(second_reader.GetOutputPort())
+        images_diff.Update()
+
+        print(f"{images_diff.GetThresholdedError()=}")
+        return images_diff.GetThresholdedError()
 
     def compare_image(self, nb_messages, filename):
         for message in range(nb_messages):
@@ -86,20 +106,10 @@ class ServerMonitor:
                 f.write(image)
                 f.close()
 
-            test_reader = vtk.vtkJPEGReader()
-            test_reader.SetFileName(test_file_path)
-
             path_image = os.path.join(self.images_dir_path, filename)
-            answer_reader = vtk.vtkJPEGReader()
-            answer_reader.SetFileName(path_image)
 
-            images_diff = vtk.vtkImageDifference()
-            images_diff.SetInputConnection(test_reader.GetOutputPort())
-            images_diff.SetImageConnection(answer_reader.GetOutputPort())
-            images_diff.Update()
+            return self.images_diff(test_file_path, path_image)==0.0
 
-            print(f"{images_diff.GetThresholdedError()=}")
-            return images_diff.GetThresholdedError() == 0.0
 
 
 class FixtureHelper:

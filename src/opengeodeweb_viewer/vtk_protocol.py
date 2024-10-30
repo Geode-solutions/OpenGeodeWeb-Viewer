@@ -296,16 +296,22 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
         if not include_background:
             renderWindow.SetAlphaBitPlanes(1)
+            w2if.SetInputBufferTypeToRGBA()
+        else:
+            renderWindow.SetAlphaBitPlanes(0)
+            w2if.SetInputBufferTypeToRGB()
+
+        renderWindow.Render()
 
         w2if.SetInput(renderWindow)
-        w2if.SetInputBufferTypeToRGBA() 
         w2if.ReadFrontBufferOff()
         w2if.Update()
-        renderWindow.SetAlphaBitPlanes(0)
 
         if output_extension == "png":
             writer = vtkPNGWriter()
-        elif output_extension == "jpg":
+        elif output_extension in ["jpg", "jpeg"]:
+            if not include_background:
+                raise Exception("output_extension not supported with background")
             writer = vtkJPEGWriter()
         else:
             raise Exception("output_extension not supported")
