@@ -1,6 +1,34 @@
 # CHANGELOG
 
 
+## v0.3.0-rc.1 (2024-10-31)
+
+### Features
+
+* feat(screenshot): new rpc
+missing unit tests ([`9e0c637`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/9e0c63729574144ed55af1633883e2496b4dd7aa))
+
+### Unknown
+
+* Merge pull request #27 from Geode-solutions/feat/screenshot
+
+feat(screenshot): new rpc ([`c12723d`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/c12723dd8c77cfb2301a106f9948b062ee3e5917))
+
+* Update src/tests/conftest.py
+
+Co-authored-by: Arnaud Botella <arnaud.botella@geode-solutions.com> ([`becbd80`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/becbd80025c6c4ce8a875fc0ac58000314c5b068))
+
+* fix tests ([`3bd2b77`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/3bd2b77231e4dccbd13c8de869f5d56a3d7f83a2))
+
+* fix get_response for bytes response ([`0586102`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/0586102a1ac50f2d022098cede23fca786458d96))
+
+* update unit tests ([`0371651`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/03716512c3f9441f0c21fd81ccbe7c8e3cd9d060))
+
+* more options : filename/output_extention/background ([`f9a547c`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/f9a547c0be68b320292c6c1f2f62bcef94d377ee))
+
+*  ([`8ef5d85`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/8ef5d856295d40b5bc915be59e540e5b36ef6bff))
+
+
 ## v0.2.1 (2024-10-22)
 
 ### Unknown
