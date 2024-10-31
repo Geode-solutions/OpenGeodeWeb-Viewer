@@ -62,6 +62,7 @@ class ServerMonitor:
             return response
         else:
             return eval(response)
+
     def images_diff(self, first_image_path, second_image_path):
         if ".png" in first_image_path:
             first_reader = vtk.vtkPNGReader()
