@@ -10,6 +10,9 @@ def test_reset_camera(server):
     server.call("reset_camera")
     assert server.compare_image(3, "reset_camera.jpeg") == True
 
+def test_set_viewer_background_color(server):
+    server.call("set_viewer_background_color", [{"red": 0, "green": 0, "blue": 255}])
+    assert server.compare_image(3, "set_viewer_background_color.jpeg") == True
 
 def test_create_object_pipeline(server):
     server.call("create_object_pipeline", [{"id": "123456", "file_name": "hat.vtp"}])

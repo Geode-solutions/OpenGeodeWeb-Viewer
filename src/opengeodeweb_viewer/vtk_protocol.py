@@ -18,6 +18,8 @@ schemas = os.path.join(os.path.dirname(__file__), "rpc/schemas")
 
 with open(os.path.join(schemas, "create_visualization.json"), "r") as file:
     create_visualization_json = json.load(file)
+with open(os.path.join(schemas, "set_viewer_background_color.json"), "r") as file:
+    set_viewer_background_color_json = json.load(file)
 with open(os.path.join(schemas, "reset_camera.json"), "r") as file:
     reset_camera_json = json.load(file)
 with open(os.path.join(schemas, "create_object_pipeline.json"), "r") as file:
@@ -60,6 +62,20 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
+        renderer.ResetCamera()
+        renderWindow.Render()
+        self.render()
+
+    @exportRpc(set_viewer_background_color_json["rpc"])
+    def set_viewer_background_color(self, params):
+        validate_schemas(params, set_viewer_background_color_json)
+        renderWindow = self.getView("-1")
+        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        red = params["red"]
+        green = params["green"]
+        blue = params["blue"]
+
+        renderer.SetBackground([red, green, blue])
         renderer.ResetCamera()
         renderWindow.Render()
         self.render()
