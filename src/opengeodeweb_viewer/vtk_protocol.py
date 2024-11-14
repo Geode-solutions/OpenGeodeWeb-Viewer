@@ -36,10 +36,12 @@ with open(os.path.join(schemas, "get_point_position.json"), "r") as file:
     get_point_position_json = json.load(file)
 with open(os.path.join(schemas, "reset.json"), "r") as file:
     reset_json = json.load(file)
+with open(os.path.join(schemas, "set_opacity.json"), "r") as file:
+    set_opacity_json = json.load(file)
 with open(os.path.join(schemas, "toggle_edge_visibility.json"), "r") as file:
     toggle_edge_visibility_json = json.load(file)
-with open(os.path.join(schemas, "point_size.json"), "r") as file:
-    point_size_json = json.load(file)
+with open(os.path.join(schemas, "set_point_size.json"), "r") as file:
+    set_point_size_json = json.load(file)
 with open(os.path.join(schemas, "toggle_point_visibility.json"), "r") as file:
     toggle_point_visibility_json = json.load(file)
 with open(os.path.join(schemas, "set_color.json"), "r") as file:
@@ -246,11 +248,20 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
 
+    @exportRpc(set_opacity_json["rpc"])
+    def set_opacity(self, params):
+        validate_schemas(params, set_opacity_json)
+        id = params["id"]
+        opacity = float(params["opacity"])
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetOpacity(opacity)
+        self.render()
+
     @exportRpc(toggle_edge_visibility_json["rpc"])
     def setEdgeVisibility(self, params):
         validate_schemas(params, toggle_edge_visibility_json)
         print(f"{params=}", flush=True)
-        id = params["id"]
+        id = str(params["id"])
         visibility = bool(params["visibility"])
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeVisibility(visibility)
@@ -265,9 +276,9 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         actor.GetProperty().SetVertexVisibility(visibility)
         self.render()
 
-    @exportRpc(point_size_json["rpc"])
+    @exportRpc(set_point_size_json["rpc"])
     def setPointSize(self, params):
-        validate_schemas(params, point_size_json)
+        validate_schemas(params, set_point_size_json)
         id = params["id"]
         size = float(params["size"])
         actor = self.get_object(id)["actor"]
