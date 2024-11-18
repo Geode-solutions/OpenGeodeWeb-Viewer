@@ -1,15 +1,26 @@
+# Standard library imports
+import json
+import os
+
+# Third party imports
+import vtk
+from vtk.web import protocols as vtk_protocols
+from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
+from vtkmodules.vtkRenderingCore import (vtkWindowToImageFilter)
+from wslink import register as exportRpc
+
 # Local application imports
-import VtkView from "./vtk_protocol.py"
-
-schemas = os.path.join(os.path.dirname(__file__), "rpc/schemas")
-
-with open(os.path.join(schemas, "display_vertex_attribute.json"), "r") as file:
-    display_vertex_attribute_json = json.load(file)
+from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
-@exportRpc(display_vertex_attribute_json["rpc"])
+schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
+schemas_dict = get_schemas_dict(schemas_dir)
+
+class VtkMeshView(VtkView):
+    @exportRpc(schemas_dict["display_vertex_attribute"]["rpc"])
     def setVertexAttribute(self, params):
-        validate_schemas(params, display_vertex_attribute_json)
+        validate_schema(params, display_vertex_attribute_json)
         print(f"{params=}", flush=True)
         id = params["id"]
         name = params["name"]
@@ -19,7 +30,7 @@ with open(os.path.join(schemas, "display_vertex_attribute.json"), "r") as file:
         mapper.SetScalarModeToUsePointFieldData()
         self.render()
 
-    @exportRpc("opengeode.attribute.polygon")
+    @exportRpc(schemas_dict["display_polygon_attribute"]["rpc"])
     def setPolygonAttribute(self, id, name):
         store = self.getObject(id)
         cpp = store["cpp"]
