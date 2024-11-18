@@ -1,5 +1,5 @@
 {
-  "rpc": "set_vertex_attribute",
+  "rpc": "display_vertex_attribute",
   "type": "object",
   "properties": {
     "id": {
@@ -9,6 +9,9 @@
       "type": "string"
     }
   },
-  "required": ["id", "name"],
+  "required": [
+    "id",
+    "name"
+  ],
   "additionalProperties": false
 }

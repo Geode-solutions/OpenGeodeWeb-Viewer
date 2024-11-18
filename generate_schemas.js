@@ -62,7 +62,7 @@ function return_json_schema(directoryPath, folder_path, project_name) {
         return acc;
       }, folders_schemas);
     } else {
-      var new_folder_path = folder_path + "/" + folder.name;
+      var new_folder_path = folder_path + "." + folder.name;
       var test = return_json_schema(folder.path, new_folder_path, project_name);
       folders_schemas[folder.name] = test;
     }

@@ -1,14 +1,20 @@
-import sys
+# Standard library imports
 import argparse
 import os
+import sys
 
-from wslink import server
+# Third party imports
+import vtk
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
-import vtk
-from .vtk_protocol import VtkView
-import dotenv
+from wslink import server
+
+# Local application imports
 from .config import *
+from .vtk_protocol import VtkView
+from .rpc.viewer import Viewer
+from .rpc.mesh import Mesh
+from .rpc.model import Model
 
 
 # =============================================================================
@@ -44,6 +50,9 @@ class _Server(vtk_wslink.ServerProtocol):
 
         # Custom API
         self.registerVtkWebProtocol(VtkView())
+        self.registerVtkWebProtocol(Viewer())
+        self.registerVtkWebProtocol(Mesh())
+        self.registerVtkWebProtocol(Model())
 
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.
