@@ -9,6 +9,9 @@
       "type": "string"
     }
   },
-  "required": ["id", "file_name"],
+  "required": [
+    "id",
+    "file_name"
+  ],
   "additionalProperties": false
 }
