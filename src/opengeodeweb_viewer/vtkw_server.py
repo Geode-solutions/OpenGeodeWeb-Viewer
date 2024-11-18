@@ -12,9 +12,9 @@ from wslink import server
 # Local application imports
 from .config import *
 from .vtk_protocol import VtkView
-from .rpc.viewer import Viewer
-from .rpc.mesh import Mesh
-from .rpc.model import Model
+from .rpc.viewer.protocols import Viewer
+from .rpc.mesh.protocols import Mesh
+from .rpc.model.protocols import Model
 
 
 # =============================================================================
