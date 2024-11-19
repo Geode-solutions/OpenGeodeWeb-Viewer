@@ -22,7 +22,7 @@ class VtkViewerView(VtkView):
         super().__init__()
 
     @exportRpc(schemas_dict["create_visualization"]["rpc"])
-    def create_visualization(self, params):
+    def createVisualization(self, params):
         validate_schema(params, schemas_dict["create_visualization"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
@@ -32,7 +32,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(schemas_dict["set_viewer_background_color"]["rpc"])
-    def set_viewer_background_color(self, params):
+    def setViewerBackgroundColor(self, params):
         validate_schema(params, schemas_dict["set_viewer_background_color"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
@@ -46,7 +46,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(schemas_dict["reset_camera"]["rpc"])
-    def reset_camera(self, params):
+    def resetCamera(self, params):
         print(f"{params=}", flush=True)
         validate_schema(params, schemas_dict["reset_camera"])
         renderWindow = self.getView("-1")
@@ -55,7 +55,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(schemas_dict["create_object_pipeline"]["rpc"])
-    def create_object_pipeline(self, params):
+    def createObjectPipeline(self, params):
         validate_schema(params, schemas_dict["create_object_pipeline"])
         try:
             id = params["id"]
@@ -95,7 +95,7 @@ class VtkViewerView(VtkView):
             print("error : ", str(e), flush=True)
 
     @exportRpc(schemas_dict["delete_object_pipeline"]["rpc"])
-    def delete_object_pipeline(self, params):
+    def deleteObjectPipeline(self, params):
         validate_schema(params, schemas_dict["delete_object_pipeline"])
         print(f"{params=}", flush=True)
         id = params["id"]
@@ -112,7 +112,6 @@ class VtkViewerView(VtkView):
     
     @exportRpc(schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params):
-        self.__init__()
         validate_schema(params, schemas_dict["take_screenshot"])
         print(f"{params=}", flush=True)
         filename = params["filename"]
@@ -160,7 +159,7 @@ class VtkViewerView(VtkView):
     
 
     @exportRpc(schemas_dict["apply_textures"]["rpc"])
-    def apply_textures(self, params):
+    def applyTextures(self, params):
         validate_schema(params, schemas_dict["apply_textures"])
         print(f"{params=}", flush=True)
         id = params["id"]
@@ -214,7 +213,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(schemas_dict["update_data"]["rpc"])
-    def update_data(self, params):
+    def updateData(self, params):
         validate_schema(params, schemas_dict["update_data"])
         print(f"{params=}", flush=True)
         id = params["id"]
@@ -236,7 +235,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(schemas_dict["get_point_position"]["rpc"])
-    def get_point_position(self, params):
+    def getPointPosition(self, params):
         validate_schema(params, schemas_dict["get_point_position"])
         x = float(params["x"])
         y = float(params["y"])

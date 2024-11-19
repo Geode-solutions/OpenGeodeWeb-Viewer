@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "visibility": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "visibility"
+  ],
+  "additionalProperties": false
+}
