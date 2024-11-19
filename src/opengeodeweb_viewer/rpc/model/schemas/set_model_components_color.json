@@ -1,14 +1,17 @@
 {
-  "rpc": "toggle_object_visibility",
+  "rpc": "set_model_components_color",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "is_visible": {
-      "type": "boolean"
+    "color": {
+      "type": "string"
     }
   },
-  "required": ["id", "is_visible"],
+  "required": [
+    "id",
+    "color"
+  ],
   "additionalProperties": false
 }

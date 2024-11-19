@@ -108,16 +108,6 @@ class VtkViewerView(VtkView):
         self.deregister_object(id)
         self.render()
 
-    @exportRpc(schemas_dict["toggle_object_visibility"]["rpc"])
-    def toggle_object_visibility(self, params):
-        validate_schema(params, schemas_dict["toggle_object_visibility"])
-        print(f"{params=}", flush=True)
-        id = params["id"]
-        is_visible = params["is_visible"]
-        object = self.get_object(id)
-        actor = object["actor"]
-        actor.SetVisibility(is_visible)
-        self.render()
 
     
     @exportRpc(schemas_dict["take_screenshot"]["rpc"])
@@ -261,53 +251,3 @@ class VtkViewerView(VtkView):
         validate_schema(params, schemas_dict["reset"])
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
-
-    @exportRpc(schemas_dict["set_opacity"]["rpc"])
-    def set_opacity(self, params):
-        validate_schema(params, schemas_dict["set_opacity"])
-        id = params["id"]
-        opacity = float(params["opacity"])
-        actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetOpacity(opacity)
-        self.render()
-
-    @exportRpc(schemas_dict["toggle_edge_visibility"]["rpc"])
-    def setEdgeVisibility(self, params):
-        validate_schema(params, schemas_dict["toggle_edge_visibility"])
-        print(f"{params=}", flush=True)
-        id = str(params["id"])
-        visibility = bool(params["visibility"])
-        actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetEdgeVisibility(visibility)
-        self.render()
-
-    @exportRpc(schemas_dict["toggle_point_visibility"]["rpc"])
-    def setPointVisibility(self, params):
-        validate_schema(params, schemas_dict["toggle_point_visibility"])
-        id = params["id"]
-        visibility = bool(params["visibility"])
-        actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetVertexVisibility(visibility)
-        self.render()
-
-    @exportRpc(schemas_dict["set_point_size"]["rpc"])
-    def setPointSize(self, params):
-        validate_schema(params, schemas_dict["set_point_size"])
-        id = params["id"]
-        size = float(params["size"])
-        print(f"{size=}", flush=True)
-        actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetPointSize(size)
-        self.render()
-
-    @exportRpc(schemas_dict["set_color"]["rpc"])
-    def setColor(self, params):
-        validate_schema(params, schemas_dict["set_color"])
-        id = params["id"]
-        red = params["red"]
-        green = params["green"]
-        blue = params["blue"]
-        self.get_object(id)["mapper"].ScalarVisibilityOff()
-        actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetColor(red, green, blue)
-        self.render()
