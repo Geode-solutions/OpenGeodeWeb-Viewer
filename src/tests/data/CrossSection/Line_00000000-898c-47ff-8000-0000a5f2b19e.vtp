@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<VTKFile type="PolyData" version="1.0" byte_order="LittleEndian" header_type="UInt32" compressor="vtkZLibDataCompressor">
+	<PolyData>
+		<Piece NumberOfPoints="4" NumberOfLines="3">
+			<PointData>
+				<DataArray type="Float64" Name="points" format="ascii" NumberOfComponents="2" RangeMin="1.10000002" RangeMax="5.80000019">1.1 4.5 3 5 5 5.5 5.8 5.8 </DataArray>
+				<DataArray type="Float64" Name="unique vertices" format="ascii" NumberOfComponents="1" RangeMin="0" RangeMax="3">0 1 2 3 </DataArray>
+			</PointData>
+			<Points>
+				<DataArray type="Float64" Name="Points" format="ascii" NumberOfComponents="3" RangeMin="1.1000000000000001" RangeMax="5.7999999999999998">1.1 4.5 0 3 5 0 5 5.5 0 5.8 5.8 0 </DataArray>
+			</Points>
+			<CellData>
+				<DataArray type="Float64" Name="edges" format="ascii" NumberOfComponents="2" RangeMin="0" RangeMax="3">0 1 1 2 2 3 </DataArray>
+			</CellData>
+			<Lines>
+				<DataArray type="Int64" Name="connectivity" format="ascii" RangeMin="0" RangeMax="3">0 1 1 2 2 3 </DataArray>
+				<DataArray type="Int64" Name="offsets" format="ascii" RangeMin="0" RangeMax="4">2 4 6 </DataArray>
+			</Lines>
+		</Piece>
+	</PolyData>
+</VTKFile>

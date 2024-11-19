@@ -3,10 +3,11 @@
 	<PolyData>
 		<Piece NumberOfPoints="1" NumberOfVerts="1">
 			<PointData>
-				<DataArray type="Float64" Name="points" format="ascii" NumberOfComponents="3" RangeMin="1" RangeMax="3">1 2 3 </DataArray>
+				<DataArray type="Float64" Name="unique vertices" format="ascii" NumberOfComponents="1" RangeMin="11" RangeMax="11">11 </DataArray>
+				<DataArray type="Float64" Name="points" format="ascii" NumberOfComponents="2" RangeMin="7" RangeMax="10">7 10 </DataArray>
 			</PointData>
 			<Points>
-				<DataArray type="Float64" Name="Points" format="ascii" NumberOfComponents="3" RangeMin="1" RangeMax="3">1 2 3 </DataArray>
+				<DataArray type="Float64" Name="Points" format="ascii" NumberOfComponents="3" RangeMin="7" RangeMax="10">7 10 0 </DataArray>
 			</Points>
 			<Verts>
 				<DataArray type="Int64" Name="connectivity" format="ascii" RangeMin="0" RangeMax="0">0 </DataArray>
