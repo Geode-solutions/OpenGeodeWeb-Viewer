@@ -18,21 +18,23 @@ schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
 schemas_dict = get_schemas_dict(schemas_dir)
 
 class VtkViewerView(VtkView):
+    def __init__(self):
+        super().__init__()
 
     @exportRpc(schemas_dict["create_visualization"]["rpc"])
     def create_visualization(self, params):
         validate_schema(params, schemas_dict["create_visualization"])
-        renderWindow = super().getView("-1")
+        renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
         renderer.ResetCamera()
         renderWindow.Render()
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["set_viewer_background_color"]["rpc"])
     def set_viewer_background_color(self, params):
         validate_schema(params, schemas_dict["set_viewer_background_color"])
-        renderWindow = super().getView("-1")
+        renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         red = params["red"]
         green = params["green"]
@@ -41,16 +43,16 @@ class VtkViewerView(VtkView):
         renderer.SetBackground([red, green, blue])
         renderer.ResetCamera()
         renderWindow.Render()
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["reset_camera"]["rpc"])
     def reset_camera(self, params):
         print(f"{params=}", flush=True)
         validate_schema(params, schemas_dict["reset_camera"])
-        renderWindow = super().getView("-1")
+        renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
         renderWindow.Render()
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["create_object_pipeline"]["rpc"])
     def create_object_pipeline(self, params):
@@ -73,9 +75,9 @@ class VtkViewerView(VtkView):
                 mapper = vtk.vtkDataSetMapper()
                 mapper.SetInputConnection(reader.GetOutputPort())
                 
-            super().register_object(id, reader, filter, actor, mapper, {})
+            self.register_object(id, reader, filter, actor, mapper, {})
 
-            reader.SetFileName(os.path.join(super().DATA_FOLDER_PATH, file_name))
+            reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, file_name))
 
             actor.SetMapper(mapper)
             mapper.SetColorModeToMapScalars()
@@ -83,12 +85,12 @@ class VtkViewerView(VtkView):
             mapper.SetResolveCoincidentTopologyPolygonOffsetParameters(2, 0)
             mapper.SetResolveCoincidentTopologyPointOffsetParameter(-2)
 
-            renderWindow = super().getView("-1")
+            renderWindow = self.getView("-1")
             renderer = renderWindow.GetRenderers().GetFirstRenderer()
             renderer.AddActor(actor)
             renderer.ResetCamera()
             renderWindow.Render()
-            super().render()
+            self.render()
         except Exception as e:
             print("error : ", str(e), flush=True)
 
@@ -97,14 +99,14 @@ class VtkViewerView(VtkView):
         validate_schema(params, schemas_dict["delete_object_pipeline"])
         print(f"{params=}", flush=True)
         id = params["id"]
-        object = super().get_object(id)
+        object = self.get_object(id)
         actor = object["actor"]
-        renderWindow = super().getView("-1")
+        renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(actor)
         print(f"{object=}", flush=True)
-        super().deregister_object(id)
-        super().render()
+        self.deregister_object(id)
+        self.render()
 
     @exportRpc(schemas_dict["toggle_object_visibility"]["rpc"])
     def toggle_object_visibility(self, params):
@@ -112,21 +114,22 @@ class VtkViewerView(VtkView):
         print(f"{params=}", flush=True)
         id = params["id"]
         is_visible = params["is_visible"]
-        object = super().get_object(id)
+        object = self.get_object(id)
         actor = object["actor"]
         actor.SetVisibility(is_visible)
-        super().render()
+        self.render()
 
     
     @exportRpc(schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params):
+        self.__init__()
         validate_schema(params, schemas_dict["take_screenshot"])
         print(f"{params=}", flush=True)
         filename = params["filename"]
         output_extension = params["output_extension"]
         include_background = params["include_background"]
-        renderWindow = super().getView("-1")
-        renderer = super().get_renderer()
+        renderWindow = self.getView("-1")
+        renderer = self.get_renderer()
 
         w2if = vtkWindowToImageFilter()
 
@@ -153,7 +156,7 @@ class VtkViewerView(VtkView):
             raise Exception("output_extension not supported")
 
         new_filename = filename + '.' + output_extension
-        file_path = os.path.join(super().DATA_FOLDER_PATH, new_filename)
+        file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
         writer.SetFileName(file_path)
         writer.SetInputConnection(w2if.GetOutputPort())
         writer.Write()
@@ -161,7 +164,7 @@ class VtkViewerView(VtkView):
         with open(file_path, "rb") as file:
             file_content = file.read()
 
-        return {"blob": super().addAttachment(file_content)}
+        return {"blob": self.addAttachment(file_content)}
 
 
     
@@ -175,7 +178,7 @@ class VtkViewerView(VtkView):
         textures_array = []
         images_reader_array = []
 
-        data = super().get_object(id)
+        data = self.get_object(id)
         mapper = data["mapper"]
         actor = data["actor"]
         reader = data["reader"]
@@ -191,7 +194,7 @@ class VtkViewerView(VtkView):
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
             image_reader.SetFileName(
-                os.path.join(super().DATA_FOLDER_PATH, texture_file_name)
+                os.path.join(self.DATA_FOLDER_PATH, texture_file_name)
             )
 
             shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"
@@ -218,7 +221,7 @@ class VtkViewerView(VtkView):
             textures_array.append(new_texture)
             images_reader_array.append(image_reader)
 
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["update_data"]["rpc"])
     def update_data(self, params):
@@ -226,7 +229,7 @@ class VtkViewerView(VtkView):
         print(f"{params=}", flush=True)
         id = params["id"]
 
-        data = super().get_object(id)
+        data = self.get_object(id)
         reader = data["reader"]
         reader.Update()
         mapper = data["mapper"]
@@ -240,7 +243,7 @@ class VtkViewerView(VtkView):
             tag,
         )
         mapper.SetScalarRange(scalars.GetRange())
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["get_point_position"]["rpc"])
     def get_point_position(self, params):
@@ -249,14 +252,14 @@ class VtkViewerView(VtkView):
         y = float(params["y"])
         xyz = [x, y, 0.0]
         picker = vtk.vtkWorldPointPicker()
-        picker.Pick(xyz, super().get_renderer())
+        picker.Pick(xyz, self.get_renderer())
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
     @exportRpc(schemas_dict["reset"]["rpc"])
     def reset(self, params):
         validate_schema(params, schemas_dict["reset"])
-        renderWindow = super().getView("-1")
+        renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
 
     @exportRpc(schemas_dict["set_opacity"]["rpc"])
@@ -264,9 +267,9 @@ class VtkViewerView(VtkView):
         validate_schema(params, schemas_dict["set_opacity"])
         id = params["id"]
         opacity = float(params["opacity"])
-        actor = super().get_object(id)["actor"]
+        actor = self.get_object(id)["actor"]
         actor.GetProperty().SetOpacity(opacity)
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["toggle_edge_visibility"]["rpc"])
     def setEdgeVisibility(self, params):
@@ -274,18 +277,18 @@ class VtkViewerView(VtkView):
         print(f"{params=}", flush=True)
         id = str(params["id"])
         visibility = bool(params["visibility"])
-        actor = super().get_object(id)["actor"]
+        actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeVisibility(visibility)
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["toggle_point_visibility"]["rpc"])
     def setPointVisibility(self, params):
         validate_schema(params, schemas_dict["toggle_point_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
-        actor = super().get_object(id)["actor"]
+        actor = self.get_object(id)["actor"]
         actor.GetProperty().SetVertexVisibility(visibility)
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["set_point_size"]["rpc"])
     def setPointSize(self, params):
@@ -293,9 +296,9 @@ class VtkViewerView(VtkView):
         id = params["id"]
         size = float(params["size"])
         print(f"{size=}", flush=True)
-        actor = super().get_object(id)["actor"]
+        actor = self.get_object(id)["actor"]
         actor.GetProperty().SetPointSize(size)
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["set_color"]["rpc"])
     def setColor(self, params):
@@ -304,7 +307,7 @@ class VtkViewerView(VtkView):
         red = params["red"]
         green = params["green"]
         blue = params["blue"]
-        super().get_object(id)["mapper"].ScalarVisibilityOff()
-        actor = super().get_object(id)["actor"]
+        self.get_object(id)["mapper"].ScalarVisibilityOff()
+        actor = self.get_object(id)["actor"]
         actor.GetProperty().SetColor(red, green, blue)
-        super().render()
+        self.render()
