@@ -1,14 +1,17 @@
 {
-  "rpc": "toggle_edge_visibility",
+  "rpc": "object.register",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "visibility": {
-      "type": "boolean"
+    "file_name": {
+      "type": "string"
     }
   },
-  "required": ["id", "visibility"],
+  "required": [
+    "id",
+    "file_name"
+  ],
   "additionalProperties": false
 }

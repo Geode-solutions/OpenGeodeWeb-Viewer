@@ -1,17 +1,13 @@
 {
-  "rpc": "create_object_pipeline",
+  "rpc": "object.deregister",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
-    },
-    "file_name": {
-      "type": "string"
     }
   },
   "required": [
-    "id",
-    "file_name"
+    "id"
   ],
   "additionalProperties": false
 }

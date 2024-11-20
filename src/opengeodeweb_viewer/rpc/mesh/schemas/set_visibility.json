@@ -1,19 +1,17 @@
 {
-  "rpc": "mesh.set_opacity",
+  "rpc": "mesh.set_visibility",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "opacity": {
-      "type": "number",
-      "min": 0,
-      "max": 1
+    "visibility": {
+      "type": "boolean"
     }
   },
   "required": [
     "id",
-    "opacity"
+    "visibility"
   ],
   "additionalProperties": false
 }

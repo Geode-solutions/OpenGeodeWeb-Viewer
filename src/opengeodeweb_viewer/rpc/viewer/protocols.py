@@ -54,59 +54,6 @@ class VtkViewerView(VtkView):
         renderWindow.Render()
         self.render()
 
-    @exportRpc(schemas_dict["create_object_pipeline"]["rpc"])
-    def createObjectPipeline(self, params):
-        validate_schema(params, schemas_dict["create_object_pipeline"])
-        try:
-            id = params["id"]
-            file_name = params["file_name"]
-            FOLDER_PATH = os.path.dirname(__file__)
-
-            actor = vtk.vtkActor()
-            if ".vtm" in file_name:
-                reader = vtk.vtkXMLMultiBlockDataReader()
-                filter = vtk.vtkGeometryFilter()
-                filter.SetInputConnection(reader.GetOutputPort())
-                mapper = vtk.vtkCompositePolyDataMapper()
-                mapper.SetInputConnection(filter.GetOutputPort())
-            else:
-                reader = vtk.vtkXMLGenericDataObjectReader()
-                filter = {}
-                mapper = vtk.vtkDataSetMapper()
-                mapper.SetInputConnection(reader.GetOutputPort())
-                
-            self.register_object(id, reader, filter, actor, mapper, {})
-
-            reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, file_name))
-
-            actor.SetMapper(mapper)
-            mapper.SetColorModeToMapScalars()
-            mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
-            mapper.SetResolveCoincidentTopologyPolygonOffsetParameters(2, 0)
-            mapper.SetResolveCoincidentTopologyPointOffsetParameter(-2)
-
-            renderWindow = self.getView("-1")
-            renderer = renderWindow.GetRenderers().GetFirstRenderer()
-            renderer.AddActor(actor)
-            renderer.ResetCamera()
-            renderWindow.Render()
-            self.render()
-        except Exception as e:
-            print("error : ", str(e), flush=True)
-
-    @exportRpc(schemas_dict["delete_object_pipeline"]["rpc"])
-    def deleteObjectPipeline(self, params):
-        validate_schema(params, schemas_dict["delete_object_pipeline"])
-        print(f"{params=}", flush=True)
-        id = params["id"]
-        object = self.get_object(id)
-        actor = object["actor"]
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        renderer.RemoveActor(actor)
-        print(f"{object=}", flush=True)
-        self.deregister_object(id)
-        self.render()
 
 
     
@@ -155,62 +102,6 @@ class VtkViewerView(VtkView):
 
         return {"blob": self.addAttachment(file_content)}
 
-
-    
-
-    @exportRpc(schemas_dict["apply_textures"]["rpc"])
-    def applyTextures(self, params):
-        validate_schema(params, schemas_dict["apply_textures"])
-        print(f"{params=}", flush=True)
-        id = params["id"]
-        textures = params["textures"]
-        textures_array = []
-        images_reader_array = []
-
-        data = self.get_object(id)
-        mapper = data["mapper"]
-        actor = data["actor"]
-        reader = data["reader"]
-
-        polydata_mapper = mapper.GetPolyDataMapper()
-        poly_data = reader.GetPolyDataOutput()
-
-        for index, value in enumerate(textures):
-            texture_name = value["texture_name"]
-            texture_file_name = value["texture_file_name"]
-            print(f"{texture_name=} {texture_file_name=}", flush=True)
-
-            new_texture = vtk.vtkTexture()
-            image_reader = vtk.vtkXMLImageDataReader()
-            image_reader.SetFileName(
-                os.path.join(self.DATA_FOLDER_PATH, texture_file_name)
-            )
-
-            shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"
-            polydata_mapper.MapDataArrayToMultiTextureAttribute(
-                shader_texture_name,
-                texture_name,
-                vtk.vtkDataObject.FIELD_ASSOCIATION_POINTS,
-            )
-
-            if index == 0:
-                new_texture.SetBlendingMode(
-                    vtk.vtkTexture.VTK_TEXTURE_BLENDING_MODE_REPLACE
-                )
-            else:
-                new_texture.SetBlendingMode(
-                    vtk.vtkTexture.VTK_TEXTURE_BLENDING_MODE_ADD
-                )
-
-            images_reader_array.append(image_reader)
-            new_texture.SetInputConnection(image_reader.GetOutputPort())
-
-            actor.GetProperty().SetTexture(shader_texture_name, new_texture)
-
-            textures_array.append(new_texture)
-            images_reader_array.append(image_reader)
-
-        self.render()
 
     @exportRpc(schemas_dict["update_data"]["rpc"])
     def updateData(self, params):
