@@ -2,27 +2,27 @@ import os
 
 
 def test_create_visualization(server):
-    server.call("create_visualization")
+    server.call("viewer.create_visualization")
     assert server.compare_image(3, "viewer/create_visualization.jpeg") == True
 
 
 def test_reset_camera(server):
-    server.call("reset_camera")
+    server.call("viewer.reset_camera")
     assert server.compare_image(3, "viewer/reset_camera.jpeg") == True
 
 def test_set_viewer_background_color(server):
-    server.call("set_viewer_background_color", [{"red": 0, "green": 0, "blue": 255}])
-    assert server.compare_image(3, "viewer/set_viewer_background_color.jpeg") == True
+    server.call("viewer.set_background_color", [{"red": 0, "green": 0, "blue": 255}])
+    assert server.compare_image(3, "viewer/set_background_color.jpeg") == True
 
 def test_get_point_position(server):
 
     server.call(
-        "object.register",
+        "mesh.register",
         [{"id": "123456789", "file_name": "hat.vtp"}],
     )
-    assert server.compare_image(3, "object/register.jpeg") == True
+    assert server.compare_image(3, "mesh/register.jpeg") == True
 
-    server.call("get_point_position", [{"x": 0, "y": 0}])
+    server.call("viewer.get_point_position", [{"x": 0, "y": 0}])
     response = server.get_response()
     assert "x" in response["result"]
     assert "y" in response["result"]
@@ -38,15 +38,15 @@ def test_get_point_position(server):
 def test_take_screenshot(server):
     # Create an object
     server.call(
-        "object.register",
+        "mesh.register",
         [{"id": "123456789", "file_name": "hat.vtp"}],
     )
-    assert server.compare_image(3, "object/register.jpeg") == True
+    assert server.compare_image(3, "mesh/register.jpeg") == True
 
 
     # Take a screenshot with background jpg
     server.call(
-        "take_screenshot",
+        "viewer.take_screenshot",
         [{"filename": "take_screenshot_with_background", "output_extension": "jpg", "include_background": True}],
     )
 
@@ -64,7 +64,7 @@ def test_take_screenshot(server):
 
     # Take a screenshot without background png
     server.call(
-        "take_screenshot",
+        "viewer.take_screenshot",
         [{"filename": "take_screenshot_without_background", "output_extension": "png", "include_background": True}],
     )
     
@@ -84,7 +84,7 @@ def test_take_screenshot(server):
 
     # Take a screenshot with background png
     server.call(
-        "take_screenshot",
+        "viewer.take_screenshot",
         [{"filename": "take_screenshot_with_background", "output_extension": "png", "include_background": True}],
     )
     

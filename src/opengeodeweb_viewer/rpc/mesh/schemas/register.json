@@ -1,17 +1,17 @@
 {
-  "rpc": "set_model_components_color",
+  "rpc": "mesh.register",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "color": {
+    "file_name": {
       "type": "string"
     }
   },
   "required": [
     "id",
-    "color"
+    "file_name"
   ],
   "additionalProperties": false
 }

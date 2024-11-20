@@ -1,5 +1,5 @@
 {
-  "rpc": "reset",
+  "rpc": "viewer.reset",
   "type": "object",
   "properties": {},
   "required": [],

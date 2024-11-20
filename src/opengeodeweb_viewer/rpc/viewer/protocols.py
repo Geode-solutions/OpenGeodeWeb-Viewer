@@ -31,9 +31,9 @@ class VtkViewerView(VtkView):
         renderWindow.Render()
         self.render()
 
-    @exportRpc(schemas_dict["set_viewer_background_color"]["rpc"])
-    def setViewerBackgroundColor(self, params):
-        validate_schema(params, schemas_dict["set_viewer_background_color"])
+    @exportRpc(schemas_dict["set_background_color"]["rpc"])
+    def setBackgroundColor(self, params):
+        validate_schema(params, schemas_dict["set_background_color"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         red = params["red"]
@@ -54,9 +54,6 @@ class VtkViewerView(VtkView):
         renderWindow.Render()
         self.render()
 
-
-
-    
     @exportRpc(schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params):
         validate_schema(params, schemas_dict["take_screenshot"])

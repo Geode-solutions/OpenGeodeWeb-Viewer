@@ -9,7 +9,7 @@ from wslink import register as exportRpc
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
-from opengeodeweb_viewer.object.protocols import VtkObjectView
+from opengeodeweb_viewer.object.methods import VtkObjectView
 
 schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
 schemas_dict = get_schemas_dict(schemas_dir)
@@ -17,23 +17,52 @@ schemas_dict = get_schemas_dict(schemas_dir)
 class VtkModelView(VtkObjectView):
     def __init__(self):
         super().__init__()
+    
+    @exportRpc(schemas_dict["register"]["rpc"])
+    def registerModel(self, params):
+        validate_schema(params, schemas_dict["register"])
+        id = params["id"]
+        file_name = params["file_name"]
+        try:
+            reader = vtk.vtkXMLMultiBlockDataReader()
+            filter = vtk.vtkGeometryFilter()
+            filter.SetInputConnection(reader.GetOutputPort())
+            mapper = vtk.vtkCompositePolyDataMapper()
+            mapper.SetInputConnection(filter.GetOutputPort())
+            super().register(id, file_name, reader, filter, mapper)
+        except Exception as e:
+            print("error : ", str(e), flush=True)
 
-    @exportRpc(schemas_dict["set_model_mesh_visibility"]["rpc"])
-    def SetModelMeshVisibility(self, params):
-        validate_schema(params, schemas_dict["set_model_mesh_visibility"])
-        super().SetEdgeVisibility(params)
+    @exportRpc(schemas_dict["deregister"]["rpc"])
+    def deregisterModel(self, params):
+        validate_schema(params, schemas_dict["deregister"])
+        id = params["id"]
+        super().deregister(id)
 
-    @exportRpc(schemas_dict["set_model_components_visibility"]["rpc"])
-    def SetModelComponentsVisibility(self, params):
-        validate_schema(params, schemas_dict["set_model_components_visibility"])
-        super().SetVisibility(params)
+    @exportRpc(schemas_dict["set_mesh_visibility"]["rpc"])
+    def SetMeshVisibility(self, params):
+        validate_schema(params, schemas_dict["set_mesh_visibility"])
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        super().SetEdgeVisibility(id, visibility)
 
-    @exportRpc(schemas_dict["set_model_components_color"]["rpc"])
-    def SetModelComponentsColor(self, id, object_type, color):
-        validate_schema(params, schemas_dict["set_model_components_color"])
-        super().SetColor(params)
+    @exportRpc(schemas_dict["set_components_visibility"]["rpc"])
+    def SetComponentsVisibility(self, params):
+        validate_schema(params, schemas_dict["set_components_visibility"])
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        super().SetVisibility(id, visibility)
 
-    @exportRpc(schemas_dict["set_model_corners_size"]["rpc"])
-    def setModelCornersSize(self, params):
-        validate_schema(params, schemas_dict["set_model_corners_size"])
-        super().SetPointSize(params)
+    @exportRpc(schemas_dict["set_components_color"]["rpc"])
+    def SetComponentsColor(self, params):
+        validate_schema(params, schemas_dict["set_components_color"])
+        id = params["id"]
+        color = params["color"]
+        super().SetColor(id, color)
+
+    @exportRpc(schemas_dict["set_corners_size"]["rpc"])
+    def setCornersSize(self, params):
+        validate_schema(params, schemas_dict["set_corners_size"])
+        id = params["id"]
+        size = float(params["size"])
+        super().SetPointSize(id, size)

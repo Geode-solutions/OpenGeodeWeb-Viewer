@@ -1,13 +1,17 @@
 {
-  "rpc": "object.deregister",
+  "rpc": "model.set_corners_size",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
+    },
+    "size": {
+      "type": "integer"
     }
   },
   "required": [
-    "id"
+    "id",
+    "size"
   ],
   "additionalProperties": false
 }

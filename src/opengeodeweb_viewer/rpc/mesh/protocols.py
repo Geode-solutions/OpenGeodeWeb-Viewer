@@ -11,7 +11,7 @@ from wslink import register as exportRpc
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
-from opengeodeweb_viewer.object.protocols import VtkObjectView
+from opengeodeweb_viewer.object.methods import VtkObjectView
 
 
 schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
@@ -21,10 +21,30 @@ class VtkMeshView(VtkObjectView):
     def __init__(self):
         super().__init__()
 
+    @exportRpc(schemas_dict["register"]["rpc"])
+    def register(self, params):
+        validate_schema(params, schemas_dict["register"])
+        id = params["id"]
+        file_name = params["file_name"]
+        try:
+            reader = vtk.vtkXMLGenericDataObjectReader()
+            filter = {}
+            mapper = vtk.vtkDataSetMapper()
+            mapper.SetInputConnection(reader.GetOutputPort())
+            super().register(id, file_name, reader, filter, mapper)
+        except Exception as e:
+            print("error : ", str(e), flush=True)
+
+    @exportRpc(schemas_dict["register"]["rpc"])
+    def deregisterMesh(self, params):
+        validate_schema(params, schemas_dict["deregister"])
+        id = params["id"]
+        super().deregister(id)
+
     @exportRpc(schemas_dict["set_visibility"]["rpc"])
     def SetVisibility(self, params):
-        print(schemas_dict["toggle_object_visibility"]["rpc"], flush=True)
-        validate_schema(params, schemas_dict["toggle_object_visibility"])
+        print(schemas_dict["set_visibility"]["rpc"], flush=True)
+        validate_schema(params, schemas_dict["set_visibility"])
         super().SetVisibility(params)
 
     @exportRpc(schemas_dict["set_opacity"]["rpc"])

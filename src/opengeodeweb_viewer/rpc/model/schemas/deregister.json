@@ -1,18 +1,13 @@
 {
+  "rpc": "model.deregister",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
-    },
-    "opacity": {
-      "type": "number",
-      "min": 0,
-      "max": 1
     }
   },
   "required": [
-    "id",
-    "opacity"
+    "id"
   ],
   "additionalProperties": false
 }

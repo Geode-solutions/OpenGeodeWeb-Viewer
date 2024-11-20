@@ -1,5 +1,5 @@
 {
-  "rpc": "get_point_position",
+  "rpc": "viewer.get_point_position",
   "type": "object",
   "properties": {
     "x": {
@@ -9,6 +9,9 @@
       "type": "integer"
     }
   },
-  "required": ["x", "y"],
+  "required": [
+    "x",
+    "y"
+  ],
   "additionalProperties": false
 }

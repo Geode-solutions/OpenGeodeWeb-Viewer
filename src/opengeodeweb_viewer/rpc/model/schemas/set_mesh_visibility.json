@@ -1,16 +1,17 @@
 {
+  "rpc": "model.set_mesh_visibility",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "size": {
-      "type": "number"
+    "visibility": {
+      "type": "boolean"
     }
   },
   "required": [
     "id",
-    "size"
+    "visibility"
   ],
   "additionalProperties": false
 }

@@ -1,17 +1,17 @@
 {
-  "rpc": "set_model_corners_size",
+  "rpc": "model.set_components_visibility",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "size": {
-      "type": "integer"
+    "visibility": {
+      "type": "boolean"
     }
   },
   "required": [
     "id",
-    "size"
+    "visibility"
   ],
   "additionalProperties": false
 }
