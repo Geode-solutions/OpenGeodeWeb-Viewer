@@ -1,5 +1,5 @@
 {
-  "rpc": "display_polygon_attribute",
+  "rpc": "mesh.display_polygon_attribute",
   "type": "object",
   "properties": {
     "id": {

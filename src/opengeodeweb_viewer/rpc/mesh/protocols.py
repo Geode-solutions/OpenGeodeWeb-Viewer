@@ -35,7 +35,7 @@ class VtkMeshView(VtkObjectView):
         except Exception as e:
             print("error : ", str(e), flush=True)
 
-    @exportRpc(schemas_dict["register"]["rpc"])
+    @exportRpc(schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params):
         validate_schema(params, schemas_dict["deregister"])
         id = params["id"]
@@ -45,38 +45,52 @@ class VtkMeshView(VtkObjectView):
     def SetVisibility(self, params):
         print(schemas_dict["set_visibility"]["rpc"], flush=True)
         validate_schema(params, schemas_dict["set_visibility"])
-        super().SetVisibility(params)
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        super().SetVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_opacity"]["rpc"])
     def SetOpacity(self, params):
         print(schemas_dict["set_opacity"]["rpc"], flush=True)
         validate_schema(params, schemas_dict["set_opacity"])
-        super().SetOpacity(params)
+        id = params["id"]
+        opacity = float(params["opacity"])
+        super().SetOpacity(id, opacity)
 
     @exportRpc(schemas_dict["set_edge_visibility"]["rpc"])
     def setEdgeVisibility(self, params):
         print(schemas_dict["set_edge_visibility"]["rpc"], flush=True)
         validate_schema(params, schemas_dict["set_edge_visibility"])
         print(f"{params=}", flush=True)
-        super().SetEdgeVisibility(params)
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        super().SetEdgeVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_point_visibility"]["rpc"])
     def setPointVisibility(self, params):
         print(schemas_dict["set_point_visibility"]["rpc"], flush=True)
         validate_schema(params, schemas_dict["set_point_visibility"])
-        super().SetVertexVisibility(params)
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        super().SetVertexVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_point_size"]["rpc"])
     def setPointSize(self, params):
         print(schemas_dict["set_point_size"]["rpc"], flush=True)
         validate_schema(params, schemas_dict["set_point_size"])
-        super().SetPointSize(params)
+        id = params["id"]
+        size = float(params["size"])
+        super().SetPointSize(id, size)
 
     @exportRpc(schemas_dict["set_color"]["rpc"])
     def setColor(self, params):
         print(schemas_dict["set_color"]["rpc"], flush=True)
         validate_schema(params, schemas_dict["set_color"])
-        super().SetColor(params)
+        id = params["id"]
+        red = params["red"]
+        green = params["green"]
+        blue = params["blue"]
+        super().SetColor(id, red, green, blue)
 
     @exportRpc(schemas_dict["display_vertex_attribute"]["rpc"])
     def setVertexAttribute(self, params):
@@ -84,28 +98,21 @@ class VtkMeshView(VtkObjectView):
         print(f"{params=}", flush=True)
         id = params["id"]
         name = params["name"]
-        mapper = self.get_object(id)["mapper"]
+        mapper = super().get_object(id)["mapper"]
         mapper.SelectColorArray(name)
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointFieldData()
-        self.render()
+        super().render()
 
     @exportRpc(schemas_dict["display_polygon_attribute"]["rpc"])
-    def setPolygonAttribute(self, id, name):
+    def setPolygonAttribute(self, params):
         validate_schema(params, schemas_dict["display_polygon_attribute"])
-        cpp = store["cpp"]
-        print(cpp.nb_polygons())
-        cells = store["vtk"].GetCellData()
-        print(store["vtk"].GetNumberOfCells())
-        manager = cpp.polygon_attribute_manager()
-        if not manager.attribute_exists(name):
-            return
-        if not cells.HasArray(name):
-            data = self.computeAttributeData(manager, name)
-            cells.AddArray(data)
-        cells.SetActiveScalars(name)
-        mapper = self.get_object(id)["mapper"]
+        id = params["id"]
+        name = params["name"]
+        print(f"{id=}", flush=True)
+        print(f"{name=}", flush=True)
+        mapper = super().get_object(id)["mapper"]
+        mapper.SelectColorArray(name)
         mapper.ScalarVisibilityOn()
-        mapper.SetScalarModeToUseCellData()
-        mapper.SetScalarRange(cells.GetScalars().GetRange())
-        self.render()
+        mapper.SetScalarModeToUseCellFieldData()
+        super().render()

@@ -8,11 +8,6 @@ import vtk
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
-
-schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
-schemas_dict = get_schemas_dict(schemas_dir)
-
-
 class VtkObjectView(VtkView):
     def __init__(self):
         super().__init__()
@@ -108,7 +103,9 @@ class VtkObjectView(VtkView):
         actor.GetProperty().SetOpacity(opacity)
         self.render()
     
-    def SetColor(self, id, color):
+    def SetColor(self, id, red, green, blue):
+        color = [red, green, blue]
+        print(f"{color=}", flush=True)
         mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOff()
         actor = self.get_object(id)["actor"]
@@ -126,7 +123,6 @@ class VtkObjectView(VtkView):
         self.render()
 
     def SetPointSize(self, id, size):
-        validate_schema(params, schemas_dict["set_point_size"])
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetPointSize(size)
         self.render()

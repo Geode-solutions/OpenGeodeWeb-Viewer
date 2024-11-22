@@ -57,8 +57,10 @@ class VtkModelView(VtkObjectView):
     def SetComponentsColor(self, params):
         validate_schema(params, schemas_dict["set_components_color"])
         id = params["id"]
-        color = params["color"]
-        super().SetColor(id, color)
+        red = params["red"]
+        green = params["green"]
+        blue = params["blue"]
+        super().SetColor(id, red, green, blue)
 
     @exportRpc(schemas_dict["set_corners_size"]["rpc"])
     def setCornersSize(self, params):

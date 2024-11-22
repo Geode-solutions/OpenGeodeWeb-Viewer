@@ -1,10 +1,12 @@
+# Standard library imports
 import os
 
+# Local application imports
+from opengeodeweb_viewer.tests.test_mesh_protocols import test_register_mesh
 
 def test_create_visualization(server):
     server.call("viewer.create_visualization")
     assert server.compare_image(3, "viewer/create_visualization.jpeg") == True
-
 
 def test_reset_camera(server):
     server.call("viewer.reset_camera")
@@ -16,11 +18,7 @@ def test_set_viewer_background_color(server):
 
 def test_get_point_position(server):
 
-    server.call(
-        "mesh.register",
-        [{"id": "123456789", "file_name": "hat.vtp"}],
-    )
-    assert server.compare_image(3, "mesh/register.jpeg") == True
+    test_register_mesh(server)
 
     server.call("viewer.get_point_position", [{"x": 0, "y": 0}])
     response = server.get_response()
@@ -37,12 +35,7 @@ def test_get_point_position(server):
 
 def test_take_screenshot(server):
     # Create an object
-    server.call(
-        "mesh.register",
-        [{"id": "123456789", "file_name": "hat.vtp"}],
-    )
-    assert server.compare_image(3, "mesh/register.jpeg") == True
-
+    test_register_mesh(server)
 
     # Take a screenshot with background jpg
     server.call(

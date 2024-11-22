@@ -5,13 +5,27 @@
     "id": {
       "type": "string"
     },
-    "color": {
-      "type": "string"
+    "red": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "green": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "blue": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
     }
   },
   "required": [
     "id",
-    "color"
+    "red",
+    "green",
+    "blue"
   ],
   "additionalProperties": false
 }
