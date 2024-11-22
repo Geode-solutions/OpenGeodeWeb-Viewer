@@ -9,7 +9,7 @@ from wslink import register as exportRpc
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
-from opengeodeweb_viewer.object.methods import VtkObjectView
+from opengeodeweb_viewer.object.object_methods import VtkObjectView
 
 schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
 schemas_dict = get_schemas_dict(schemas_dir)

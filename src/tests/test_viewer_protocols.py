@@ -2,7 +2,7 @@
 import os
 
 # Local application imports
-from opengeodeweb_viewer.tests.test_mesh_protocols import test_register_mesh
+from .test_mesh_protocols import test_register_mesh
 
 def test_create_visualization(server):
     server.call("viewer.create_visualization")

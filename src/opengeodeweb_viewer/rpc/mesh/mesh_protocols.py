@@ -11,7 +11,7 @@ from wslink import register as exportRpc
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
-from opengeodeweb_viewer.object.methods import VtkObjectView
+from opengeodeweb_viewer.object.object_methods import VtkObjectView
 
 
 schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
@@ -98,10 +98,13 @@ class VtkMeshView(VtkObjectView):
         print(f"{params=}", flush=True)
         id = params["id"]
         name = params["name"]
+        reader = super().get_object(id)["reader"]
+        points = reader.GetOutput().GetPointData()
+        points.SetActiveScalars(name)
         mapper = super().get_object(id)["mapper"]
-        mapper.SelectColorArray(name)
         mapper.ScalarVisibilityOn()
-        mapper.SetScalarModeToUsePointFieldData()
+        mapper.SetScalarModeToUsePointData()
+        mapper.SetScalarRange(points.GetScalars().GetRange())
         super().render()
 
     @exportRpc(schemas_dict["display_polygon_attribute"]["rpc"])
@@ -109,10 +112,11 @@ class VtkMeshView(VtkObjectView):
         validate_schema(params, schemas_dict["display_polygon_attribute"])
         id = params["id"]
         name = params["name"]
-        print(f"{id=}", flush=True)
-        print(f"{name=}", flush=True)
+        reader = super().get_object(id)["reader"]
+        cells = reader.GetOutput().GetCellData()
+        cells.SetActiveScalars(name)
         mapper = super().get_object(id)["mapper"]
-        mapper.SelectColorArray(name)
         mapper.ScalarVisibilityOn()
-        mapper.SetScalarModeToUseCellFieldData()
+        mapper.SetScalarModeToUseCellData()
+        mapper.SetScalarRange(cells.GetScalars().GetRange())
         super().render()

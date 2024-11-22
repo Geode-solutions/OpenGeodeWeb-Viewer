@@ -63,12 +63,19 @@ def test_display_vertex_attribute(server):
     )
     assert server.compare_image(3, "mesh/display_vertex_attribute_2.jpeg") == True
 
-# def test_display_polygon_attribute(server):
-#     server.call("mesh.register", [{"id": "123456789", "file_name": "polygon_attribute.vtp"}])
-#     assert server.compare_image(3, "mesh/display_polygon_attribute_1.jpeg") == True
 
-#     server.call(
-#         "mesh.display_vertex_attribute",
-#         [{"id": "123456789", "name": "implicit_on_polygons"}],
-#     )
-#     assert server.compare_image(3, "mesh/display_polygon_attribute_2.jpeg") == True
+    server.call(
+        "mesh.set_color",
+        [{"id": "123456789", "red": 250, "green": 0, "blue": 0}],
+    )
+    assert server.compare_image(3, "mesh/display_vertex_attribute_3.jpeg") == True
+
+def test_display_polygon_attribute(server):
+    server.call("mesh.register", [{"id": "123456789", "file_name": "polygon_attribute.vtp"}])
+    assert server.compare_image(3, "mesh/display_polygon_attribute_1.jpeg") == True
+
+    server.call(
+        "mesh.display_polygon_attribute",
+        [{"id": "123456789", "name": "implicit_on_polygons"}],
+    )
+    assert server.compare_image(3, "mesh/display_polygon_attribute_2.jpeg") == True

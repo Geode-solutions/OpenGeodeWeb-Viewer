@@ -9,7 +9,7 @@
 				<DataArray type="Float64" Name="unique vertices" format="ascii" NumberOfComponents="1" RangeMin="32" RangeMax="63">50 51 55 56 52 57 53 58 54 59 62 61 47 46 60 35 32 33 34 45 35 63 63 </DataArray>
 			</PointData>
 			<Points>
-				<DataArray type="Float64" Name="Points" format="ascii" NumberOfComponents="3" RangeMin="1.1000000000000001" RangeMax="11">1.1 1.5 0 4.5 1.4 0 2.9 3 0 4.9 3.1 0 6.4 1.7 0 6.3 4 0 8.2 1.9 0 8.5 4 0 11 2 0 10.9 4 0 10.7 6.9 0 9.4 6 0 10.6 8.5 0 8 7.5 0 7 5.95 0 5.8 5.8 0 1.1 4.5 0 3 5 0 5 5.5 0 6.1 7 0 5.8 5.8 0 5.35 4.45 0 5.35 4.45 0 </DataArray>
+				<DataArray type="Float64" Name="Points" format="ascii" NumberOfComponents="3" RangeMin="1.1000000000000001" RangeMax="11">1.1 1.5 0 4.5 1.4 0 2.9 3 3 4.9 3.1 0 6.4 1.7 0 6.3 4 0 8.2 1.9 0 8.5 4 0 11 2 0 10.9 4 3 10.7 6.9 0 9.4 6 0 10.6 8.5 0 8 7.5 0 7 5.95 0 5.8 5.8 0 1.1 4.5 0 3 5 0 5 5.5 0 6.1 7 3 5.8 5.8 0 5.35 4.45 0 5.35 4.45 0 </DataArray>
 			</Points>
 			<CellData>
 				<DataArray type="Float64" Name="implicit_on_polygons" format="ascii" NumberOfComponents="1" RangeMin="-4.04906511" RangeMax="1.79152191">-4.04907 -3.33402 -3.56775 -2.7295 -3.00925 -2.26168 -2.77238 -2.06008 0.197405 1.68258 1.79152 -0.814056 0.815858 -0.304546 -1.03987 -0.579057 -3.3135 -2.11236 -2.32474 -1.42798 0.345606 1.0052 -1.10125 -1.93978 -1.47606 -0.585217 </DataArray>

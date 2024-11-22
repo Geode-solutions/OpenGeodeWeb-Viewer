@@ -55,9 +55,9 @@ class vtkWebPublishImageDelivery(vtk_protocols.vtkWebProtocol):
         if reply["image"]:
             # depending on whether the app has encoding enabled:
             if self.decode:
-                reply["image"] = base64.standard_b64decode(reply["image"]);
+                reply["image"] = base64.standard_b64decode(reply["image"])
 
-            reply["image"] = self.addAttachment(reply["image"]);
+            reply["image"] = self.addAttachment(reply["image"])
             reply["format"] = "jpeg"
             # save mtime for next call.
             self.trackingViews[vId]["mtime"] = reply["mtime"]

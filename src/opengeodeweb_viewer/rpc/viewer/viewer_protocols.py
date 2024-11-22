@@ -24,17 +24,17 @@ class VtkViewerView(VtkView):
     @exportRpc(schemas_dict["create_visualization"]["rpc"])
     def createVisualization(self, params):
         validate_schema(params, schemas_dict["create_visualization"])
-        renderWindow = self.getView("-1")
+        renderWindow = super().getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
         renderer.ResetCamera()
         renderWindow.Render()
-        self.render()
+        super().render()
 
     @exportRpc(schemas_dict["set_background_color"]["rpc"])
     def setBackgroundColor(self, params):
         validate_schema(params, schemas_dict["set_background_color"])
-        renderWindow = self.getView("-1")
+        renderWindow = super().getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         red = params["red"]
         green = params["green"]
@@ -43,16 +43,16 @@ class VtkViewerView(VtkView):
         renderer.SetBackground([red, green, blue])
         renderer.ResetCamera()
         renderWindow.Render()
-        self.render()
+        super().render()
 
     @exportRpc(schemas_dict["reset_camera"]["rpc"])
     def resetCamera(self, params):
         print(f"{params=}", flush=True)
         validate_schema(params, schemas_dict["reset_camera"])
-        renderWindow = self.getView("-1")
+        renderWindow = super().getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
         renderWindow.Render()
-        self.render()
+        super().render()
 
     @exportRpc(schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params):
@@ -61,8 +61,8 @@ class VtkViewerView(VtkView):
         filename = params["filename"]
         output_extension = params["output_extension"]
         include_background = params["include_background"]
-        renderWindow = self.getView("-1")
-        renderer = self.get_renderer()
+        renderWindow = super().getView("-1")
+        renderer = super().get_renderer()
 
         w2if = vtkWindowToImageFilter()
 
@@ -106,7 +106,7 @@ class VtkViewerView(VtkView):
         print(f"{params=}", flush=True)
         id = params["id"]
 
-        data = self.get_object(id)
+        data = super().get_object(id)
         reader = data["reader"]
         reader.Update()
         mapper = data["mapper"]
@@ -120,7 +120,7 @@ class VtkViewerView(VtkView):
             tag,
         )
         mapper.SetScalarRange(scalars.GetRange())
-        self.render()
+        super().render()
 
     @exportRpc(schemas_dict["get_point_position"]["rpc"])
     def getPointPosition(self, params):
@@ -129,12 +129,12 @@ class VtkViewerView(VtkView):
         y = float(params["y"])
         xyz = [x, y, 0.0]
         picker = vtk.vtkWorldPointPicker()
-        picker.Pick(xyz, self.get_renderer())
+        picker.Pick(xyz, super().get_renderer())
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
     @exportRpc(schemas_dict["reset"]["rpc"])
     def reset(self, params):
         validate_schema(params, schemas_dict["reset"])
-        renderWindow = self.getView("-1")
+        renderWindow = super().getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()

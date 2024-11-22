@@ -39,11 +39,7 @@ class VtkObjectView(VtkView):
         self.deregister_object(id)
         self.render()
 
-    
-    # @exportRpc(schemas_dict["apply_textures"]["rpc"])
     def applyTextures(self, id, textures):
-        # id = params["id"]
-        # textures = params["textures"]
         textures_array = []
         images_reader_array = []
 
@@ -104,12 +100,11 @@ class VtkObjectView(VtkView):
         self.render()
     
     def SetColor(self, id, red, green, blue):
-        color = [red, green, blue]
-        print(f"{color=}", flush=True)
+        reader = super().get_object(id)["reader"]
         mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOff()
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetColor(color)
+        actor.GetProperty().SetColor([red, green, blue])
         self.render()
 
     def SetEdgeVisibility(self, id, visibility):
