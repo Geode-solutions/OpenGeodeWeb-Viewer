@@ -30,7 +30,7 @@ class VtkModelView(VtkObjectView):
             filter.SetInputConnection(reader.GetOutputPort())
             mapper = vtk.vtkCompositePolyDataMapper()
             mapper.SetInputConnection(filter.GetOutputPort())
-            super().register(id, file_name, reader, filter, mapper)
+            self.register(id, file_name, reader, filter, mapper)
         except Exception as e:
             print("error : ", str(e), flush=True)
 
@@ -39,7 +39,7 @@ class VtkModelView(VtkObjectView):
         print(schemas_dict["deregister"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["deregister"])
         id = params["id"]
-        super().deregister(id)
+        self.deregister(id)
 
     @exportRpc(schemas_dict["set_mesh_visibility"]["rpc"])
     def SetMeshVisibility(self, params):
@@ -47,7 +47,7 @@ class VtkModelView(VtkObjectView):
         validate_schema(params, schemas_dict["set_mesh_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
-        super().SetEdgeVisibility(id, visibility)
+        self.SetEdgeVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_components_visibility"]["rpc"])
     def SetComponentsVisibility(self, params):
@@ -55,7 +55,7 @@ class VtkModelView(VtkObjectView):
         validate_schema(params, schemas_dict["set_components_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
-        super().SetVisibility(id, visibility)
+        self.SetVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_components_color"]["rpc"])
     def SetComponentsColor(self, params):
@@ -65,7 +65,7 @@ class VtkModelView(VtkObjectView):
         red = params["red"]
         green = params["green"]
         blue = params["blue"]
-        super().SetColor(id, red, green, blue)
+        self.SetColor(id, red, green, blue)
 
     @exportRpc(schemas_dict["set_corners_size"]["rpc"])
     def setCornersSize(self, params):
@@ -73,4 +73,4 @@ class VtkModelView(VtkObjectView):
         validate_schema(params, schemas_dict["set_corners_size"])
         id = params["id"]
         size = float(params["size"])
-        super().SetPointSize(id, size)
+        self.SetPointSize(id, size)

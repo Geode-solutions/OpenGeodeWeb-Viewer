@@ -22,7 +22,7 @@ class VtkMeshView(VtkObjectView):
         super().__init__()
 
     @exportRpc(schemas_dict["register"]["rpc"])
-    def register(self, params):
+    def registerMesh(self, params):
         print(schemas_dict["register"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["register"])
         id = params["id"]
@@ -32,7 +32,7 @@ class VtkMeshView(VtkObjectView):
             filter = {}
             mapper = vtk.vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            super().register(id, file_name, reader, filter, mapper)
+            self.register(id, file_name, reader, filter, mapper)
         except Exception as e:
             print("error : ", str(e), flush=True)
 
@@ -41,57 +41,57 @@ class VtkMeshView(VtkObjectView):
         print(schemas_dict["deregister"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["deregister"])
         id = params["id"]
-        super().deregister(id)
+        self.deregister(id)
 
     @exportRpc(schemas_dict["set_visibility"]["rpc"])
-    def SetVisibility(self, params):
+    def SetMeshVisibility(self, params):
         print(schemas_dict["set_visibility"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
-        super().SetVisibility(id, visibility)
+        self.SetVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_opacity"]["rpc"])
-    def SetOpacity(self, params):
+    def SetMeshOpacity(self, params):
         print(schemas_dict["set_opacity"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_opacity"])
         id = params["id"]
         opacity = float(params["opacity"])
-        super().SetOpacity(id, opacity)
+        self.SetOpacity(id, opacity)
 
     @exportRpc(schemas_dict["set_edge_visibility"]["rpc"])
-    def setEdgeVisibility(self, params):
+    def setMeshEdgeVisibility(self, params):
         print(schemas_dict["set_edge_visibility"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_edge_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
-        super().SetEdgeVisibility(id, visibility)
+        self.SetEdgeVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_point_visibility"]["rpc"])
-    def setPointVisibility(self, params):
+    def setMeshPointVisibility(self, params):
         print(schemas_dict["set_point_visibility"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_point_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
-        super().SetVertexVisibility(id, visibility)
+        self.SetVertexVisibility(id, visibility)
 
     @exportRpc(schemas_dict["set_point_size"]["rpc"])
-    def setPointSize(self, params):
+    def setMeshPointSize(self, params):
         print(schemas_dict["set_point_size"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_point_size"])
         id = params["id"]
         size = float(params["size"])
-        super().SetPointSize(id, size)
+        self.SetPointSize(id, size)
 
     @exportRpc(schemas_dict["set_color"]["rpc"])
-    def setColor(self, params):
+    def setMeshColor(self, params):
         print(schemas_dict["set_color"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_color"])
         id = params["id"]
         red = params["red"]
         green = params["green"]
         blue = params["blue"]
-        super().SetColor(id, red, green, blue)
+        self.SetColor(id, red, green, blue)
 
     @exportRpc(schemas_dict["display_vertex_attribute"]["rpc"])
     def setVertexAttribute(self, params):
@@ -99,14 +99,14 @@ class VtkMeshView(VtkObjectView):
         validate_schema(params, schemas_dict["display_vertex_attribute"])
         id = params["id"]
         name = params["name"]
-        reader = super().get_object(id)["reader"]
+        reader = self.get_object(id)["reader"]
         points = reader.GetOutput().GetPointData()
         points.SetActiveScalars(name)
-        mapper = super().get_object(id)["mapper"]
+        mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetScalarRange(points.GetScalars().GetRange())
-        super().render()
+        self.render()
 
     @exportRpc(schemas_dict["display_polygon_attribute"]["rpc"])
     def setPolygonAttribute(self, params):
@@ -114,11 +114,11 @@ class VtkMeshView(VtkObjectView):
         validate_schema(params, schemas_dict["display_polygon_attribute"])
         id = params["id"]
         name = params["name"]
-        reader = super().get_object(id)["reader"]
+        reader = self.get_object(id)["reader"]
         cells = reader.GetOutput().GetCellData()
         cells.SetActiveScalars(name)
-        mapper = super().get_object(id)["mapper"]
+        mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetScalarRange(cells.GetScalars().GetRange())
-        super().render()
+        self.render()

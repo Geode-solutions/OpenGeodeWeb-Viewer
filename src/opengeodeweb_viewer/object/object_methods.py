@@ -100,7 +100,7 @@ class VtkObjectView(VtkView):
         self.render()
     
     def SetColor(self, id, red, green, blue):
-        reader = super().get_object(id)["reader"]
+        reader = self.get_object(id)["reader"]
         mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOff()
         actor = self.get_object(id)["actor"]
