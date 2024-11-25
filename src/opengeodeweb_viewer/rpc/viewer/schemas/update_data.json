@@ -1,0 +1,13 @@
+{
+  "rpc": "viewer.update_data",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false
+}

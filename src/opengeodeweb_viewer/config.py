@@ -24,9 +24,11 @@ def dev_config():
         os.mkdir(os.environ.get("DATA_FOLDER_PATH"))
 
 
-def test_config():
+def test_config(path):
     default_config()
     print(f"{os.path.dirname(__file__)=}", flush=True)
-    os.environ["DATA_FOLDER_PATH"] = os.path.join(
-        os.path.dirname(__file__), "..", "tests", "data"
+    os.environ["DATA_FOLDER_PATH"] = os.path.join(path, 
+     "data"
     )
+
+    print(f"{os.environ.get('DATA_FOLDER_PATH')=}", flush=True)

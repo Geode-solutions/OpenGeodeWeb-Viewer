@@ -1,0 +1,19 @@
+{
+  "rpc": "set_opacity",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "opacity": {
+      "type": "number",
+      "min": 0,
+      "max": 1
+    }
+  },
+  "required": [
+    "id",
+    "opacity"
+  ],
+  "additionalProperties": false
+}

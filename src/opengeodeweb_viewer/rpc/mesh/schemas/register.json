@@ -1,0 +1,17 @@
+{
+  "rpc": "register",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "file_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "file_name"
+  ],
+  "additionalProperties": false
+}

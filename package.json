@@ -1,7 +1,8 @@
 {
   "name": "@geode/opengeodeweb-viewer",
   "scripts": {
-    "json": "node generate_schemas.js"
+    "json": "node generate_schemas.js",
+    "test": "npm run json && pytest"
   },
   "dependencies": {
     "glob": "^10.3.10"

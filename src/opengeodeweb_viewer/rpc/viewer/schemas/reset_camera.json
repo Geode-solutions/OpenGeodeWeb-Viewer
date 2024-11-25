@@ -1,0 +1,7 @@
+{
+  "rpc": "viewer.reset_camera",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}
