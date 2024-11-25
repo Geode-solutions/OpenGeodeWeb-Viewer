@@ -1,5 +1,5 @@
 {
-  "rpc": "model.register",
+  "rpc": "register",
   "type": "object",
   "properties": {
     "id": {

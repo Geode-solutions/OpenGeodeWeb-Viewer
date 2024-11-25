@@ -1,26 +1,31 @@
 # Standard library imports
 import os
 
+# Third party imports
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+
 # Local application imports
 from .test_mesh_protocols import test_register_mesh
 
+class_ = VtkViewerView()
+
 def test_create_visualization(server):
-    server.call("viewer.create_visualization")
+    server.call(class_.prefix + class_.schemas_dict["create_visualization"]["rpc"])
     assert server.compare_image(3, "viewer/create_visualization.jpeg") == True
 
 def test_reset_camera(server):
-    server.call("viewer.reset_camera")
+    server.call(class_.prefix + class_.schemas_dict["reset_camera"]["rpc"])
     assert server.compare_image(3, "viewer/reset_camera.jpeg") == True
 
 def test_set_viewer_background_color(server):
-    server.call("viewer.set_background_color", [{"red": 0, "green": 0, "blue": 255}])
+    server.call(class_.prefix + class_.schemas_dict["set_background_color"]["rpc"], [{"red": 0, "green": 0, "blue": 255}])
     assert server.compare_image(3, "viewer/set_background_color.jpeg") == True
 
 def test_get_point_position(server):
 
     test_register_mesh(server)
 
-    server.call("viewer.get_point_position", [{"x": 0, "y": 0}])
+    server.call(class_.prefix + class_.schemas_dict["get_point_position"]["rpc"], [{"x": 0, "y": 0}])
     response = server.get_response()
     assert "x" in response["result"]
     assert "y" in response["result"]
@@ -39,7 +44,7 @@ def test_take_screenshot(server):
 
     # Take a screenshot with background jpg
     server.call(
-        "viewer.take_screenshot",
+        class_.prefix + class_.schemas_dict["take_screenshot"]["rpc"],
         [{"filename": "take_screenshot_with_background", "output_extension": "jpg", "include_background": True}],
     )
 
@@ -57,7 +62,7 @@ def test_take_screenshot(server):
 
     # Take a screenshot without background png
     server.call(
-        "viewer.take_screenshot",
+        class_.prefix + class_.schemas_dict["take_screenshot"]["rpc"],
         [{"filename": "take_screenshot_without_background", "output_extension": "png", "include_background": True}],
     )
     
@@ -77,7 +82,7 @@ def test_take_screenshot(server):
 
     # Take a screenshot with background png
     server.call(
-        "viewer.take_screenshot",
+        class_.prefix + class_.schemas_dict["take_screenshot"]["rpc"],
         [{"filename": "take_screenshot_with_background", "output_extension": "png", "include_background": True}],
     )
     

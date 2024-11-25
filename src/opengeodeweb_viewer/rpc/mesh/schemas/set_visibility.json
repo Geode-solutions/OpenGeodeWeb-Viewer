@@ -1,5 +1,5 @@
 {
-  "rpc": "mesh.set_visibility",
+  "rpc": "set_visibility",
   "type": "object",
   "properties": {
     "id": {

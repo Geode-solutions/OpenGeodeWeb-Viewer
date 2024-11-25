@@ -16,12 +16,15 @@ from opengeodeweb_viewer.vtk_protocol import VtkView
 
 schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
 schemas_dict = get_schemas_dict(schemas_dir)
+prefix = "opengeodeweb_viewer.viewer."
 
 class VtkViewerView(VtkView):
     def __init__(self):
         super().__init__()
+        self.prefix = prefix
+        self.schemas_dict = schemas_dict
 
-    @exportRpc(schemas_dict["create_visualization"]["rpc"])
+    @exportRpc(prefix + schemas_dict["create_visualization"]["rpc"])
     def createVisualization(self, params):
         print(schemas_dict["create_visualization"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["create_visualization"])
@@ -32,7 +35,7 @@ class VtkViewerView(VtkView):
         renderWindow.Render()
         self.render()
 
-    @exportRpc(schemas_dict["set_background_color"]["rpc"])
+    @exportRpc(prefix + schemas_dict["set_background_color"]["rpc"])
     def setBackgroundColor(self, params):
         print(schemas_dict["set_background_color"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_background_color"])
@@ -47,7 +50,7 @@ class VtkViewerView(VtkView):
         renderWindow.Render()
         self.render()
 
-    @exportRpc(schemas_dict["reset_camera"]["rpc"])
+    @exportRpc(prefix + schemas_dict["reset_camera"]["rpc"])
     def resetCamera(self, params):
         print(schemas_dict["reset_camera"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["reset_camera"])
@@ -56,7 +59,7 @@ class VtkViewerView(VtkView):
         renderWindow.Render()
         self.render()
 
-    @exportRpc(schemas_dict["take_screenshot"]["rpc"])
+    @exportRpc(prefix + schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params):
         print(schemas_dict["take_screenshot"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["take_screenshot"])
@@ -102,7 +105,7 @@ class VtkViewerView(VtkView):
         return {"blob": self.addAttachment(file_content)}
 
 
-    @exportRpc(schemas_dict["update_data"]["rpc"])
+    @exportRpc(prefix + schemas_dict["update_data"]["rpc"])
     def updateData(self, params):
         print(schemas_dict["update_data"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["update_data"])
@@ -124,7 +127,7 @@ class VtkViewerView(VtkView):
         mapper.SetScalarRange(scalars.GetRange())
         self.render()
 
-    @exportRpc(schemas_dict["get_point_position"]["rpc"])
+    @exportRpc(prefix + schemas_dict["get_point_position"]["rpc"])
     def getPointPosition(self, params):
         print(schemas_dict["get_point_position"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["get_point_position"])
@@ -136,7 +139,7 @@ class VtkViewerView(VtkView):
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
-    @exportRpc(schemas_dict["reset"]["rpc"])
+    @exportRpc(prefix + schemas_dict["reset"]["rpc"])
     def reset(self, params):
         print(schemas_dict["reset"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["reset"])

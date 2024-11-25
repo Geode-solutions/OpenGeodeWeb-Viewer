@@ -1,5 +1,5 @@
 {
-  "rpc": "mesh.display_vertex_attribute",
+  "rpc": "display_vertex_attribute",
   "type": "object",
   "properties": {
     "id": {

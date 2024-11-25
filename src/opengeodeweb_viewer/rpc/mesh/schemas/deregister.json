@@ -1,5 +1,5 @@
 {
-  "rpc": "mesh.deregister",
+  "rpc": "deregister",
   "type": "object",
   "properties": {
     "id": {

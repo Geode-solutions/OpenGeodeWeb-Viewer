@@ -1,5 +1,5 @@
 {
-  "rpc": "mesh.set_opacity",
+  "rpc": "set_opacity",
   "type": "object",
   "properties": {
     "id": {

@@ -1,5 +1,5 @@
 {
-  "rpc": "model.apply_textures",
+  "rpc": "apply_textures",
   "type": "object",
   "properties": {
     "id": {

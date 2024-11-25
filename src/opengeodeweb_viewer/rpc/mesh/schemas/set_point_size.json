@@ -1,5 +1,5 @@
 {
-  "rpc": "mesh.set_point_size",
+  "rpc": "set_point_size",
   "type": "object",
   "properties": {
     "id": {
