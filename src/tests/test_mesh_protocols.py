@@ -33,20 +33,19 @@ def test_set_edge_visibility(server):
 
 #     test_register_mesh(server)
 
-#     server.call(class_.prefix + "set_point_visibility", [{"id": "123456789", "visibility": True}])
+#     server.call(class_.prefix + class_.schemas_dict["set_point_visibility"]["rpc"], [{"id": "123456789", "visibility": True}])
 #     assert server.compare_image(3, "mesh/set_point_visibility.jpeg") == True
 
 # def test_set_point_size(server):
 
+#     server.call(class_.prefix + class_.schemas_dict["register"]["rpc"], [{"id": "123456789", "file_name": "verts.vtp"}])
+#     assert server.compare_image(3, "mesh/set_point_size_1.jpeg") == True
 
-#     server.call(class_.prefix + "register", [{"id": "123456789", "file_name": "verts.vtp"}])
-#     assert server.compare_image(3, "mesh/register.jpeg") == True
+#     server.call(class_.prefix + class_.schemas_dict["set_point_visibility"]["rpc"], [{"id": "123456789", "visibility": True}])
+#     assert server.compare_image(3, "mesh/set_point_size_2.jpeg") == True
 
-    # server.call(class_.prefix + "toggle_point_visibility", [{"id": "123456789", "visibility": True}])
-    # assert server.compare_image(3, "set_point_size_1.jpeg") == True
-
-    # server.call(class_.prefix + "set_point_size", [{"id": "123456789", "size": 10}])
-    # assert server.compare_image(2, "mesh/set_point_size.jpeg") == True
+#     server.call(class_.prefix + class_.schemas_dict["set_point_size"]["rpc"], [{"id": "123456789", "size": 10}])
+#     assert server.compare_image(2, "mesh/set_point_size_3.jpeg") == True
 
 
 def test_set_color(server):
