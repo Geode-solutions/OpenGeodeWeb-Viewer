@@ -54,7 +54,7 @@ class VtkMeshView(VtkObjectView):
         self.SetVisibility(id, visibility)
 
     @exportRpc(prefix + schemas_dict["set_opacity"]["rpc"])
-    def SetMeshOpacity(self, params):
+    def setMeshOpacity(self, params):
         print(schemas_dict["set_opacity"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_opacity"])
         id = params["id"]
