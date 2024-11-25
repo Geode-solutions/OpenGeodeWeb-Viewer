@@ -45,7 +45,7 @@ class VtkModelView(VtkObjectView):
         self.deregister(id)
 
     @exportRpc(prefix + schemas_dict["set_mesh_visibility"]["rpc"])
-    def SetMeshVisibility(self, params):
+    def setMeshVisibility(self, params):
         print(schemas_dict["set_mesh_visibility"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_mesh_visibility"])
         id = params["id"]
@@ -53,7 +53,7 @@ class VtkModelView(VtkObjectView):
         self.SetEdgeVisibility(id, visibility)
 
     @exportRpc(prefix + schemas_dict["set_components_visibility"]["rpc"])
-    def SetComponentsVisibility(self, params):
+    def setComponentsVisibility(self, params):
         print(schemas_dict["set_components_visibility"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_components_visibility"])
         id = params["id"]
@@ -61,7 +61,7 @@ class VtkModelView(VtkObjectView):
         self.SetVisibility(id, visibility)
 
     @exportRpc(prefix + schemas_dict["set_components_color"]["rpc"])
-    def SetComponentsColor(self, params):
+    def setComponentsColor(self, params):
         print(schemas_dict["set_components_color"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["set_components_color"])
         id = params["id"]
