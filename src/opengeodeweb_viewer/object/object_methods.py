@@ -119,5 +119,13 @@ class VtkObjectView(VtkView):
 
     def SetPointSize(self, id, size):
         actor = self.get_object(id)["actor"]
+
+        actor.GetProperty().EdgeVisibilityOn()
+        actor.GetProperty().VertexVisibilityOn()
         actor.GetProperty().SetPointSize(size)
+        print("GetEdgeVisibility", actor.GetProperty().GetEdgeVisibility(), flush=True)
+        print("GetVertexVisibility", actor.GetProperty().GetVertexVisibility(), flush=True)
+        print("GetPointSize", actor.GetProperty().GetPointSize(), flush=True)
+
+        print("vtk.vtkRenderWindow().GetClassName()", vtk.vtkRenderWindow().GetClassName())
         self.render()
