@@ -8,5 +8,10 @@
         "y": {
             "type": "integer"
         }
-    }
+    },
+    "required": [
+        "x",
+        "y"
+    ],
+    "additionalProperties": false
 }
