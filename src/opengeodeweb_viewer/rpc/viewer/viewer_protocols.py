@@ -7,7 +7,7 @@ from pathlib import Path
 import vtk
 from vtk.web import protocols as vtk_protocols
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
-from vtkmodules.vtkRenderingCore import (vtkWindowToImageFilter)
+from vtkmodules.vtkRenderingCore import vtkWindowToImageFilter
 from wslink import register as exportRpc
 
 # Local application imports
@@ -17,6 +17,7 @@ from opengeodeweb_viewer.vtk_protocol import VtkView
 schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
 schemas_dict = get_schemas_dict(schemas_dir)
 prefix = "opengeodeweb_viewer.viewer."
+
 
 class VtkViewerView(VtkView):
     def __init__(self):
@@ -93,7 +94,7 @@ class VtkViewerView(VtkView):
         else:
             raise Exception("output_extension not supported")
 
-        new_filename = filename + '.' + output_extension
+        new_filename = filename + "." + output_extension
         file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
         writer.SetFileName(file_path)
         writer.SetInputConnection(w2if.GetOutputPort())
@@ -103,7 +104,6 @@ class VtkViewerView(VtkView):
             file_content = file.read()
 
         return {"blob": self.addAttachment(file_content)}
-
 
     @exportRpc(prefix + schemas_dict["update_data"]["rpc"])
     def updateData(self, params):
@@ -145,3 +145,11 @@ class VtkViewerView(VtkView):
         validate_schema(params, schemas_dict["reset"])
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
+
+    @exportRpc(prefix + schemas_dict["get_mouse"]["rpc"])
+    def getMouse(self, params):
+        print(schemas_dict["get_mouse"]["rpc"], params, flush=True)
+        validate_schema(params, schemas_dict["get_mouse"])
+        x = params["x"]
+        y = params["y"]
+        return {"x": x, "y": y}

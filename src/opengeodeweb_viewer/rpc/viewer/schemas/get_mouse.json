@@ -1,0 +1,12 @@
+{
+    "rpc": "get_mouse",
+    "type": "object",
+    "properties": {
+        "x": {
+            "type": "integer"
+        },
+        "y": {
+            "type": "integer"
+        }
+    }
+}
