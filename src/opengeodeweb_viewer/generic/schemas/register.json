@@ -1,0 +1,22 @@
+{
+  "rpc": "register",
+  "type": "object",
+  "properties": {
+    "viewer_object": {
+      "type": "string",
+      "enum": ["mesh", "model"]
+    },
+    "id": {
+      "type": "string"
+    },
+    "file_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "viewer_object",
+    "id",
+    "file_name"
+  ],
+  "additionalProperties": false
+}
