@@ -12,10 +12,11 @@ class VtkObjectView(VtkView):
     def __init__(self):
         super().__init__()
 
-    def register(self, id, file_name, reader, filter, mapper):
+    def registerObject(self, id, file_name, reader, filter, mapper):
         actor = vtk.vtkActor()
         self.register_object(id, reader, filter, actor, mapper, {})
 
+        print("registerObject", flush=True)
         reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, file_name))
 
         actor.SetMapper(mapper)
@@ -31,7 +32,7 @@ class VtkObjectView(VtkView):
         renderWindow.Render()
         self.render()
 
-    def deregister(self, id):
+    def deregisterObject(self, id):
         actor = self.get_object(id)["actor"]
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()

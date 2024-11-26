@@ -34,7 +34,8 @@ class VtkMeshView(VtkObjectView):
             filter = {}
             mapper = vtk.vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            self.register(id, file_name, reader, filter, mapper)
+            print("VALID")
+            self.registerObject(id, file_name, reader, filter, mapper)
         except Exception as e:
             print("error : ", str(e), flush=True)
 
@@ -43,7 +44,7 @@ class VtkMeshView(VtkObjectView):
         print(schemas_dict["deregister"]["rpc"], params, flush=True)
         validate_schema(params, schemas_dict["deregister"])
         id = params["id"]
-        self.deregister(id)
+        self.deregisterObject(id)
 
     @exportRpc(prefix + schemas_dict["set_visibility"]["rpc"])
     def SetMeshVisibility(self, params):

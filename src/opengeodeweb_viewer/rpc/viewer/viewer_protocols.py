@@ -7,7 +7,7 @@ from pathlib import Path
 import vtk
 from vtk.web import protocols as vtk_protocols
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
-from vtkmodules.vtkRenderingCore import (vtkWindowToImageFilter)
+from vtkmodules.vtkRenderingCore import vtkWindowToImageFilter
 from wslink import register as exportRpc
 
 # Local application imports
