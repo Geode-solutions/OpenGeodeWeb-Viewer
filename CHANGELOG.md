@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v0.4.0-rc.2 (2024-11-28)
+
+### Features
+
+- **generic rpcs**: Refactor all classes/tests
+  ([`563f41b`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/563f41bc0741ab1dae9e5df9244e545e6ba47993))
+
+- **generic rpcs**: Refactor all classes/tests
+  ([`297b005`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/297b0050e4ab47817659021c3a099e715fba6a87))
+
+
 ## v0.4.0-rc.1 (2024-11-25)
 
 ### Features
