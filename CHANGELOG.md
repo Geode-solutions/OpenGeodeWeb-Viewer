@@ -1,9 +1,17 @@
 # CHANGELOG
 
 
+## v1.0.0-rc.1 (2024-11-28)
+
+
 ## v0.4.0-rc.2 (2024-11-28)
 
 ### Features
+
+- **new rpcs**: Refactor rpcs
+  ([`c2fb4e7`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/c2fb4e75b83a862267ed4641e41e9344e6a2d70f))
+
+BREAKING CHANGE: change some rpc names in schemas
 
 - **generic rpcs**: Refactor all classes/tests
   ([`563f41b`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/563f41bc0741ab1dae9e5df9244e545e6ba47993))
