@@ -50,11 +50,13 @@ class _Server(vtk_wslink.ServerProtocol):
         self.setSharedObject("db", dict())
 
         # Custom API
+        mesh_protocols = VtkMeshView()
+        model_protocols = VtkModelView()
         self.registerVtkWebProtocol(VtkView())
         self.registerVtkWebProtocol(VtkViewerView())
-        self.registerVtkWebProtocol(VtkMeshView())
-        self.registerVtkWebProtocol(VtkModelView())
-        self.registerVtkWebProtocol(VtkGenericView())
+        self.registerVtkWebProtocol(mesh_protocols)
+        self.registerVtkWebProtocol(model_protocols)
+        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols,model_protocols))
 
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.
