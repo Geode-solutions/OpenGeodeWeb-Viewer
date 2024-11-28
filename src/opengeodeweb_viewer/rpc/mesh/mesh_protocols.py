@@ -31,14 +31,12 @@ class VtkMeshView(VtkObjectView):
             filter = {}
             mapper = vtk.vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            print("VALID")
             self.registerObject(id, file_name, reader, filter, mapper)
         except Exception as e:
             print("error : ", str(e), flush=True)
 
     @exportRpc(prefix + schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params):
-        print("deregisterMesh")
         print(self.schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["deregister"])
         id = params["id"]
