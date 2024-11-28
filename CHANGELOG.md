@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.0-rc.2 (2024-11-28)
+
+### Bug Fixes
+
+- **viewer schemas**: Remove 'viewer' prefix
+  ([`f2fdc20`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/f2fdc20e16fe73b5c7ca30b45f3c7ddc511aa85b))
+
+
 ## v1.0.0-rc.1 (2024-11-28)
 
 
