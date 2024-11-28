@@ -16,7 +16,6 @@ class VtkObjectView(VtkView):
         actor = vtk.vtkActor()
         self.register_object(id, reader, filter, actor, mapper, {})
 
-        print("registerObject", flush=True)
         reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, file_name))
 
         actor.SetMapper(mapper)
@@ -120,13 +119,4 @@ class VtkObjectView(VtkView):
 
     def SetPointSize(self, id, size):
         actor = self.get_object(id)["actor"]
-
-        actor.GetProperty().EdgeVisibilityOn()
-        actor.GetProperty().VertexVisibilityOn()
-        actor.GetProperty().SetPointSize(size)
-        print("GetEdgeVisibility", actor.GetProperty().GetEdgeVisibility(), flush=True)
-        print("GetVertexVisibility", actor.GetProperty().GetVertexVisibility(), flush=True)
-        print("GetPointSize", actor.GetProperty().GetPointSize(), flush=True)
-
-        print("vtk.vtkRenderWindow().GetClassName()", vtk.vtkRenderWindow().GetClassName())
         self.render()
