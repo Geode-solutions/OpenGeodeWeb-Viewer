@@ -1,5 +1,5 @@
 {
-  "rpc": "viewer.update_data",
+  "rpc": "update_data",
   "type": "object",
   "properties": {
     "id": {
