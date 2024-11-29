@@ -1,3 +1,3 @@
 from .config import *
-from .function import *
+from .utils_functions import *
 from .vtk_protocol import *

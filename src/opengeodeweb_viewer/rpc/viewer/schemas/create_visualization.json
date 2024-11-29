@@ -1,0 +1,7 @@
+{
+  "rpc": "create_visualization",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}

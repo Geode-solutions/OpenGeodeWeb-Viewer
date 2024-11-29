@@ -1,0 +1,18 @@
+{
+  "rpc": "deregister",
+  "type": "object",
+  "properties": {
+    "viewer_object": {
+      "type": "string",
+      "enum": ["mesh", "model"]
+    },
+    "id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "viewer_object",
+    "id"
+  ],
+  "additionalProperties": false
+}

@@ -126,6 +126,7 @@ class FixtureHelper:
         class Starter(ProcessStarter):
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
+            timeout = 5
 
             # command to start process
             args = [
@@ -143,10 +144,10 @@ HELPER = FixtureHelper(ROOT_PATH)
 def server(xprocess):
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
-    config.test_config()
+    config.test_config(os.path.dirname(__file__))
+    print("server", os.environ.get("DATA_FOLDER_PATH"), flush=True)
     _, log = xprocess.ensure(name, Starter)
     print(log)
-    print("server", os.environ.get("DATA_FOLDER_PATH"), flush=True)
     monitor = Monitor(log)
     yield monitor
 

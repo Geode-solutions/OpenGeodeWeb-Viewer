@@ -1,0 +1,17 @@
+{
+  "rpc": "set_corners_size",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "size": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "size"
+  ],
+  "additionalProperties": false
+}

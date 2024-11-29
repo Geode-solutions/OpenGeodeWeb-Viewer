@@ -1,0 +1,17 @@
+{
+  "rpc": "get_point_position",
+  "type": "object",
+  "properties": {
+    "x": {
+      "type": "integer"
+    },
+    "y": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "x",
+    "y"
+  ],
+  "additionalProperties": false
+}

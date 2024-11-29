@@ -1,0 +1,34 @@
+{
+  "rpc": "apply_textures",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "textures": {
+      "type": "array",
+      "elements": {
+        "type": "object",
+        "properties": {
+          "texture_name": {
+            "type": "string"
+          },
+          "texture_file_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "texture_name",
+          "texture_file_name"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "id",
+    "textures"
+  ],
+  "additionalProperties": false
+}
