@@ -15,7 +15,7 @@ from .vtk_protocol import VtkView
 from .rpc.viewer.viewer_protocols import VtkViewerView
 from .rpc.mesh.mesh_protocols import VtkMeshView
 from .rpc.model.model_protocols import VtkModelView
-from .generic.generic_protocols import VtkGenericView
+from .rpc.generic.generic_protocols import VtkGenericView
 
 
 # =============================================================================
