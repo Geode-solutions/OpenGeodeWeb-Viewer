@@ -1,4 +1,4 @@
-from opengeodeweb_viewer.generic.generic_protocols import VtkGenericView
+from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
 
 def test_register_mesh(server):
     server.call(VtkGenericView.prefix + VtkGenericView.schemas_dict["register"]["rpc"], [{"viewer_object": "mesh", "id": "123456789", "file_name": "hat.vtp"}])

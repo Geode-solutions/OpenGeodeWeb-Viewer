@@ -14,7 +14,7 @@ from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 
 class VtkGenericView(VtkView):
-    prefix = "opengeodeweb_viewer."
+    prefix = "opengeodeweb_viewer.generic."
     schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
 
     def __init__(self, mesh_protocols, model_protocols):
@@ -44,4 +44,5 @@ class VtkGenericView(VtkView):
             self.mesh_protocols.deregisterMesh(params)
         elif viewer_object == "model":
             self.model_protocols.deregisterModel(params)
+
 
