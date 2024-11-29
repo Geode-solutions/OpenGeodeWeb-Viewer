@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.0-rc.3 (2024-11-29)
+
+### Bug Fixes
+
+- **schemas**: Generic rpc in global final schema
+  ([`cb101e5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/cb101e5b895d589ef3ff6b6476a4c077b36cd0db))
+
+
 ## v1.0.0-rc.2 (2024-11-28)
 
 ### Bug Fixes
