@@ -1,6 +1,49 @@
 # CHANGELOG
 
 
+## v1.0.0-rc.4 (2024-11-29)
+
+### Bug Fixes
+
+- **schemas**: Export generic schemas in package
+  ([`88e87a0`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/88e87a044f1152ea30bd14a02337ac9f80759780))
+
+
+## v1.0.0-rc.3 (2024-11-29)
+
+### Bug Fixes
+
+- **schemas**: Generic rpc in global final schema
+  ([`cb101e5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/cb101e5b895d589ef3ff6b6476a4c077b36cd0db))
+
+
+## v1.0.0-rc.2 (2024-11-28)
+
+### Bug Fixes
+
+- **viewer schemas**: Remove 'viewer' prefix
+  ([`f2fdc20`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/f2fdc20e16fe73b5c7ca30b45f3c7ddc511aa85b))
+
+
+## v1.0.0-rc.1 (2024-11-28)
+
+
+## v0.4.0-rc.2 (2024-11-28)
+
+### Features
+
+- **new rpcs**: Refactor rpcs
+  ([`c2fb4e7`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/c2fb4e75b83a862267ed4641e41e9344e6a2d70f))
+
+BREAKING CHANGE: change some rpc names in schemas
+
+- **generic rpcs**: Refactor all classes/tests
+  ([`563f41b`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/563f41bc0741ab1dae9e5df9244e545e6ba47993))
+
+- **generic rpcs**: Refactor all classes/tests
+  ([`297b005`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/297b0050e4ab47817659021c3a099e715fba6a87))
+
+
 ## v0.4.0-rc.1 (2024-11-25)
 
 ### Features

@@ -1,5 +1,5 @@
 {
-    "rpc": "viewer.set_background_color",
+    "rpc": "set_background_color",
     "type": "object",
     "properties": {
         "red": {
