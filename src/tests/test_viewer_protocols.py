@@ -109,7 +109,7 @@ def test_take_screenshot(server):
 
 def test_get_mouse(server):
     server.call(
-        class_.prefix + class_.schemas_dict["get_mouse"]["rpc"], [{"x": 100, "y": 200}]
+        VtkViewerView.prefix + VtkViewerView.schemas_dict["get_mouse"]["rpc"], [{"x": 100, "y": 200}]
     )
     response = server.get_response()
     assert "x" in response["result"]
