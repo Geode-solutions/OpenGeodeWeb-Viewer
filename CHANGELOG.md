@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.0-rc.4 (2024-11-29)
+
+### Bug Fixes
+
+- **schemas**: Export generic schemas in package
+  ([`88e87a0`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/88e87a044f1152ea30bd14a02337ac9f80759780))
+
+
 ## v1.0.0-rc.3 (2024-11-29)
 
 ### Bug Fixes
