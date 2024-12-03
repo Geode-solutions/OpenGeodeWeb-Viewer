@@ -1,5 +1,5 @@
 {
-  "rpc": "viewer.take_screenshot",
+  "rpc": "take_screenshot",
   "type": "object",
   "properties": {
     "filename": {

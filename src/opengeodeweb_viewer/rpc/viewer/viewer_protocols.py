@@ -14,21 +14,20 @@ from wslink import register as exportRpc
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
-schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
-schemas_dict = get_schemas_dict(schemas_dir)
-prefix = "opengeodeweb_viewer.viewer."
-
 
 class VtkViewerView(VtkView):
+    prefix = "opengeodeweb_viewer.viewer."
+    schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
+
     def __init__(self):
         super().__init__()
-        self.prefix = prefix
-        self.schemas_dict = schemas_dict
 
     @exportRpc(prefix + schemas_dict["create_visualization"]["rpc"])
     def createVisualization(self, params):
-        print(schemas_dict["create_visualization"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["create_visualization"])
+        print(
+            self.schemas_dict["create_visualization"]["rpc"], f"{params=}", flush=True
+        )
+        validate_schema(params, self.schemas_dict["create_visualization"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
@@ -38,8 +37,10 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["set_background_color"]["rpc"])
     def setBackgroundColor(self, params):
-        print(schemas_dict["set_background_color"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["set_background_color"])
+        print(
+            self.schemas_dict["set_background_color"]["rpc"], f"{params=}", flush=True
+        )
+        validate_schema(params, self.schemas_dict["set_background_color"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         red = params["red"]
@@ -53,8 +54,8 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["reset_camera"]["rpc"])
     def resetCamera(self, params):
-        print(schemas_dict["reset_camera"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["reset_camera"])
+        print(self.schemas_dict["reset_camera"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["reset_camera"])
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
         renderWindow.Render()
@@ -62,8 +63,8 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params):
-        print(schemas_dict["take_screenshot"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["take_screenshot"])
+        print(self.schemas_dict["take_screenshot"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["take_screenshot"])
         filename = params["filename"]
         output_extension = params["output_extension"]
         include_background = params["include_background"]
@@ -107,8 +108,8 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["update_data"]["rpc"])
     def updateData(self, params):
-        print(schemas_dict["update_data"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["update_data"])
+        print(self.schemas_dict["update_data"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["update_data"])
         id = params["id"]
 
         data = self.get_object(id)
@@ -129,8 +130,8 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["get_point_position"]["rpc"])
     def getPointPosition(self, params):
-        print(schemas_dict["get_point_position"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["get_point_position"])
+        print(self.schemas_dict["get_point_position"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["get_point_position"])
         x = float(params["x"])
         y = float(params["y"])
         xyz = [x, y, 0.0]
@@ -141,15 +142,15 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["reset"]["rpc"])
     def reset(self, params):
-        print(schemas_dict["reset"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["reset"])
+        print(self.schemas_dict["reset"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["reset"])
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
 
     @exportRpc(prefix + schemas_dict["get_mouse"]["rpc"])
     def getMouse(self, params):
-        print(schemas_dict["get_mouse"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["get_mouse"])
+        print(self.schemas_dict["get_mouse"]["rpc"], params, flush=True)
+        validate_schema(params, self.schemas_dict["get_mouse"])
         x = params["x"]
         y = params["y"]
         return {"x": x, "y": y}

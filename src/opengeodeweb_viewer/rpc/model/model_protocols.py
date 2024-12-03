@@ -11,20 +11,17 @@ from wslink import register as exportRpc
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 
-schemas_dir = os.path.join(os.path.dirname(__file__), "schemas")
-schemas_dict = get_schemas_dict(schemas_dir)
-prefix = "opengeodeweb_viewer.model."
-
 class VtkModelView(VtkObjectView):
+    prefix = "opengeodeweb_viewer.model."
+    schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
+
     def __init__(self):
         super().__init__()
-        self.prefix = prefix
-        self.schemas_dict = schemas_dict
     
     @exportRpc(prefix + schemas_dict["register"]["rpc"])
     def registerModel(self, params):
-        print(schemas_dict["register"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["register"])
+        print(self.schemas_dict["register"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["register"])
         id = params["id"]
         file_name = params["file_name"]
         try:
@@ -33,37 +30,37 @@ class VtkModelView(VtkObjectView):
             filter.SetInputConnection(reader.GetOutputPort())
             mapper = vtk.vtkCompositePolyDataMapper()
             mapper.SetInputConnection(filter.GetOutputPort())
-            self.register(id, file_name, reader, filter, mapper)
+            self.registerObject(id, file_name, reader, filter, mapper)
         except Exception as e:
             print("error : ", str(e), flush=True)
 
     @exportRpc(prefix + schemas_dict["deregister"]["rpc"])
     def deregisterModel(self, params):
-        print(schemas_dict["deregister"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["deregister"])
+        print(self.schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["deregister"])
         id = params["id"]
-        self.deregister(id)
+        self.deregisterObject(id)
 
     @exportRpc(prefix + schemas_dict["set_mesh_visibility"]["rpc"])
     def setMeshVisibility(self, params):
-        print(schemas_dict["set_mesh_visibility"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["set_mesh_visibility"])
+        print(self.schemas_dict["set_mesh_visibility"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["set_mesh_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
         self.SetEdgeVisibility(id, visibility)
 
     @exportRpc(prefix + schemas_dict["set_components_visibility"]["rpc"])
     def setComponentsVisibility(self, params):
-        print(schemas_dict["set_components_visibility"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["set_components_visibility"])
+        print(self.schemas_dict["set_components_visibility"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["set_components_visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
         self.SetVisibility(id, visibility)
 
     @exportRpc(prefix + schemas_dict["set_components_color"]["rpc"])
     def setComponentsColor(self, params):
-        print(schemas_dict["set_components_color"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["set_components_color"])
+        print(self.schemas_dict["set_components_color"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["set_components_color"])
         id = params["id"]
         red = params["red"]
         green = params["green"]
@@ -72,8 +69,8 @@ class VtkModelView(VtkObjectView):
 
     @exportRpc(prefix + schemas_dict["set_corners_size"]["rpc"])
     def setCornersSize(self, params):
-        print(schemas_dict["set_corners_size"]["rpc"], params, flush=True)
-        validate_schema(params, schemas_dict["set_corners_size"])
+        print(self.schemas_dict["set_corners_size"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["set_corners_size"])
         id = params["id"]
         size = float(params["size"])
         self.SetPointSize(id, size)
