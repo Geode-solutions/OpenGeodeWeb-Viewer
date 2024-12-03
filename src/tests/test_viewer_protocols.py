@@ -140,14 +140,12 @@ def test_take_screenshot(server):
 def test_get_mouse(server):
     server.call(
         VtkViewerView.prefix + VtkViewerView.schemas_dict["get_mouse"]["rpc"],
-        [{"x": 100, "y": 200}],
+        [{"mouse_ids": ["id1", "id2", "id3"]}],
     )
     response = server.get_response()
-    assert "x" in response["result"]
-    assert "y" in response["result"]
-    x = response["result"]["x"]
-    y = response["result"]["y"]
-    assert type(x) is int
-    assert type(y) is int
-    assert x == 100
-    assert y == 200
+
+    assert "mouse_ids" in response["result"]
+
+    mouse_ids = response["result"]["mouse_ids"]
+    assert isinstance(mouse_ids, list)
+    assert set(mouse_ids) == {"id1", "id2", "id3"}

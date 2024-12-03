@@ -151,6 +151,5 @@ class VtkViewerView(VtkView):
     def getMouse(self, params):
         print(self.schemas_dict["get_mouse"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["get_mouse"])
-        x = params["x"]
-        y = params["y"]
-        return {"x": x, "y": y}
+        mouse_ids = params["mouse_ids"]
+        return {"mouse_ids": mouse_ids}

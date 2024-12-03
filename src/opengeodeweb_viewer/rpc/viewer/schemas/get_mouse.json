@@ -1,17 +1,17 @@
 {
     "rpc": "get_mouse",
-    "type": "object",
-    "properties": {
-        "x": {
-            "type": "integer"
+    "schema": {
+        "type": "object",
+        "properties": {
+            "mouse_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
         },
-        "y": {
-            "type": "integer"
-        }
-    },
-    "required": [
-        "x",
-        "y"
-    ],
-    "additionalProperties": false
+        "required": [
+            "mouse_ids"
+        ]
+    }
 }
