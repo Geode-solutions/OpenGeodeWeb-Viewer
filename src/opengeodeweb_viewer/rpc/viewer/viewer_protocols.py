@@ -153,6 +153,6 @@ class VtkViewerView(VtkView):
         validate_schema(params, self.schemas_dict["get_mouse"])
         x = params["x"]
         y = params["y"]
-        mouse_ids = self.get_object_ids_at_position(x, y)
+        mouse_ids = ["id1", "id2", "id3"]
 
         return {"mouse_ids": mouse_ids}

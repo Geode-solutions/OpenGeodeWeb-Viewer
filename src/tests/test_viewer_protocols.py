@@ -143,9 +143,16 @@ def test_get_mouse(server):
         [{"x": 100, "y": 200}],
     )
     response = server.get_response()
-    assert "mouse_ids" in response["result"]
+
+    print(f"Response: {response}")
+
+    assert "result" in response, f"Key 'result' not found in response: {response}"
+
+    assert (
+        "mouse_ids" in response["result"]
+    ), f"Key 'mouse_ids' not found in response['result']: {response['result']}"
 
     mouse_ids = response["result"]["mouse_ids"]
-    assert isinstance(mouse_ids, list)
-    assert isinstance(mouse_ids[0], str)
-    assert len(mouse_ids) > 0
+    assert isinstance(mouse_ids, list), f"Expected a list, but got {type(mouse_ids)}"
+    assert all(isinstance(id, str) for id in mouse_ids), "All IDs should be strings"
+    assert len(mouse_ids) > 0, "The list of mouse_ids should not be empty"
