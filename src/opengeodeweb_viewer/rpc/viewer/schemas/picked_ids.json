@@ -1,5 +1,5 @@
 {
-    "rpc": "get_mouse",
+    "rpc": "picked_ids",
     "schema": {
         "type": "object",
         "properties": {
@@ -8,11 +8,18 @@
             },
             "y": {
                 "type": "number"
+            },
+            "ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             }
         },
         "required": [
             "x",
-            "y"
+            "y",
+            "ids"
         ]
     }
 }

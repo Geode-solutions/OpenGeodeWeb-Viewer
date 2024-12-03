@@ -137,22 +137,25 @@ def test_take_screenshot(server):
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
 
-def test_get_mouse(server):
+def test_picked_ids(server):
+
+    test_register_mesh(server)
+
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["get_mouse"]["rpc"],
-        [{"x": 100, "y": 200}],
+        VtkViewerView.prefix + VtkViewerView.schemas_dict["picked_ids"]["rpc"],
+        [{"x": 100, "y": 200, "ids": ["123456789"]}],
     )
     response = server.get_response()
 
-    print(f"Response: {response}")
+    print(f"Response: {response}", flush=True)
 
     assert "result" in response, f"Key 'result' not found in response: {response}"
 
     assert (
-        "mouse_ids" in response["result"]
-    ), f"Key 'mouse_ids' not found in response['result']: {response['result']}"
+        "array_ids" in response["result"]
+    ), f"Key 'array_ids' not found in response['result']: {response['result']}"
 
-    mouse_ids = response["result"]["mouse_ids"]
-    assert isinstance(mouse_ids, list), f"Expected a list, but got {type(mouse_ids)}"
-    assert all(isinstance(id, str) for id in mouse_ids), "All IDs should be strings"
-    assert len(mouse_ids) > 0, "The list of mouse_ids should not be empty"
+    array_ids = response["result"]["array_ids"]
+    assert isinstance(array_ids, list), f"Expected a list, but got {type(array_ids)}"
+    assert all(isinstance(id, str) for id in array_ids), "All IDs should be strings"
+    assert len(array_ids) > 0, "The list of array_ids should not be empty"

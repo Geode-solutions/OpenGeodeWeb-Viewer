@@ -1,5 +1,6 @@
 # Standard library imports
 import json
+import math
 import os
 from pathlib import Path
 
@@ -147,12 +148,43 @@ class VtkViewerView(VtkView):
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
 
-    @exportRpc(prefix + schemas_dict["get_mouse"]["rpc"])
-    def getMouse(self, params):
-        print(self.schemas_dict["get_mouse"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["get_mouse"])
+    def computeEpsilon(self, renderer, z):
+        renderer.SetDisplayPoint(0, 0, z)
+        renderer.DisplayToWorld()
+        windowLowerLeft = renderer.GetWorldPoint()
+        size = renderer.GetRenderWindow().GetSize()
+        renderer.SetDisplayPoint(size[0], size[1], z)
+        renderer.DisplayToWorld()
+        windowUpperRight = renderer.GetWorldPoint()
+        epsilon = 0
+        for i in range(3):
+            epsilon += (windowUpperRight[i] - windowLowerLeft[i]) * (
+                windowUpperRight[i] - windowLowerLeft[i]
+            )
+        return math.sqrt(epsilon) * 0.0125
+
+    @exportRpc(prefix + schemas_dict["picked_ids"]["rpc"])
+    def pickedIds(self, params):
+        print(self.schemas_dict["picked_ids"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["picked_ids"])
         x = params["x"]
         y = params["y"]
-        mouse_ids = ["id1", "id2", "id3"]
+        ids = params["ids"]
 
-        return {"mouse_ids": mouse_ids}
+        renderWindow = self.getView("-1")
+        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        picker = vtk.vtkWorldPointPicker()
+        picker.Pick([x, y, 0], renderer)
+        point = picker.GetPickPosition()
+        epsilon = self.computeEpsilon(renderer, point[2])
+        bbox = vtk.vtkBoundingBox()
+        bbox.AddPoint(point[0] + epsilon, point[1] + epsilon, point[2] + epsilon)
+        bbox.AddPoint(point[0] - epsilon, point[1] - epsilon, point[2] - epsilon)
+
+        array_ids = []
+        for id in ids:
+            bounds = self.get_object(id)["actor"].GetBounds()
+            if bbox.Intersects(bounds):
+                array_ids.append(id)
+
+        return {"array_ids": array_ids}
