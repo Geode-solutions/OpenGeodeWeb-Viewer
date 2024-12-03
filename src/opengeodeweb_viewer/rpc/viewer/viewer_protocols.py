@@ -149,7 +149,7 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["get_mouse"]["rpc"])
     def getMouse(self, params):
-        print(self.schemas_dict["get_mouse"]["rpc"], params, flush=True)
+        print(self.schemas_dict["get_mouse"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["get_mouse"])
         x = params["x"]
         y = params["y"]
