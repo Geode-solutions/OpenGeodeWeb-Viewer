@@ -1,5 +1,6 @@
 # Standard library imports
 import json
+import math
 import os
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from wslink import register as exportRpc
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
+
 class VtkViewerView(VtkView):
     prefix = "opengeodeweb_viewer.viewer."
     schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
@@ -23,7 +25,9 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["create_visualization"]["rpc"])
     def createVisualization(self, params):
-        print(self.schemas_dict["create_visualization"]["rpc"], f"{params=}", flush=True)
+        print(
+            self.schemas_dict["create_visualization"]["rpc"], f"{params=}", flush=True
+        )
         validate_schema(params, self.schemas_dict["create_visualization"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
@@ -34,7 +38,9 @@ class VtkViewerView(VtkView):
 
     @exportRpc(prefix + schemas_dict["set_background_color"]["rpc"])
     def setBackgroundColor(self, params):
-        print(self.schemas_dict["set_background_color"]["rpc"], f"{params=}", flush=True)
+        print(
+            self.schemas_dict["set_background_color"]["rpc"], f"{params=}", flush=True
+        )
         validate_schema(params, self.schemas_dict["set_background_color"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
@@ -90,7 +96,7 @@ class VtkViewerView(VtkView):
         else:
             raise Exception("output_extension not supported")
 
-        new_filename = filename + '.' + output_extension
+        new_filename = filename + "." + output_extension
         file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
         writer.SetFileName(file_path)
         writer.SetInputConnection(w2if.GetOutputPort())
@@ -100,7 +106,6 @@ class VtkViewerView(VtkView):
             file_content = file.read()
 
         return {"blob": self.addAttachment(file_content)}
-
 
     @exportRpc(prefix + schemas_dict["update_data"]["rpc"])
     def updateData(self, params):
@@ -142,3 +147,44 @@ class VtkViewerView(VtkView):
         validate_schema(params, self.schemas_dict["reset"])
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
+
+    def computeEpsilon(self, renderer, z):
+        renderer.SetDisplayPoint(0, 0, z)
+        renderer.DisplayToWorld()
+        windowLowerLeft = renderer.GetWorldPoint()
+        size = renderer.GetRenderWindow().GetSize()
+        renderer.SetDisplayPoint(size[0], size[1], z)
+        renderer.DisplayToWorld()
+        windowUpperRight = renderer.GetWorldPoint()
+        epsilon = 0
+        for i in range(3):
+            epsilon += (windowUpperRight[i] - windowLowerLeft[i]) * (
+                windowUpperRight[i] - windowLowerLeft[i]
+            )
+        return math.sqrt(epsilon) * 0.0125
+
+    @exportRpc(prefix + schemas_dict["picked_ids"]["rpc"])
+    def pickedIds(self, params):
+        print(self.schemas_dict["picked_ids"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.schemas_dict["picked_ids"])
+        x = params["x"]
+        y = params["y"]
+        ids = params["ids"]
+
+        renderWindow = self.getView("-1")
+        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        picker = vtk.vtkWorldPointPicker()
+        picker.Pick([x, y, 0], renderer)
+        point = picker.GetPickPosition()
+        epsilon = self.computeEpsilon(renderer, point[2])
+        bbox = vtk.vtkBoundingBox()
+        bbox.AddPoint(point[0] + epsilon, point[1] + epsilon, point[2] + epsilon)
+        bbox.AddPoint(point[0] - epsilon, point[1] - epsilon, point[2] - epsilon)
+
+        array_ids = []
+        for id in ids:
+            bounds = self.get_object(id)["actor"].GetBounds()
+            if bbox.Intersects(bounds):
+                array_ids.append(id)
+
+        return {"array_ids": array_ids}
