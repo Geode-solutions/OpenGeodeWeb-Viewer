@@ -1,0 +1,25 @@
+{
+    "rpc": "picked_ids",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "x": {
+                "type": "number"
+            },
+            "y": {
+                "type": "number"
+            },
+            "ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "required": [
+            "x",
+            "y",
+            "ids"
+        ]
+    }
+}
