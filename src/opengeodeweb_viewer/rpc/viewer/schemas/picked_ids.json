@@ -1,6 +1,7 @@
 {
-    "rpc": "picked_ids",
-    "schema": {
+    "picked_ids": {
+        "$id": "opengeodeweb_viewer.viewer.picked_ids",
+        "rpc": "picked_ids",
         "type": "object",
         "properties": {
             "x": {
@@ -20,6 +21,7 @@
             "x",
             "y",
             "ids"
-        ]
+        ],
+        "additionalProperties": false
     }
 }
