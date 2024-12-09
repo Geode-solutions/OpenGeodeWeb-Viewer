@@ -1,27 +1,24 @@
 {
-    "picked_ids": {
-        "$id": "opengeodeweb_viewer.viewer.picked_ids",
-        "rpc": "picked_ids",
-        "type": "object",
-        "properties": {
-            "x": {
-                "type": "number"
-            },
-            "y": {
-                "type": "number"
-            },
-            "ids": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
+    "rpc": "picked_ids",
+    "type": "object",
+    "properties": {
+        "x": {
+            "type": "number"
         },
-        "required": [
-            "x",
-            "y",
-            "ids"
-        ],
-        "additionalProperties": false
-    }
+        "y": {
+            "type": "number"
+        },
+        "ids": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [
+        "x",
+        "y",
+        "ids"
+    ],
+    "additionalProperties": false
 }
