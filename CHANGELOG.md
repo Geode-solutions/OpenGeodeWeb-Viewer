@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.1.0-rc.2 (2024-12-09)
+
+### Bug Fixes
+
+- **edit schema**: Rv schema step
+  ([`7162f00`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/7162f00bdba04d29a84e80d16074dc59d64c6c73))
+
+
 ## v1.1.0-rc.1 (2024-12-04)
 
 
