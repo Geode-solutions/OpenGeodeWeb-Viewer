@@ -1,0 +1,37 @@
+{
+  "rpc": "color",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "red": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "green": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "blue": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "alpha": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "required": [
+    "id",
+    "red",
+    "green",
+    "blue",
+    "alpha"
+  ],
+  "additionalProperties": false
+}

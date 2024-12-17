@@ -1,11 +1,8 @@
 # Standard library imports
-import json
 import os
-from pathlib import Path
 
 # Third party imports
 import vtk
-from vtk.web import protocols as vtk_protocols
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingCore import vtkWindowToImageFilter
 from wslink import register as exportRpc

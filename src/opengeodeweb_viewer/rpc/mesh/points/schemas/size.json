@@ -1,0 +1,17 @@
+{
+  "rpc": "size",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "size": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "id",
+    "size"
+  ],
+  "additionalProperties": false
+}

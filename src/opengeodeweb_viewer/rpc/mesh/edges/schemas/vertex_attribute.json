@@ -1,17 +1,17 @@
 {
-  "rpc": "set_edge_visibility",
+  "rpc": "vertex_attribute",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
-    "visibility": {
-      "type": "boolean"
+    "name": {
+      "type": "string"
     }
   },
   "required": [
     "id",
-    "visibility"
+    "name"
   ],
   "additionalProperties": false
 }

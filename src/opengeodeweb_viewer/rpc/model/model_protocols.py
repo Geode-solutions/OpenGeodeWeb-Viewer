@@ -1,10 +1,8 @@
 # Standard library imports
-import json
 import os
 
 # Third party imports
 import vtk
-from vtk.web import protocols as vtk_protocols
 from wslink import register as exportRpc
 
 # Local application imports
