@@ -110,15 +110,23 @@ class VtkObjectView(VtkView):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
+    
+    def SetEdgesSize(self, id, size):
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetEdgeWidth(size)
+        print("GetEdgeSize", actor.GetProperty().GetEdgeWidth())
+        self.render()
 
     def SetEdgesColor(self, id, color):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeColor(color)
+        print("GetEdgeColor", actor.GetProperty().GetEdgeColor())
         self.render()
 
     def SetPointsVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetVertexVisibility(visibility)
+        actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
 
     def SetPointsSize(self, id, size):
@@ -126,9 +134,19 @@ class VtkObjectView(VtkView):
         actor.GetProperty().SetPointSize(size)
         self.render()
 
+    def SetPointsColor(self, id, color):
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetVertexColor(color)
+        self.render()
+
     def SetPolygonsVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetPolygonVisibility(visibility)
+        self.render()
+
+    def SetPolygonsColor(self, id, color):
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetColor(color)
         self.render()
 
     def clearColors(self, id):

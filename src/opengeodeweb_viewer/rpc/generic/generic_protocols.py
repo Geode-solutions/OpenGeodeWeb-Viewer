@@ -24,7 +24,7 @@ class VtkGenericView(VtkView):
     
     @exportRpc(prefix + schemas_dict["register"]["rpc"])
     def register(self, params):
-        print(self.schemas_dict["register"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["register"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["register"])
         viewer_object = params["viewer_object"]
         params.pop('viewer_object', None)
@@ -36,7 +36,7 @@ class VtkGenericView(VtkView):
 
     @exportRpc(prefix + schemas_dict["deregister"]["rpc"])
     def deregister(self, params):
-        print(self.schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["deregister"])
         viewer_object = params["viewer_object"]
         params.pop('viewer_object', None)

@@ -18,7 +18,7 @@ class VtkMeshView(VtkObjectView):
 
     @exportRpc(prefix + schemas_dict["register"]["rpc"])
     def registerMesh(self, params):
-        print(self.schemas_dict["register"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["register"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["register"])
         id = params["id"]
         file_name = params["file_name"]
@@ -33,14 +33,14 @@ class VtkMeshView(VtkObjectView):
 
     @exportRpc(prefix + schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params):
-        print(self.schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["deregister"])
         id = params["id"]
         self.deregisterObject(id)
 
     @exportRpc(prefix + schemas_dict["visibility"]["rpc"])
     def SetMeshVisibility(self, params):
-        print(self.schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
@@ -48,7 +48,7 @@ class VtkMeshView(VtkObjectView):
 
     @exportRpc(prefix + schemas_dict["set_opacity"]["rpc"])
     def setMeshOpacity(self, params):
-        print(self.schemas_dict["set_opacity"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["set_opacity"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["set_opacity"])
         id = params["id"]
         opacity = float(params["opacity"])
@@ -56,7 +56,7 @@ class VtkMeshView(VtkObjectView):
 
     @exportRpc(prefix + schemas_dict["set_color"]["rpc"])
     def setMeshColor(self, params):
-        print(self.schemas_dict["set_color"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["set_color"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["set_color"])
         id = params["id"]
         red = params["red"]

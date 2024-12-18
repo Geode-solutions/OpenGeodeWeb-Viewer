@@ -17,7 +17,7 @@ class VtkMeshEdgesView(VtkMeshView):
 
     @exportRpc(prefix + schemas_dict["visibility"]["rpc"])
     def setMeshEdgesVisibility(self, params):
-        print(self.schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
@@ -25,15 +25,17 @@ class VtkMeshEdgesView(VtkMeshView):
 
     @exportRpc(prefix + schemas_dict["color"]["rpc"])
     def setMeshEdgesColor(self, params):
-        print(self.schemas_dict["color"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["color"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["color"])
         id = params["id"]
-        color = bool(params["color"])
-        self.SetEdgesColor(id, color)
+        red = 1.0 * params["color"]["r"]
+        green = 1.0 * params["color"]["g"]
+        blue = 1.0 * params["color"]["b"]
+        self.SetEdgesColor(id, [red, green, blue])
 
     @exportRpc(prefix + schemas_dict["size"]["rpc"])
     def setMeshEdgesSize(self, params):
-        print(self.schemas_dict["size"]["rpc"], f"{params=}", flush=True)
+        print(self.prefix + self.schemas_dict["size"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.schemas_dict["size"])
         id = params["id"]
         size = bool(params["size"])
