@@ -9,42 +9,42 @@ from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schem
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 
 class VtkMeshPolygonsView(VtkMeshView):
-    prefix = "opengeodeweb_viewer.mesh.polygons."
-    schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
+    mesh_polygons_prefix = "opengeodeweb_viewer.mesh.polygons."
+    mesh_polygons_schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
 
     def __init__(self):
         super().__init__()
 
-    @exportRpc(prefix + schemas_dict["visibility"]["rpc"])
+    @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["visibility"]["rpc"])
     def setMeshPolygonsVisibility(self, params):
-        print(self.prefix + self.schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["visibility"])
+        print(self.mesh_polygons_prefix + self.mesh_polygons_schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_polygons_schemas_dict["visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
         self.SetPolygonsVisibility(id, visibility)
 
-    @exportRpc(prefix + schemas_dict["color"]["rpc"])
+    @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["color"]["rpc"])
     def setMeshPolygonsColor(self, params):
-        print(self.prefix + self.schemas_dict["color"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["color"])
+        print(self.mesh_polygons_prefix + self.mesh_polygons_schemas_dict["color"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_polygons_schemas_dict["color"])
         id = params["id"]
         red = params["color"]["r"]
         green = params["color"]["g"]
         blue = params["color"]["b"]
         self.SetPolygonsColor(id, [red, green, blue])
 
-    @exportRpc(prefix + schemas_dict["vertex_attribute"]["rpc"])
+    @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["vertex_attribute"]["rpc"])
     def setMeshPolygonsVertexAttribute(self, params):
-        print(self.prefix + self.schemas_dict["vertex_attribute"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["vertex_attribute"])
+        print(self.mesh_polygons_prefix + self.mesh_polygons_schemas_dict["vertex_attribute"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_polygons_schemas_dict["vertex_attribute"])
         id = params["id"]
         name = str(params["name"])
         self.setMeshVertexAttribute(id, name)
 
-    @exportRpc(prefix + schemas_dict["polygon_attribute"]["rpc"])
+    @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["polygon_attribute"]["rpc"])
     def setMeshPolygonsPolygonAttribute(self, params):
-        print(self.prefix + self.schemas_dict["polygon_attribute"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["polygon_attribute"])
+        print(self.mesh_polygons_prefix + self.mesh_polygons_schemas_dict["polygon_attribute"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_polygons_schemas_dict["polygon_attribute"])
         id = params["id"]
         name = str(params["name"])
         self.setMeshPolygonAttribute(id, name)

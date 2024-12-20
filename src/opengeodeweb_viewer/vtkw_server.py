@@ -62,7 +62,7 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(VtkMeshEdgesView())
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
         self.registerVtkWebProtocol(model_protocols)
-        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols,model_protocols))
+        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.

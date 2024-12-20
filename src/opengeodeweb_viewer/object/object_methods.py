@@ -141,7 +141,8 @@ class VtkObjectView(VtkView):
 
     def SetPolygonsVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetPolygonVisibility(visibility)
+        actor.SetVisibility(visibility)
+        # actor.GetProperty().SetVisibility(visibility)
         self.render()
 
     def SetPolygonsColor(self, id, color):

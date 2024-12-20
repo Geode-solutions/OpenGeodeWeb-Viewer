@@ -10,16 +10,16 @@ from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schem
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 
 class VtkMeshView(VtkObjectView):
-    prefix = "opengeodeweb_viewer.mesh."
-    schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
+    mesh_prefix = "opengeodeweb_viewer.mesh."
+    mesh_schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
 
     def __init__(self):
         super().__init__()
 
-    @exportRpc(prefix + schemas_dict["register"]["rpc"])
+    @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
     def registerMesh(self, params):
-        print(self.prefix + self.schemas_dict["register"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["register"])
+        print(self.mesh_prefix + self.mesh_schemas_dict["register"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_schemas_dict["register"])
         id = params["id"]
         file_name = params["file_name"]
         try:
@@ -31,33 +31,33 @@ class VtkMeshView(VtkObjectView):
         except Exception as e:
             print("error : ", str(e), flush=True)
 
-    @exportRpc(prefix + schemas_dict["deregister"]["rpc"])
+    @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params):
-        print(self.prefix + self.schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["deregister"])
+        print(self.mesh_prefix + self.mesh_schemas_dict["deregister"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_schemas_dict["deregister"])
         id = params["id"]
         self.deregisterObject(id)
 
-    @exportRpc(prefix + schemas_dict["visibility"]["rpc"])
+    @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
     def SetMeshVisibility(self, params):
-        print(self.prefix + self.schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["visibility"])
+        print(self.mesh_prefix + self.mesh_schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_schemas_dict["visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
         self.SetVisibility(id, visibility)
 
-    @exportRpc(prefix + schemas_dict["set_opacity"]["rpc"])
+    @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
     def setMeshOpacity(self, params):
-        print(self.prefix + self.schemas_dict["set_opacity"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["set_opacity"])
+        print(self.mesh_prefix + self.mesh_schemas_dict["opacity"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_schemas_dict["opacity"])
         id = params["id"]
         opacity = float(params["opacity"])
         self.SetOpacity(id, opacity)
 
-    @exportRpc(prefix + schemas_dict["set_color"]["rpc"])
+    @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
     def setMeshColor(self, params):
-        print(self.prefix + self.schemas_dict["set_color"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["set_color"])
+        print(self.mesh_prefix + self.mesh_schemas_dict["color"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_schemas_dict["color"])
         id = params["id"]
         red = params["red"]
         green = params["green"]
