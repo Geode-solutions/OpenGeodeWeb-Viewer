@@ -114,15 +114,12 @@ class VtkObjectView(VtkView):
     def SetEdgesSize(self, id, size):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeWidth(size)
-        print("GetEdgeSize", actor.GetProperty().GetEdgeWidth())
         self.render()
 
     def SetEdgesColor(self, id, color):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeColor(color)
-        print("GetEdgeColor", actor.GetProperty().GetEdgeColor())
         self.render()
-
     def SetPointsVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetVertexVisibility(visibility)
