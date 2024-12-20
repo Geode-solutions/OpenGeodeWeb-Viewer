@@ -1,5 +1,5 @@
 {
-  "rpc": "set_visibility",
+  "rpc": "visibility",
   "type": "object",
   "properties": {
     "id": {

@@ -100,24 +100,56 @@ class VtkObjectView(VtkView):
         self.render()
     
     def SetColor(self, id, red, green, blue):
-        reader = self.get_object(id)["reader"]
         mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOff()
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetColor([red, green, blue])
         self.render()
 
-    def SetEdgeVisibility(self, id, visibility):
+    def SetEdgesVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
-
-    def SetVertexVisibility(self, id, visibility):
+    
+    def SetEdgesSize(self, id, size):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetVertexVisibility(visibility)
+        actor.GetProperty().SetEdgeWidth(size)
         self.render()
 
-    def SetPointSize(self, id, size):
+    def SetEdgesColor(self, id, color):
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetEdgeColor(color)
+        self.render()
+    def SetPointsVisibility(self, id, visibility):
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetVertexVisibility(visibility)
+        actor.GetProperty().SetEdgeVisibility(visibility)
+        self.render()
+
+    def SetPointsSize(self, id, size):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetPointSize(size)
         self.render()
+
+    def SetPointsColor(self, id, color):
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetVertexColor(color)
+        self.render()
+
+    def SetPolygonsVisibility(self, id, visibility):
+        actor = self.get_object(id)["actor"]
+        actor.SetVisibility(visibility)
+        self.render()
+
+    def SetPolygonsColor(self, id, color):
+        actor = self.get_object(id)["actor"]
+        actor.GetProperty().SetColor(color)
+        self.render()
+
+    def clearColors(self, id):
+        db = self.get_object(id)
+        mapper = db["mapper"]
+        reader = db["reader"]
+        reader.GetOutput().GetPointData().SetActiveScalars("")
+        reader.GetOutput().GetCellData().SetActiveScalars("")
+        mapper.ScalarVisibilityOff()
