@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.1.1-rc.2 (2024-12-20)
+
+### Bug Fixes
+
+- **schemas**: Add missing schemas
+  ([`37e8504`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/37e8504236a9f622cefffb99c4fbe684853e4d13))
+
+
 ## v1.1.1-rc.1 (2024-12-20)
 
 ### Bug Fixes
