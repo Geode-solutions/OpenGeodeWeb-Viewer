@@ -38,9 +38,11 @@ where = ["src"]
 [tool.setuptools.package-data]
 "opengeodeweb_viewer.rpc.generic.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.mesh.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.mesh.points.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.mesh.edges.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.mesh.polygons.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.model.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.viewer.schemas" = ["*.json"]
-
 
 [tool.semantic_release]
 version_toml = [
