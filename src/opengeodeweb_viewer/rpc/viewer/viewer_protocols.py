@@ -41,9 +41,9 @@ class VtkViewerView(VtkView):
         validate_schema(params, self.schemas_dict["set_background_color"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        red = params["red"]
-        green = params["green"]
-        blue = params["blue"]
+        red = params["color"]["r"]
+        green = params["color"]["g"]
+        blue = params["color"]["b"]
 
         renderer.SetBackground([red, green, blue])
         renderer.ResetCamera()

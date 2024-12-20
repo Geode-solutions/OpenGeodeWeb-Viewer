@@ -26,7 +26,7 @@ def test_set_viewer_background_color(server):
     server.call(
         VtkViewerView.prefix
         + VtkViewerView.schemas_dict["set_background_color"]["rpc"],
-        [{"red": 0, "green": 0, "blue": 255}],
+        [{"color": {"r": 0, "g": 0, "b": 255}}],
     )
     assert server.compare_image(3, "viewer/set_background_color.jpeg") == True
 
