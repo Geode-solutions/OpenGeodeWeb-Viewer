@@ -1,5 +1,5 @@
 {
-  "rpc": "set_components_color",
+  "rpc": "color",
   "type": "object",
   "properties": {
     "id": {
@@ -22,6 +22,12 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 255
+        },
+        "a": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
         }
       },
       "required": [

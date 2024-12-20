@@ -1,12 +1,9 @@
 # Standard library imports
-import json
 import math
 import os
-from pathlib import Path
 
 # Third party imports
 import vtk
-from vtk.web import protocols as vtk_protocols
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingCore import vtkWindowToImageFilter
 from wslink import register as exportRpc
@@ -44,9 +41,9 @@ class VtkViewerView(VtkView):
         validate_schema(params, self.schemas_dict["set_background_color"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        red = params["red"]
-        green = params["green"]
-        blue = params["blue"]
+        red = params["color"]["r"]
+        green = params["color"]["g"]
+        blue = params["color"]["b"]
 
         renderer.SetBackground([red, green, blue])
         renderer.ResetCamera()

@@ -1,12 +1,12 @@
 {
-  "rpc": "set_components_color",
+  "rpc": "color",
   "type": "object",
   "properties": {
     "id": {
       "type": "string"
     },
     "color": {
-      "type": "object",
+      "type": "object", 
       "properties": {
         "r": {
           "type": "integer",

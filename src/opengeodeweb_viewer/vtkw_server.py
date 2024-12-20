@@ -14,6 +14,9 @@ from .config import *
 from .vtk_protocol import VtkView
 from .rpc.viewer.viewer_protocols import VtkViewerView
 from .rpc.mesh.mesh_protocols import VtkMeshView
+from .rpc.mesh.points.points_protocols import VtkMeshPointsView
+from .rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
+from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 from .rpc.model.model_protocols import VtkModelView
 from .rpc.generic.generic_protocols import VtkGenericView
 
@@ -55,8 +58,11 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(VtkView())
         self.registerVtkWebProtocol(VtkViewerView())
         self.registerVtkWebProtocol(mesh_protocols)
+        self.registerVtkWebProtocol(VtkMeshPointsView())
+        self.registerVtkWebProtocol(VtkMeshEdgesView())
+        self.registerVtkWebProtocol(VtkMeshPolygonsView())
         self.registerVtkWebProtocol(model_protocols)
-        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols,model_protocols))
+        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.
