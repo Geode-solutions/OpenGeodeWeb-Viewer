@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.1.1-rc.1 (2024-12-20)
+
+### Bug Fixes
+
+- **semantic**: Trigger semantic release
+  ([`5025b3b`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/5025b3b8aa9008103939ff51dbbead85bb9ca37e))
+
+
 ## v1.1.0 (2024-12-09)
 
 
@@ -13,6 +21,11 @@
 
 
 ## v1.1.0-rc.1 (2024-12-04)
+
+### Features
+
+- **get_mouse**: New rpc
+  ([`94280f3`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/94280f3bc30f03e0c550cd7baf76afd30192c1e3))
 
 
 ## v1.0.0 (2024-11-29)
@@ -54,9 +67,6 @@
 
 - **generic rpcs**: Refactor all classes/tests
   ([`297b005`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/297b0050e4ab47817659021c3a099e715fba6a87))
-
-- **get_mouse**: New rpc
-  ([`94280f3`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/94280f3bc30f03e0c550cd7baf76afd30192c1e3))
 
 - **new rpcs**: Refactor rpcs
   ([`c2fb4e7`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/c2fb4e75b83a862267ed4641e41e9344e6a2d70f))
