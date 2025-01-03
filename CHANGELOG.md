@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.1.2-rc.1 (2025-01-03)
+
+### Bug Fixes
+
+- **colors**: R/g/b between 0 & 1
+  ([`2e68158`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/2e68158e19c8b8023b34c49f3fa5a482164c3cf5))
+
+
 ## v1.1.1 (2024-12-20)
 
 

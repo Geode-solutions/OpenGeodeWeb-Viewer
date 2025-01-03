@@ -28,9 +28,7 @@ class VtkMeshPointsView(VtkMeshView):
         print(self.mesh_points_prefix + self.mesh_points_schemas_dict["color"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.mesh_points_schemas_dict["color"])
         id = str(params["id"])
-        red = params["color"]["r"]
-        green = params["color"]["g"]
-        blue = params["color"]["b"]
+        red, green, blue = params["color"]["r"]/255, params["color"]["g"]/255, params["color"]["b"]/255
         self.SetPointsColor(id, [red, green, blue])
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
