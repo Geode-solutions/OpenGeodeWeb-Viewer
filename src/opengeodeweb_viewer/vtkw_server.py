@@ -1,7 +1,6 @@
 # Standard library imports
 import argparse
 import os
-import sys
 
 # Third party imports
 import vtk
@@ -31,6 +30,17 @@ class _Server(vtk_wslink.ServerProtocol):
     authKey = "wslink-secret"
     view = None
     debug = False
+    custom_protocols = []
+    mesh_protocols = VtkMeshView()
+    model_protocols = VtkModelView()
+    custom_protocols.append(VtkView())
+    custom_protocols.append(VtkViewerView())
+    custom_protocols.append(mesh_protocols)
+    custom_protocols.append(VtkMeshPointsView())
+    custom_protocols.append(VtkMeshEdgesView())
+    custom_protocols.append(VtkMeshPolygonsView())
+    custom_protocols.append(model_protocols)
+    custom_protocols.append(VtkGenericView(mesh_protocols, model_protocols))
 
     @staticmethod
     def add_arguments(parser):
@@ -53,16 +63,9 @@ class _Server(vtk_wslink.ServerProtocol):
         self.setSharedObject("db", dict())
 
         # Custom API
-        mesh_protocols = VtkMeshView()
-        model_protocols = VtkModelView()
-        self.registerVtkWebProtocol(VtkView())
-        self.registerVtkWebProtocol(VtkViewerView())
-        self.registerVtkWebProtocol(mesh_protocols)
-        self.registerVtkWebProtocol(VtkMeshPointsView())
-        self.registerVtkWebProtocol(VtkMeshEdgesView())
-        self.registerVtkWebProtocol(VtkMeshPolygonsView())
-        self.registerVtkWebProtocol(model_protocols)
-        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
+        print("Nb protocols", len(_Server.custom_protocols))
+        for protocol in _Server.custom_protocols:
+            self.registerVtkWebProtocol(protocol)
 
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.
