@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.2.0-rc.1 (2025-01-14)
+
+### Features
+
+- **protocols**: Global custom_protocols to be able to add manually
+  ([`b4980d2`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/b4980d2fae2f547362a40c8f2b7ebe9691fff4a2))
+
+
 ## v1.1.3 (2025-01-14)
 
 
