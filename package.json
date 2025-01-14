@@ -1,7 +1,7 @@
 {
   "name": "@geode/opengeodeweb-viewer",
   "scripts": {
-    "json": "node ./node_modules/@geode/opengeodeweb-back/generate_schemas.js opengeodeweb_viewer rpc rpc .",
+    "json": "npm explore @geode/opengeodeweb-back -- npm run json opengeodeweb_viewer rpc rpc .",
     "test": "npm run json && pytest"
   },
   "dependencies": {
