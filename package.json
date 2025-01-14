@@ -1,11 +1,11 @@
 {
   "name": "@geode/opengeodeweb-viewer",
   "scripts": {
-    "json": "node generate_schemas.js",
+    "json": "npm explore @geode/opengeodeweb-back -- npm run json opengeodeweb_viewer rpc rpc .",
     "test": "npm run json && pytest"
   },
   "dependencies": {
-    "glob": "^10.3.10"
+    "@geode/opengeodeweb-back": "5.4.1"
   },
   "exports": {
     "./schemas.json": {
