@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.1.3-rc.1 (2025-01-14)
+
+### Bug Fixes
+
+- **schemas_script**: From ogw-viewer
+  ([`8c712ae`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/8c712ae89d6bdeb244ee71b76e6ca55d5fd34f19))
+
+
 ## v1.1.2 (2025-01-03)
 
 
