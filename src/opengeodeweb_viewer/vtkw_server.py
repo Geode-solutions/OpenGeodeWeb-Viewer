@@ -30,17 +30,6 @@ class _Server(vtk_wslink.ServerProtocol):
     authKey = "wslink-secret"
     view = None
     debug = False
-    custom_protocols = []
-    mesh_protocols = VtkMeshView()
-    model_protocols = VtkModelView()
-    custom_protocols.append(VtkView())
-    custom_protocols.append(VtkViewerView())
-    custom_protocols.append(mesh_protocols)
-    custom_protocols.append(VtkMeshPointsView())
-    custom_protocols.append(VtkMeshEdgesView())
-    custom_protocols.append(VtkMeshPolygonsView())
-    custom_protocols.append(model_protocols)
-    custom_protocols.append(VtkGenericView(mesh_protocols, model_protocols))
 
     @staticmethod
     def add_arguments(parser):
@@ -52,6 +41,7 @@ class _Server(vtk_wslink.ServerProtocol):
     def configure(args):
         # Standard args
         _Server.authKey = args.authKey
+        _Server.data_folder_path = args.data_folder_path
 
     def initialize(self):
         # Bring used components
@@ -63,10 +53,17 @@ class _Server(vtk_wslink.ServerProtocol):
         self.setSharedObject("db", dict())
 
         # Custom API
-        print("Nb protocols", len(_Server.custom_protocols))
-        for protocol in _Server.custom_protocols:
-            self.registerVtkWebProtocol(protocol)
-
+        mesh_protocols = VtkMeshView()
+        model_protocols = VtkModelView()
+        self.registerVtkWebProtocol(VtkView())
+        self.registerVtkWebProtocol(VtkViewerView())
+        self.registerVtkWebProtocol(mesh_protocols)
+        self.registerVtkWebProtocol(VtkMeshPointsView())
+        self.registerVtkWebProtocol(VtkMeshEdgesView())
+        self.registerVtkWebProtocol(VtkMeshPolygonsView())
+        self.registerVtkWebProtocol(model_protocols)
+        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
+        
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.
         self.getApplication().SetImageEncoding(0)
@@ -102,7 +99,7 @@ class _Server(vtk_wslink.ServerProtocol):
 # =============================================================================
 
 
-def run_server():
+def run_server(Server=_Server):
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
     if PYTHON_ENV == "prod":
         prod_config()
@@ -112,7 +109,7 @@ def run_server():
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
 
-    _Server.add_arguments(parser)
+    Server.add_arguments(parser)
     args = parser.parse_args()
     
     if not "host" in args:
@@ -123,8 +120,8 @@ def run_server():
         os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
 
     print(f"{args=}", flush=True)
-    _Server.configure(args)
-    server.start_webserver(options=args, protocol=_Server)
+    Server.configure(args)
+    server.start_webserver(options=args, protocol=Server)
 
 
 if __name__ == "__main__":
