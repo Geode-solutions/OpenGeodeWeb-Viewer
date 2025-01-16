@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.2.1-rc.1 (2025-01-16)
+
+### Bug Fixes
+
+- **dfp**: Fix broken arg
+  ([`08b22db`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/08b22dbfd56ea861dd57abcce3fdd9959dc597b7))
+
+
 ## v1.2.0 (2025-01-14)
 
 
