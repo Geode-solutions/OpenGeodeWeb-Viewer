@@ -141,10 +141,24 @@ class VtkObjectView(VtkView):
         actor.SetVisibility(visibility)
         self.render()
 
+
     def SetPolygonsColor(self, id, color):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetColor(color)
         self.render()
+
+    def SetPolyhedronsVisibility(self, id, visibility):
+        actor = self.get_object(id)["actor"]
+        actor.SetVisibility(visibility)
+        self.render()
+    
+    def SetPolyhedronsColor(self, id, color):
+        reader = self.get_object(id)["reader"]
+        cells = reader.GetOutput().GetCellData()
+        mapper = self.get_object(id)["mapper"]
+        mapper.ScalarVisibilityOff()
+        cells.SetColor(color)
+        
 
     def clearColors(self, id):
         db = self.get_object(id)
