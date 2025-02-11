@@ -31,7 +31,7 @@ class VtkMeshPolyhedronsView(VtkMeshView):
         id = params["id"]
         print("color", params["color"], flush=True)
         red, green, blue = params["color"]["r"]/255, params["color"]["g"]/255, params["color"]["b"]/255
-        self.SetPolyhedronsColor(id, [red, green, blue])
+        self.SetColor(id, red, green, blue)
 
     # @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["vertex_attribute"]["rpc"])
     # def setMeshPolyhedronsVertexAttribute(self, params):
