@@ -1,5 +1,5 @@
 {
-  "rpc": "polygon_attribute",
+  "rpc": "polyhedron_attribute",
   "type": "object",
   "properties": {
     "id": {

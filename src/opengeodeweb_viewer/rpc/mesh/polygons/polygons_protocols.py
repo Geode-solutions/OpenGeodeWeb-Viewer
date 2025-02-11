@@ -22,7 +22,7 @@ class VtkMeshPolygonsView(VtkMeshView):
         id = params["id"]
         visibility = bool(params["visibility"])
         self.SetVisibility(id, visibility)
-
+        
     @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["color"]["rpc"])
     def setMeshPolygonsColor(self, params):
         print(self.mesh_polygons_prefix + self.mesh_polygons_schemas_dict["color"]["rpc"], f"{params=}", flush=True)
@@ -37,7 +37,7 @@ class VtkMeshPolygonsView(VtkMeshView):
         validate_schema(params, self.mesh_polygons_schemas_dict["vertex_attribute"])
         id = params["id"]
         name = str(params["name"])
-        self.setMeshVertexAttribute(id, name)
+        self.displayAttributeOnVertices(id, name)
 
     @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["polygon_attribute"]["rpc"])
     def setMeshPolygonsPolygonAttribute(self, params):
@@ -45,4 +45,4 @@ class VtkMeshPolygonsView(VtkMeshView):
         validate_schema(params, self.mesh_polygons_schemas_dict["polygon_attribute"])
         id = params["id"]
         name = str(params["name"])
-        self.setMeshPolygonAttribute(id, name)
+        self.displayAttributeOnCells(id, name)

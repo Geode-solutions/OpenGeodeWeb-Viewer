@@ -33,11 +33,19 @@ class VtkMeshPolyhedronsView(VtkMeshView):
         red, green, blue = params["color"]["r"], params["color"]["g"], params["color"]["b"]
         self.SetColor(id, red, green, blue)
 
-    # @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["vertex_attribute"]["rpc"])
-    # def setMeshPolyhedronsVertexAttribute(self, params):
-    #     print(self.mesh_polyhedrons_prefix + self.mesh_polyhedrons_schemas_dict["vertex_attribute"]["rpc"], f"{params=}", flush=True)
-    #     validate_schema(params, self.mesh_polyhedrons_schemas_dict["vertex_attribute"])
-    #     id = params["id"]
-    #     name = str(params["name"])
-    #     self.setMeshVertexAttribute(id, name)
+    @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["vertex_attribute"]["rpc"])
+    def setMeshPolyhedronsVertexAttribute(self, params):
+        print(self.mesh_polyhedrons_prefix + self.mesh_polyhedrons_schemas_dict["vertex_attribute"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_polyhedrons_schemas_dict["vertex_attribute"])
+        id = params["id"]
+        name = str(params["name"])
+        self.setMeshVertexAttribute(id, name)
+
+    @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["polyhedron_attribute"]["rpc"])
+    def setMeshPolyhedronsPolyhedronAttribute(self, params):
+        print(self.mesh_polyhedrons_prefix + self.mesh_polyhedrons_schemas_dict["vertex_attribute"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_polyhedrons_schemas_dict["vertex_attribute"])
+        id = params["id"]
+        name = str(params["name"])
+        self.setMeshPolyhedronAttribute(id, name)
 
