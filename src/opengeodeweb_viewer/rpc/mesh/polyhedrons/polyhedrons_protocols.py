@@ -27,9 +27,7 @@ class VtkMeshPolyhedronsView(VtkMeshView):
     def setMeshPolyhedronsColor(self, params):
         print(self.mesh_polyhedrons_prefix + self.mesh_polyhedrons_schemas_dict["color"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.mesh_polyhedrons_schemas_dict["color"])
-        print("id", params["id"], flush=True)
         id = params["id"]
-        print("color", params["color"], flush=True)
         red, green, blue = params["color"]["r"], params["color"]["g"], params["color"]["b"]
         self.SetColor(id, red, green, blue)
 
@@ -39,7 +37,7 @@ class VtkMeshPolyhedronsView(VtkMeshView):
         validate_schema(params, self.mesh_polyhedrons_schemas_dict["vertex_attribute"])
         id = params["id"]
         name = str(params["name"])
-        self.setMeshVertexAttribute(id, name)
+        self.displayAttributeOnVertices(id, name)
 
     @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["polyhedron_attribute"]["rpc"])
     def setMeshPolyhedronsPolyhedronAttribute(self, params):
@@ -47,5 +45,5 @@ class VtkMeshPolyhedronsView(VtkMeshView):
         validate_schema(params, self.mesh_polyhedrons_schemas_dict["vertex_attribute"])
         id = params["id"]
         name = str(params["name"])
-        self.setMeshPolyhedronAttribute(id, name)
+        self.displayAttributeOnCells(id, name)
 

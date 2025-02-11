@@ -45,5 +45,5 @@ class VtkMeshPointsView(VtkMeshView):
         validate_schema(params, self.mesh_points_schemas_dict["vertex_attribute"])
         id = str(params["id"])
         name = str(params["name"])
-        self.setMeshVertexAttribute(id, name)
+        self.displayAttributeOnVertices(id, name)
     
