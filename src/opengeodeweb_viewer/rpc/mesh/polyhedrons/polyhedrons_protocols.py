@@ -15,13 +15,13 @@ class VtkMeshPolyhedronsView(VtkMeshView):
     def __init__(self):
         super().__init__()
 
-    # @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["visibility"]["rpc"])
-    # def setMeshPolyhedronsVisibility(self, params):
-    #     print(self.mesh_polyhedrons_prefix + self.mesh_polyhedrons_schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
-    #     validate_schema(params, self.mesh_polyhedrons_schemas_dict["visibility"])
-    #     id = params["id"]
-    #     visibility = bool(params["visibility"])
-    #     self.SetPolyhedronsVisibility(id, visibility)
+    @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["visibility"]["rpc"])
+    def setMeshPolyhedronsVisibility(self, params):
+        print(self.mesh_polyhedrons_prefix + self.mesh_polyhedrons_schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_polyhedrons_schemas_dict["visibility"])
+        id = params["id"]
+        visibility = bool(params["visibility"])
+        self.SetVisibility(id, visibility)
 
     @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["color"]["rpc"])
     def setMeshPolyhedronsColor(self, params):
@@ -30,7 +30,7 @@ class VtkMeshPolyhedronsView(VtkMeshView):
         print("id", params["id"], flush=True)
         id = params["id"]
         print("color", params["color"], flush=True)
-        red, green, blue = params["color"]["r"]/255, params["color"]["g"]/255, params["color"]["b"]/255
+        red, green, blue = params["color"]["r"], params["color"]["g"], params["color"]["b"]
         self.SetColor(id, red, green, blue)
 
     # @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["vertex_attribute"]["rpc"])
@@ -41,10 +41,3 @@ class VtkMeshPolyhedronsView(VtkMeshView):
     #     name = str(params["name"])
     #     self.setMeshVertexAttribute(id, name)
 
-    # @exportRpc(mesh_polyhedrons_prefix + mesh_polyhedrons_schemas_dict["polygon_attribute"]["rpc"])
-    # def setMeshPolyhedronsPolygonAttribute(self, params):
-    #     print(self.mesh_polyhedrons_prefix + self.mesh_polyhedrons_schemas_dict["polygon_attribute"]["rpc"], f"{params=}", flush=True)
-    #     validate_schema(params, self.mesh_polyhedrons_schemas_dict["polygon_attribute"])
-    #     id = params["id"]
-    #     name = str(params["name"])
-    #     self.setMeshPolygonAttribute(id, name)

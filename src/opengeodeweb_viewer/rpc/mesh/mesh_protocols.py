@@ -59,7 +59,7 @@ class VtkMeshView(VtkObjectView):
         print(self.mesh_prefix + self.mesh_schemas_dict["color"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.mesh_schemas_dict["color"])
         id = params["id"]
-        red, green, blue = params["color"]["r"]/255, params["color"]["g"]/255, params["color"]["b"]/255
+        red, green, blue = params["color"]["r"], params["color"]["g"], params["color"]["b"]
         self.SetColor(id, red, green, blue)
 
     def setMeshVertexAttribute(self, id, name):

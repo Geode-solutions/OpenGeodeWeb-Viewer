@@ -88,7 +88,6 @@ class VtkObjectView(VtkView):
 
         self.render()
 
-
     def SetVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
         actor.SetVisibility(visibility)
@@ -103,7 +102,7 @@ class VtkObjectView(VtkView):
         mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOff()
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetColor([red, green, blue])
+        actor.GetProperty().SetColor([red/255, green/255, blue/255])
         self.render()
 
     def SetEdgesVisibility(self, id, visibility):
@@ -116,10 +115,11 @@ class VtkObjectView(VtkView):
         actor.GetProperty().SetEdgeWidth(size)
         self.render()
 
-    def SetEdgesColor(self, id, color):
+    def SetEdgesColor(self, id, red, green, blue):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetEdgeColor(color)
+        actor.GetProperty().SetEdgeColor([red/255, green/255, blue/255])
         self.render()
+
     def SetPointsVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetVertexVisibility(visibility)
@@ -131,34 +131,10 @@ class VtkObjectView(VtkView):
         actor.GetProperty().SetPointSize(size)
         self.render()
 
-    def SetPointsColor(self, id, color):
+    def SetPointsColor(self, id, red, green, blue):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetVertexColor(color)
+        actor.GetProperty().SetVertexColor([red/255, green/255, blue/255])
         self.render()
-
-    def SetPolygonsVisibility(self, id, visibility):
-        actor = self.get_object(id)["actor"]
-        actor.SetVisibility(visibility)
-        self.render()
-
-
-    def SetPolygonsColor(self, id, color):
-        actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetColor(color)
-        self.render()
-
-    def SetPolyhedronsVisibility(self, id, visibility):
-        actor = self.get_object(id)["actor"]
-        actor.SetVisibility(visibility)
-        self.render()
-    
-    def SetPolyhedronsColor(self, id, color):
-        reader = self.get_object(id)["reader"]
-        cells = reader.GetOutput().GetCellData()
-        mapper = self.get_object(id)["mapper"]
-        mapper.ScalarVisibilityOff()
-        cells.SetColor(color)
-        
 
     def clearColors(self, id):
         db = self.get_object(id)
