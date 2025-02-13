@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.3.0-rc.2 (2025-02-13)
+
+### Bug Fixes
+
+- **CICD**: Twine 6.0.1
+  ([`430f5c8`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/430f5c818a7b2af89f79ab47b81885f2a4f9924d))
+
+
 ## v1.3.0-rc.1 (2025-02-13)
 
 ### Features
