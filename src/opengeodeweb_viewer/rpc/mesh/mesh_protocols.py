@@ -59,10 +59,10 @@ class VtkMeshView(VtkObjectView):
         print(self.mesh_prefix + self.mesh_schemas_dict["color"]["rpc"], f"{params=}", flush=True)
         validate_schema(params, self.mesh_schemas_dict["color"])
         id = params["id"]
-        red, green, blue = params["color"]["r"]/255, params["color"]["g"]/255, params["color"]["b"]/255
+        red, green, blue = params["color"]["r"], params["color"]["g"], params["color"]["b"]
         self.SetColor(id, red, green, blue)
 
-    def setMeshVertexAttribute(self, id, name):
+    def displayAttributeOnVertices(self, id, name):
         reader = self.get_object(id)["reader"]
         points = reader.GetOutput().GetPointData()
         points.SetActiveScalars(name)
@@ -72,7 +72,8 @@ class VtkMeshView(VtkObjectView):
         mapper.SetScalarRange(points.GetScalars().GetRange())
         self.render()
 
-    def setMeshPolygonAttribute(self, id, name):
+
+    def displayAttributeOnCells(self, id, name):
         reader = self.get_object(id)["reader"]
         cells = reader.GetOutput().GetCellData()
         cells.SetActiveScalars(name)
