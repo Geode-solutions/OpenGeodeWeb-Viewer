@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.3.0-rc.1 (2025-02-13)
+
+### Features
+
+- **polyhedrons**: Color protocol
+  ([`15b35fc`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/15b35fcfdda1afc66f4eb4942d9f54006bbc9a0f))
+
+
 ## v1.2.1 (2025-01-16)
 
 
@@ -128,7 +136,7 @@
 
 BREAKING CHANGE: change some rpc names in schemas
 
-### BREAKING CHANGES
+### Breaking Changes
 
 - **new rpcs**: Change some rpc names in schemas
 
