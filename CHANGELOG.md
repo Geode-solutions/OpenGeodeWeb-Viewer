@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.3.1-rc.1 (2025-02-19)
+
+### Bug Fixes
+
+- **points**: Render as sphere
+  ([`0adf9b5`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/0adf9b51ff6a7ddd184c18469a8a551f2e2ac3e8))
+
+
 ## v1.3.0 (2025-02-13)
 
 
