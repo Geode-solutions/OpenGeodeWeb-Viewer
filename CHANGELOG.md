@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.4.0-rc.1 (2025-02-26)
+
+### Features
+
+- **meshes**: Export texture rpc & tests
+  ([`f65b061`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/f65b061eca647458d3333a1a07730857d815daf2))
+
+
 ## v1.3.1 (2025-02-19)
 
 
