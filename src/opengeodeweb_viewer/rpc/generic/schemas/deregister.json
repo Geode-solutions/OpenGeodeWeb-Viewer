@@ -4,10 +4,15 @@
   "properties": {
     "viewer_object": {
       "type": "string",
-      "enum": ["mesh", "model"]
+      "minLength": 1,
+      "enum": [
+        "mesh",
+        "model"
+      ]
     },
     "id": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
