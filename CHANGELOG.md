@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v1.4.0-rc.2 (2025-03-07)
+
+### Bug Fixes
+
+- **schemas**: All "string" => "minLength": 1
+  ([`279b716`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/279b716d6b4b592f046b6417ad868cc8feb08d0f))
+
+- **typo**: Elements => items
+  ([`9241680`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/9241680ebb1e2cb8189fc5503d1ba1462b2be749))
+
+
 ## v1.4.0-rc.1 (2025-02-26)
 
 ### Features
