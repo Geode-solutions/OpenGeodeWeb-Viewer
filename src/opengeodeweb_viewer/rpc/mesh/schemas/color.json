@@ -3,10 +3,11 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "color": {
-      "type": "object", 
+      "type": "object",
       "properties": {
         "r": {
           "type": "integer",

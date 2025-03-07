@@ -62,6 +62,16 @@ class VtkMeshView(VtkObjectView):
         red, green, blue = params["color"]["r"], params["color"]["g"], params["color"]["b"]
         self.SetColor(id, red, green, blue)
 
+
+    @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
+    def meshApplyTextures(self, params):
+        print(self.mesh_prefix + self.mesh_schemas_dict["apply_textures"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.mesh_schemas_dict["apply_textures"])
+        id = params["id"]
+        textures = params["textures"]
+        self.applyTextures(id, textures)
+
+
     def displayAttributeOnVertices(self, id, name):
         reader = self.get_object(id)["reader"]
         points = reader.GetOutput().GetPointData()

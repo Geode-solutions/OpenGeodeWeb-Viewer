@@ -21,13 +21,19 @@ def test_opacity(server):
     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["opacity"]["rpc"], [{"id": "123456789", "opacity": 0.1}])
     assert server.compare_image(3, "mesh/opacity.jpeg") == True
 
-
 def test_color(server):
 
     test_register_mesh(server)
 
     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"], [{"id": "123456789", "color": {"r": 50, "g": 2, "b": 250}}])
     assert server.compare_image(3, "mesh/color.jpeg") == True
+
+def test_apply_textures(server):
+
+    test_register_mesh(server)
+
+    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"], [{"id": "123456789", "textures": [{"texture_name": "lambert2SG", "texture_file_name": "hat_lambert2SG.vti"}]}])
+    assert server.compare_image(3, "mesh/apply_textures.jpeg") == True
 
 
 # def test_display_vertex_attribute(server):
