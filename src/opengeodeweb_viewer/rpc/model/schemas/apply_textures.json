@@ -8,7 +8,7 @@
     },
     "textures": {
       "type": "array",
-      "elements": {
+      "items": {
         "type": "object",
         "properties": {
           "texture_name": {
