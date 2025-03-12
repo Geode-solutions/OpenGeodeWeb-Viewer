@@ -21,6 +21,14 @@ def test_opacity(server):
     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["opacity"]["rpc"], [{"id": "123456789", "opacity": 0.1}])
     assert server.compare_image(3, "mesh/opacity.jpeg") == True
 
+
+def test_visibility(server):
+
+    test_register_mesh(server)
+
+    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["visibility"]["rpc"], [{"id": "123456789", "visibility": False}])
+    assert server.compare_image(3, "mesh/visibility.jpeg") == True
+
 def test_color(server):
 
     test_register_mesh(server)

@@ -1,10 +1,18 @@
 {
-  "rpc": "set_corners_size",
+  "rpc": "size",
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
       "minLength": 1
+    },
+    "block_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
     },
     "size": {
       "type": "integer"
@@ -12,6 +20,7 @@
   },
   "required": [
     "id",
+    "block_ids",
     "size"
   ],
   "additionalProperties": false

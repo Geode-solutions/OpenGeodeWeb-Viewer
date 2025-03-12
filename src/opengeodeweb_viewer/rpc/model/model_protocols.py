@@ -47,10 +47,10 @@ class VtkModelView(VtkObjectView):
         visibility = bool(params["visibility"])
         self.SetEdgesVisibility(id, visibility)
 
-    @exportRpc(model_prefix + model_schemas_dict["set_components_visibility"]["rpc"])
-    def setComponentsVisibility(self, params):
-        print(self.model_prefix + self.model_schemas_dict["set_components_visibility"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.model_schemas_dict["set_components_visibility"])
+    @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
+    def setModelVisibility(self, params):
+        print(self.model_prefix + self.model_schemas_dict["visibility"]["rpc"], f"{params=}", flush=True)
+        validate_schema(params, self.model_schemas_dict["visibility"])
         id = params["id"]
         visibility = bool(params["visibility"])
         self.SetVisibility(id, visibility)
