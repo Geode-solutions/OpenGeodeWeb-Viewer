@@ -35,7 +35,9 @@ class _Server(vtk_wslink.ServerProtocol):
     @staticmethod
     def add_arguments(parser):
         parser.add_argument(
-            "--data_folder_path", default=os.environ.get("DATA_FOLDER_PATH"), help="Path to the folder where data is stored"
+            "--data_folder_path",
+            default=os.environ.get("DATA_FOLDER_PATH"),
+            help="Path to the folder where data is stored",
         )
 
     @staticmethod
@@ -64,7 +66,7 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(VtkMeshPolyhedronsView())
         self.registerVtkWebProtocol(model_protocols)
         self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
-        
+
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.
         self.getApplication().SetImageEncoding(0)
@@ -112,7 +114,7 @@ def run_server(Server=_Server):
 
     Server.add_arguments(parser)
     args = parser.parse_args()
-    
+
     if not "host" in args:
         args.host = os.environ["DEFAULT_HOST"]
     if not "port" in args or args.port == 8080:

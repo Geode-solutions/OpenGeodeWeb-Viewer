@@ -1,24 +1,34 @@
-
-
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+
 
 def test_register_mesh(server):
 
-    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"], [{"id": "123456789", "file_name": "hat.vtp"}])
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "123456789", "file_name": "hat.vtp"}],
+    )
     assert server.compare_image(3, "mesh/register.jpeg") == True
+
 
 def test_deregister_mesh(server):
 
     test_register_mesh(server)
 
-    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["deregister"]["rpc"], [{"id": "123456789"}])
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["deregister"]["rpc"],
+        [{"id": "123456789"}],
+    )
     assert server.compare_image(3, "mesh/deregister.jpeg") == True
+
 
 def test_opacity(server):
 
     test_register_mesh(server)
 
-    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["opacity"]["rpc"], [{"id": "123456789", "opacity": 0.1}])
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["opacity"]["rpc"],
+        [{"id": "123456789", "opacity": 0.1}],
+    )
     assert server.compare_image(3, "mesh/opacity.jpeg") == True
 
 
@@ -26,21 +36,43 @@ def test_visibility(server):
 
     test_register_mesh(server)
 
-    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["visibility"]["rpc"], [{"id": "123456789", "visibility": False}])
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["visibility"]["rpc"],
+        [{"id": "123456789", "visibility": False}],
+    )
     assert server.compare_image(3, "mesh/visibility.jpeg") == True
+
 
 def test_color(server):
 
     test_register_mesh(server)
 
-    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"], [{"id": "123456789", "color": {"r": 50, "g": 2, "b": 250}}])
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"],
+        [{"id": "123456789", "color": {"r": 50, "g": 2, "b": 250}}],
+    )
     assert server.compare_image(3, "mesh/color.jpeg") == True
+
 
 def test_apply_textures(server):
 
     test_register_mesh(server)
 
-    server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"], [{"id": "123456789", "textures": [{"texture_name": "lambert2SG", "texture_file_name": "hat_lambert2SG.vti"}]}])
+    server.call(
+        VtkMeshView.mesh_prefix
+        + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "textures": [
+                    {
+                        "texture_name": "lambert2SG",
+                        "texture_file_name": "hat_lambert2SG.vti",
+                    }
+                ],
+            }
+        ],
+    )
     assert server.compare_image(3, "mesh/apply_textures.jpeg") == True
 
 
