@@ -109,8 +109,7 @@ class ServerMonitor:
 
             path_image = os.path.join(self.images_dir_path, filename)
 
-            return self.images_diff(test_file_path, path_image)==0.0
-
+            return self.images_diff(test_file_path, path_image) == 0.0
 
 
 class FixtureHelper:

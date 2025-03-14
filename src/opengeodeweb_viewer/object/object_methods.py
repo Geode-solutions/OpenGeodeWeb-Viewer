@@ -8,6 +8,7 @@ import vtk
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
+
 class VtkObjectView(VtkView):
     def __init__(self):
         super().__init__()
@@ -98,19 +99,19 @@ class VtkObjectView(VtkView):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetOpacity(opacity)
         self.render()
-    
+
     def SetColor(self, id, red, green, blue):
         mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOff()
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetColor([red/255, green/255, blue/255])
+        actor.GetProperty().SetColor([red / 255, green / 255, blue / 255])
         self.render()
 
     def SetEdgesVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
-    
+
     def SetEdgesSize(self, id, size):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeWidth(size)
@@ -118,7 +119,7 @@ class VtkObjectView(VtkView):
 
     def SetEdgesColor(self, id, red, green, blue):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetEdgeColor([red/255, green/255, blue/255])
+        actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
         self.render()
 
     def SetPointsVisibility(self, id, visibility):
@@ -134,7 +135,7 @@ class VtkObjectView(VtkView):
 
     def SetPointsColor(self, id, red, green, blue):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetVertexColor([red/255, green/255, blue/255])
+        actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
         self.render()
 
     def clearColors(self, id):
