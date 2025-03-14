@@ -16,7 +16,8 @@ def get_schemas_dict(path):
             file_content = json.load(file)
             schemas_dict[filename] = file_content
     return schemas_dict
-    
+
+
 def validate_schema(params, schema):
     try:
         validate(instance=params, schema=schema)

@@ -7,6 +7,7 @@ from vtk.web import protocols as vtk_protocols
 
 # Local application imports
 
+
 class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self):
         super().__init__()
@@ -42,15 +43,3 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     def deregister_object(self, id):
         del self.get_data_base()[id]
-
-
-
-
-
-
-
-
-    
-
-
-    
