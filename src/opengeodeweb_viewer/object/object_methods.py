@@ -98,7 +98,7 @@ class VtkObjectView(VtkView):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetOpacity(opacity)
         self.render()
-    
+
     def SetColor(self, id, red, green, blue):
         mapper = self.get_object(id)["mapper"]
         mapper.ScalarVisibilityOff()
@@ -110,7 +110,7 @@ class VtkObjectView(VtkView):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
-    
+
     def SetEdgesSize(self, id, size):
         actor = self.get_object(id)["actor"]
         actor.GetProperty().SetEdgeWidth(size)
@@ -137,11 +137,22 @@ class VtkObjectView(VtkView):
         actor.GetProperty().SetVertexColor([red/255, green/255, blue/255])
         self.render()
 
-    def setBlockPointsSize(self, id, block_ids, size):
-        actor = self.get_object(id)["actor"]
+    def SetBlocksVisibility(self, id, block_ids, visibility):
+        mapper = self.get_object(id)["mapper"]
         for block_id in block_ids:
-            block_actor = actor.GetChildren().GetItemAsObject(block_id)
-            block_actor.GetProperty().SetPointSize(size)
+            mapper.SetBlockVisibility(block_id, visibility)
+
+    # def SetBlocksPointsVisibility(self, id, block_ids, visibility):
+    #     mapper = self.get_object(id)["mapper"]
+    #     for block_id in block_ids:
+    #         block_actor = actor.GetChildren().GetItemAsObject(block_id)
+    #         block_actor.GetProperty().SetVertexVisibility(visibility)
+
+    # def SetBlocksPointsSize(self, id, block_ids, size):
+    #     actor = self.get_object(id)["actor"]
+    #     for block_id in block_ids:
+    #         block_actor = actor.GetChildren().GetItemAsObject(block_id)
+    #         block_actor.GetProperty().SetPointSize(size)
     
 
     def clearColors(self, id):

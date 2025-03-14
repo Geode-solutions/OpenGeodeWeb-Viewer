@@ -1,10 +1,17 @@
 # Standard library imports
 
 # Third party imports
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.rpc.model.corners.points.corners_points_protocols import VtkModelCornersPointsView
 
 # Local application imports
-from tests.test_model_protocols import test_register_model
+
+
+def test_register_model(server):
+
+    server.call(VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"], [{"id": "123456789", "file_name": "cube.vtm"}])
+    assert server.compare_image(3, "model/cube_register.jpeg") == True
+
 
 def test_corners_points_visibility(server):
 

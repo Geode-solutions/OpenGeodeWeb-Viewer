@@ -13,8 +13,8 @@ from .config import *
 from .vtk_protocol import VtkView
 from .rpc.viewer.viewer_protocols import VtkViewerView
 from .rpc.mesh.mesh_protocols import VtkMeshView
-from .rpc.mesh.points.points_protocols import VtkMeshPointsView
-from .rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
+from .rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
+from .rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 from .rpc.mesh.polyhedrons.polyhedrons_protocols import VtkMeshPolyhedronsView
 from .rpc.model.model_protocols import VtkModelView

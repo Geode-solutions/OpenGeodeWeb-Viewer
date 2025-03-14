@@ -4,7 +4,7 @@
 from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 
 # Local application imports
-from tests.test_mesh_protocols import test_register_mesh
+from src.tests.mesh.test_mesh_protocols import test_register_mesh
 
 
 def test_polygons_color(server):

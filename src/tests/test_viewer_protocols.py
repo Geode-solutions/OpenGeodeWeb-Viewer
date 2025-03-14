@@ -5,7 +5,7 @@ import os
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 # Local application imports
-from .test_mesh_protocols import test_register_mesh
+from .mesh.test_mesh_protocols import test_register_mesh
 
 
 def test_create_visualization(server):

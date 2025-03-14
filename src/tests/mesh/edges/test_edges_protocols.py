@@ -1,10 +1,10 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
+from src.opengeodeweb_viewer.rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 
 # Local application imports
-from tests.test_mesh_protocols import test_register_mesh
+from src.tests.mesh.test_mesh_protocols import test_register_mesh
 
 def test_edges_visibility(server):
 

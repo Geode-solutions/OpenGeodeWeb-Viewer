@@ -4,7 +4,7 @@
 from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
 
 # Local application imports
-from tests.test_mesh_protocols import test_register_mesh
+from src.tests.mesh.test_mesh_protocols import test_register_mesh
 
 def test_points_visibility(server):
 
