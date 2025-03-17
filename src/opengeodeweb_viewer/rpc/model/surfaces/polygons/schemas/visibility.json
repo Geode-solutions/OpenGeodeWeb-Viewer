@@ -9,7 +9,7 @@
     "block_ids": {
       "type": "array",
       "items": {
-        "type": "string",
+        "type": "integer",
         "minLength": 1
       },
       "minItems": 1
