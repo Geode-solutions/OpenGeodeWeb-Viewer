@@ -1,7 +1,7 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
+from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
 
 # Local application imports
 from src.tests.mesh.test_mesh_protocols import test_register_mesh
