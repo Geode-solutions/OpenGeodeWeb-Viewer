@@ -3,6 +3,7 @@ import os
 
 # Third party imports
 import vtk
+from vtkmodules.vtkRenderingCore import vtkCompositeDataDisplayAttributes
 from wslink import register as exportRpc
 
 # Local application imports
@@ -35,6 +36,8 @@ class VtkModelView(VtkObjectView):
             filter.SetInputConnection(reader.GetOutputPort())
             mapper = vtk.vtkCompositePolyDataMapper()
             mapper.SetInputConnection(filter.GetOutputPort())
+            attributes = vtkCompositeDataDisplayAttributes()
+            mapper.SetCompositeDataDisplayAttributes(attributes)
             self.registerObject(id, file_name, reader, filter, mapper)
         except Exception as e:
             print("error : ", str(e), flush=True)
@@ -50,43 +53,43 @@ class VtkModelView(VtkObjectView):
         id = params["id"]
         self.deregisterObject(id)
 
-    @exportRpc(model_prefix + model_schemas_dict["set_mesh_visibility"]["rpc"])
-    def setMeshVisibility(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["set_mesh_visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
-        validate_schema(params, self.model_schemas_dict["set_mesh_visibility"])
-        id = params["id"]
-        visibility = bool(params["visibility"])
-        self.SetEdgesVisibility(id, visibility)
+    # @exportRpc(model_prefix + model_schemas_dict["set_mesh_visibility"]["rpc"])
+    # def setMeshVisibility(self, params):
+    #     print(
+    #         self.model_prefix + self.model_schemas_dict["set_mesh_visibility"]["rpc"],
+    #         f"{params=}",
+    #         flush=True,
+    #     )
+    #     validate_schema(params, self.model_schemas_dict["set_mesh_visibility"])
+    #     id = params["id"]
+    #     visibility = bool(params["visibility"])
+    #     self.SetEdgesVisibility(id, visibility)
 
-    @exportRpc(model_prefix + model_schemas_dict["set_components_visibility"]["rpc"])
-    def setComponentsVisibility(self, params):
-        print(
-            self.model_prefix
-            + self.model_schemas_dict["set_components_visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
-        validate_schema(params, self.model_schemas_dict["set_components_visibility"])
-        id = params["id"]
-        visibility = bool(params["visibility"])
-        self.SetVisibility(id, visibility)
+    # @exportRpc(model_prefix + model_schemas_dict["set_components_visibility"]["rpc"])
+    # def setComponentsVisibility(self, params):
+    #     print(
+    #         self.model_prefix
+    #         + self.model_schemas_dict["set_components_visibility"]["rpc"],
+    #         f"{params=}",
+    #         flush=True,
+    #     )
+    #     validate_schema(params, self.model_schemas_dict["set_components_visibility"])
+    #     id = params["id"]
+    #     visibility = bool(params["visibility"])
+    #     self.SetVisibility(id, visibility)
 
-    @exportRpc(model_prefix + model_schemas_dict["set_components_color"]["rpc"])
-    def setComponentsColor(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["set_components_color"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
-        validate_schema(params, self.model_schemas_dict["set_components_color"])
-        id = params["id"]
-        red, green, blue = (
-            params["color"]["r"],
-            params["color"]["g"],
-            params["color"]["b"],
-        )
-        self.SetColor(id, red, green, blue)
+    # @exportRpc(model_prefix + model_schemas_dict["set_components_color"]["rpc"])
+    # def setComponentsColor(self, params):
+    #     print(
+    #         self.model_prefix + self.model_schemas_dict["set_components_color"]["rpc"],
+    #         f"{params=}",
+    #         flush=True,
+    #     )
+    #     validate_schema(params, self.model_schemas_dict["set_components_color"])
+    #     id = params["id"]
+    #     red, green, blue = (
+    #         params["color"]["r"],
+    #         params["color"]["g"],
+    #         params["color"]["b"],
+    #     )
+    #     self.SetColor(id, red, green, blue)
