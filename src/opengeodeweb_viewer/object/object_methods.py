@@ -142,19 +142,14 @@ class VtkObjectView(VtkView):
         mapper = self.get_object(id)["mapper"]
         for block_id in block_ids:
             mapper.SetBlockVisibility(block_id, visibility)
-
-    # def SetBlocksPointsVisibility(self, id, block_ids, visibility):
-    #     mapper = self.get_object(id)["mapper"]
-    #     for block_id in block_ids:
-    #         block_actor = actor.GetChildren().GetItemAsObject(block_id)
-    #         block_actor.GetProperty().SetVertexVisibility(visibility)
+            print(f"{block_id=}{mapper.GetBlockVisibility(block_id)=}", flush=True)
+        self.render()
 
     # def SetBlocksPointsSize(self, id, block_ids, size):
     #     actor = self.get_object(id)["actor"]
     #     for block_id in block_ids:
     #         block_actor = actor.GetChildren().GetItemAsObject(block_id)
     #         block_actor.GetProperty().SetPointSize(size)
-    
 
     def clearColors(self, id):
         db = self.get_object(id)

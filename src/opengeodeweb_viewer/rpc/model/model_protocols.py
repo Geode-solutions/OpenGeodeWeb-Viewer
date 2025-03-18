@@ -53,17 +53,38 @@ class VtkModelView(VtkObjectView):
         id = params["id"]
         self.deregisterObject(id)
 
-    # @exportRpc(model_prefix + model_schemas_dict["set_mesh_visibility"]["rpc"])
-    # def setMeshVisibility(self, params):
-    #     print(
-    #         self.model_prefix + self.model_schemas_dict["set_mesh_visibility"]["rpc"],
-    #         f"{params=}",
-    #         flush=True,
-    #     )
-    #     validate_schema(params, self.model_schemas_dict["set_mesh_visibility"])
-    #     id = params["id"]
-    #     visibility = bool(params["visibility"])
-    #     self.SetEdgesVisibility(id, visibility)
+    @exportRpc(model_prefix + model_schemas_dict["points.visibility"]["rpc"])
+    def setModelPointsVisibility(self, params):
+        print(
+            self.model_prefix + self.model_schemas_dict["points.visibility"]["rpc"],
+            f"{params=}",
+            flush=True,
+        )
+        validate_schema(params, self.model_schemas_dict["points.visibility"])
+        id, visibility = params["id"], params["visibility"]
+        self.SetPointsVisibility(id, visibility)
+
+    @exportRpc(model_prefix + model_schemas_dict["points.size"]["rpc"])
+    def setModelPointsSize(self, params):
+        print(
+            self.model_prefix + self.model_schemas_dict["points.size"]["rpc"],
+            f"{params=}",
+            flush=True,
+        )
+        validate_schema(params, self.model_schemas_dict["points.size"])
+        id, size = params["id"], params["size"]
+        self.SetPointsSize(id, size)
+
+    @exportRpc(model_prefix + model_schemas_dict["edges.visibility"]["rpc"])
+    def setModelEdgesVisibility(self, params):
+        print(
+            self.model_prefix + self.model_schemas_dict["edges.visibility"]["rpc"],
+            f"{params=}",
+            flush=True,
+        )
+        validate_schema(params, self.model_schemas_dict["edges.visibility"])
+        id, visibility = params["id"], params["visibility"]
+        self.SetEdgesVisibility(id, visibility)
 
     # @exportRpc(model_prefix + model_schemas_dict["set_components_visibility"]["rpc"])
     # def setComponentsVisibility(self, params):

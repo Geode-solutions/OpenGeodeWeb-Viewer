@@ -1,5 +1,5 @@
 {
-  "rpc": "size",
+  "rpc": "visibility",
   "type": "object",
   "properties": {
     "id": {
@@ -9,19 +9,19 @@
     "block_ids": {
       "type": "array",
       "items": {
-        "type": "string",
+        "type": "integer",
         "minLength": 1
       },
       "minItems": 1
     },
-    "size": {
-      "type": "integer"
+    "visibility": {
+      "type": "boolean"
     }
   },
   "required": [
     "id",
     "block_ids",
-    "size"
+    "visibility"
   ],
   "additionalProperties": false
 }

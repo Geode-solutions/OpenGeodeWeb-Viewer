@@ -9,9 +9,9 @@ from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schem
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 
 
-class VtkModelSurfacesPolygonsView(VtkModelView):
-    model_surfaces_polygons_prefix = "opengeodeweb_viewer.model.surfaces.polygons."
-    model_surfaces_polygons_schemas_dict = get_schemas_dict(
+class VtkModelLinesEdgesView(VtkModelView):
+    model_lines_edges_prefix = "opengeodeweb_viewer.model.lines.edges."
+    model_lines_edges_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
@@ -19,17 +19,16 @@ class VtkModelSurfacesPolygonsView(VtkModelView):
         super().__init__()
 
     @exportRpc(
-        model_surfaces_polygons_prefix
-        + model_surfaces_polygons_schemas_dict["visibility"]["rpc"]
+        model_lines_edges_prefix + model_lines_edges_schemas_dict["visibility"]["rpc"]
     )
     def setModelSurfacesPolygonsVisibility(self, params):
         print(
-            self.model_surfaces_polygons_prefix
-            + self.model_surfaces_polygons_schemas_dict["visibility"]["rpc"],
+            self.model_lines_edges_prefix
+            + self.model_lines_edges_schemas_dict["visibility"]["rpc"],
             f"{params=}",
             flush=True,
         )
-        validate_schema(params, self.model_surfaces_polygons_schemas_dict["visibility"])
+        validate_schema(params, self.model_lines_edges_schemas_dict["visibility"])
         id, block_ids, visibility = (
             params["id"],
             params["block_ids"],

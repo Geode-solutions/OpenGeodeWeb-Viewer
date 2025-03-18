@@ -10,6 +10,15 @@ def test_register_model(server):
     assert server.compare_image(3, "model/register.jpeg") == True
 
 
+def test_register_model_cube(server):
+
+    server.call(
+        VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
+        [{"id": "123456789", "file_name": "cube.vtm"}],
+    )
+    assert server.compare_image(3, "model/cube_register.jpeg") == True
+
+
 def test_deregister_model(server):
 
     test_register_model(server)
@@ -22,37 +31,37 @@ def test_deregister_model(server):
     assert server.compare_image(3, "model/deregister.jpeg") == True
 
 
-def test_set_mesh_visibility(server):
+def test_edges_visibility(server):
 
     test_register_model(server)
 
     server.call(
         VtkModelView.model_prefix
-        + VtkModelView.model_schemas_dict["set_mesh_visibility"]["rpc"],
+        + VtkModelView.model_schemas_dict["edges.visibility"]["rpc"],
         [{"id": "123456789", "visibility": True}],
     )
-    assert server.compare_image(3, "model/set_mesh_visibility.jpeg") == True
+    assert server.compare_image(3, "model/edges/visibility.jpeg") == True
 
 
-def test_set_components_visibility(server):
-
-    test_register_model(server)
-
-    server.call(
-        VtkModelView.model_prefix
-        + VtkModelView.model_schemas_dict["set_components_visibility"]["rpc"],
-        [{"id": "123456789", "visibility": False}],
-    )
-    assert server.compare_image(3, "model/set_components_visibility.jpeg") == True
-
-
-def test_set_components_color(server):
+def test_points_visibility(server):
 
     test_register_model(server)
 
     server.call(
         VtkModelView.model_prefix
-        + VtkModelView.model_schemas_dict["set_components_color"]["rpc"],
-        [{"id": "123456789", "color": {"r": 255, "g": 0, "b": 0}}],
+        + VtkModelView.model_schemas_dict["points.visibility"]["rpc"],
+        [{"id": "123456789", "visibility": True}],
     )
-    assert server.compare_image(3, "model/set_components_color.jpeg") == True
+    assert server.compare_image(3, "model/points/visibility.jpeg") == True
+
+
+def test_points_size(server):
+
+    test_register_model(server)
+
+    server.call(
+        VtkModelView.model_prefix
+        + VtkModelView.model_schemas_dict["points.visibility"]["rpc"],
+        [{"id": "123456789", "size": 20}],
+    )
+    assert server.compare_image(3, "model/points/size.jpeg") == True
