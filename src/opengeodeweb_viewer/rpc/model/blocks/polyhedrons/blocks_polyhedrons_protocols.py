@@ -23,14 +23,10 @@ class VtkModelBlocksPolyhedronsView(VtkModelView):
         + model_blocks_polyhedrons_schemas_dict["visibility"]["rpc"]
     )
     def setModelBlocksPolyhedronsVisibility(self, params):
-        print(
-            self.model_blocks_polyhedrons_prefix
-            + self.model_blocks_polyhedrons_schemas_dict["visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
         validate_schema(
-            params, self.model_blocks_polyhedrons_schemas_dict["visibility"]
+            params,
+            self.model_blocks_polyhedrons_schemas_dict["visibility"],
+            self.model_blocks_polyhedrons_prefix,
         )
         id, block_ids, visibility = (
             params["id"],
@@ -44,13 +40,11 @@ class VtkModelBlocksPolyhedronsView(VtkModelView):
         + model_blocks_polyhedrons_schemas_dict["color"]["rpc"]
     )
     def setModelBlocksPolyhedronsColor(self, params):
-        print(
-            self.model_blocks_polyhedrons_prefix
-            + self.model_blocks_polyhedrons_schemas_dict["color"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params,
+            self.model_blocks_polyhedrons_schemas_dict["color"],
+            self.model_blocks_polyhedrons_prefix,
         )
-        validate_schema(params, self.model_blocks_polyhedrons_schemas_dict["color"])
         id, block_ids, red, green, blue = (
             params["id"],
             params["block_ids"],

@@ -23,13 +23,11 @@ class VtkModelSurfacesPolygonsView(VtkModelView):
         + model_surfaces_polygons_schemas_dict["visibility"]["rpc"]
     )
     def setModelSurfacesPolygonsVisibility(self, params):
-        print(
-            self.model_surfaces_polygons_prefix
-            + self.model_surfaces_polygons_schemas_dict["visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params,
+            self.model_surfaces_polygons_schemas_dict["visibility"],
+            self.model_surfaces_polygons_prefix,
         )
-        validate_schema(params, self.model_surfaces_polygons_schemas_dict["visibility"])
         id, block_ids, visibility = (
             params["id"],
             params["block_ids"],
@@ -42,13 +40,11 @@ class VtkModelSurfacesPolygonsView(VtkModelView):
         + model_surfaces_polygons_schemas_dict["color"]["rpc"]
     )
     def setModelSurfacesPolygonsCOlor(self, params):
-        print(
-            self.model_surfaces_polygons_prefix
-            + self.model_surfaces_polygons_schemas_dict["color"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params,
+            self.model_surfaces_polygons_schemas_dict["color"],
+            self.model_surfaces_polygons_prefix,
         )
-        validate_schema(params, self.model_surfaces_polygons_schemas_dict["color"])
         id, block_ids, red, green, blue = (
             params["id"],
             params["block_ids"],

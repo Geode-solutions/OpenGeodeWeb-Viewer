@@ -22,14 +22,8 @@ class VtkModelView(VtkObjectView):
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["register"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
-        validate_schema(params, self.model_schemas_dict["register"])
-        id = params["id"]
-        file_name = params["file_name"]
+        validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
+        id, file_name = params["id"], params["file_name"]
         try:
             reader = vtk.vtkXMLMultiBlockDataReader()
             filter = vtk.vtkGeometryFilter()
@@ -44,44 +38,32 @@ class VtkModelView(VtkObjectView):
 
     @exportRpc(model_prefix + model_schemas_dict["deregister"]["rpc"])
     def deregisterModel(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["deregister"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.model_schemas_dict["deregister"], self.model_prefix
         )
-        validate_schema(params, self.model_schemas_dict["deregister"])
         id = params["id"]
         self.deregisterObject(id)
 
     @exportRpc(model_prefix + model_schemas_dict["points.visibility"]["rpc"])
     def setModelPointsVisibility(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["points.visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.model_schemas_dict["points.visibility"], self.model_prefix
         )
-        validate_schema(params, self.model_schemas_dict["points.visibility"])
         id, visibility = params["id"], params["visibility"]
         self.SetPointsVisibility(id, visibility)
 
     @exportRpc(model_prefix + model_schemas_dict["points.size"]["rpc"])
     def setModelPointsSize(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["points.size"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.model_schemas_dict["points.size"], self.model_prefix
         )
-        validate_schema(params, self.model_schemas_dict["points.size"])
         id, size = params["id"], params["size"]
         self.SetPointsSize(id, size)
 
     @exportRpc(model_prefix + model_schemas_dict["edges.visibility"]["rpc"])
     def setModelEdgesVisibility(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["edges.visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.model_schemas_dict["edges.visibility"], self.model_prefix
         )
-        validate_schema(params, self.model_schemas_dict["edges.visibility"])
         id, visibility = params["id"], params["visibility"]
         self.SetEdgesVisibility(id, visibility)

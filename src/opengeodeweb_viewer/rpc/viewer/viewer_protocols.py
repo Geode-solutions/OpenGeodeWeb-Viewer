@@ -14,18 +14,19 @@ from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
 class VtkViewerView(VtkView):
-    prefix = "opengeodeweb_viewer.viewer."
-    schemas_dict = get_schemas_dict(os.path.join(os.path.dirname(__file__), "schemas"))
+    viewer_prefix = "opengeodeweb_viewer.viewer."
+    viewer_schemas_dict = get_schemas_dict(
+        os.path.join(os.path.dirname(__file__), "schemas")
+    )
 
     def __init__(self):
         super().__init__()
 
-    @exportRpc(prefix + schemas_dict["create_visualization"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["create_visualization"]["rpc"])
     def createVisualization(self, params):
-        print(
-            self.schemas_dict["create_visualization"]["rpc"], f"{params=}", flush=True
+        validate_schema(
+            params, self.viewer_schemas_dict["create_visualization"], self.viewer_prefix
         )
-        validate_schema(params, self.schemas_dict["create_visualization"])
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
@@ -33,39 +34,45 @@ class VtkViewerView(VtkView):
         renderWindow.Render()
         self.render()
 
-    @exportRpc(prefix + schemas_dict["set_background_color"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["set_background_color"]["rpc"])
     def setBackgroundColor(self, params):
-        print(
-            self.schemas_dict["set_background_color"]["rpc"], f"{params=}", flush=True
+        validate_schema(
+            params, self.viewer_schemas_dict["set_background_color"], self.viewer_prefix
         )
-        validate_schema(params, self.schemas_dict["set_background_color"])
+        red, green, blue = (
+            params["color"]["r"],
+            params["color"]["g"],
+            params["color"]["b"],
+        )
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        red = params["color"]["r"]
-        green = params["color"]["g"]
-        blue = params["color"]["b"]
 
         renderer.SetBackground([red, green, blue])
         renderer.ResetCamera()
         renderWindow.Render()
         self.render()
 
-    @exportRpc(prefix + schemas_dict["reset_camera"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["reset_camera"]["rpc"])
     def resetCamera(self, params):
-        print(self.schemas_dict["reset_camera"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["reset_camera"])
+        validate_schema(
+            params, self.viewer_schemas_dict["reset_camera"], self.viewer_prefix
+        )
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
         renderWindow.Render()
         self.render()
 
-    @exportRpc(prefix + schemas_dict["take_screenshot"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params):
-        print(self.schemas_dict["take_screenshot"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["take_screenshot"])
-        filename = params["filename"]
-        output_extension = params["output_extension"]
-        include_background = params["include_background"]
+        validate_schema(
+            params, self.viewer_schemas_dict["take_screenshot"], self.viewer_prefix
+        )
+
+        filename, output_extension, include_background = (
+            params["filename"],
+            params["output_extension"],
+            params["include_background"],
+        )
         renderWindow = self.getView("-1")
         renderer = self.get_renderer()
 
@@ -104,10 +111,11 @@ class VtkViewerView(VtkView):
 
         return {"blob": self.addAttachment(file_content)}
 
-    @exportRpc(prefix + schemas_dict["update_data"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["update_data"]["rpc"])
     def updateData(self, params):
-        print(self.schemas_dict["update_data"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["update_data"])
+        validate_schema(
+            params, self.viewer_schemas_dict["update_data"], self.viewer_prefix
+        )
         id = params["id"]
 
         data = self.get_object(id)
@@ -126,10 +134,11 @@ class VtkViewerView(VtkView):
         mapper.SetScalarRange(scalars.GetRange())
         self.render()
 
-    @exportRpc(prefix + schemas_dict["get_point_position"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["get_point_position"]["rpc"])
     def getPointPosition(self, params):
-        print(self.schemas_dict["get_point_position"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["get_point_position"])
+        validate_schema(
+            params, self.viewer_schemas_dict["get_point_position"], self.viewer_prefix
+        )
         x = float(params["x"])
         y = float(params["y"])
         xyz = [x, y, 0.0]
@@ -138,10 +147,9 @@ class VtkViewerView(VtkView):
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
-    @exportRpc(prefix + schemas_dict["reset"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["reset"]["rpc"])
     def reset(self, params):
-        print(self.schemas_dict["reset"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["reset"])
+        validate_schema(params, self.viewer_schemas_dict["reset"], self.viewer_prefix)
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
 
@@ -160,13 +168,12 @@ class VtkViewerView(VtkView):
             )
         return math.sqrt(epsilon) * 0.0125
 
-    @exportRpc(prefix + schemas_dict["picked_ids"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
     def pickedIds(self, params):
-        print(self.schemas_dict["picked_ids"]["rpc"], f"{params=}", flush=True)
-        validate_schema(params, self.schemas_dict["picked_ids"])
-        x = params["x"]
-        y = params["y"]
-        ids = params["ids"]
+        validate_schema(
+            params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
+        )
+        x, y, ids = params["x"], params["y"], params["ids"]
 
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()

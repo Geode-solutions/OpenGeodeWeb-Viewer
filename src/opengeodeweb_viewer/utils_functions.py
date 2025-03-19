@@ -21,7 +21,8 @@ def get_schemas_dict(path):
     return schemas_dict
 
 
-def validate_schema(params, schema):
+def validate_schema(params, schema, prefix=""):
+    print(f"{prefix}{schema['rpc']}", f"{params=}", flush=True)
     try:
         validate(instance=params, schema=schema)
     except ValidationError as e:

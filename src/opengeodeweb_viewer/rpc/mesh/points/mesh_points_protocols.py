@@ -20,27 +20,19 @@ class VtkMeshPointsView(VtkMeshView):
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
     def setMeshPointsVisibility(self, params):
-        print(
-            self.mesh_points_prefix
-            + self.mesh_points_schemas_dict["visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.mesh_points_schemas_dict["visibility"], self.mesh_points_prefix
         )
-        validate_schema(params, self.mesh_points_schemas_dict["visibility"])
-        id = str(params["id"])
-        visibility = bool(params["visibility"])
+        id, visibility = params["id"], params["visibility"]
         self.SetPointsVisibility(id, visibility)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
     def setMeshPointsColor(self, params):
-        print(
-            self.mesh_points_prefix + self.mesh_points_schemas_dict["color"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
         )
-        validate_schema(params, self.mesh_points_schemas_dict["color"])
-        id = str(params["id"])
-        red, green, blue = (
+        id, red, green, blue = (
+            params["id"],
             params["color"]["r"],
             params["color"]["g"],
             params["color"]["b"],
@@ -49,25 +41,18 @@ class VtkMeshPointsView(VtkMeshView):
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
     def setMeshPointsSize(self, params):
-        print(
-            self.mesh_points_prefix + self.mesh_points_schemas_dict["size"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
         )
-        validate_schema(params, self.mesh_points_schemas_dict["size"])
-        id = str(params["id"])
-        size = float(params["size"])
+        id, size = params["id"], params["size"]
         self.SetPointsSize(id, size)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_attribute"]["rpc"])
     def setMeshPointsVertexAttribute(self, params):
-        print(
-            self.mesh_points_prefix
-            + self.mesh_points_schemas_dict["vertex_attribute"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params,
+            self.mesh_points_schemas_dict["vertex_attribute"],
+            self.mesh_points_prefix,
         )
-        validate_schema(params, self.mesh_points_schemas_dict["vertex_attribute"])
-        id = str(params["id"])
-        name = str(params["name"])
+        id, name = params["id"], params["name"]
         self.displayAttributeOnVertices(id, name)

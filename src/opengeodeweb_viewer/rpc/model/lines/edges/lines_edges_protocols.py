@@ -22,13 +22,11 @@ class VtkModelLinesEdgesView(VtkModelView):
         model_lines_edges_prefix + model_lines_edges_schemas_dict["visibility"]["rpc"]
     )
     def setModelLinesEdgesVisibility(self, params):
-        print(
-            self.model_lines_edges_prefix
-            + self.model_lines_edges_schemas_dict["visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params,
+            self.model_lines_edges_schemas_dict["visibility"],
+            self.model_lines_edges_prefix,
         )
-        validate_schema(params, self.model_lines_edges_schemas_dict["visibility"])
         id, block_ids, visibility = (
             params["id"],
             params["block_ids"],
@@ -40,13 +38,11 @@ class VtkModelLinesEdgesView(VtkModelView):
         model_lines_edges_prefix + model_lines_edges_schemas_dict["color"]["rpc"]
     )
     def setModelLinesEdgesColor(self, params):
-        print(
-            self.model_lines_edges_prefix
-            + self.model_lines_edges_schemas_dict["color"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params,
+            self.model_lines_edges_schemas_dict["color"],
+            self.model_lines_edges_prefix,
         )
-        validate_schema(params, self.model_lines_edges_schemas_dict["color"])
         id, block_ids, red, green, blue = (
             params["id"],
             params["block_ids"],

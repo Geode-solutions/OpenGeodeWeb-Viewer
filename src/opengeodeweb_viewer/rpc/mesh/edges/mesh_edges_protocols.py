@@ -20,26 +20,19 @@ class VtkMeshEdgesView(VtkMeshView):
 
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["visibility"]["rpc"])
     def setMeshEdgesVisibility(self, params):
-        print(
-            self.mesh_edges_prefix + self.mesh_edges_schemas_dict["visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.mesh_edges_schemas_dict["visibility"], self.mesh_edges_prefix
         )
-        validate_schema(params, self.mesh_edges_schemas_dict["visibility"])
-        id = params["id"]
-        visibility = bool(params["visibility"])
+        id, visibility = params["id"], params["visibility"]
         self.SetEdgesVisibility(id, visibility)
 
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["color"]["rpc"])
     def setMeshEdgesColor(self, params):
-        print(
-            self.mesh_edges_prefix + self.mesh_edges_schemas_dict["color"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.mesh_edges_schemas_dict["color"], self.mesh_edges_prefix
         )
-        validate_schema(params, self.mesh_edges_schemas_dict["color"])
-        id = params["id"]
-        red, green, blue = (
+        id, red, green, blue = (
+            params["id"],
             params["color"]["r"],
             params["color"]["g"],
             params["color"]["b"],
@@ -48,12 +41,8 @@ class VtkMeshEdgesView(VtkMeshView):
 
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["size"]["rpc"])
     def setMeshEdgesSize(self, params):
-        print(
-            self.mesh_edges_prefix + self.mesh_edges_schemas_dict["size"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.mesh_edges_schemas_dict["size"], self.mesh_edges_prefix
         )
-        validate_schema(params, self.mesh_edges_schemas_dict["size"])
-        id = params["id"]
-        size = bool(params["size"])
+        id, size = params["id"], params["size"]
         self.SetEdgesSize(id, size)
