@@ -3,6 +3,7 @@ import os
 
 # Third party imports
 import vtk
+from vtkmodules.vtkRenderingCore import vtkCompositeDataDisplayAttributes
 from wslink import register as exportRpc
 
 # Local application imports
@@ -21,72 +22,48 @@ class VtkModelView(VtkObjectView):
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["register"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
-        validate_schema(params, self.model_schemas_dict["register"])
-        id = params["id"]
-        file_name = params["file_name"]
+        validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
+        id, file_name = params["id"], params["file_name"]
         try:
             reader = vtk.vtkXMLMultiBlockDataReader()
             filter = vtk.vtkGeometryFilter()
             filter.SetInputConnection(reader.GetOutputPort())
             mapper = vtk.vtkCompositePolyDataMapper()
             mapper.SetInputConnection(filter.GetOutputPort())
+            attributes = vtkCompositeDataDisplayAttributes()
+            mapper.SetCompositeDataDisplayAttributes(attributes)
             self.registerObject(id, file_name, reader, filter, mapper)
         except Exception as e:
             print("error : ", str(e), flush=True)
 
     @exportRpc(model_prefix + model_schemas_dict["deregister"]["rpc"])
     def deregisterModel(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["deregister"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.model_schemas_dict["deregister"], self.model_prefix
         )
-        validate_schema(params, self.model_schemas_dict["deregister"])
         id = params["id"]
         self.deregisterObject(id)
 
-    @exportRpc(model_prefix + model_schemas_dict["set_mesh_visibility"]["rpc"])
-    def setMeshVisibility(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["set_mesh_visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
+    @exportRpc(model_prefix + model_schemas_dict["points.visibility"]["rpc"])
+    def setModelPointsVisibility(self, params):
+        validate_schema(
+            params, self.model_schemas_dict["points.visibility"], self.model_prefix
         )
-        validate_schema(params, self.model_schemas_dict["set_mesh_visibility"])
-        id = params["id"]
-        visibility = bool(params["visibility"])
+        id, visibility = params["id"], params["visibility"]
+        self.SetPointsVisibility(id, visibility)
+
+    @exportRpc(model_prefix + model_schemas_dict["points.size"]["rpc"])
+    def setModelPointsSize(self, params):
+        validate_schema(
+            params, self.model_schemas_dict["points.size"], self.model_prefix
+        )
+        id, size = params["id"], params["size"]
+        self.SetPointsSize(id, size)
+
+    @exportRpc(model_prefix + model_schemas_dict["edges.visibility"]["rpc"])
+    def setModelEdgesVisibility(self, params):
+        validate_schema(
+            params, self.model_schemas_dict["edges.visibility"], self.model_prefix
+        )
+        id, visibility = params["id"], params["visibility"]
         self.SetEdgesVisibility(id, visibility)
-
-    @exportRpc(model_prefix + model_schemas_dict["set_components_visibility"]["rpc"])
-    def setComponentsVisibility(self, params):
-        print(
-            self.model_prefix
-            + self.model_schemas_dict["set_components_visibility"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
-        validate_schema(params, self.model_schemas_dict["set_components_visibility"])
-        id = params["id"]
-        visibility = bool(params["visibility"])
-        self.SetVisibility(id, visibility)
-
-    @exportRpc(model_prefix + model_schemas_dict["set_components_color"]["rpc"])
-    def setComponentsColor(self, params):
-        print(
-            self.model_prefix + self.model_schemas_dict["set_components_color"]["rpc"],
-            f"{params=}",
-            flush=True,
-        )
-        validate_schema(params, self.model_schemas_dict["set_components_color"])
-        id = params["id"]
-        red, green, blue = (
-            params["color"]["r"],
-            params["color"]["g"],
-            params["color"]["b"],
-        )
-        self.SetColor(id, red, green, blue)

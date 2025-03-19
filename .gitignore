@@ -11,3 +11,4 @@ schemas.json
 build
 /src/tests/tests_output/
 *.egg-info
+.coverage*

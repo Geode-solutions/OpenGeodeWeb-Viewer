@@ -138,6 +138,18 @@ class VtkObjectView(VtkView):
         actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
         self.render()
 
+    def SetBlocksVisibility(self, id, block_ids, visibility):
+        mapper = self.get_object(id)["mapper"]
+        for block_id in block_ids:
+            mapper.SetBlockVisibility(block_id, visibility)
+        self.render()
+
+    def SetBlocksColor(self, id, block_ids, red, green, blue):
+        mapper = self.get_object(id)["mapper"]
+        for block_id in block_ids:
+            mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
+        self.render()
+
     def clearColors(self, id):
         db = self.get_object(id)
         mapper = db["mapper"]
