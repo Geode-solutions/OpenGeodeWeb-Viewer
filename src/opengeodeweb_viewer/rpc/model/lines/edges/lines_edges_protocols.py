@@ -21,7 +21,7 @@ class VtkModelLinesEdgesView(VtkModelView):
     @exportRpc(
         model_lines_edges_prefix + model_lines_edges_schemas_dict["visibility"]["rpc"]
     )
-    def setModelSurfacesPolygonsVisibility(self, params):
+    def setModelLinesEdgesVisibility(self, params):
         print(
             self.model_lines_edges_prefix
             + self.model_lines_edges_schemas_dict["visibility"]["rpc"],
@@ -35,3 +35,23 @@ class VtkModelLinesEdgesView(VtkModelView):
             params["visibility"],
         )
         self.SetBlocksVisibility(id, block_ids, visibility)
+
+    @exportRpc(
+        model_lines_edges_prefix + model_lines_edges_schemas_dict["color"]["rpc"]
+    )
+    def setModelLinesEdgesColor(self, params):
+        print(
+            self.model_lines_edges_prefix
+            + self.model_lines_edges_schemas_dict["color"]["rpc"],
+            f"{params=}",
+            flush=True,
+        )
+        validate_schema(params, self.model_lines_edges_schemas_dict["color"])
+        id, block_ids, red, green, blue = (
+            params["id"],
+            params["block_ids"],
+            params["color"]["r"],
+            params["color"]["g"],
+            params["color"]["b"],
+        )
+        self.SetBlocksColor(id, block_ids, red, green, blue)

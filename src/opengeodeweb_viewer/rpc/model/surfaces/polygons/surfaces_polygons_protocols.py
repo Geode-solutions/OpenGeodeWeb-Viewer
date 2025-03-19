@@ -36,3 +36,24 @@ class VtkModelSurfacesPolygonsView(VtkModelView):
             params["visibility"],
         )
         self.SetBlocksVisibility(id, block_ids, visibility)
+
+    @exportRpc(
+        model_surfaces_polygons_prefix
+        + model_surfaces_polygons_schemas_dict["color"]["rpc"]
+    )
+    def setModelSurfacesPolygonsCOlor(self, params):
+        print(
+            self.model_surfaces_polygons_prefix
+            + self.model_surfaces_polygons_schemas_dict["color"]["rpc"],
+            f"{params=}",
+            flush=True,
+        )
+        validate_schema(params, self.model_surfaces_polygons_schemas_dict["color"])
+        id, block_ids, red, green, blue = (
+            params["id"],
+            params["block_ids"],
+            params["color"]["r"],
+            params["color"]["g"],
+            params["color"]["b"],
+        )
+        self.SetBlocksColor(id, block_ids, red, green, blue)

@@ -6,7 +6,7 @@
       "type": "string",
       "minLength": 1
     },
-    "block_idss": {
+    "block_ids": {
       "type": "array",
       "items": {
         "type": "integer",
@@ -49,7 +49,7 @@
   },
   "required": [
     "id",
-    "block_idss",
+    "block_ids",
     "color"
   ],
   "additionalProperties": false

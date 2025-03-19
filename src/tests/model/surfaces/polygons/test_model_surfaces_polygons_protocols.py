@@ -43,3 +43,23 @@ def test_surfaces_polygons_visibility(server):
     )
 
     assert server.compare_image(3, "model/surfaces/polygons/visibility.jpeg") == True
+
+
+def test_surfaces_polygons_color(server):
+
+    test_surfaces_polygons_visibility(server)
+
+    server.call(
+        VtkModelSurfacesPolygonsView.model_surfaces_polygons_prefix
+        + VtkModelSurfacesPolygonsView.model_surfaces_polygons_schemas_dict["color"][
+            "rpc"
+        ],
+        [
+            {
+                "id": "123456789",
+                "block_ids": list(range(36, 49)),
+                "color": {"r": 255, "g": 0, "b": 0},
+            }
+        ],
+    )
+    assert server.compare_image(3, "model/surfaces/polygons/color.jpeg") == True

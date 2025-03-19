@@ -22,7 +22,7 @@ class VtkModelCornersPointsView(VtkModelView):
         model_corners_points_prefix
         + model_corners_points_schemas_dict["visibility"]["rpc"]
     )
-    def setCornersPointsVisibility(self, params):
+    def setModelCornersPointsVisibility(self, params):
         print(
             self.model_corners_points_prefix
             + self.model_corners_points_schemas_dict["visibility"]["rpc"],
@@ -36,3 +36,23 @@ class VtkModelCornersPointsView(VtkModelView):
             params["visibility"],
         )
         self.SetBlocksVisibility(id, block_ids, visibility)
+
+    @exportRpc(
+        model_corners_points_prefix + model_corners_points_schemas_dict["color"]["rpc"]
+    )
+    def setModelCornersPointsColor(self, params):
+        print(
+            self.model_corners_points_prefix
+            + self.model_corners_points_schemas_dict["color"]["rpc"],
+            f"{params=}",
+            flush=True,
+        )
+        validate_schema(params, self.model_corners_points_schemas_dict["color"])
+        id, block_ids, red, green, blue = (
+            params["id"],
+            params["block_ids"],
+            params["color"]["r"],
+            params["color"]["g"],
+            params["color"]["b"],
+        )
+        self.SetBlocksColor(id, block_ids, red, green, blue)

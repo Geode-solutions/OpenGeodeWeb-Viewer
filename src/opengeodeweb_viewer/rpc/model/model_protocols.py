@@ -85,32 +85,3 @@ class VtkModelView(VtkObjectView):
         validate_schema(params, self.model_schemas_dict["edges.visibility"])
         id, visibility = params["id"], params["visibility"]
         self.SetEdgesVisibility(id, visibility)
-
-    # @exportRpc(model_prefix + model_schemas_dict["set_components_visibility"]["rpc"])
-    # def setComponentsVisibility(self, params):
-    #     print(
-    #         self.model_prefix
-    #         + self.model_schemas_dict["set_components_visibility"]["rpc"],
-    #         f"{params=}",
-    #         flush=True,
-    #     )
-    #     validate_schema(params, self.model_schemas_dict["set_components_visibility"])
-    #     id = params["id"]
-    #     visibility = bool(params["visibility"])
-    #     self.SetVisibility(id, visibility)
-
-    # @exportRpc(model_prefix + model_schemas_dict["set_components_color"]["rpc"])
-    # def setComponentsColor(self, params):
-    #     print(
-    #         self.model_prefix + self.model_schemas_dict["set_components_color"]["rpc"],
-    #         f"{params=}",
-    #         flush=True,
-    #     )
-    #     validate_schema(params, self.model_schemas_dict["set_components_color"])
-    #     id = params["id"]
-    #     red, green, blue = (
-    #         params["color"]["r"],
-    #         params["color"]["g"],
-    #         params["color"]["b"],
-    #     )
-    #     self.SetColor(id, red, green, blue)

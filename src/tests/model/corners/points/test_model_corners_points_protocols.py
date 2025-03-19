@@ -42,3 +42,21 @@ def test_corners_points_visibility(server):
         ],
     )
     assert server.compare_image(3, "model/corners/points/visibility.jpeg") == True
+
+
+def test_corners_points_color(server):
+
+    test_corners_points_visibility(server)
+
+    server.call(
+        VtkModelCornersPointsView.model_corners_points_prefix
+        + VtkModelCornersPointsView.model_corners_points_schemas_dict["color"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "block_ids": list(range(1, 13)),
+                "color": {"r": 255, "g": 0, "b": 0},
+            }
+        ],
+    )
+    assert server.compare_image(3, "model/corners/points/color.jpeg") == True
