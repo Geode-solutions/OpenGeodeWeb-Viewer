@@ -18,6 +18,7 @@ class ServerMonitor:
         self.test_output_dir = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "tests_output")
         )
+        os.mkdir(self.test_output_dir)
         self.ws.send(
             json.dumps(
                 {
