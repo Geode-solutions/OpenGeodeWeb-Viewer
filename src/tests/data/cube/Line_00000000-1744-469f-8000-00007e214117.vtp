@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<VTKFile type="PolyData" version="1.0" byte_order="LittleEndian" header_type="UInt32" compressor="vtkZLibDataCompressor">
+	<PolyData>
+		<Piece NumberOfPoints="12" NumberOfLines="11">
+			<PointData>
+				<DataArray type="Float64" Name="points" format="ascii" NumberOfComponents="3" RangeMin="0" RangeMax="10">10 10 7 9.07152 10 6.62861 8.14305 10 6.25722 7.21457 10 5.88583 6.28609 10 5.51444 5.35762 10 5.14305 4.42914 10 4.77166 3.50066 10 4.40027 2.57219 10 4.02887 1.64371 10 3.65748 0.768544 10 3.30742 0 10 3 </DataArray>
+				<DataArray type="Float64" Name="unique vertices" format="ascii" NumberOfComponents="1" RangeMin="6" RangeMax="73">6 64 65 66 67 68 69 70 71 72 73 7 </DataArray>
+			</PointData>
+			<Points>
+				<DataArray type="Float64" Name="Points" format="ascii" NumberOfComponents="3" RangeMin="0" RangeMax="10">10 10 7 9.07152330911474 10 6.6286093236459 8.14304661822948 10 6.25721864729179 7.21456992734422 10 5.88582797093769 6.28609323645896 10 5.51443729458358 5.3576165455737 10 5.14304661822948 4.42913985468844 10 4.77165594187538 3.50066316380318 10 4.40026526552127 2.57218647291792 10 4.02887458916717 1.64370978203266 10 3.65748391281307 0.768543991081869 10 3.30741759643275 0 10 3 </DataArray>
+			</Points>
+			<CellData>
+				<DataArray type="Float64" Name="edges" format="ascii" NumberOfComponents="2" RangeMin="0" RangeMax="11">0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 </DataArray>
+			</CellData>
+			<Lines>
+				<DataArray type="Int64" Name="connectivity" format="ascii" RangeMin="0" RangeMax="11">0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 </DataArray>
+				<DataArray type="Int64" Name="offsets" format="ascii" RangeMin="0" RangeMax="12">2 4 6 8 10 12 14 16 18 20 22 </DataArray>
+			</Lines>
+		</Piece>
+	</PolyData>
+</VTKFile>

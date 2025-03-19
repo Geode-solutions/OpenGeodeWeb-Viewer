@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v1.5.0-rc.1 (2025-03-19)
+
+### Code Style
+
+- **python**: Run black formater
+  ([`ad5f1c2`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/ad5f1c2a2589d873bb81d445a1cbe4c4c0bd7f4b))
+
+### Features
+
+- **model**: New rpc
+  ([`8f9eceb`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/8f9eceb0a19147b01b6b0231a90433c11e603071))
+
+
 ## v1.4.0 (2025-03-07)
 
 

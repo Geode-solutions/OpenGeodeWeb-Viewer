@@ -5,27 +5,29 @@ import os
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 # Local application imports
-from .test_mesh_protocols import test_register_mesh
+from .mesh.test_mesh_protocols import test_register_mesh
 
 
 def test_create_visualization(server):
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["create_visualization"]["rpc"]
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["create_visualization"]["rpc"]
     )
     assert server.compare_image(3, "viewer/create_visualization.jpeg") == True
 
 
 def test_reset_camera(server):
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["reset_camera"]["rpc"]
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["reset_camera"]["rpc"]
     )
     assert server.compare_image(3, "viewer/reset_camera.jpeg") == True
 
 
 def test_set_viewer_background_color(server):
     server.call(
-        VtkViewerView.prefix
-        + VtkViewerView.schemas_dict["set_background_color"]["rpc"],
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
         [{"color": {"r": 0, "g": 0, "b": 255}}],
     )
     assert server.compare_image(3, "viewer/set_background_color.jpeg") == True
@@ -35,7 +37,8 @@ def test_get_point_position(server):
     test_register_mesh(server)
 
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["get_point_position"]["rpc"],
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["get_point_position"]["rpc"],
         [{"x": 0, "y": 0}],
     )
     response = server.get_response()
@@ -56,7 +59,8 @@ def test_take_screenshot(server):
 
     # Take a screenshot with background jpg
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["take_screenshot"]["rpc"],
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
         [
             {
                 "filename": "take_screenshot_with_background",
@@ -82,7 +86,8 @@ def test_take_screenshot(server):
 
     # Take a screenshot without background png
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["take_screenshot"]["rpc"],
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
         [
             {
                 "filename": "take_screenshot_without_background",
@@ -110,7 +115,8 @@ def test_take_screenshot(server):
 
     # Take a screenshot with background png
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["take_screenshot"]["rpc"],
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
         [
             {
                 "filename": "take_screenshot_with_background",
@@ -142,7 +148,8 @@ def test_picked_ids(server):
     test_register_mesh(server)
 
     server.call(
-        VtkViewerView.prefix + VtkViewerView.schemas_dict["picked_ids"]["rpc"],
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["picked_ids"]["rpc"],
         [{"x": 100, "y": 200, "ids": ["123456789"]}],
     )
     response = server.get_response()

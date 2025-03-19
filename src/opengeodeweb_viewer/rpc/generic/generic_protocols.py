@@ -1,9 +1,7 @@
 # Standard library imports
-import json
 import os
 
 # Third party imports
-import vtk
 from vtk.web import protocols as vtk_protocols
 from wslink import register as exportRpc
 
@@ -25,15 +23,11 @@ class VtkGenericView(VtkView):
 
     @exportRpc(generic_prefix + generic_schemas_dict["register"]["rpc"])
     def register(self, params):
-        print(
-            self.generic_prefix + self.generic_schemas_dict["register"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.generic_schemas_dict["register"], self.generic_prefix
         )
-        validate_schema(params, self.generic_schemas_dict["register"])
         viewer_object = params["viewer_object"]
         params.pop("viewer_object", None)
-        print(f"{params=}", flush=True)
         if viewer_object == "mesh":
             self.mesh_protocols.registerMesh(params)
         elif viewer_object == "model":
@@ -41,12 +35,9 @@ class VtkGenericView(VtkView):
 
     @exportRpc(generic_prefix + generic_schemas_dict["deregister"]["rpc"])
     def deregister(self, params):
-        print(
-            self.generic_prefix + self.generic_schemas_dict["deregister"]["rpc"],
-            f"{params=}",
-            flush=True,
+        validate_schema(
+            params, self.generic_schemas_dict["deregister"], self.generic_prefix
         )
-        validate_schema(params, self.generic_schemas_dict["deregister"])
         viewer_object = params["viewer_object"]
         params.pop("viewer_object", None)
         if viewer_object == "mesh":
