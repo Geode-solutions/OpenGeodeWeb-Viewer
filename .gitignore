@@ -9,5 +9,6 @@ __pycache__/
 latest_logs
 schemas.json
 build
-/src/tests/tests_output/
+/src/tests/tests_output/*
 *.egg-info
+.coverage*

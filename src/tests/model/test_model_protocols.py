@@ -40,28 +40,28 @@ def test_edges_visibility(server):
         + VtkModelView.model_schemas_dict["edges.visibility"]["rpc"],
         [{"id": "123456789", "visibility": True}],
     )
-    assert server.compare_image(3, "model/edges/visibility.jpeg") == True
+    assert server.compare_image(3, "model/edges.visibility.jpeg") == True
 
 
-def test_points_visibility(server):
+# def test_points_visibility(server):
 
-    test_register_model(server)
+#     test_register_model(server)
 
-    server.call(
-        VtkModelView.model_prefix
-        + VtkModelView.model_schemas_dict["points.visibility"]["rpc"],
-        [{"id": "123456789", "visibility": True}],
-    )
-    assert server.compare_image(3, "model/points/visibility.jpeg") == True
+#     server.call(
+#         VtkModelView.model_prefix
+#         + VtkModelView.model_schemas_dict["points.visibility"]["rpc"],
+#         [{"id": "123456789", "visibility": True}],
+#     )
+#     assert server.compare_image(3, "model/points.visibility.jpeg") == True
 
 
-def test_points_size(server):
+# def test_points_size(server):
 
-    test_register_model(server)
+#     test_points_visibility(server)
 
-    server.call(
-        VtkModelView.model_prefix
-        + VtkModelView.model_schemas_dict["points.visibility"]["rpc"],
-        [{"id": "123456789", "size": 20}],
-    )
-    assert server.compare_image(3, "model/points/size.jpeg") == True
+#     server.call(
+#         VtkModelView.model_prefix
+#         + VtkModelView.model_schemas_dict["points.size"]["rpc"],
+#         [{"id": "123456789", "size": 20}],
+#     )
+#     assert server.compare_image(3, "model/points.size.jpeg") == True

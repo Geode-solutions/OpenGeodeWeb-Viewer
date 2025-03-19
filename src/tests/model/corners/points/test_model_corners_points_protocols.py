@@ -26,7 +26,7 @@ def test_corners_points_visibility(server):
             }
         ],
     )
-    assert server.compare_image(3, "model/corners/points/visibility_false.jpeg") == True
+    assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
 
     server.call(
         VtkModelCornersPointsView.model_corners_points_prefix
