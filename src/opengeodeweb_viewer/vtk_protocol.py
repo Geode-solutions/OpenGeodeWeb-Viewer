@@ -30,6 +30,12 @@ class VtkView(vtk_protocols.vtkWebProtocol):
                 return p
 
     def render(self, view=-1):
+        renderer = self.get_renderer()
+        renderer_bounds = renderer.ComputeVisiblePropBounds()
+        grid_scale = self.get_object("grid_scale")["actor"]
+        grid_scale.SetBounds(renderer_bounds)
+        grid_scale.Modified()
+
         self.get_protocol("vtkWebPublishImageDelivery").imagePush({"view": view})
 
     def register_object(self, id, reader, filter, actor, mapper, textures):
