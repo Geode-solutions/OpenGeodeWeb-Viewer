@@ -6,6 +6,7 @@ import os
 import vtk
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
+from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
 from wslink import server
 
 # Local application imports
@@ -69,7 +70,8 @@ class _Server(vtk_wslink.ServerProtocol):
         # Custom API
         mesh_protocols = VtkMeshView()
         model_protocols = VtkModelView()
-        self.registerVtkWebProtocol(VtkView())
+        vtk_view = VtkView()
+        self.registerVtkWebProtocol(vtk_view)
         self.registerVtkWebProtocol(VtkViewerView())
         self.registerVtkWebProtocol(mesh_protocols)
         self.registerVtkWebProtocol(VtkMeshPointsView())
@@ -106,6 +108,22 @@ class _Server(vtk_wslink.ServerProtocol):
             widget.SetInteractor(renderWindowInteractor)
             widget.SetViewport(0.0, 0.0, 0.2, 0.2)
             axes = vtk.vtkAxesActor()
+
+            grid_scale = vtkCubeAxesActor(camera=renderer.active_camera)
+            grid_scale.DrawXGridlinesOn()
+            grid_scale.DrawYGridlinesOn()
+            grid_scale.DrawZGridlinesOn()
+            grid_scale.SetGridLineLocation(grid_scale.VTK_GRID_LINES_FURTHEST)
+            grid_scale.GetTitleTextProperty(0).SetColor(255, 255, 255)
+            grid_scale.GetTitleTextProperty(1).SetColor(255, 255, 255)
+            grid_scale.GetTitleTextProperty(2).SetColor(255, 255, 255)
+            grid_scale.SetFlyModeToStaticEdges()
+            vtk_view.register_object("grid_scale", "", "", grid_scale, "", "")
+            grid_scale_actor = vtk_view.get_object("grid_scale")["actor"]
+            grid_scale_actor.SetVisibility(False)
+
+            renderer.AddActor(grid_scale)
+
             widget.SetOrientationMarker(axes)
             widget.EnabledOn()
             widget.InteractiveOff()
