@@ -47,7 +47,7 @@ class VtkViewerView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
 
-        renderer.SetBackground([red, green, blue])
+        renderer.SetBackground([red / 255, green / 255, blue / 255])
         renderer.ResetCamera()
         renderWindow.Render()
         self.render()
