@@ -192,3 +192,13 @@ class VtkViewerView(VtkView):
                 array_ids.append(id)
 
         return {"array_ids": array_ids}
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
+    def updateData(self, params):
+        validate_schema(
+            params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
+        )
+        id, visibility = "grid_scale", params["visibility"]
+        actor = self.get_object(id)["actor"]
+        actor.SetVisibility(visibility)
+        self.render()

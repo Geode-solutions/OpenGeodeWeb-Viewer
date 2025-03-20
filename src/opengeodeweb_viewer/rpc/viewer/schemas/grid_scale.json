@@ -1,0 +1,13 @@
+{
+  "rpc": "grid_scale",
+  "type": "object",
+  "properties": {
+    "visibility": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "visibility"
+  ],
+  "additionalProperties": false
+}
