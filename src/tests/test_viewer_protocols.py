@@ -166,3 +166,40 @@ def test_picked_ids(server):
     assert isinstance(array_ids, list), f"Expected a list, but got {type(array_ids)}"
     assert all(isinstance(id, str) for id in array_ids), "All IDs should be strings"
     assert len(array_ids) > 0, "The list of array_ids should not be empty"
+
+
+def test_grid_scale(server):
+
+    test_register_mesh(server)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
+        [{"color": {"r": 60, "g": 60, "b": 60}}],
+    )
+
+    assert server.compare_image(3, "viewer/grid_scale_off.jpeg") == True
+
+    # assert server.compare_image(3, "viewer/grid_scale_off.jpeg") == True
+
+    # server.call(
+    #     VtkViewerView.viewer_prefix
+    #     + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
+    #     [{"visibility": True}],
+    # )
+
+    # assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+
+    # server.call(
+    #     VtkViewerView.viewer_prefix
+    #     + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
+    #     [{"color": {"r": 0, "g": 0, "b": 255}}],
+    # )
+
+    # server.call(
+    #     VtkViewerView.viewer_prefix
+    #     + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
+    #     [{"visibility": False}],
+    # )
+
+    # assert server.compare_image(3, "viewer/grid_scale_off.jpeg") == True
