@@ -15,9 +15,7 @@ def test_surfaces_polygons_visibility(server):
 
     server.call(
         VtkModelSurfacesView.model_surfaces_prefix
-        + VtkModelSurfacesView.model_surfaces_schemas_dict[
-            "visibility"
-        ]["rpc"],
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -30,9 +28,7 @@ def test_surfaces_polygons_visibility(server):
 
     server.call(
         VtkModelSurfacesView.model_surfaces_prefix
-        + VtkModelSurfacesView.model_surfaces_schemas_dict[
-            "visibility"
-        ]["rpc"],
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -51,9 +47,7 @@ def test_surfaces_polygons_color(server):
 
     server.call(
         VtkModelSurfacesView.model_surfaces_prefix
-        + VtkModelSurfacesView.model_surfaces_schemas_dict["color"][
-            "rpc"
-        ],
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"],
         [
             {
                 "id": "123456789",

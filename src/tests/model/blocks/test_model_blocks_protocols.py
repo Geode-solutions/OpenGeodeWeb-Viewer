@@ -15,9 +15,7 @@ def test_blocks_polyhedra_visibility(server):
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
-        + VtkModelBlocksView.model_blocks_schemas_dict[
-            "visibility"
-        ]["rpc"],
+        + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -31,9 +29,7 @@ def test_blocks_polyhedra_visibility(server):
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
-        + VtkModelBlocksView.model_blocks_schemas_dict[
-            "visibility"
-        ]["rpc"],
+        + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -52,9 +48,7 @@ def test_blocks_polyhedra_color(server):
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
-        + VtkModelBlocksView.model_blocks_schemas_dict["color"][
-            "rpc"
-        ],
+        + VtkModelBlocksView.model_blocks_schemas_dict["color"]["rpc"],
         [
             {
                 "id": "123456789",

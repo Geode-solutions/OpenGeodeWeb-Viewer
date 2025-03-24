@@ -18,9 +18,7 @@ class VtkMeshPolyhedraView(VtkMeshView):
     def __init__(self):
         super().__init__()
 
-    @exportRpc(
-        mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["visibility"]["rpc"]
-    )
+    @exportRpc(mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["visibility"]["rpc"])
     def setMeshPolyhedraVisibility(self, params):
         validate_schema(
             params,
@@ -46,8 +44,7 @@ class VtkMeshPolyhedraView(VtkMeshView):
         self.SetColor(id, red, green, blue)
 
     @exportRpc(
-        mesh_polyhedra_prefix
-        + mesh_polyhedra_schemas_dict["vertex_attribute"]["rpc"]
+        mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["vertex_attribute"]["rpc"]
     )
     def setMeshPolyhedraVertexAttribute(self, params):
         validate_schema(

@@ -172,7 +172,6 @@ def test_picked_ids(server):
 
 def test_grid_scale(server):
 
-
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
@@ -185,7 +184,7 @@ def test_grid_scale(server):
         [{"id": "123456789", "file_name": "hat.vtp"}],
     )
     assert server.compare_image(3, "viewer/register_hat.jpeg") == True
-    
+
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
@@ -193,4 +192,3 @@ def test_grid_scale(server):
     )
 
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
-

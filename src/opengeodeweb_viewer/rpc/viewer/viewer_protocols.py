@@ -55,7 +55,6 @@ class VtkViewerView(VtkView):
         # grid_scale.SetFlyModeToStaticEdges()
         self.register_object("grid_scale", "", "", grid_scale, "", "")
 
-
         renderer.AddActor(grid_scale)
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 

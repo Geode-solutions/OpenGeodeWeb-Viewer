@@ -18,9 +18,7 @@ class VtkModelLinesView(VtkModelView):
     def __init__(self):
         super().__init__()
 
-    @exportRpc(
-        model_lines_prefix + model_lines_schemas_dict["visibility"]["rpc"]
-    )
+    @exportRpc(model_lines_prefix + model_lines_schemas_dict["visibility"]["rpc"])
     def setModelLinesEdgesVisibility(self, params):
         validate_schema(
             params,
@@ -34,9 +32,7 @@ class VtkModelLinesView(VtkModelView):
         )
         self.SetBlocksVisibility(id, block_ids, visibility)
 
-    @exportRpc(
-        model_lines_prefix + model_lines_schemas_dict["color"]["rpc"]
-    )
+    @exportRpc(model_lines_prefix + model_lines_schemas_dict["color"]["rpc"])
     def setModelLinesEdgesColor(self, params):
         validate_schema(
             params,

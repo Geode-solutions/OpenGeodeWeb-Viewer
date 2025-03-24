@@ -48,9 +48,7 @@ def test_vertex_attribute(server):
 
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix
-        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_attribute"][
-            "rpc"
-        ],
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_attribute"]["rpc"],
         [{"id": "123456789", "name": "toto_on_vertices"}],
     )
     assert server.compare_image(3, "mesh/polyhedra/vertex_attribute.jpeg") == True

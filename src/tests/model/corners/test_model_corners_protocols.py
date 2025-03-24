@@ -15,9 +15,7 @@ def test_corners_points_visibility(server):
 
     server.call(
         VtkModelCornersView.model_corners_prefix
-        + VtkModelCornersView.model_corners_schemas_dict["visibility"][
-            "rpc"
-        ],
+        + VtkModelCornersView.model_corners_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -30,9 +28,7 @@ def test_corners_points_visibility(server):
 
     server.call(
         VtkModelCornersView.model_corners_prefix
-        + VtkModelCornersView.model_corners_schemas_dict["visibility"][
-            "rpc"
-        ],
+        + VtkModelCornersView.model_corners_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",

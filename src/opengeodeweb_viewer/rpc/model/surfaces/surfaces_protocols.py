@@ -18,10 +18,7 @@ class VtkModelSurfacesView(VtkModelView):
     def __init__(self):
         super().__init__()
 
-    @exportRpc(
-        model_surfaces_prefix
-        + model_surfaces_schemas_dict["visibility"]["rpc"]
-    )
+    @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["visibility"]["rpc"])
     def setModelSurfacesPolygonsVisibility(self, params):
         validate_schema(
             params,
@@ -35,10 +32,7 @@ class VtkModelSurfacesView(VtkModelView):
         )
         self.SetBlocksVisibility(id, block_ids, visibility)
 
-    @exportRpc(
-        model_surfaces_prefix
-        + model_surfaces_schemas_dict["color"]["rpc"]
-    )
+    @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["color"]["rpc"])
     def setModelSurfacesPolygonsCOlor(self, params):
         validate_schema(
             params,
