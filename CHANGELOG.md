@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v1.6.0-rc.1 (2025-03-24)
+
+### Features
+
+- **viewer**: Add grid_scale protocol
+  ([`d610fea`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/d610feacc4fe58f85aaca115c5671b272503ad22))
+
+- **viewer**: Dynamic grid scale
+  ([`2c42968`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/2c42968136942dce63aeb8bee10ab610706f50be))
+
+
 ## v1.5.0 (2025-03-19)
 
 
@@ -65,7 +76,7 @@
 
 ### Features
 
-- **polyhedra**: Color protocol
+- **polyhedrons**: Color protocol
   ([`15b35fc`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/15b35fcfdda1afc66f4eb4942d9f54006bbc9a0f))
 
 
