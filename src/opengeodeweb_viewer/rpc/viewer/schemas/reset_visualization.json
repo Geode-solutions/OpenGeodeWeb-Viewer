@@ -1,5 +1,5 @@
 {
-  "rpc": "create_visualization",
+  "rpc": "reset_visualization",
   "type": "object",
   "properties": {},
   "required": [],

@@ -9,24 +9,21 @@ from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schem
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 
 
-class VtkModelSurfacesPolygonsView(VtkModelView):
-    model_surfaces_polygons_prefix = "opengeodeweb_viewer.model.surfaces.polygons."
-    model_surfaces_polygons_schemas_dict = get_schemas_dict(
+class VtkModelBlocksView(VtkModelView):
+    model_blocks_prefix = "opengeodeweb_viewer.model.blocks."
+    model_blocks_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
     def __init__(self):
         super().__init__()
 
-    @exportRpc(
-        model_surfaces_polygons_prefix
-        + model_surfaces_polygons_schemas_dict["visibility"]["rpc"]
-    )
-    def setModelSurfacesPolygonsVisibility(self, params):
+    @exportRpc(model_blocks_prefix + model_blocks_schemas_dict["visibility"]["rpc"])
+    def setModelBlocksPolyhedraVisibility(self, params):
         validate_schema(
             params,
-            self.model_surfaces_polygons_schemas_dict["visibility"],
-            self.model_surfaces_polygons_prefix,
+            self.model_blocks_schemas_dict["visibility"],
+            self.model_blocks_prefix,
         )
         id, block_ids, visibility = (
             params["id"],
@@ -35,15 +32,12 @@ class VtkModelSurfacesPolygonsView(VtkModelView):
         )
         self.SetBlocksVisibility(id, block_ids, visibility)
 
-    @exportRpc(
-        model_surfaces_polygons_prefix
-        + model_surfaces_polygons_schemas_dict["color"]["rpc"]
-    )
-    def setModelSurfacesPolygonsCOlor(self, params):
+    @exportRpc(model_blocks_prefix + model_blocks_schemas_dict["color"]["rpc"])
+    def setModelBlocksPolyhedraColor(self, params):
         validate_schema(
             params,
-            self.model_surfaces_polygons_schemas_dict["color"],
-            self.model_surfaces_polygons_prefix,
+            self.model_blocks_schemas_dict["color"],
+            self.model_blocks_prefix,
         )
         id, block_ids, red, green, blue = (
             params["id"],

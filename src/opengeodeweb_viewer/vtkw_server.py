@@ -16,19 +16,19 @@ from .rpc.mesh.mesh_protocols import VtkMeshView
 from .rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
 from .rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
-from .rpc.mesh.polyhedrons.polyhedrons_protocols import VtkMeshPolyhedronsView
+from .rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
 from .rpc.model.model_protocols import VtkModelView
-from .rpc.model.corners.points.corners_points_protocols import (
-    VtkModelCornersPointsView,
+from .rpc.model.corners.corners_protocols import (
+    VtkModelCornersView,
 )
-from .rpc.model.lines.edges.lines_edges_protocols import (
-    VtkModelLinesEdgesView,
+from .rpc.model.lines.lines_protocols import (
+    VtkModelLinesView,
 )
-from .rpc.model.surfaces.polygons.surfaces_polygons_protocols import (
-    VtkModelSurfacesPolygonsView,
+from .rpc.model.surfaces.surfaces_protocols import (
+    VtkModelSurfacesView,
 )
-from .rpc.model.blocks.polyhedrons.blocks_polyhedrons_protocols import (
-    VtkModelBlocksPolyhedronsView,
+from .rpc.model.blocks.blocks_protocols import (
+    VtkModelBlocksView,
 )
 from .rpc.generic.generic_protocols import VtkGenericView
 
@@ -69,18 +69,19 @@ class _Server(vtk_wslink.ServerProtocol):
         # Custom API
         mesh_protocols = VtkMeshView()
         model_protocols = VtkModelView()
-        self.registerVtkWebProtocol(VtkView())
+        vtk_view = VtkView()
+        self.registerVtkWebProtocol(vtk_view)
         self.registerVtkWebProtocol(VtkViewerView())
         self.registerVtkWebProtocol(mesh_protocols)
         self.registerVtkWebProtocol(VtkMeshPointsView())
         self.registerVtkWebProtocol(VtkMeshEdgesView())
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
-        self.registerVtkWebProtocol(VtkMeshPolyhedronsView())
+        self.registerVtkWebProtocol(VtkMeshPolyhedraView())
         self.registerVtkWebProtocol(model_protocols)
-        self.registerVtkWebProtocol(VtkModelCornersPointsView())
-        self.registerVtkWebProtocol(VtkModelLinesEdgesView())
-        self.registerVtkWebProtocol(VtkModelSurfacesPolygonsView())
-        self.registerVtkWebProtocol(VtkModelBlocksPolyhedronsView())
+        self.registerVtkWebProtocol(VtkModelCornersView())
+        self.registerVtkWebProtocol(VtkModelLinesView())
+        self.registerVtkWebProtocol(VtkModelSurfacesView())
+        self.registerVtkWebProtocol(VtkModelBlocksView())
         self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.
@@ -106,6 +107,7 @@ class _Server(vtk_wslink.ServerProtocol):
             widget.SetInteractor(renderWindowInteractor)
             widget.SetViewport(0.0, 0.0, 0.2, 0.2)
             axes = vtk.vtkAxesActor()
+
             widget.SetOrientationMarker(axes)
             widget.EnabledOn()
             widget.InteractiveOff()

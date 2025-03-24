@@ -3,17 +3,19 @@ import os
 
 # Third party imports
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+
 
 # Local application imports
 from .mesh.test_mesh_protocols import test_register_mesh
 
 
-def test_create_visualization(server):
+def test_reset_visualization(server):
     server.call(
         VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["create_visualization"]["rpc"]
+        + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
     )
-    assert server.compare_image(3, "viewer/create_visualization.jpeg") == True
+    assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
 
 
 def test_reset_camera(server):
@@ -166,3 +168,27 @@ def test_picked_ids(server):
     assert isinstance(array_ids, list), f"Expected a list, but got {type(array_ids)}"
     assert all(isinstance(id, str) for id in array_ids), "All IDs should be strings"
     assert len(array_ids) > 0, "The list of array_ids should not be empty"
+
+
+def test_grid_scale(server):
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
+    )
+
+    assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "123456789", "file_name": "hat.vtp"}],
+    )
+    assert server.compare_image(3, "viewer/register_hat.jpeg") == True
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
+        [{"visibility": True}],
+    )
+
+    assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True

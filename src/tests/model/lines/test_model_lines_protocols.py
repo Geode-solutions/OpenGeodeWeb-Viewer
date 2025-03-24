@@ -1,8 +1,8 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.model.lines.edges.lines_edges_protocols import (
-    VtkModelLinesEdgesView,
+from opengeodeweb_viewer.rpc.model.lines.lines_protocols import (
+    VtkModelLinesView,
 )
 
 # Local application imports
@@ -14,8 +14,8 @@ def test_lines_edges_visibility(server):
     test_register_model_cube(server)
 
     server.call(
-        VtkModelLinesEdgesView.model_lines_edges_prefix
-        + VtkModelLinesEdgesView.model_lines_edges_schemas_dict["visibility"]["rpc"],
+        VtkModelLinesView.model_lines_prefix
+        + VtkModelLinesView.model_lines_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -27,8 +27,8 @@ def test_lines_edges_visibility(server):
     assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
 
     server.call(
-        VtkModelLinesEdgesView.model_lines_edges_prefix
-        + VtkModelLinesEdgesView.model_lines_edges_schemas_dict["visibility"]["rpc"],
+        VtkModelLinesView.model_lines_prefix
+        + VtkModelLinesView.model_lines_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -37,7 +37,7 @@ def test_lines_edges_visibility(server):
             }
         ],
     )
-    assert server.compare_image(3, "model/lines/edges/visibility.jpeg") == True
+    assert server.compare_image(3, "model/lines/visibility.jpeg") == True
 
 
 def test_lines_edges_color(server):
@@ -45,8 +45,8 @@ def test_lines_edges_color(server):
     test_lines_edges_visibility(server)
 
     server.call(
-        VtkModelLinesEdgesView.model_lines_edges_prefix
-        + VtkModelLinesEdgesView.model_lines_edges_schemas_dict["color"]["rpc"],
+        VtkModelLinesView.model_lines_prefix
+        + VtkModelLinesView.model_lines_schemas_dict["color"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -55,4 +55,4 @@ def test_lines_edges_color(server):
             }
         ],
     )
-    assert server.compare_image(3, "model/lines/edges/color.jpeg") == True
+    assert server.compare_image(3, "model/lines/color.jpeg") == True

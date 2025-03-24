@@ -1,8 +1,8 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.model.surfaces.polygons.surfaces_polygons_protocols import (
-    VtkModelSurfacesPolygonsView,
+from opengeodeweb_viewer.rpc.model.surfaces.surfaces_protocols import (
+    VtkModelSurfacesView,
 )
 
 # Local application imports
@@ -14,10 +14,8 @@ def test_surfaces_polygons_visibility(server):
     test_register_model_cube(server)
 
     server.call(
-        VtkModelSurfacesPolygonsView.model_surfaces_polygons_prefix
-        + VtkModelSurfacesPolygonsView.model_surfaces_polygons_schemas_dict[
-            "visibility"
-        ]["rpc"],
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -29,10 +27,8 @@ def test_surfaces_polygons_visibility(server):
     assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
 
     server.call(
-        VtkModelSurfacesPolygonsView.model_surfaces_polygons_prefix
-        + VtkModelSurfacesPolygonsView.model_surfaces_polygons_schemas_dict[
-            "visibility"
-        ]["rpc"],
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -42,7 +38,7 @@ def test_surfaces_polygons_visibility(server):
         ],
     )
 
-    assert server.compare_image(3, "model/surfaces/polygons/visibility.jpeg") == True
+    assert server.compare_image(3, "model/surfaces/visibility.jpeg") == True
 
 
 def test_surfaces_polygons_color(server):
@@ -50,10 +46,8 @@ def test_surfaces_polygons_color(server):
     test_surfaces_polygons_visibility(server)
 
     server.call(
-        VtkModelSurfacesPolygonsView.model_surfaces_polygons_prefix
-        + VtkModelSurfacesPolygonsView.model_surfaces_polygons_schemas_dict["color"][
-            "rpc"
-        ],
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -62,4 +56,4 @@ def test_surfaces_polygons_color(server):
             }
         ],
     )
-    assert server.compare_image(3, "model/surfaces/polygons/color.jpeg") == True
+    assert server.compare_image(3, "model/surfaces/color.jpeg") == True

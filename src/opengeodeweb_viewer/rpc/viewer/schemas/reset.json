@@ -1,7 +1,0 @@
-{
-  "rpc": "reset",
-  "type": "object",
-  "properties": {},
-  "required": [],
-  "additionalProperties": false
-}

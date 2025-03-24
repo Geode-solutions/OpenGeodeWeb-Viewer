@@ -5,6 +5,7 @@ import os
 # Third party imports
 import vtk
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
+from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
 from vtkmodules.vtkRenderingCore import vtkWindowToImageFilter
 from wslink import register as exportRpc
 
@@ -22,14 +23,41 @@ class VtkViewerView(VtkView):
     def __init__(self):
         super().__init__()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["create_visualization"]["rpc"])
-    def createVisualization(self, params):
+    @exportRpc(viewer_prefix + viewer_schemas_dict["reset_visualization"]["rpc"])
+    def resetVisualization(self, params):
         validate_schema(
-            params, self.viewer_schemas_dict["create_visualization"], self.viewer_prefix
+            params, self.viewer_schemas_dict["reset_visualization"], self.viewer_prefix
         )
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        renderer.RemoveAllViewProps()
+
+        grid_scale = vtkCubeAxesActor()
+        grid_scale.SetCamera(renderer.GetActiveCamera())
+        grid_scale.DrawXGridlinesOn()
+        grid_scale.DrawYGridlinesOn()
+        grid_scale.DrawZGridlinesOn()
+        grid_scale.SetGridLineLocation(grid_scale.VTK_GRID_LINES_FURTHEST)
+        grid_scale.GetTitleTextProperty(0).SetColor(0, 0, 0)
+        grid_scale.GetTitleTextProperty(1).SetColor(0, 0, 0)
+        grid_scale.GetTitleTextProperty(2).SetColor(0, 0, 0)
+        grid_scale.GetXAxesLinesProperty().SetColor(0, 0, 0)
+        grid_scale.GetYAxesLinesProperty().SetColor(0, 0, 0)
+        grid_scale.GetZAxesLinesProperty().SetColor(0, 0, 0)
+        grid_scale.GetLabelTextProperty(0).SetColor(0, 0, 0)
+        grid_scale.GetLabelTextProperty(1).SetColor(0, 0, 0)
+        grid_scale.GetLabelTextProperty(2).SetColor(0, 0, 0)
+        grid_scale.GetXAxesGridlinesProperty().SetColor(0, 0, 0)
+        grid_scale.GetYAxesGridlinesProperty().SetColor(0, 0, 0)
+        grid_scale.GetZAxesGridlinesProperty().SetColor(0, 0, 0)
+
+        grid_scale.SetVisibility(False)
+        # grid_scale.SetFlyModeToStaticEdges()
+        self.register_object("grid_scale", "", "", grid_scale, "", "")
+
+        renderer.AddActor(grid_scale)
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
+
         renderer.ResetCamera()
         renderWindow.Render()
         self.render()
@@ -47,7 +75,7 @@ class VtkViewerView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
 
-        renderer.SetBackground([red, green, blue])
+        renderer.SetBackground([red / 255, green / 255, blue / 255])
         renderer.ResetCamera()
         renderWindow.Render()
         self.render()
@@ -147,12 +175,6 @@ class VtkViewerView(VtkView):
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["reset"]["rpc"])
-    def reset(self, params):
-        validate_schema(params, self.viewer_schemas_dict["reset"], self.viewer_prefix)
-        renderWindow = self.getView("-1")
-        renderWindow.GetRenderers().GetFirstRenderer().RemoveAllViewProps()
-
     def computeEpsilon(self, renderer, z):
         renderer.SetDisplayPoint(0, 0, z)
         renderer.DisplayToWorld()
@@ -192,3 +214,13 @@ class VtkViewerView(VtkView):
                 array_ids.append(id)
 
         return {"array_ids": array_ids}
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
+    def updateData(self, params):
+        validate_schema(
+            params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
+        )
+        id, visibility = "grid_scale", params["visibility"]
+        actor = self.get_object(id)["actor"]
+        actor.SetVisibility(visibility)
+        self.render()
