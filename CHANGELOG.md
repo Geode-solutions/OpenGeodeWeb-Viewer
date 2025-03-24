@@ -65,7 +65,7 @@
 
 ### Features
 
-- **polyhedrons**: Color protocol
+- **polyhedra**: Color protocol
   ([`15b35fc`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/15b35fcfdda1afc66f4eb4942d9f54006bbc9a0f))
 
 

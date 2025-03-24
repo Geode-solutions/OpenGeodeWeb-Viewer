@@ -9,9 +9,9 @@ from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schem
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 
 
-class VtkModelLinesEdgesView(VtkModelView):
-    model_lines_edges_prefix = "opengeodeweb_viewer.model.lines.edges."
-    model_lines_edges_schemas_dict = get_schemas_dict(
+class VtkModelLinesView(VtkModelView):
+    model_lines_prefix = "opengeodeweb_viewer.model.lines."
+    model_lines_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
@@ -19,13 +19,13 @@ class VtkModelLinesEdgesView(VtkModelView):
         super().__init__()
 
     @exportRpc(
-        model_lines_edges_prefix + model_lines_edges_schemas_dict["visibility"]["rpc"]
+        model_lines_prefix + model_lines_schemas_dict["visibility"]["rpc"]
     )
     def setModelLinesEdgesVisibility(self, params):
         validate_schema(
             params,
-            self.model_lines_edges_schemas_dict["visibility"],
-            self.model_lines_edges_prefix,
+            self.model_lines_schemas_dict["visibility"],
+            self.model_lines_prefix,
         )
         id, block_ids, visibility = (
             params["id"],
@@ -35,13 +35,13 @@ class VtkModelLinesEdgesView(VtkModelView):
         self.SetBlocksVisibility(id, block_ids, visibility)
 
     @exportRpc(
-        model_lines_edges_prefix + model_lines_edges_schemas_dict["color"]["rpc"]
+        model_lines_prefix + model_lines_schemas_dict["color"]["rpc"]
     )
     def setModelLinesEdgesColor(self, params):
         validate_schema(
             params,
-            self.model_lines_edges_schemas_dict["color"],
-            self.model_lines_edges_prefix,
+            self.model_lines_schemas_dict["color"],
+            self.model_lines_prefix,
         )
         id, block_ids, red, green, blue = (
             params["id"],

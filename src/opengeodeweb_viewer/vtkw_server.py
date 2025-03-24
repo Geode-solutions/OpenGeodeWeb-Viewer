@@ -6,7 +6,6 @@ import os
 import vtk
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
-from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
 from wslink import server
 
 # Local application imports
@@ -17,19 +16,19 @@ from .rpc.mesh.mesh_protocols import VtkMeshView
 from .rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
 from .rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
-from .rpc.mesh.polyhedrons.polyhedrons_protocols import VtkMeshPolyhedronsView
+from .rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
 from .rpc.model.model_protocols import VtkModelView
-from .rpc.model.corners.points.corners_points_protocols import (
-    VtkModelCornersPointsView,
+from .rpc.model.corners.corners_protocols import (
+    VtkModelCornersView,
 )
-from .rpc.model.lines.edges.lines_edges_protocols import (
-    VtkModelLinesEdgesView,
+from .rpc.model.lines.lines_protocols import (
+    VtkModelLinesView,
 )
-from .rpc.model.surfaces.polygons.surfaces_polygons_protocols import (
-    VtkModelSurfacesPolygonsView,
+from .rpc.model.surfaces.surfaces_protocols import (
+    VtkModelSurfacesView,
 )
-from .rpc.model.blocks.polyhedrons.blocks_polyhedrons_protocols import (
-    VtkModelBlocksPolyhedronsView,
+from .rpc.model.blocks.blocks_protocols import (
+    VtkModelBlocksView,
 )
 from .rpc.generic.generic_protocols import VtkGenericView
 
@@ -77,12 +76,12 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(VtkMeshPointsView())
         self.registerVtkWebProtocol(VtkMeshEdgesView())
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
-        self.registerVtkWebProtocol(VtkMeshPolyhedronsView())
+        self.registerVtkWebProtocol(VtkMeshPolyhedraView())
         self.registerVtkWebProtocol(model_protocols)
-        self.registerVtkWebProtocol(VtkModelCornersPointsView())
-        self.registerVtkWebProtocol(VtkModelLinesEdgesView())
-        self.registerVtkWebProtocol(VtkModelSurfacesPolygonsView())
-        self.registerVtkWebProtocol(VtkModelBlocksPolyhedronsView())
+        self.registerVtkWebProtocol(VtkModelCornersView())
+        self.registerVtkWebProtocol(VtkModelLinesView())
+        self.registerVtkWebProtocol(VtkModelSurfacesView())
+        self.registerVtkWebProtocol(VtkModelBlocksView())
         self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.
@@ -108,21 +107,6 @@ class _Server(vtk_wslink.ServerProtocol):
             widget.SetInteractor(renderWindowInteractor)
             widget.SetViewport(0.0, 0.0, 0.2, 0.2)
             axes = vtk.vtkAxesActor()
-
-            grid_scale = vtkCubeAxesActor(camera=renderer.active_camera)
-            grid_scale.DrawXGridlinesOn()
-            grid_scale.DrawYGridlinesOn()
-            grid_scale.DrawZGridlinesOn()
-            grid_scale.SetGridLineLocation(grid_scale.VTK_GRID_LINES_FURTHEST)
-            grid_scale.GetTitleTextProperty(0).SetColor(255, 255, 255)
-            grid_scale.GetTitleTextProperty(1).SetColor(255, 255, 255)
-            grid_scale.GetTitleTextProperty(2).SetColor(255, 255, 255)
-            grid_scale.SetFlyModeToStaticEdges()
-            vtk_view.register_object("grid_scale", "", "", grid_scale, "", "")
-            grid_scale_actor = vtk_view.get_object("grid_scale")["actor"]
-            grid_scale_actor.SetVisibility(False)
-
-            renderer.AddActor(grid_scale)
 
             widget.SetOrientationMarker(axes)
             widget.EnabledOn()

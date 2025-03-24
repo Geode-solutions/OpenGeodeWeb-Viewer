@@ -1,21 +1,21 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.model.blocks.polyhedrons.blocks_polyhedrons_protocols import (
-    VtkModelBlocksPolyhedronsView,
+from opengeodeweb_viewer.rpc.model.blocks.blocks_protocols import (
+    VtkModelBlocksView,
 )
 
 # Local application imports
 from src.tests.model.test_model_protocols import test_register_model_cube
 
 
-def test_blocks_polyhedrons_visibility(server):
+def test_blocks_polyhedra_visibility(server):
 
     test_register_model_cube(server)
 
     server.call(
-        VtkModelBlocksPolyhedronsView.model_blocks_polyhedrons_prefix
-        + VtkModelBlocksPolyhedronsView.model_blocks_polyhedrons_schemas_dict[
+        VtkModelBlocksView.model_blocks_prefix
+        + VtkModelBlocksView.model_blocks_schemas_dict[
             "visibility"
         ]["rpc"],
         [
@@ -30,8 +30,8 @@ def test_blocks_polyhedrons_visibility(server):
     assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
 
     server.call(
-        VtkModelBlocksPolyhedronsView.model_blocks_polyhedrons_prefix
-        + VtkModelBlocksPolyhedronsView.model_blocks_polyhedrons_schemas_dict[
+        VtkModelBlocksView.model_blocks_prefix
+        + VtkModelBlocksView.model_blocks_schemas_dict[
             "visibility"
         ]["rpc"],
         [
@@ -43,16 +43,16 @@ def test_blocks_polyhedrons_visibility(server):
         ],
     )
 
-    assert server.compare_image(3, "model/blocks/polyhedrons/visibility.jpeg") == True
+    assert server.compare_image(3, "model/blocks/visibility.jpeg") == True
 
 
-def test_blocks_polyhedrons_color(server):
+def test_blocks_polyhedra_color(server):
 
-    test_blocks_polyhedrons_visibility(server)
+    test_blocks_polyhedra_visibility(server)
 
     server.call(
-        VtkModelBlocksPolyhedronsView.model_blocks_polyhedrons_prefix
-        + VtkModelBlocksPolyhedronsView.model_blocks_polyhedrons_schemas_dict["color"][
+        VtkModelBlocksView.model_blocks_prefix
+        + VtkModelBlocksView.model_blocks_schemas_dict["color"][
             "rpc"
         ],
         [
@@ -63,4 +63,4 @@ def test_blocks_polyhedrons_color(server):
             }
         ],
     )
-    assert server.compare_image(3, "model/blocks/polyhedrons/color.jpeg") == True
+    assert server.compare_image(3, "model/blocks/color.jpeg") == True
