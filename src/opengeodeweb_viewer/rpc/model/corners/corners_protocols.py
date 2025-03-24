@@ -9,24 +9,21 @@ from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schem
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 
 
-class VtkModelBlocksPolyhedronsView(VtkModelView):
-    model_blocks_polyhedrons_prefix = "opengeodeweb_viewer.model.blocks.polyhedrons."
-    model_blocks_polyhedrons_schemas_dict = get_schemas_dict(
+class VtkModelCornersView(VtkModelView):
+    model_corners_prefix = "opengeodeweb_viewer.model.corners."
+    model_corners_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
     def __init__(self):
         super().__init__()
 
-    @exportRpc(
-        model_blocks_polyhedrons_prefix
-        + model_blocks_polyhedrons_schemas_dict["visibility"]["rpc"]
-    )
-    def setModelBlocksPolyhedronsVisibility(self, params):
+    @exportRpc(model_corners_prefix + model_corners_schemas_dict["visibility"]["rpc"])
+    def setModelCornersPointsVisibility(self, params):
         validate_schema(
             params,
-            self.model_blocks_polyhedrons_schemas_dict["visibility"],
-            self.model_blocks_polyhedrons_prefix,
+            self.model_corners_schemas_dict["visibility"],
+            self.model_corners_prefix,
         )
         id, block_ids, visibility = (
             params["id"],
@@ -35,15 +32,12 @@ class VtkModelBlocksPolyhedronsView(VtkModelView):
         )
         self.SetBlocksVisibility(id, block_ids, visibility)
 
-    @exportRpc(
-        model_blocks_polyhedrons_prefix
-        + model_blocks_polyhedrons_schemas_dict["color"]["rpc"]
-    )
-    def setModelBlocksPolyhedronsColor(self, params):
+    @exportRpc(model_corners_prefix + model_corners_schemas_dict["color"]["rpc"])
+    def setModelCornersPointsColor(self, params):
         validate_schema(
             params,
-            self.model_blocks_polyhedrons_schemas_dict["color"],
-            self.model_blocks_polyhedrons_prefix,
+            self.model_corners_schemas_dict["color"],
+            self.model_corners_prefix,
         )
         id, block_ids, red, green, blue = (
             params["id"],

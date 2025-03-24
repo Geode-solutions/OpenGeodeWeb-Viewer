@@ -1,8 +1,8 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.model.corners.points.corners_points_protocols import (
-    VtkModelCornersPointsView,
+from opengeodeweb_viewer.rpc.model.corners.corners_protocols import (
+    VtkModelCornersView,
 )
 
 # Local application imports
@@ -14,10 +14,8 @@ def test_corners_points_visibility(server):
     test_register_model_cube(server)
 
     server.call(
-        VtkModelCornersPointsView.model_corners_points_prefix
-        + VtkModelCornersPointsView.model_corners_points_schemas_dict["visibility"][
-            "rpc"
-        ],
+        VtkModelCornersView.model_corners_prefix
+        + VtkModelCornersView.model_corners_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -29,10 +27,8 @@ def test_corners_points_visibility(server):
     assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
 
     server.call(
-        VtkModelCornersPointsView.model_corners_points_prefix
-        + VtkModelCornersPointsView.model_corners_points_schemas_dict["visibility"][
-            "rpc"
-        ],
+        VtkModelCornersView.model_corners_prefix
+        + VtkModelCornersView.model_corners_schemas_dict["visibility"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -41,7 +37,7 @@ def test_corners_points_visibility(server):
             }
         ],
     )
-    assert server.compare_image(3, "model/corners/points/visibility.jpeg") == True
+    assert server.compare_image(3, "model/corners/visibility.jpeg") == True
 
 
 def test_corners_points_color(server):
@@ -49,8 +45,8 @@ def test_corners_points_color(server):
     test_corners_points_visibility(server)
 
     server.call(
-        VtkModelCornersPointsView.model_corners_points_prefix
-        + VtkModelCornersPointsView.model_corners_points_schemas_dict["color"]["rpc"],
+        VtkModelCornersView.model_corners_prefix
+        + VtkModelCornersView.model_corners_schemas_dict["color"]["rpc"],
         [
             {
                 "id": "123456789",
@@ -59,4 +55,4 @@ def test_corners_points_color(server):
             }
         ],
     )
-    assert server.compare_image(3, "model/corners/points/color.jpeg") == True
+    assert server.compare_image(3, "model/corners/color.jpeg") == True
