@@ -50,9 +50,9 @@ class VtkViewerView(VtkView):
         grid_scale.GetXAxesGridlinesProperty().SetColor(0, 0, 0)
         grid_scale.GetYAxesGridlinesProperty().SetColor(0, 0, 0)
         grid_scale.GetZAxesGridlinesProperty().SetColor(0, 0, 0)
+        grid_scale.SetFlyModeToOuterEdges()
 
         grid_scale.SetVisibility(False)
-        # grid_scale.SetFlyModeToStaticEdges()
         self.register_object("grid_scale", "", "", grid_scale, "", "")
 
         renderer.AddActor(grid_scale)

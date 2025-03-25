@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.6.1-rc.1 (2025-03-25)
+
+### Bug Fixes
+
+- **viewer protocols**: Setflymodetoouteredges
+  ([`90dde98`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/90dde98acf593fb0cbb3aed7b67f3bda6202202b))
+
+
 ## v1.6.0 (2025-03-24)
 
 
