@@ -44,6 +44,14 @@ class VtkModelView(VtkObjectView):
         id = params["id"]
         self.deregisterObject(id)
 
+    @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
+    def setModelVisibility(self, params):
+        validate_schema(
+            params, self.model_schemas_dict["visibility"], self.model_prefix
+        )
+        id, visibility = params["id"], params["visibility"]
+        self.SetVisibility(id, visibility)
+
     @exportRpc(model_prefix + model_schemas_dict["points.visibility"]["rpc"])
     def setModelPointsVisibility(self, params):
         validate_schema(

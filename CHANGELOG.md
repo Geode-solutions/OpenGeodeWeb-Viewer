@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.6.2-rc.1 (2025-04-02)
+
+### Bug Fixes
+
+- **visibility rpc**: New visibility's rpc & test
+  ([`32a0dec`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/32a0dec52b42db2d6834a3753b9cb72fc4a11389))
+
+
 ## v1.6.1 (2025-03-25)
 
 
