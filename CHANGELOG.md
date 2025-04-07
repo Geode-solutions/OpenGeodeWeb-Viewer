@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.6.3-rc.1 (2025-04-07)
+
+### Bug Fixes
+
+- **mesh/model**: Remove points as sphere
+  ([`1469618`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1469618669d1a9ecca590eeed44d2888a174b4e7))
+
+
 ## v1.6.2 (2025-04-02)
 
 
