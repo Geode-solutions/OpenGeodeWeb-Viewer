@@ -192,3 +192,15 @@ def test_grid_scale(server):
     )
 
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+
+
+def test_axes(server):
+
+    test_reset_visualization(server)
+
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["axes"]["rpc"],
+        [{"visibility": False}],
+    )
+
+    assert server.compare_image(3, "viewer/axes_off.jpeg") == True
