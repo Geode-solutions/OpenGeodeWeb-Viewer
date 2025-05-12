@@ -57,17 +57,14 @@ class VtkViewerView(VtkView):
 
         renderer.AddActor(grid_scale)
 
-        axes = vtk.vtkAxesActor()
-
         renderWindowInteractor = vtk.vtkRenderWindowInteractor()
         renderWindowInteractor.SetRenderWindow(renderWindow)
         renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
         renderWindowInteractor.EnableRenderOff()
         widget = vtk.vtkOrientationMarkerWidget()
         widget.SetInteractor(renderWindowInteractor)
-        widget.SetViewport(0.0, 0.0, 0.2, 0.2)
+        widget.SetViewport(0.75, 0.0, 0.95, 0.15)
         axes = vtk.vtkAxesActor()
-
         widget.SetOrientationMarker(axes)
         widget.EnabledOn()
         widget.InteractiveOff()
