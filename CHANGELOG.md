@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.7.0-rc.2 (2025-05-12)
+
+### Bug Fixes
+
+- **axes**: Add missing tests
+  ([`4bedc62`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/4bedc623f116b3d7c32739151cf3a0101342a355))
+
+
 ## v1.7.0-rc.1 (2025-05-12)
 
 ### Features
