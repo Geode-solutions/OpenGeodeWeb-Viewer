@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.7.0-rc.1 (2025-05-12)
+
+### Features
+
+- **axes**: Optional, update all unit tests
+  ([`a473eeb`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/a473eeb0ff5a772177843d1fd9a0c44cfe93a14f))
+
+
 ## v1.6.3 (2025-04-07)
 
 
