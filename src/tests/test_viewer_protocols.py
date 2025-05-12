@@ -94,7 +94,7 @@ def test_take_screenshot(server):
             {
                 "filename": "take_screenshot_without_background",
                 "output_extension": "png",
-                "include_background": True,
+                "include_background": False,
             }
         ],
     )

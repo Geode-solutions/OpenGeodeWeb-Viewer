@@ -96,23 +96,9 @@ class _Server(vtk_wslink.ServerProtocol):
             renderWindow = vtk.vtkRenderWindow()
             renderWindow.AddRenderer(renderer)
             self.setSharedObject("renderer", renderer)
-
-            renderWindowInteractor = vtk.vtkRenderWindowInteractor()
-            renderWindowInteractor.SetRenderWindow(renderWindow)
-            renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
-            renderWindowInteractor.EnableRenderOff()
             self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", renderWindow)
 
-            widget = vtk.vtkOrientationMarkerWidget()
-            widget.SetInteractor(renderWindowInteractor)
-            widget.SetViewport(0.0, 0.0, 0.2, 0.2)
-            axes = vtk.vtkAxesActor()
-
-            widget.SetOrientationMarker(axes)
-            widget.EnabledOn()
-            widget.InteractiveOff()
             renderWindow.SetOffScreenRendering(not _Server.debug)
-            self.setSharedObject("marker", widget)
 
 
 # =============================================================================

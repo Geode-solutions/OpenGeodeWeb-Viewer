@@ -56,6 +56,21 @@ class VtkViewerView(VtkView):
         self.register_object("grid_scale", "", "", grid_scale, "", "")
 
         renderer.AddActor(grid_scale)
+
+        renderWindowInteractor = vtk.vtkRenderWindowInteractor()
+        renderWindowInteractor.SetRenderWindow(renderWindow)
+        renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
+        renderWindowInteractor.EnableRenderOff()
+        widget = vtk.vtkOrientationMarkerWidget()
+        widget.SetInteractor(renderWindowInteractor)
+        widget.SetViewport(0.75, 0.0, 0.95, 0.15)
+        axes = vtk.vtkAxesActor()
+        widget.SetOrientationMarker(axes)
+        widget.EnabledOn()
+        widget.InteractiveOff()
+
+        self.register_object("axes", "", "", axes, "", "")
+
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 
         renderer.ResetCamera()
@@ -216,11 +231,19 @@ class VtkViewerView(VtkView):
         return {"array_ids": array_ids}
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
-    def updateData(self, params):
+    def toggleGridScale(self, params):
         validate_schema(
             params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
         )
         id, visibility = "grid_scale", params["visibility"]
+        actor = self.get_object(id)["actor"]
+        actor.SetVisibility(visibility)
+        self.render()
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["axes"]["rpc"])
+    def toggleAxes(self, params):
+        validate_schema(params, self.viewer_schemas_dict["axes"], self.viewer_prefix)
+        id, visibility = "axes", params["visibility"]
         actor = self.get_object(id)["actor"]
         actor.SetVisibility(visibility)
         self.render()
