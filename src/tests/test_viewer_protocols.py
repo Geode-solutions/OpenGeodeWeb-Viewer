@@ -94,7 +94,7 @@ def test_take_screenshot(server):
             {
                 "filename": "take_screenshot_without_background",
                 "output_extension": "png",
-                "include_background": True,
+                "include_background": False,
             }
         ],
     )
@@ -192,3 +192,15 @@ def test_grid_scale(server):
     )
 
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+
+
+def test_axes(server):
+
+    test_reset_visualization(server)
+
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["axes"]["rpc"],
+        [{"visibility": False}],
+    )
+
+    assert server.compare_image(3, "viewer/axes_off.jpeg") == True
