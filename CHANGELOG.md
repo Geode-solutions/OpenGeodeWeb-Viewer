@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.7.1-rc.1 (2025-05-20)
+
+### Bug Fixes
+
+- **axes**: Register widget to keep axes alive
+  ([`6fcf31d`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6fcf31d4338a062ed9e3355c9fb97ba900dbad2d))
+
+
 ## v1.7.0 (2025-05-13)
 
 
