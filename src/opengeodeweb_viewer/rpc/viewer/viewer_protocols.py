@@ -63,13 +63,14 @@ class VtkViewerView(VtkView):
         renderWindowInteractor.EnableRenderOff()
         widget = vtk.vtkOrientationMarkerWidget()
         widget.SetInteractor(renderWindowInteractor)
-        widget.SetViewport(0.75, 0.0, 0.95, 0.15)
+        widget.SetViewport(0.8, 0.0, 1, 0.2)
         axes = vtk.vtkAxesActor()
         widget.SetOrientationMarker(axes)
         widget.EnabledOn()
         widget.InteractiveOff()
 
         self.register_object("axes", "", "", axes, "", "")
+        self.register_object("widget", "", "", widget, "", "")
 
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 
