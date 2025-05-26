@@ -1,6 +1,58 @@
 # CHANGELOG
 
 
+## v1.7.1 (2025-05-20)
+
+
+## v1.7.1-rc.1 (2025-05-20)
+
+### Bug Fixes
+
+- **axes**: Register widget to keep axes alive
+  ([`6fcf31d`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/6fcf31d4338a062ed9e3355c9fb97ba900dbad2d))
+
+
+## v1.7.0 (2025-05-13)
+
+
+## v1.7.0-rc.2 (2025-05-12)
+
+### Bug Fixes
+
+- **axes**: Add missing tests
+  ([`4bedc62`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/4bedc623f116b3d7c32739151cf3a0101342a355))
+
+
+## v1.7.0-rc.1 (2025-05-12)
+
+### Features
+
+- **axes**: Optional, update all unit tests
+  ([`a473eeb`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/a473eeb0ff5a772177843d1fd9a0c44cfe93a14f))
+
+
+## v1.6.3 (2025-04-07)
+
+
+## v1.6.3-rc.1 (2025-04-07)
+
+### Bug Fixes
+
+- **mesh/model**: Remove points as sphere
+  ([`1469618`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/1469618669d1a9ecca590eeed44d2888a174b4e7))
+
+
+## v1.6.2 (2025-04-02)
+
+
+## v1.6.2-rc.1 (2025-04-02)
+
+### Bug Fixes
+
+- **visibility rpc**: New visibility's rpc & test
+  ([`32a0dec`](https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/commit/32a0dec52b42db2d6834a3753b9cb72fc4a11389))
+
+
 ## v1.6.1 (2025-03-25)
 
 
