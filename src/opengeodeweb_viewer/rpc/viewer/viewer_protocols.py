@@ -273,7 +273,7 @@ class VtkViewerView(VtkView):
         camera.SetViewAngle(view_angle)
         camera.SetClippingRange(*clipping_range)
         self.render()
-    
+
     @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
     def renderNow(self, params):
         params = validate_schema(
