@@ -263,7 +263,6 @@ class VtkViewerView(VtkView):
         position = camera_options["position"]
         view_angle = camera_options["view_angle"]
         clipping_range = camera_options["clipping_range"]
-        bool_render = params["bool_render"]
 
         renderWindow = self.getView("-1")
         camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
@@ -273,17 +272,11 @@ class VtkViewerView(VtkView):
         camera.SetPosition(*position)
         camera.SetViewAngle(view_angle)
         camera.SetClippingRange(*clipping_range)
-
-        print(f"bool_render: {bool_render}", flush=True)
-        if bool_render == True:
-            print("render", flush=True)
-            renderWindow.Render()
-            self.render()
-        return
+        self.render()
     
     @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
     def renderNow(self, params):
-        validate_schema(
+        params = validate_schema(
             params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
         )
 

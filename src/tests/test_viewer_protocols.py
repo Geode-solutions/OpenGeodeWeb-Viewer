@@ -221,20 +221,6 @@ def test_update_camera(server):
         [
             {
                 "camera_options": camera_options,
-                "bool_render": False
-            }
-        ],
-    )
-    server.compare_image(1, "mesh/register.jpeg")
-
-
-    server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
-        [
-            {
-                "camera_options": camera_options,
-                "bool_render": True
             }
         ],
     )
@@ -259,7 +245,6 @@ def test_render_now(server):
         [
             {
                 "camera_options": camera_options,
-                "bool_render": False
             }
         ],
     )

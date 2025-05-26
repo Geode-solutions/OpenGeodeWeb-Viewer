@@ -45,14 +45,9 @@
                 "view_angle",
                 "clipping_range"
             ]
-        },
-        "bool_render": {
-            "type": "boolean",
-            "default": true
         }
     },
     "required": [
-        "camera_options",
-        "bool_render"
+        "camera_options"
     ]
 }
