@@ -230,7 +230,6 @@ def test_update_camera(server):
         ],
     )
     assert server.compare_image(3, "viewer/update_camera.jpeg") == True
-    assert False
 
 
 def test_render_now(server):
