@@ -280,7 +280,7 @@ class VtkViewerView(VtkView):
             params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
         )
 
-        view = params.get("view", -1)
+        view = self.getView("-1")
 
         if "grid_scale" in self.get_data_base():
             renderer = self.get_renderer()
