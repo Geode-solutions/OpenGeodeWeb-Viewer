@@ -224,3 +224,55 @@ class VtkViewerView(VtkView):
         actor = self.get_object(id)["actor"]
         actor.SetVisibility(visibility)
         self.render()
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
+    def updateCamera(self, params):
+        validate_schema(
+            params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix
+        )
+
+        print(f"params: {params}", flush=True)
+
+        camera_options = params["camera_options"]
+        focal_point = camera_options["focal_point"]
+        view_up = camera_options["view_up"]
+        position = camera_options["position"]
+        view_angle = camera_options["view_angle"]
+        clipping_range = camera_options["clipping_range"]
+        bool_render = params["bool_render"]
+
+        renderWindow = self.getView("-1")
+        camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
+
+        camera.SetFocalPoint(*focal_point)
+        camera.SetViewUp(*view_up)
+        camera.SetPosition(*position)
+        camera.SetViewAngle(view_angle)
+        camera.SetClippingRange(*clipping_range)
+
+        print(f"bool_render: {bool_render}", flush=True)
+        if bool_render == True:
+            print("render", flush=True)
+            renderWindow.Render()
+            self.render()
+        return
+    
+    @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
+    def renderNow(self, params):
+        validate_schema(
+            params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
+        )
+
+        view = params.get("view", -1)
+        
+        if "grid_scale" in self.get_data_base():
+            renderer = self.get_renderer()
+            renderer_bounds = renderer.ComputeVisiblePropBounds()
+            grid_scale = self.get_object("grid_scale")["actor"]
+            grid_scale.SetBounds(renderer_bounds)
+
+        self.get_protocol("vtkWebPublishImageDelivery").imagePush({"view": view})
+
+        return {"status": "success"}
+
+

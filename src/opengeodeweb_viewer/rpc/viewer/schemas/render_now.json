@@ -1,0 +1,11 @@
+{
+    "rpc": "render_now",
+    "type": "object",
+    "properties": {
+        "view": {
+            "type": "integer",
+            "default": -1
+        }
+    },
+    "required": []
+}

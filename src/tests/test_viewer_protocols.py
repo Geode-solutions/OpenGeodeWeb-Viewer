@@ -192,3 +192,75 @@ def test_grid_scale(server):
     )
 
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+
+
+def test_update_camera(server):
+    test_register_mesh(server)
+
+
+    camera_options =  {
+        "focal_point": [-0.034399999999999986, 2.4513515, -0.10266900000000012],
+        "view_up": [0.48981180389508683, 0.8647097694977263, -0.11118188386706776],
+        "position": [-17.277630202755162, 13.419047188880267, 9.232808007244259],
+        "view_angle": 30.0,
+        "clipping_range": [11.403438348232822, 36.44815678922037],
+    }
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        [
+            {
+                "camera_options": camera_options,
+                "bool_render": False
+            }
+        ],
+    )
+    server.compare_image(1, "mesh/register.jpeg")
+
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        [
+            {
+                "camera_options": camera_options,
+                "bool_render": True
+            }
+        ],
+    )
+    assert server.compare_image(3, "viewer/update_camera.jpeg") == True
+    assert False
+
+
+def test_render_now(server):
+    test_register_mesh(server)
+
+
+    camera_options =  {
+        "focal_point": [-0.034399999999999986, 2.4513515, -0.10266900000000012],
+        "view_up": [0.48981180389508683, 0.8647097694977263, -0.11118188386706776],
+        "position": [-17.277630202755162, 13.419047188880267, 9.232808007244259],
+        "view_angle": 30.0,
+        "clipping_range": [11.403438348232822, 36.44815678922037],
+    }
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        [
+            {
+                "camera_options": camera_options,
+                "bool_render": False
+            }
+        ],
+    )
+    server.compare_image(1, "mesh/register.jpeg")
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["render_now"]["rpc"],
+        [{"view": -1}] 
+    )
+
+    assert server.compare_image(3, "viewer/render_now.jpeg") == True

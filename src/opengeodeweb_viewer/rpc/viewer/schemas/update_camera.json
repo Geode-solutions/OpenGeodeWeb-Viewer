@@ -1,0 +1,58 @@
+{
+    "rpc": "update_camera",
+    "type": "object",
+    "properties": {
+        "camera_options": {
+            "focal_point": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+            },
+            "view_up": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+            },
+            "position": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+            },
+            "view_angle": {
+                "type": "number"
+            },
+            "clipping_range": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+            },
+            "required": [
+                "focal_point",
+                "view_up",
+                "position",
+                "view_angle",
+                "clipping_range"
+            ]
+        },
+        "bool_render": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "required": [
+        "camera_options",
+        "bool_render"
+    ]
+}
