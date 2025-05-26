@@ -281,7 +281,7 @@ class VtkViewerView(VtkView):
         )
 
         view = params.get("view", -1)
-        
+
         if "grid_scale" in self.get_data_base():
             renderer = self.get_renderer()
             renderer_bounds = renderer.ComputeVisiblePropBounds()
@@ -291,5 +291,3 @@ class VtkViewerView(VtkView):
         self.get_protocol("vtkWebPublishImageDelivery").imagePush({"view": view})
 
         return {"status": "success"}
-
-
