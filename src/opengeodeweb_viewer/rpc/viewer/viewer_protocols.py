@@ -251,12 +251,7 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
     def updateCamera(self, params):
-        validate_schema(
-            params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix
-        )
-
-        print(f"params: {params}", flush=True)
-
+        validate_schema(params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix)
         camera_options = params["camera_options"]
         focal_point = camera_options["focal_point"]
         view_up = camera_options["view_up"]
@@ -276,18 +271,5 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
     def renderNow(self, params):
-        params = validate_schema(
-            params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
-        )
-
-        view = self.getView("-1")
-
-        if "grid_scale" in self.get_data_base():
-            renderer = self.get_renderer()
-            renderer_bounds = renderer.ComputeVisiblePropBounds()
-            grid_scale = self.get_object("grid_scale")["actor"]
-            grid_scale.SetBounds(renderer_bounds)
-
-        self.get_protocol("vtkWebPublishImageDelivery").imagePush({"view": view})
-
-        return {"status": "success"}
+        validate_schema(params, self.viewer_schemas_dict["render_now"], self.viewer_prefix)
+        self.render()
