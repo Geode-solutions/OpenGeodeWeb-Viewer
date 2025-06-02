@@ -251,7 +251,9 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
     def updateCamera(self, params):
-        validate_schema(params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix)
+        validate_schema(
+            params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix
+        )
         camera_options = params["camera_options"]
         focal_point = camera_options["focal_point"]
         view_up = camera_options["view_up"]
@@ -271,5 +273,7 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
     def renderNow(self, params):
-        validate_schema(params, self.viewer_schemas_dict["render_now"], self.viewer_prefix)
+        validate_schema(
+            params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
+        )
         self.render()
