@@ -61,10 +61,11 @@ class _Server(vtk_wslink.ServerProtocol):
         # Bring used components
         self.registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
         self.registerVtkWebProtocol(vtk_protocols.vtkWebViewPort())
-        self.registerVtkWebProtocol(
-            vtk_protocols.vtkWebPublishImageDelivery(decode=False)
-        )
+        publisher = vtk_protocols.vtkWebPublishImageDelivery(decode=False)
+        publisher.deltaStaleTimeBeforeRender = 0.1
+        self.registerVtkWebProtocol(publisher)
         self.setSharedObject("db", dict())
+        self.setSharedObject("publisher", publisher)
 
         # Custom API
         mesh_protocols = VtkMeshView()

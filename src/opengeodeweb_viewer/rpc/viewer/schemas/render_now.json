@@ -2,5 +2,6 @@
     "rpc": "render_now",
     "type": "object",
     "properties": {},
-    "required": []
+    "required": [],
+    "additionalProperties": false
 }
