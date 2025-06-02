@@ -254,7 +254,6 @@ def test_render_now(server):
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["render_now"]["rpc"],
-        [{"view": -1}],
     )
 
     assert server.compare_image(3, "viewer/render_now.jpeg") == True
