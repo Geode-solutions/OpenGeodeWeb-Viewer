@@ -1,18 +1,18 @@
 {
-  "rpc": "points.size",
+  "rpc": "visibility",
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
       "minLength": 1
     },
-    "size": {
-      "type": "number"
+    "visibility": {
+      "type": "boolean"
     }
   },
   "required": [
     "id",
-    "size"
+    "visibility"
   ],
   "additionalProperties": false
 }
