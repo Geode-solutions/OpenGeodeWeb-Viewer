@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OpenGeodeWeb-Viewer"
-version = "1.8.0"
+version = "1.8.1-rc.1"
 dynamic = ["dependencies"]
 authors = [
   { name="Geode-solutions", email="team-web@geode-solutions.com" },
@@ -43,6 +43,8 @@ where = ["src"]
 "opengeodeweb_viewer.rpc.mesh.polygons.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.mesh.polyhedra.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.model.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.model.edges.schemas" = ["*.json"]
+"opengeodeweb_viewer.rpc.model.points.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.model.corners.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.model.lines.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.model.surfaces.schemas" = ["*.json"]

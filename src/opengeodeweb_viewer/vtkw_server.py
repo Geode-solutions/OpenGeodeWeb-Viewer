@@ -18,6 +18,12 @@ from .rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 from .rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
 from .rpc.model.model_protocols import VtkModelView
+from .rpc.model.edges.edges_protocols import (
+    VtkModelEdgesView,
+)
+from .rpc.model.points.points_protocols import (
+    VtkModelPointsView,
+)
 from .rpc.model.corners.corners_protocols import (
     VtkModelCornersView,
 )
@@ -79,6 +85,8 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
         self.registerVtkWebProtocol(VtkMeshPolyhedraView())
         self.registerVtkWebProtocol(model_protocols)
+        self.registerVtkWebProtocol(VtkModelEdgesView())
+        self.registerVtkWebProtocol(VtkModelPointsView())
         self.registerVtkWebProtocol(VtkModelCornersView())
         self.registerVtkWebProtocol(VtkModelLinesView())
         self.registerVtkWebProtocol(VtkModelSurfacesView())
