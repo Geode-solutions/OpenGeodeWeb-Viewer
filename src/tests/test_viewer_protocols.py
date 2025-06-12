@@ -257,3 +257,44 @@ def test_render_now(server):
     )
 
     assert server.compare_image(3, "viewer/render_now.jpeg") == True
+
+
+def test_set_z_scaling(server):
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "12345678", "file_name": "polygon_attribute.vtp"}],
+    )
+    assert server.compare_image(3, "viewer/polygon_attribute.jpeg") == True
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "123456789", "file_name": "vertex_attribute.vtp"}],
+    )
+    assert server.compare_image(3, "viewer/vertex_and_polygon_attribute.jpeg") == True
+
+    camera_options = {
+        "focal_point": [6.05, 5.7, 1.5],
+        "view_up": [-0.019853719211915175, 0.9994261532466464, 0.02744438084681784],
+        "position": [-19.898328271321652, 5.221831172558093, 0.1417477620371277],
+        "view_angle": 30.0,
+        "clipping_range": [20.16946812228507, 31.94497749971925],
+    }
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        [
+            {
+                "camera_options": camera_options,
+            }
+        ],
+    )
+    server.compare_image(3, "mesh/register.jpeg")
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
+        [{"z_scale": 2.5}],
+    )
+    assert server.compare_image(3, "viewer/set_z_scaling.jpeg") == True
