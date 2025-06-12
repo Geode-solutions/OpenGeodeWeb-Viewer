@@ -1,0 +1,13 @@
+{
+  "rpc": "set_z_scaling",
+  "type": "object",
+  "properties": {
+    "z_scale": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "z_scale"
+  ],
+  "additionalProperties": false
+}
