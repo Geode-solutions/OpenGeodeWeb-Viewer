@@ -286,15 +286,10 @@ class VtkViewerView(VtkView):
         )
         z_scale = params["z_scale"]
         db = self.get_data_base()
-        print(f"{db=}", flush=True)
 
         for values in db.values():
             actor = values["actor"]
-            print(f"{actor=}", flush=True)
             transform = vtkTransform()
             transform.Scale([1, 1, z_scale])
-            print(f"{transform=}", flush=True)
-
             actor.SetUserTransform(transform)
-
         self.render()
