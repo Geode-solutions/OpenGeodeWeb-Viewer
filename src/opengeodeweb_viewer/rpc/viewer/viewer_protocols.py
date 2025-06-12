@@ -7,6 +7,7 @@ import vtk
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
 from vtkmodules.vtkRenderingCore import vtkWindowToImageFilter
+from vtkmodules.vtkCommonTransforms import vtkTransform
 from wslink import register as exportRpc
 
 # Local application imports
@@ -276,4 +277,24 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
         )
+        self.render()
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
+    def setZScaling(self, params):
+        validate_schema(
+            params, self.viewer_schemas_dict["set_z_scaling"], self.viewer_prefix
+        )
+        z_scale = params["z_scale"]
+        db = self.get_data_base()
+        print(f"{db=}", flush=True)
+
+        for values in db.values():
+            actor = values["actor"]
+            print(f"{actor=}", flush=True)
+            transform = vtkTransform()
+            transform.Scale([1, 1, z_scale])
+            print(f"{transform=}", flush=True)
+
+            actor.SetUserTransform(transform)
+
         self.render()
