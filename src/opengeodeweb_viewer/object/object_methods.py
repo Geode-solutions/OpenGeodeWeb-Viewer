@@ -117,7 +117,6 @@ class VtkObjectView(VtkView):
 
     def SetEdgesWidth(self, id, width):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().UseLineWidthForEdgeThicknessOn()
         actor.GetProperty().SetEdgeWidth(width)
         self.render()
 
