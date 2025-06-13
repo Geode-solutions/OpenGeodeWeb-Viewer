@@ -108,21 +108,35 @@ class VtkObjectView(VtkView):
 
     def SetEdgesVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetEdgeVisibility(visibility)
+        max_dimension = self.get_object(id)["max_dimension"]
+        if max_dimension == "edges":
+            self.SetVisibility(id, visibility)
+        else: 
+
+            actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
 
-    def SetEdgesSize(self, id, size):
+    def SetEdgesWidth(self, id, width):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetEdgeWidth(size)
+        actor.GetProperty().UseLineWidthForEdgeThicknessOn()
+        actor.GetProperty().SetEdgeWidth(width)
         self.render()
 
     def SetEdgesColor(self, id, red, green, blue):
         actor = self.get_object(id)["actor"]
-        actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
+        max_dimension = self.get_object(id)["max_dimension"]
+        if max_dimension == "edges":
+            self.SetColor(id, red, green, blue)
+        else: 
+        # actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
         self.render()
 
     def SetPointsVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
+        # max_dimension = self.get_object(id)["max_dimension"]
+        # if max_dimension == "points":
+        #     self.SetVisibility(id, visibility)
+        # else: 
         actor.GetProperty().SetVertexVisibility(visibility)
         actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
@@ -134,6 +148,10 @@ class VtkObjectView(VtkView):
 
     def SetPointsColor(self, id, red, green, blue):
         actor = self.get_object(id)["actor"]
+        # max_dimension = self.get_object(id)["max_dimension"]
+        # if max_dimension == "points":
+        #     self.SetColor(id, red, green, blue)
+        # else: 
         actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
         self.render()
 
