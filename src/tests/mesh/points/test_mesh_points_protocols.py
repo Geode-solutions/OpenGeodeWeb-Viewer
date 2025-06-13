@@ -72,4 +72,3 @@ def test_points_with_point_set(server):
         [{"id": "123456789", "visibility": False}],
     )
     assert server.compare_image(3, "mesh/points/point_set_visibility.jpeg") == True
-

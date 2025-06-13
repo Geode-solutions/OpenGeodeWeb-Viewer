@@ -31,6 +31,7 @@ def test_edges_color(server):
     )
     assert server.compare_image(3, "mesh/edges/color.jpeg") == True
 
+
 def test_edges_with_edged_curve(server):
 
     server.call(
@@ -52,5 +53,3 @@ def test_edges_with_edged_curve(server):
         [{"id": "123456789", "visibility": False}],
     )
     assert server.compare_image(3, "mesh/edges/edged_curve_visibility.jpeg") == True
-
-
