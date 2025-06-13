@@ -33,6 +33,7 @@ class VtkModelView(VtkObjectView):
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
             self.registerObject(id, file_name, reader, filter, mapper)
+            self.get_object(id)["max_dimension"] = "dummy"
         except Exception as e:
             print("error : ", str(e), flush=True)
 

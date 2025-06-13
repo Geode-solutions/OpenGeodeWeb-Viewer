@@ -18,22 +18,22 @@ from .rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 from .rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
 from .rpc.model.model_protocols import VtkModelView
-from .rpc.model.edges.edges_protocols import (
+from .rpc.model.edges.model_edges_protocols import (
     VtkModelEdgesView,
 )
-from .rpc.model.points.points_protocols import (
+from .rpc.model.points.model_points_protocols import (
     VtkModelPointsView,
 )
-from .rpc.model.corners.corners_protocols import (
+from .rpc.model.corners.model_corners_protocols import (
     VtkModelCornersView,
 )
-from .rpc.model.lines.lines_protocols import (
+from .rpc.model.lines.model_lines_protocols import (
     VtkModelLinesView,
 )
-from .rpc.model.surfaces.surfaces_protocols import (
+from .rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
 )
-from .rpc.model.blocks.blocks_protocols import (
+from .rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
 from .rpc.generic.generic_protocols import VtkGenericView
