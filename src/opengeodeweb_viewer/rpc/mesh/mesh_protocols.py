@@ -23,33 +23,35 @@ class VtkMeshView(VtkObjectView):
     def registerMesh(self, params):
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
         id, file_name = params["id"], params["file_name"]
-        # try:
-        reader = vtk.vtkXMLGenericDataObjectReader()
-        filter = {}
-        mapper = vtk.vtkDataSetMapper()
-        mapper.SetInputConnection(reader.GetOutputPort())
-        self.registerObject(id, file_name, reader, filter, mapper)
+        try:
+            reader = vtk.vtkXMLGenericDataObjectReader()
+            filter = {}
+            mapper = vtk.vtkDataSetMapper()
+            mapper.SetInputConnection(reader.GetOutputPort())
+            self.registerObject(id, file_name, reader, filter, mapper)
 
-        data_object = reader.GetOutput()
-        data_set = vtk.vtkDataSet.SafeDownCast(data_object)
-        cell_types = vtk.vtkCellTypes()
-        data_set.GetCellTypes(cell_types)
-        cell_data = cell_types.GetCellTypesArray()
-        max_id = -1
-        for t in range(cell_data.GetSize()):
-            t_id = cell_data.GetValue(t)
-            max_id = max(max_id, t_id)
-        print(f"{max_id=}", flush=True)
-        max_dimension = ""
-        if max_id < 3:
-            max_dimension = "points"
-        elif max_id < 5:
-            max_dimension = "edges"
-        elif max_id < 7:
-            max_dimension = "polygons"
-        elif max_id >= 7:
-            max_dimension = "polyhedra"
-        self.get_data_base()[id]["max_dimension"] = max_dimension
+            data_object = reader.GetOutput()
+            data_set = vtk.vtkDataSet.SafeDownCast(data_object)
+            cell_types = vtk.vtkCellTypes()
+            data_set.GetCellTypes(cell_types)
+            cell_data = cell_types.GetCellTypesArray()
+            max_id = -1
+            for t in range(cell_data.GetSize()):
+                t_id = cell_data.GetValue(t)
+                max_id = max(max_id, t_id)
+            print(f"{max_id=}", flush=True)
+            max_dimension = ""
+            if max_id < 3:
+                max_dimension = "points"
+            elif max_id < 5:
+                max_dimension = "edges"
+            elif max_id < 7:
+                max_dimension = "polygons"
+            elif max_id >= 7:
+                max_dimension = "polyhedra"
+            self.get_data_base()[id]["max_dimension"] = max_dimension
+        except Exception as e:
+            print("error : ", str(e), flush=True)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params):
