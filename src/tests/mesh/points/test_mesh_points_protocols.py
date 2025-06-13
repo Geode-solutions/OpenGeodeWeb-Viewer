@@ -1,8 +1,8 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
 
 # Local application imports
 from src.tests.mesh.test_mesh_protocols import test_register_mesh
@@ -44,7 +44,7 @@ def test_points_color(server):
     assert server.compare_image(3, "mesh/points/color.jpeg") == True
 
 
-def test_points_visibility_with_point_set(server):
+def test_points_with_point_set(server):
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],

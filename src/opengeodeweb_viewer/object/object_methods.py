@@ -111,8 +111,7 @@ class VtkObjectView(VtkView):
         max_dimension = self.get_object(id)["max_dimension"]
         if max_dimension == "edges":
             self.SetVisibility(id, visibility)
-        else: 
-
+        else:
             actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
 
@@ -128,17 +127,17 @@ class VtkObjectView(VtkView):
         if max_dimension == "edges":
             self.SetColor(id, red, green, blue)
         else: 
-        # actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
+            actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
         self.render()
 
     def SetPointsVisibility(self, id, visibility):
         actor = self.get_object(id)["actor"]
-        # max_dimension = self.get_object(id)["max_dimension"]
-        # if max_dimension == "points":
-        #     self.SetVisibility(id, visibility)
-        # else: 
-        actor.GetProperty().SetVertexVisibility(visibility)
-        actor.GetProperty().SetEdgeVisibility(visibility)
+        max_dimension = self.get_object(id)["max_dimension"]
+        if max_dimension == "points":
+            self.SetVisibility(id, visibility)
+        else: 
+            actor.GetProperty().SetVertexVisibility(visibility)
+            actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
 
     def SetPointsSize(self, id, size):
@@ -148,11 +147,11 @@ class VtkObjectView(VtkView):
 
     def SetPointsColor(self, id, red, green, blue):
         actor = self.get_object(id)["actor"]
-        # max_dimension = self.get_object(id)["max_dimension"]
-        # if max_dimension == "points":
-        #     self.SetColor(id, red, green, blue)
-        # else: 
-        actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
+        max_dimension = self.get_object(id)["max_dimension"]
+        if max_dimension == "points":
+            self.SetColor(id, red, green, blue)
+        else:
+            actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
         self.render()
 
     def SetBlocksVisibility(self, id, block_ids, visibility):

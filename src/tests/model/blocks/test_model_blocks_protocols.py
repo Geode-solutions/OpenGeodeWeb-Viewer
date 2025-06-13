@@ -1,7 +1,7 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.model.blocks.blocks_protocols import (
+from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
 

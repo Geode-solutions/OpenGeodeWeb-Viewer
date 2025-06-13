@@ -1,7 +1,7 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.model.lines.lines_protocols import (
+from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
     VtkModelLinesView,
 )
 
