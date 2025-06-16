@@ -10,11 +10,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.12"
       - name: Test
         run: |
           pip install pytest pytest-xprocess
-          pip install https://www.vtk.org/files/release/9.3/vtk_osmesa-9.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+          pip install https://www.vtk.org/files/release/9.3/vtk_osmesa-9.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
           pip install -e .
           pytest
 

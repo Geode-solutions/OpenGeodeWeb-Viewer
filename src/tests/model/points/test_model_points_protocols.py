@@ -1,7 +1,7 @@
 # Standard library imports
 
 # Third party imports
-from opengeodeweb_viewer.rpc.model.points.points_protocols import (
+from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
     VtkModelPointsView,
 )
 
