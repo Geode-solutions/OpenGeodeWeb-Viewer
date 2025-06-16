@@ -7,7 +7,7 @@
       "minLength": 1
     },
     "width": {
-      "type": "integer"
+      "type": "number"
     }
   },
   "required": [
