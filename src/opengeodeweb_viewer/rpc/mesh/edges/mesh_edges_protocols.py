@@ -39,10 +39,10 @@ class VtkMeshEdgesView(VtkMeshView):
         )
         self.SetEdgesColor(id, red, green, blue)
 
-    @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["size"]["rpc"])
-    def setMeshEdgesSize(self, params):
+    @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["width"]["rpc"])
+    def setMeshEdgesWidth(self, params):
         validate_schema(
-            params, self.mesh_edges_schemas_dict["size"], self.mesh_edges_prefix
+            params, self.mesh_edges_schemas_dict["width"], self.mesh_edges_prefix
         )
-        id, size = params["id"], params["size"]
-        self.SetEdgesSize(id, size)
+        id, size = params["id"], params["width"]
+        self.SetEdgesWidth(id, width)
