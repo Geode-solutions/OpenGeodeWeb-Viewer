@@ -137,6 +137,7 @@ class VtkObjectView(VtkView):
         else:
             actor.GetProperty().SetVertexVisibility(visibility)
             actor.GetProperty().SetEdgeVisibility(visibility)
+            actor.GetProperty().SetRenderPointsAsSpheres(visibility)
         self.render()
 
     def SetPointsSize(self, id, size):
