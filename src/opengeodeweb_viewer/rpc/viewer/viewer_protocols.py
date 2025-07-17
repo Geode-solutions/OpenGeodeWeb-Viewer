@@ -238,8 +238,9 @@ class VtkViewerView(VtkView):
             params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
         )
         id, visibility = "grid_scale", params["visibility"]
-        actor = self.get_object(id)["actor"]
-        actor.SetVisibility(visibility)
+        if "grid_scale" in self.get_data_base():
+            actor = self.get_object(id)["actor"]
+            actor.SetVisibility(visibility)
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["axes"]["rpc"])
@@ -295,6 +296,4 @@ class VtkViewerView(VtkView):
         if "grid_scale" in self.get_data_base():
             cube_axes_actor = self.get_object("grid_scale")["actor"]
             cube_axes_actor.SetUse2DMode(1)
-        else:
-            Exception("The object 'grid_scale' does not exist.")
         self.render()
