@@ -3,8 +3,8 @@ import os
 import json
 
 # Third party imports
-from jsonschema import validate
-from jsonschema.exceptions import ValidationError
+import fastjsonschema
+from fastjsonschema import JsonSchemaException
 
 # Local application imports
 
@@ -24,8 +24,9 @@ def get_schemas_dict(path):
 def validate_schema(params, schema, prefix=""):
     print(f"{prefix}{schema['rpc']}", f"{params=}", flush=True)
     try:
-        validate(instance=params, schema=schema)
-    except ValidationError as e:
+        validate = fastjsonschema.compile(schema)
+        validate(params)
+    except fastjsonschema.JsonSchemaException as e:
         print(f"Validation error: {e.message}", flush=True)
         raise Exception(
             {
