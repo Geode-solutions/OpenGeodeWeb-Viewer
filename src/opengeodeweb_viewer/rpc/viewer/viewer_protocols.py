@@ -238,8 +238,9 @@ class VtkViewerView(VtkView):
             params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
         )
         id, visibility = "grid_scale", params["visibility"]
-        actor = self.get_object(id)["actor"]
-        actor.SetVisibility(visibility)
+        if "grid_scale" in self.get_data_base():
+            actor = self.get_object(id)["actor"]
+            actor.SetVisibility(visibility)
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["axes"]["rpc"])
@@ -281,19 +282,18 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, params):
-
         validate_schema(
             params, self.viewer_schemas_dict["set_z_scaling"], self.viewer_prefix
         )
         z_scale = params["z_scale"]
-
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        cam = renderer.GetActiveCamera()
+        transform = vtk.vtkTransform()
+        transform.Scale(1, 1, z_scale)
+        cam.SetModelTransformMatrix(transform.GetMatrix())
 
-        actors = renderer.GetActors()
-
-        for actor in actors:
-            transform = vtkTransform()
-            transform.Scale(1, 1, z_scale)
-            actor.SetUserTransform(transform)
+        if "grid_scale" in self.get_data_base():
+            cube_axes_actor = self.get_object("grid_scale")["actor"]
+            cube_axes_actor.SetUse2DMode(1)
         self.render()

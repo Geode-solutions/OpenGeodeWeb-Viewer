@@ -3,7 +3,8 @@
   "type": "object",
   "properties": {
     "z_scale": {
-      "type": "number"
+      "type": "number",
+      "minimum": 1
     }
   },
   "required": [
