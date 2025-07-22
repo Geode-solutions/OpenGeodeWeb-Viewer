@@ -5,12 +5,12 @@
     "test": "npm run json && pytest"
   },
   "dependencies": {
-    "@geode/opengeodeweb-back": "5.4.1"
+    "@geode/opengeodeweb-back": "5.8.6"
   },
   "exports": {
-    "./schemas.json": {
-      "import": "./schemas.json",
-      "require": "./schemas.json"
+    "./opengeodeweb_viewer_schemas.json": {
+      "import": "./opengeodeweb_viewer_schemas.json",
+      "require": "./opengodeweb_viewer_schemas.json"
     }
   },
   "version": "0.0.0-semantically-released",
@@ -34,6 +34,6 @@
     "access": "public"
   },
   "files": [
-    "schemas.json"
+    "opengeodeweb_viewer_schemas.json"
   ]
 }
