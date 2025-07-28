@@ -1,5 +1,4 @@
 import os
-from glob import glob
 import tempfile
 from shutil import copyfile, copytree
 from sys import platform
@@ -38,21 +37,27 @@ def test_config(path):
         raise FileNotFoundError(f"Test data folder not found: {original_data_path}")
 
     valid_extensions = {".vtp", ".vti", ".vtu", ".vtm", ".png", ".jpeg", ".jpg"}
-
-    legacy_id = "123456789"
-    legacy_dir = os.path.join(tmp_data_root, legacy_id)
-    os.makedirs(legacy_dir, exist_ok=True)
+    
+    test_ids = ["123456789", "12345678"]
+    
+    for test_id in test_ids:
+        test_id_dir = os.path.join(tmp_data_root, test_id)
+        os.makedirs(test_id_dir, exist_ok=True)
+    
+    test_project_uuid = "test-project-uuid"
+    test_data_uuid = "test-data-uuid"
+    new_structure_dir = os.path.join(tmp_data_root, test_project_uuid, test_data_uuid)
+    os.makedirs(new_structure_dir, exist_ok=True)
+    
+    uploads_dir = os.path.join(tmp_data_root, test_project_uuid, "uploads")
+    os.makedirs(uploads_dir, exist_ok=True)
 
     for root, dirs, files in os.walk(original_data_path):
-        rel_root = os.path.relpath(root, original_data_path)
-
-        # Copier sous-dossiers (comme cube/) dans leur ensemble
         for d in dirs:
             src_dir = os.path.join(root, d)
-            dst_dir = os.path.join(tmp_data_root, legacy_id, d)
+            dst_dir = os.path.join(tmp_data_root, test_ids[0], d)
             if not os.path.exists(dst_dir):
                 copytree(src_dir, dst_dir, dirs_exist_ok=True)
-                print(f"📦 Copied folder: {src_dir} → {dst_dir}", flush=True)
 
         for file_name in files:
             ext = os.path.splitext(file_name)[1].lower()
@@ -60,22 +65,15 @@ def test_config(path):
                 continue
 
             full_path = os.path.join(root, file_name)
-            uuid = os.path.splitext(file_name)[0]
-
-            # uuid/filename
-            dst_dir = os.path.join(tmp_data_root, uuid)
-            os.makedirs(dst_dir, exist_ok=True)
-            dst = os.path.join(dst_dir, file_name)
-            copyfile(full_path, dst)
-
-            # legacy path: 123456789/filename
-            legacy_dst = os.path.join(legacy_dir, file_name)
-            copyfile(full_path, legacy_dst)
-
-            # root-level copy
-            root_level_dst = os.path.join(tmp_data_root, file_name)
-            copyfile(full_path, root_level_dst)
-
-            print(f"📄 Copied file: {full_path} → {root_level_dst}", flush=True)
+            
+            for test_id in test_ids:
+                test_id_dst = os.path.join(tmp_data_root, test_id, file_name)
+                copyfile(full_path, test_id_dst)
+            
+            new_structure_dst = os.path.join(new_structure_dir, file_name)
+            copyfile(full_path, new_structure_dst)
+            
+            uploads_dst = os.path.join(uploads_dir, file_name)
+            copyfile(full_path, uploads_dst)
 
     print(f"\n✅ DATA_FOLDER_PATH set to: {tmp_data_root}", flush=True)
