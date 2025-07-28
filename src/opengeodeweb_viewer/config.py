@@ -37,18 +37,18 @@ def test_config(path):
         raise FileNotFoundError(f"Test data folder not found: {original_data_path}")
 
     valid_extensions = {".vtp", ".vti", ".vtu", ".vtm", ".png", ".jpeg", ".jpg"}
-    
+
     test_ids = ["123456789", "12345678"]
-    
+
     for test_id in test_ids:
         test_id_dir = os.path.join(tmp_data_root, test_id)
         os.makedirs(test_id_dir, exist_ok=True)
-    
+
     test_project_uuid = "test-project-uuid"
     test_data_uuid = "test-data-uuid"
     new_structure_dir = os.path.join(tmp_data_root, test_project_uuid, test_data_uuid)
     os.makedirs(new_structure_dir, exist_ok=True)
-    
+
     uploads_dir = os.path.join(tmp_data_root, test_project_uuid, "uploads")
     os.makedirs(uploads_dir, exist_ok=True)
 
@@ -65,14 +65,14 @@ def test_config(path):
                 continue
 
             full_path = os.path.join(root, file_name)
-            
+
             for test_id in test_ids:
                 test_id_dst = os.path.join(tmp_data_root, test_id, file_name)
                 copyfile(full_path, test_id_dst)
-            
+
             new_structure_dst = os.path.join(new_structure_dir, file_name)
             copyfile(full_path, new_structure_dst)
-            
+
             uploads_dst = os.path.join(uploads_dir, file_name)
             copyfile(full_path, uploads_dst)
 
