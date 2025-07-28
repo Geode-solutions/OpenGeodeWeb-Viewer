@@ -16,7 +16,10 @@ class VtkObjectView(VtkView):
     def registerObject(self, id, file_name, reader, filter, mapper):
         actor = vtk.vtkActor()
         self.register_object(id, reader, filter, actor, mapper, {})
-        reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, id, file_name))
+        full_path = os.path.join(self.DATA_FOLDER_PATH, id, file_name)
+        if not os.path.exists(full_path):
+            full_path = os.path.join(self.DATA_FOLDER_PATH, file_name)
+        reader.SetFileName(full_path)
         actor.SetMapper(mapper)
         mapper.SetColorModeToMapScalars()
         mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
