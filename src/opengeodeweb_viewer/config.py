@@ -44,10 +44,21 @@ def test_config(path):
     uploads_directory = os.path.join(tmp_data_root, project_uuid, "uploads")
     structure_directory = os.path.join(tmp_data_root, project_uuid, data_uuid)
 
-    for directory in [*test_ids, uploads_directory, structure_directory]: # create directories for tests
-        os.makedirs(os.path.join(tmp_data_root, directory) if isinstance(directory, str) else directory, exist_ok=True)
+    for directory in [
+        *test_ids,
+        uploads_directory,
+        structure_directory,
+    ]:  # create directories for tests
+        os.makedirs(
+            (
+                os.path.join(tmp_data_root, directory)
+                if isinstance(directory, str)
+                else directory
+            ),
+            exist_ok=True,
+        )
 
-    for root, directories, files in os.walk(src_data): 
+    for root, directories, files in os.walk(src_data):
         for directory in directories:
             dst = os.path.join(tmp_data_root, test_ids[0], directory)
             copytree(os.path.join(root, directory), dst, dirs_exist_ok=True)
