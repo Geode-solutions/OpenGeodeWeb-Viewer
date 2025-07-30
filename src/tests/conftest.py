@@ -146,8 +146,6 @@ HELPER = FixtureHelper(ROOT_PATH)
 def server(xprocess):
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
-    config.test_config(os.path.dirname(__file__))
-    print("server", os.environ.get("DATA_FOLDER_PATH"), flush=True)
     _, log = xprocess.ensure(name, Starter)
     print(log)
     monitor = Monitor(log)

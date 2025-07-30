@@ -37,7 +37,7 @@ def test_config(path):
         raise FileNotFoundError(f"Test data folder not found: {src_data}")
 
     test_ids = ["123456789", "12345678"]
-    valid_exts = {".vtp", ".vti", ".vtu", ".vtm", ".png", ".jpeg", ".jpg"}
+    valid_exts = {".vtp", ".vti", ".vtu", ".vtm"}
 
     project_uuid = "test-project-uuid"
     data_uuid = "test-data-uuid"
