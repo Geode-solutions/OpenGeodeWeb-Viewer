@@ -4,8 +4,6 @@
 #
 #    pip-compile
 #
---extra-index-url https://wheels.vtk.org
-
 aiohappyeyeballs==2.6.1
     # via aiohttp
 aiohttp==3.12.14
