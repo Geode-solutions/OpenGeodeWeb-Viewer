@@ -1,2 +1,3 @@
 wslink<2
 fastjsonschema==2.21.1
+websocket_client==1.8.0
