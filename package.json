@@ -2,10 +2,11 @@
   "name": "@geode/opengeodeweb-viewer",
   "scripts": {
     "json": "node ./node_modules/@geode/opengeodeweb-back/generate_schemas.js opengeodeweb_viewer rpc rpc .",
-    "test": "npm run json && pytest"
+    "test": "npm run json",
+    "build": "npm run json"
   },
   "dependencies": {
-    "@geode/opengeodeweb-back": "5.8.6"
+    "@geode/opengeodeweb-back": "latest"
   },
   "exports": {
     "./opengeodeweb_viewer_schemas.json": {
@@ -13,7 +14,7 @@
       "require": "./opengodeweb_viewer_schemas.json"
     }
   },
-  "version": "0.0.0-semantically-released",
+  "version": "0.0.0",
   "description": "",
   "main": "generate_schemas.js",
   "repository": {
