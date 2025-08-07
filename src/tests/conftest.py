@@ -99,7 +99,6 @@ class ServerMonitor:
                     f.write(image)
                     f.close()
         if isinstance(image, bytes):
-            print(f"{image=}", flush=True)
             response = self.ws.recv()
             print(f"{response=}", flush=True)
             format = json.loads(response)["result"]["format"]
