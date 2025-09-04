@@ -2,7 +2,6 @@
 dist
 env/
 venv/
-.vscode/
 __pycache__/
 .env
 /node_modules
@@ -12,3 +11,4 @@ build
 /src/tests/tests_output/
 *.egg-info
 .coverage*
+.mypy_cache
