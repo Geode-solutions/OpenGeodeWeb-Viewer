@@ -1,22 +1,21 @@
 {
   "name": "@geode/opengeodeweb-viewer",
+  "version": "0.0.0",
+  "description": "",
   "scripts": {
-    "json": "node ./node_modules/@geode/opengeodeweb-back/generate_schemas.js opengeodeweb_viewer rpc rpc .",
+    "json": "ogw-generate-schemas opengeodeweb_viewer rpc rpc .",
     "test": "npm run json",
     "build": "npm run json"
   },
   "dependencies": {
-    "@geode/opengeodeweb-back": "latest"
+    "@geode/opengeodeweb-microservice": "latest"
   },
   "exports": {
     "./opengeodeweb_viewer_schemas.json": {
       "import": "./opengeodeweb_viewer_schemas.json",
-      "require": "./opengodeweb_viewer_schemas.json"
+      "require": "./opengeodeweb_viewer_schemas.json"
     }
   },
-  "version": "0.0.0",
-  "description": "",
-  "main": "generate_schemas.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Geode-solutions/OpenGeodeWeb-Viewer.git"
