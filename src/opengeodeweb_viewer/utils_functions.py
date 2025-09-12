@@ -3,7 +3,7 @@ import os
 import json
 
 # Third party imports
-import fastjsonschema
+from import fastjsonschema
 from fastjsonschema import JsonSchemaException
 
 # Local application imports
