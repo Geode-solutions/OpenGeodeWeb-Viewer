@@ -14,8 +14,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self):
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
-        if not self.DATA_FOLDER_PATH:
-            raise ValueError("DATA_FOLDER_PATH environment variable not set")
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
@@ -35,8 +33,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         data_entry = self.get_data_info(id)
         file_path = self.get_data_file_path(id, data_entry.native_file_name)
 
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File not found at {file_path}")
+        # if not os.path.exists(file_path):
+        #     raise FileNotFoundError(f"File not found at {file_path}")
 
         if file_path.endswith(".vtp"):
             reader = vtk.vtkXMLPolyDataReader()
