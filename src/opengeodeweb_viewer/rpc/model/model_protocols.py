@@ -23,7 +23,7 @@ class VtkModelView(VtkObjectView):
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, params):
         validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
-        id, file_name = params["id"], params["file_name"]
+        id = params["id"]
         try:
             reader = vtk.vtkXMLMultiBlockDataReader()
             filter = vtk.vtkGeometryFilter()
@@ -32,7 +32,7 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputConnection(filter.GetOutputPort())
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            self.registerObject(id, file_name, reader, filter, mapper)
+            self.registerObject(id, reader, filter, mapper)
             self.get_object(id)["max_dimension"] = "default"
         except Exception as e:
             print("error : ", str(e), flush=True)

@@ -48,7 +48,7 @@ def test_config(path):
         *test_ids,
         uploads_directory,
         structure_directory,
-    ]:  # create directories for tests
+    ]:
         os.makedirs(
             (
                 os.path.join(tmp_data_root, directory)

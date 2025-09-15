@@ -112,7 +112,6 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["take_screenshot"], self.viewer_prefix
         )
-
         filename, output_extension, include_background = (
             params["filename"],
             params["output_extension"],

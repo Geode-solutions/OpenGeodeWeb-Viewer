@@ -27,11 +27,13 @@ class VtkGenericView(VtkView):
             params, self.generic_schemas_dict["register"], self.generic_prefix
         )
         viewer_object = params["viewer_object"]
-        params.pop("viewer_object", None)
+        data_id = params["data_id"]
+        data_info = self.get_data_info(data_id)
+        register_params = {"id": data_id, "file_name": data_info.viewable_file_name}
         if viewer_object == "mesh":
-            self.mesh_protocols.registerMesh(params)
+            self.mesh_protocols.registerMesh(register_params)
         elif viewer_object == "model":
-            self.model_protocols.registerModel(params)
+            self.model_protocols.registerModel(register_params)
 
     @exportRpc(generic_prefix + generic_schemas_dict["deregister"]["rpc"])
     def deregister(self, params):
