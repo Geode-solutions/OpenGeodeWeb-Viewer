@@ -23,8 +23,9 @@ class VtkModelView(VtkObjectView):
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, params):
         validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
-        id, file_name = params["id"], params["file_name"]
+        data_id = params["id"]
         try:
+            data = self.get_data(data_id)
             reader = vtk.vtkXMLMultiBlockDataReader()
             filter = vtk.vtkGeometryFilter()
             filter.SetInputConnection(reader.GetOutputPort())
@@ -32,23 +33,43 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputConnection(filter.GetOutputPort())
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            self.registerObject(id, file_name, reader, filter, mapper)
-            self.get_object(id)["max_dimension"] = "default"
+
+            file_path = self.get_data_file_path(data_id)
+            reader.SetFileName(file_path)
+
+            actor = vtk.vtkActor()
+            actor.SetMapper(mapper)
+
+            renderer = self.get_renderer()
+            renderer.AddActor(actor)
+
+            self.register_object(data_id, reader, filter, actor, mapper, {})
+            self.get_object(data_id)["max_dimension"] = "default"
+
         except Exception as e:
-            print("error : ", str(e), flush=True)
+            print(f"Error registering model {data_id}: {str(e)}", flush=True)
+            raise
 
     @exportRpc(model_prefix + model_schemas_dict["deregister"]["rpc"])
     def deregisterModel(self, params):
         validate_schema(
             params, self.model_schemas_dict["deregister"], self.model_prefix
         )
-        id = params["id"]
-        self.deregisterObject(id)
+        data_id = params["id"]
+
+        if data_id in self.get_data_base():
+            obj = self.get_object(data_id)
+            if "actor" in obj and obj["actor"]:
+                renderer = self.get_renderer()
+                renderer.RemoveActor(obj["actor"])
+
+        self.deregister_object(data_id)
+        self.render()
 
     @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
     def setModelVisibility(self, params):
         validate_schema(
             params, self.model_schemas_dict["visibility"], self.model_prefix
         )
-        id, visibility = params["id"], params["visibility"]
-        self.SetVisibility(id, visibility)
+        data_id, visibility = params["id"], params["visibility"]
+        self.SetVisibility(data_id, visibility)

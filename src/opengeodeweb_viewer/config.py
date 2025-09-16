@@ -43,7 +43,11 @@ def test_config(path):
     if not os.path.isdir(src_data):
         raise FileNotFoundError(f"Test data folder not found: {src_data}")
 
-    test_ids = ["123456789", "12345678"]
+    test_ids = [
+        "123456789",
+        "12345678",
+    ]  # needs to match IDs in test_data_helpers.py
+    print(f"Creating test data folders in {tmp_data_root}", flush=True)
     valid_exts = {".vtp", ".vti", ".vtu", ".vtm"}
 
     project_uuid = "test-project-uuid"

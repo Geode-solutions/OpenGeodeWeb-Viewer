@@ -22,10 +22,10 @@ class VtkMeshView(VtkObjectView):
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
     def registerMesh(self, params):
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
-        id = params["id"]
+        data_id = params["id"]
         try:
-            self.registerObject(id)
-            reader = self.get_object(id)["reader"]
+            self.registerObject(data_id)
+            reader = self.get_object(data_id)["reader"]
             data_object = reader.GetOutput()
             data_set = vtk.vtkDataSet.SafeDownCast(data_object)
             cell_types = vtk.vtkCellTypes()
@@ -45,63 +45,63 @@ class VtkMeshView(VtkObjectView):
                 max_dimension = "polygons"
             elif max_id >= 7:
                 max_dimension = "polyhedra"
-            self.get_data_base()[id]["max_dimension"] = max_dimension
+            self.get_data_base()[data_id]["max_dimension"] = max_dimension
         except Exception as e:
-            print("error : ", str(e), flush=True)
+            print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
             raise
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params):
         validate_schema(params, self.mesh_schemas_dict["deregister"], self.mesh_prefix)
-        id = params["id"]
-        self.deregisterObject(id)
+        data_id = params["id"]
+        self.deregisterObject(data_id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
     def SetMeshVisibility(self, params):
         validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
-        id, visibility = params["id"], params["visibility"]
-        self.SetVisibility(id, visibility)
+        data_id, visibility = params["id"], params["visibility"]
+        self.SetVisibility(data_id, visibility)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
     def setMeshOpacity(self, params):
         validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
-        id, opacity = params["id"], params["opacity"]
-        self.SetOpacity(id, opacity)
+        data_id, opacity = params["id"], params["opacity"]
+        self.SetOpacity(data_id, opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
     def setMeshColor(self, params):
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
-        id, red, green, blue = (
+        data_id, red, green, blue = (
             params["id"],
             params["color"]["r"],
             params["color"]["g"],
             params["color"]["b"],
         )
-        self.SetColor(id, red, green, blue)
+        self.SetColor(data_id, red, green, blue)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
     def meshApplyTextures(self, params):
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
-        id, textures = params["id"], params["textures"]
-        self.applyTextures(id, textures)
+        data_id, textures = params["id"], params["textures"]
+        self.applyTextures(data_id, textures)
 
-    def displayAttributeOnVertices(self, id, name):
-        reader = self.get_object(id)["reader"]
+    def displayAttributeOnVertices(self, data_id, name):
+        reader = self.get_object(data_id)["reader"]
         points = reader.GetOutput().GetPointData()
         points.SetActiveScalars(name)
-        mapper = self.get_object(id)["mapper"]
+        mapper = self.get_object(data_id)["mapper"]
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetScalarRange(points.GetScalars().GetRange())
         self.render()
 
-    def displayAttributeOnCells(self, id, name):
-        reader = self.get_object(id)["reader"]
+    def displayAttributeOnCells(self, data_id, name):
+        reader = self.get_object(data_id)["reader"]
         cells = reader.GetOutput().GetCellData()
         cells.SetActiveScalars(name)
-        mapper = self.get_object(id)["mapper"]
+        mapper = self.get_object(data_id)["mapper"]
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetScalarRange(cells.GetScalars().GetRange())

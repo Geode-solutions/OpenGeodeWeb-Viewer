@@ -1,49 +1,62 @@
 # Standard library imports
 import os
-import sqlite3
 
 # Third party imports
 import vtk
 from vtk.web import protocols as vtk_protocols
 
 # Local application imports
+from .database.connection import db_manager, Data
 
 
 class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self):
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
-        # self.DATABASE_PATH = os.getenv("DATABASE_PATH")
+        self.DATABASE_PATH = os.getenv("DATABASE_PATH")
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
+
+        if self.DATABASE_PATH and not db_manager._engine:
+            db_manager.initialize(self.DATABASE_PATH)
 
     def get_data_base(self):
         return self.getSharedObject("db")
 
-    def get_db_connection(self):
-        conn = sqlite3.connect(self.DATA_FOLDER_PATH)
-        conn.row_factory = sqlite3.Row
-        return conn
+    def get_data(self, data_id):
+        if Data is None:
+            raise Exception("Data model not available")
 
-    def get_data_by_id(self, data_id):
-        conn = self.get_db_connection()
-        try:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM data WHERE id = ?", (data_id,))
-            data = cursor.fetchone()
-            return dict(data) if data else None
-        finally:
-            conn.close()
+        session = db_manager.get_session()
+        if not session:
+            raise Exception("No database session available")
 
-    def get_all_data(self):
-        conn = self.get_db_connection()
         try:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM data")
-            data = cursor.fetchall()
-            return [dict(row) for row in data]
+            data = session.get(Data, data_id)
+            if not data:
+                raise Exception(f"Data with id {data_id} not found in database")
+
+            return {
+                "id": data.id,
+                "native_file_name": data.native_file_name,
+                "viewable_file_name": data.viewable_file_name,
+                "geode_object": data.geode_object,
+                "light_viewable": data.light_viewable,
+                "input_file": data.input_file,
+                "additional_files": data.additional_files,
+            }
+        except Exception as e:
+            print(f"Error fetching data {data_id}: {e}")
+            raise
         finally:
-            conn.close()
+            session.close()
+
+    def get_data_file_path(self, data_id, filename=None):
+        if filename is None:
+            data = self.get_data(data_id)
+            filename = data["viewable_file_name"]
+
+        return os.path.join(self.DATA_FOLDER_PATH, data_id, filename)
 
     def get_renderer(self):
         return self.getSharedObject("renderer")
@@ -74,4 +87,5 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         }
 
     def deregister_object(self, id):
-        del self.get_data_base()[id]
+        if id in self.get_data_base():
+            del self.get_data_base()[id]

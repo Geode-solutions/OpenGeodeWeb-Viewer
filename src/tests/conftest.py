@@ -164,3 +164,11 @@ def configure_test_environment():
     if tmp_data_path and "ogw_test_data_" in tmp_data_path:
         shutil.rmtree(tmp_data_path, ignore_errors=True)
         print(f"Cleaned up test data folder: {tmp_data_path}", flush=True)
+
+
+@pytest.fixture(autouse=True)
+def clear_test_data():
+    yield
+    from .test_data_helpers import test_data_registry
+
+    test_data_registry.clear()
