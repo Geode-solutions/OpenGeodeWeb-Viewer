@@ -5,6 +5,7 @@ import os
 import vtk
 
 # Local application imports
+from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
@@ -12,12 +13,24 @@ class VtkObjectView(VtkView):
     def __init__(self):
         super().__init__()
 
-    def registerObject(self, id, reader, filter, mapper):
-        data_info = self.get_data_info(id)
-        file_path = self.get_data_file_path(id, data_info.viewable_file_name)
+    def registerObject(self, id):
+        data = self.get_data_by_id(id)
+        if not data:
+            raise Exception(
+                f"Données avec l'ID {id} non trouvées dans la base de données"
+            )
+
+        reader = vtk.vtkXMLGenericDataObjectReader()
+        mapper = vtk.vtkDataSetMapper()
+        mapper.SetInputConnection(reader.GetOutputPort())
         actor = vtk.vtkActor()
-        self.register_object(id, reader, filter, actor, mapper, {})
-        reader.SetFileName(file_path)
+
+        self.register_object(id, reader, {}, actor, mapper, {})
+
+        reader.SetFileName(
+            os.path.join(self.DATA_FOLDER_PATH, id, data["viewable_file_name"])
+        )
+
         actor.SetMapper(mapper)
         mapper.SetColorModeToMapScalars()
         mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
@@ -58,7 +71,9 @@ class VtkObjectView(VtkView):
 
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
-            image_reader.SetFileName(self.get_data_file_path(id, texture_file_name))
+            image_reader.SetFileName(
+                os.path.join(self.DATA_FOLDER_PATH, id, texture_file_name)
+            )
 
             shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"
             polydata_mapper.MapDataArrayToMultiTextureAttribute(

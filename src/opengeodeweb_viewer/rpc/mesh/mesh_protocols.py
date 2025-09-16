@@ -22,14 +22,10 @@ class VtkMeshView(VtkObjectView):
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
     def registerMesh(self, params):
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
-        id, file_name = params["id"], params["file_name"]
+        id = params["id"]
         try:
-            reader = vtk.vtkXMLGenericDataObjectReader()
-            filter = {}
-            mapper = vtk.vtkDataSetMapper()
-            mapper.SetInputConnection(reader.GetOutputPort())
-            self.registerObject(id, file_name, reader, filter, mapper)
-
+            self.registerObject(id)
+            reader = self.get_object(id)["reader"]
             data_object = reader.GetOutput()
             data_set = vtk.vtkDataSet.SafeDownCast(data_object)
             cell_types = vtk.vtkCellTypes()
@@ -52,6 +48,7 @@ class VtkMeshView(VtkObjectView):
             self.get_data_base()[id]["max_dimension"] = max_dimension
         except Exception as e:
             print("error : ", str(e), flush=True)
+            raise
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params):

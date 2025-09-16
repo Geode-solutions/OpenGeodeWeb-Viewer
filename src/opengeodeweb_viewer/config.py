@@ -7,11 +7,15 @@ from sys import platform
 def default_config():
     os.environ["DEFAULT_HOST"] = "localhost"
     os.environ["DEFAULT_PORT"] = "1234"
+    os.environ["DATABASE_PATH"] = os.path.join(
+        os.environ.get("DATA_FOLDER_PATH", "/data/"), "project.db"
+    )
 
 
 def prod_config():
     default_config()
     os.environ["DATA_FOLDER_PATH"] = "/data/"
+    os.environ["DATABASE_PATH"] = os.path.join("/data/", "project.db")
 
 
 def dev_config():
@@ -24,6 +28,9 @@ def dev_config():
         )
     if not os.path.exists(os.environ.get("DATA_FOLDER_PATH")):
         os.mkdir(os.environ.get("DATA_FOLDER_PATH"))
+    os.environ["DATABASE_PATH"] = os.path.join(
+        os.environ.get("DATA_FOLDER_PATH"), "project.db"
+    )
 
 
 def test_config(path):

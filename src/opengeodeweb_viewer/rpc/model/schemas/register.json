@@ -5,10 +5,15 @@
     "id": {
       "type": "string",
       "minLength": 1
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
-    "id"
+    "id",
+    "file_name"
   ],
   "additionalProperties": false
 }
