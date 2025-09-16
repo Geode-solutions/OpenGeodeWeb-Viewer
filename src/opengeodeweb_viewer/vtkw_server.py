@@ -57,20 +57,20 @@ class _Server(vtk_wslink.ServerProtocol):
             default=os.environ.get("DATA_FOLDER_PATH"),
             help="Path to the folder where data is stored",
         )
-        # parser.add_argument(
-        #     "--database_path",
-        #     default=os.environ.get("DATABASE_PATH"),
-        #     help="Path to the SQLite database file",
-        # )
+        parser.add_argument(
+            "--database_path",
+            default=os.environ.get("DATABASE_PATH"),
+            help="Path to the SQLite database file",
+        )
 
     @staticmethod
     def configure(args):
         # Standard args
         _Server.authKey = args.authKey
-        # if args.data_folder_path:
-        #     os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
-        # if args.database_path:
-        #     os.environ["DATABASE_PATH"] = args.database_path
+        if args.data_folder_path:
+            os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
+        if args.database_path:
+            os.environ["DATABASE_PATH"] = args.database_path
 
     def initialize(self):
         # Bring used components

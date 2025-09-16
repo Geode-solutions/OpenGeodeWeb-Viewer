@@ -16,9 +16,7 @@ class VtkObjectView(VtkView):
     def registerObject(self, id):
         data = self.get_data_by_id(id)
         if not data:
-            raise Exception(
-                f"Données avec l'ID {id} non trouvées dans la base de données"
-            )
+            raise Exception(f"Data {id} not found in {self.DATA_FOLDER_PATH}")
 
         reader = vtk.vtkXMLGenericDataObjectReader()
         mapper = vtk.vtkDataSetMapper()
