@@ -7,6 +7,7 @@ from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPoi
 # Local application imports
 # from src.tests.test_data_helpers import create_mesh_data
 
+
 def test_points_visibility(server):
     mesh_id = "123456789"
     server.call(

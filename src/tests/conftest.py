@@ -88,6 +88,7 @@ class ServerMonitor:
         except Exception:
             WebSocketTimeoutException = Exception  # fallback
         import time
+
         self.ws.settimeout(4.0)
         image = None
         deadline = time.time() + 12.0
@@ -101,7 +102,9 @@ class ServerMonitor:
                 break
         if not isinstance(image, bytes):
             return False
-        test_file_path = os.path.abspath(os.path.join(self.test_output_dir, "test.jpeg"))
+        test_file_path = os.path.abspath(
+            os.path.join(self.test_output_dir, "test.jpeg")
+        )
         with open(test_file_path, "wb") as f:
             f.write(image)
         format = "jpeg"
@@ -115,7 +118,9 @@ class ServerMonitor:
             pass
 
         if format != "jpeg":
-            new_path = os.path.abspath(os.path.join(self.test_output_dir, f"test.{format}"))
+            new_path = os.path.abspath(
+                os.path.join(self.test_output_dir, f"test.{format}")
+            )
             os.replace(test_file_path, new_path)
             test_file_path = new_path
 
@@ -319,7 +324,9 @@ def dataset_factory() -> Callable[..., str]:
     base_path = os.path.dirname(__file__)
     src_data = os.path.join(base_path, "data")
     data_root = os.environ.get("DATA_FOLDER_PATH")
-    assert data_root, "DATA_FOLDER_PATH non défini (assurez-vous que test_config a été appelé)"
+    assert (
+        data_root
+    ), "DATA_FOLDER_PATH non défini (assurez-vous que test_config a été appelé)"
 
     def create_dataset(
         *,
@@ -372,7 +379,9 @@ def dataset_factory() -> Callable[..., str]:
                 row.native_file_name = native_file_name or row.native_file_name
                 row.viewable_file_name = viewable_file_name or row.viewable_file_name
                 row.geode_object = geode_object or row.geode_object
-                row.light_viewable = light_viewable if light_viewable is not None else row.light_viewable
+                row.light_viewable = (
+                    light_viewable if light_viewable is not None else row.light_viewable
+                )
                 row.input_file = input_file or row.input_file
                 row.additional_files = additional_files or row.additional_files
         return id
