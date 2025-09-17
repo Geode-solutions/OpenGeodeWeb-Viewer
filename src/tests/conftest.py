@@ -11,6 +11,7 @@ from opengeodeweb_viewer.database.connection import db_manager
 from opengeodeweb_microservice.database.data import Data
 from shutil import copyfile, copytree
 import os
+import time
 from typing import Callable, Optional, List
 from websocket import WebSocketTimeoutException
 
@@ -83,8 +84,7 @@ class ServerMonitor:
 
         return images_diff.GetThresholdedError()
 
-    def compare_image(self, filename):
-        import time
+    def compare_image(self, nb_messages, filename):
 
         self.ws.settimeout(4.0)
         image = None
