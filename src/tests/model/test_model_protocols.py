@@ -46,9 +46,12 @@ def _prepare_dataset(
         session.close()
     return id
 
+
 def test_register_model(server):
 
-    _prepare_dataset(id="123456789", geode_object="model", viewable_file_name="CrossSection.vtm")
+    _prepare_dataset(
+        id="123456789", geode_object="model", viewable_file_name="CrossSection.vtm"
+    )
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
@@ -58,7 +61,9 @@ def test_register_model(server):
 
 def test_register_model_cube(server):
 
-    _prepare_dataset(id="123456789", geode_object="model", viewable_file_name="cube.vtm")
+    _prepare_dataset(
+        id="123456789", geode_object="model", viewable_file_name="cube.vtm"
+    )
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
