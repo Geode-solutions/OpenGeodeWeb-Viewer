@@ -12,6 +12,7 @@ from opengeodeweb_microservice.database.data import Data
 from shutil import copyfile, copytree
 import os
 from typing import Callable, Optional, List
+from websocket import WebSocketTimeoutException
 
 
 class ServerMonitor:
@@ -82,11 +83,7 @@ class ServerMonitor:
 
         return images_diff.GetThresholdedError()
 
-    def compare_image(self, nb_messages, filename):
-        try:
-            from websocket import WebSocketTimeoutException  # type: ignore
-        except Exception:
-            WebSocketTimeoutException = Exception  # fallback
+    def compare_image(self, filename):
         import time
         self.ws.settimeout(4.0)
         image = None
@@ -135,10 +132,6 @@ class ServerMonitor:
         self.call("viewport.image.push.observer.add", [-1])
 
     def _drain_initial_messages(self, max_messages: int = 5, timeout: float = 4.0):
-        try:
-            from websocket import WebSocketTimeoutException  # type: ignore
-        except Exception:
-            WebSocketTimeoutException = Exception
 
         self.ws.settimeout(timeout)
         for _ in range(max_messages):
@@ -190,7 +183,6 @@ def configure_test_environment():
     base_path = os.path.dirname(__file__)
     config.test_config(base_path)
 
-    # init and seed the test database (shared with WS server)
     tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
     assert tmp_data_path, "DATA_FOLDER_PATH must be set by test_config"
     database_path = os.path.join(tmp_data_path, "project.db")
@@ -200,7 +192,6 @@ def configure_test_environment():
     if not ok:
         raise RuntimeError("Failed to initialize test database")
 
-    # Suppression de la seed: chaque test préparera désormais ses propres données
     def _seed_database(session):
         # Seed mesh data: id=123456789 -> hat.vtp
         if session.get(Data, "123456789") is None:
@@ -310,16 +301,10 @@ def configure_test_environment():
 
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
-    """
-    Prépare un dataset pour un test:
-    - copie les fichiers nécessaires dans DATA_FOLDER_PATH/<id>
-    - upsert la ligne correspondante dans la base (table Data)
-    Retourne l'id prêt à l'emploi.
-    """
     base_path = os.path.dirname(__file__)
     src_data = os.path.join(base_path, "data")
     data_root = os.environ.get("DATA_FOLDER_PATH")
-    assert data_root, "DATA_FOLDER_PATH non défini (assurez-vous que test_config a été appelé)"
+    assert data_root, "DATA_FOLDER_PATH undefined"
 
     def create_dataset(
         *,
@@ -343,17 +328,14 @@ def dataset_factory() -> Callable[..., str]:
             else:
                 copyfile(src, dst)
 
-        # Copier fichiers nécessaires
         _copy_asset(viewable_file_name)
         if native_file_name:
-            # Ne pas échouer si le natif est absent, c'est optionnel suivant les tests
             native_src = os.path.join(src_data, native_file_name)
             if os.path.exists(native_src):
                 _copy_asset(native_file_name)
         for fname in additional_files or []:
             _copy_asset(fname)
 
-        # Upsert DB
         with db_manager.session_scope() as session:
             row = session.get(Data, id)
             if row is None:
