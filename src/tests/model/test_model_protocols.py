@@ -1,5 +1,6 @@
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 
+
 def test_register_model(server, dataset_factory):
 
     dataset_factory(id="123456789", viewable_file_name="CrossSection.vtm")

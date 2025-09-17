@@ -6,6 +6,7 @@ from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPoi
 
 # Local application imports
 from src.tests.mesh.test_mesh_protocols import test_register_mesh
+
 # from src.tests.test_data_helpers import create_mesh_data
 
 
