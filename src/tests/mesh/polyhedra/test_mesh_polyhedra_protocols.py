@@ -19,7 +19,6 @@ def test_register_mesh(server):
 
 
 def test_polyhedra_color(server):
-
     test_register_mesh(server)
 
     server.call(
@@ -31,7 +30,6 @@ def test_polyhedra_color(server):
 
 
 def test_polyhedra_visibility(server):
-
     test_register_mesh(server)
 
     server.call(
@@ -43,7 +41,6 @@ def test_polyhedra_visibility(server):
 
 
 def test_vertex_attribute(server):
-
     test_register_mesh(server)
 
     server.call(
@@ -55,7 +52,6 @@ def test_vertex_attribute(server):
 
 
 def test_polyhedron_attribute(server):
-
     test_register_mesh(server)
 
     server.call(

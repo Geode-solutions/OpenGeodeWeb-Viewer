@@ -20,12 +20,6 @@ class VtkModelView(VtkObjectView):
     def __init__(self):
         super().__init__()
 
-    def _resolve_model_file_path(self, data_id: str, params):
-        file_name = params.get("file_name")
-        if file_name:
-            return os.path.join(self.DATA_FOLDER_PATH, data_id, file_name)
-        return self.get_data_file_path(data_id)
-
     def _build_model_pipeline(self, file_path: str):
         reader = vtk.vtkXMLMultiBlockDataReader()
         reader.SetFileName(file_path)
@@ -46,7 +40,8 @@ class VtkModelView(VtkObjectView):
         data_id = params["id"]
         try:
             _ = self.get_data(data_id)
-            file_path = self._resolve_model_file_path(data_id, params)
+            file_path = self.get_data_file_path(data_id)
+
             reader, geometry, mapper, actor = self._build_model_pipeline(file_path)
             renderer = self.get_renderer()
             renderer.AddActor(actor)

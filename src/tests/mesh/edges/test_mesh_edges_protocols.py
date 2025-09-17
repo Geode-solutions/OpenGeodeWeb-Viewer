@@ -9,7 +9,6 @@ from src.tests.mesh.test_mesh_protocols import test_register_mesh
 
 
 def test_edges_visibility(server):
-
     test_register_mesh(server)
 
     server.call(
@@ -21,7 +20,6 @@ def test_edges_visibility(server):
 
 
 def test_edges_color(server):
-
     test_edges_visibility(server)
 
     server.call(
@@ -32,7 +30,8 @@ def test_edges_color(server):
     assert server.compare_image(3, "mesh/edges/color.jpeg") == True
 
 
-def test_edges_with_edged_curve(server):
+def test_edges_with_edged_curve(server, dataset_factory):
+    dataset_factory(id="22334455", viewable_file_name="edged_curve.vtp")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],

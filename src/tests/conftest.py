@@ -9,10 +9,9 @@ from opengeodeweb_viewer import config
 import shutil
 from opengeodeweb_viewer.database.connection import db_manager
 from opengeodeweb_microservice.database.data import Data
-from shutil import copyfile, copytree
-import os
+from shutil import copyfile
 import time
-from typing import Callable, Optional, List
+from typing import Callable
 from websocket import WebSocketTimeoutException
 
 
@@ -198,12 +197,11 @@ def configure_test_environment():
         raise RuntimeError("Failed to initialize test database")
 
     def _seed_database(session):
-        # Seed mesh data: id=123456789 -> hat.vtp
         if session.get(Data, "123456789") is None:
             session.add(
                 Data(
                     id="123456789",
-                    native_file_name="native.vtp",
+                    native_file_name="",
                     viewable_file_name="hat.vtp",
                     geode_object="mesh",
                     light_viewable=None,
@@ -211,12 +209,11 @@ def configure_test_environment():
                     additional_files=[],
                 )
             )
-        # Seed model data: id=12345678 -> CrossSection.vtm
         if session.get(Data, "12345678") is None:
             session.add(
                 Data(
                     id="12345678",
-                    native_file_name="native.vtm",
+                    native_file_name="",
                     viewable_file_name="CrossSection.vtm",
                     geode_object="model",
                     light_viewable=None,
@@ -224,51 +221,11 @@ def configure_test_environment():
                     additional_files=[],
                 )
             )
-        # Seed mesh data: id=44556677 -> points.vtp (tests point set)
-        if session.get(Data, "44556677") is None:
-            session.add(
-                Data(
-                    id="44556677",
-                    native_file_name="native.vtp",
-                    viewable_file_name="points.vtp",
-                    geode_object="mesh",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-        # Seed mesh data: id=22334455 -> edged_curve.vtp (tests edged curve)
-        if session.get(Data, "22334455") is None:
-            session.add(
-                Data(
-                    id="22334455",
-                    native_file_name="native.vtp",
-                    viewable_file_name="edged_curve.vtp",
-                    geode_object="mesh",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-        # Seed mesh data: id=11223344 -> hybrid_solid.vtu (polyèdres)
-        if session.get(Data, "11223344") is None:
-            session.add(
-                Data(
-                    id="11223344",
-                    native_file_name="native.vtu",
-                    viewable_file_name="hybrid_solid.vtu",
-                    geode_object="mesh",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-        # Seed mesh data: id=33445566 -> polygon_attribute.vtp
         if session.get(Data, "33445566") is None:
             session.add(
                 Data(
                     id="33445566",
-                    native_file_name="native.vtp",
+                    native_file_name="",
                     viewable_file_name="polygon_attribute.vtp",
                     geode_object="mesh",
                     light_viewable=None,
@@ -276,13 +233,24 @@ def configure_test_environment():
                     additional_files=[],
                 )
             )
-        # Seed mesh data: id=33445577 -> vertex_attribute.vtp
         if session.get(Data, "33445577") is None:
             session.add(
                 Data(
                     id="33445577",
-                    native_file_name="native.vtp",
+                    native_file_name="",
                     viewable_file_name="vertex_attribute.vtp",
+                    geode_object="mesh",
+                    light_viewable=None,
+                    input_file="",
+                    additional_files=[],
+                )
+            )
+        if session.get(Data, "11223344") is None:
+            session.add(
+                Data(
+                    id="11223344",
+                    native_file_name="",
+                    viewable_file_name="polyhedron_attribute.vtu",
                     geode_object="mesh",
                     light_viewable=None,
                     input_file="",
@@ -311,59 +279,39 @@ def dataset_factory() -> Callable[..., str]:
     data_root = os.environ.get("DATA_FOLDER_PATH")
     assert data_root, "DATA_FOLDER_PATH undefined"
 
-    def create_dataset(
-        *,
-        id: str,
-        geode_object: str,
-        viewable_file_name: str,
-        native_file_name: Optional[str] = None,
-        additional_files: Optional[List[str]] = None,
-        light_viewable: Optional[bool] = None,
-        input_file: Optional[str] = None,
-    ) -> str:
+    def create_dataset(*, id: str, viewable_file_name: str) -> str:
         dest_dir = os.path.join(data_root, id)
         os.makedirs(dest_dir, exist_ok=True)
+        src = os.path.join(src_data, viewable_file_name)
+        dst = os.path.join(dest_dir, viewable_file_name)
+        copyfile(src, dst)
 
-        def _copy_asset(fname: str):
-            src = os.path.join(src_data, fname)
-            dst = os.path.join(dest_dir, fname)
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            if os.path.isdir(src):
-                copytree(src, dst, dirs_exist_ok=True)
-            else:
-                copyfile(src, dst)
+        ext = os.path.splitext(viewable_file_name)[1].lower()
+        geode_object = "model" if ext == ".vtm" else "mesh"
 
-        _copy_asset(viewable_file_name)
-        if native_file_name:
-            native_src = os.path.join(src_data, native_file_name)
-            if os.path.exists(native_src):
-                _copy_asset(native_file_name)
-        for fname in additional_files or []:
-            _copy_asset(fname)
-
-        with db_manager.session_scope() as session:
+        session = db_manager.get_session()
+        if session is None:
+            raise RuntimeError("No database session available")
+        try:
             row = session.get(Data, id)
             if row is None:
                 session.add(
                     Data(
                         id=id,
-                        native_file_name=native_file_name or "",
+                        native_file_name="",
                         viewable_file_name=viewable_file_name,
                         geode_object=geode_object,
-                        light_viewable=light_viewable,
-                        input_file=input_file or "",
-                        additional_files=additional_files or [],
+                        light_viewable=None,
+                        input_file="",
+                        additional_files=[],
                     )
                 )
             else:
-                row.native_file_name = native_file_name or row.native_file_name
-                row.viewable_file_name = viewable_file_name or row.viewable_file_name
-                row.geode_object = geode_object or row.geode_object
-                row.light_viewable = (
-                    light_viewable if light_viewable is not None else row.light_viewable
-                )
-                row.input_file = input_file or row.input_file
-                row.additional_files = additional_files or row.additional_files
+                row.viewable_file_name = viewable_file_name
+                row.geode_object = geode_object
+            session.commit()
+        finally:
+            session.close()
         return id
 
     return create_dataset
