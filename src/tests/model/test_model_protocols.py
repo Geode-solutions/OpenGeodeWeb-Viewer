@@ -5,7 +5,7 @@ def test_register_model(server):
 
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "file_name": "CrossSection.vtm"}],
     )
     assert server.compare_image(3, "model/register.jpeg") == True
 
@@ -14,7 +14,7 @@ def test_register_model_cube(server):
 
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "file_name": "cube.vtm"}],
     )
     assert server.compare_image(3, "model/cube_register.jpeg") == True
 

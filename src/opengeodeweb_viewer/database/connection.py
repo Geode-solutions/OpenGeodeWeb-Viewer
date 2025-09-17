@@ -21,6 +21,7 @@ class DatabaseManager:
 
         try:
             self._engine = create_engine(f"sqlite:///{database_path}", echo=False)
+            Base.metadata.create_all(self._engine)
             self._session_factory = sessionmaker(bind=self._engine)
             self._scoped_session = scoped_session(self._session_factory)
             print(f"Database initialized at: {database_path}")

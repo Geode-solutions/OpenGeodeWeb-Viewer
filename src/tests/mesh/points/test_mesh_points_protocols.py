@@ -5,14 +5,13 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
 
 # Local application imports
-from ...test_data_helpers import create_mesh_data
-
+# from src.tests.test_data_helpers import create_mesh_data
 
 def test_points_visibility(server):
-    mesh_id = create_mesh_data("hat.vtp")
+    mesh_id = "123456789"
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": mesh_id, "file_name": "hat.vtp"}],
+        [{"id": mesh_id}],
     )
     server.compare_image(3, "mesh/register.jpeg")
     server.call(
@@ -24,10 +23,10 @@ def test_points_visibility(server):
 
 
 def test_points_size(server):
-    mesh_id = create_mesh_data("hat.vtp")
+    mesh_id = "123456789"
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": mesh_id, "file_name": "hat.vtp"}],
+        [{"id": mesh_id}],
     )
     server.compare_image(3, "mesh/register.jpeg")
     server.call(
@@ -45,11 +44,11 @@ def test_points_size(server):
 
 
 def test_points_color(server):
-    mesh_id = create_mesh_data("hat.vtp")
+    mesh_id = "123456789"
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": mesh_id, "file_name": "hat.vtp"}],
+        [{"id": mesh_id}],
     )
     server.compare_image(3, "mesh/register.jpeg")
     server.call(
@@ -73,10 +72,10 @@ def test_points_color(server):
 
 
 def test_points_with_point_set(server):
-    mesh_id = create_mesh_data("points.vtp")
+    mesh_id = "44556677"
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": mesh_id, "file_name": "points.vtp"}],
+        [{"id": mesh_id}],
     )
     assert server.compare_image(3, "mesh/points/register_point_set.jpeg") == True
     server.call(

@@ -20,32 +20,43 @@ class VtkModelView(VtkObjectView):
     def __init__(self):
         super().__init__()
 
+    def _resolve_model_file_path(self, data_id: str, params):
+        file_name = params.get("file_name")
+        if file_name:
+            return os.path.join(self.DATA_FOLDER_PATH, data_id, file_name)
+        return self.get_data_file_path(data_id)
+
+    def _build_model_pipeline(self, file_path: str):
+        reader = vtk.vtkXMLMultiBlockDataReader()
+        reader.SetFileName(file_path)
+        geometry = vtk.vtkGeometryFilter()
+        geometry.SetInputConnection(reader.GetOutputPort())
+        mapper = vtk.vtkCompositePolyDataMapper()
+        mapper.SetInputConnection(geometry.GetOutputPort())
+        attributes = vtkCompositeDataDisplayAttributes()
+        mapper.SetCompositeDataDisplayAttributes(attributes)
+        actor = vtk.vtkActor()
+        actor.SetMapper(mapper)
+
+        return reader, geometry, mapper, actor
+
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, params):
         validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
         data_id = params["id"]
         try:
-            data = self.get_data(data_id)
-            reader = vtk.vtkXMLMultiBlockDataReader()
-            filter = vtk.vtkGeometryFilter()
-            filter.SetInputConnection(reader.GetOutputPort())
-            mapper = vtk.vtkCompositePolyDataMapper()
-            mapper.SetInputConnection(filter.GetOutputPort())
-            attributes = vtkCompositeDataDisplayAttributes()
-            mapper.SetCompositeDataDisplayAttributes(attributes)
-
-            file_path = self.get_data_file_path(data_id)
-            reader.SetFileName(file_path)
-
-            actor = vtk.vtkActor()
-            actor.SetMapper(mapper)
-
+            _ = self.get_data(data_id)
+            file_path = self._resolve_model_file_path(data_id, params)
+            reader, geometry, mapper, actor = self._build_model_pipeline(file_path)
             renderer = self.get_renderer()
             renderer.AddActor(actor)
 
-            self.register_object(data_id, reader, filter, actor, mapper, {})
+            self.register_object(data_id, reader, geometry, actor, mapper, {})
             self.get_object(data_id)["max_dimension"] = "default"
-
+            renderWindow = self.getView("-1")
+            renderer.ResetCamera()
+            renderWindow.Render()
+            self.render()
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)
             raise

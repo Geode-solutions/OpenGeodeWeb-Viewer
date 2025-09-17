@@ -181,7 +181,7 @@ def test_grid_scale(server):
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "file_name": "hat.vtp"}],
+        [{"id": "123456789"}],
     )
     assert server.compare_image(3, "viewer/register_hat.jpeg") == True
 
@@ -190,8 +190,14 @@ def test_grid_scale(server):
         + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
-
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
+        [{"z_scale": 2.5}],
+    )
+    assert server.compare_image(3, "viewer/combined_scaling_and_grid.jpeg") == True
 
 
 def test_axes(server):
@@ -263,13 +269,13 @@ def test_set_z_scaling(server):
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "12345678", "file_name": "polygon_attribute.vtp"}],
+        [{"id": "33445566"}],
     )
     assert server.compare_image(3, "viewer/polygon_attribute.jpeg") == True
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "file_name": "vertex_attribute.vtp"}],
+        [{"id": "33445577"}],
     )
     assert server.compare_image(3, "viewer/vertex_and_polygon_attribute.jpeg") == True
 
@@ -298,50 +304,3 @@ def test_set_z_scaling(server):
         [{"z_scale": 2.5}],
     )
     assert server.compare_image(3, "viewer/set_z_scaling.jpeg") == True
-
-
-def test_combined_scaling_and_grid(server):
-    # test_set_z_scaling(server)
-
-    # server.call(
-    #     VtkViewerView.viewer_prefix
-    #     + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
-    #     [{"color": {"r": 180, "g": 180, "b": 180}}],
-    # )
-    # assert server.compare_image(3, "viewer/scaling_and_grid_color.jpeg") == True
-
-    # server.call(
-    #     VtkViewerView.viewer_prefix
-    #     + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
-    #     [{"visibility": True}],
-    # )
-
-    # assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
-    server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
-    )
-
-    assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
-
-    server.call(
-        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "file_name": "hat.vtp"}],
-    )
-    assert server.compare_image(3, "viewer/register_hat.jpeg") == True
-
-    server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
-        [{"visibility": True}],
-    )
-
-    assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
-
-    server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
-        [{"z_scale": 2.5}],
-    )
-
-    assert server.compare_image(3, "viewer/combined_scaling_and_grid.jpeg") == True

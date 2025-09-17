@@ -36,20 +36,20 @@ def test_edges_with_edged_curve(server):
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "file_name": "edged_curve.vtp"}],
+        [{"id": "22334455"}],
     )
     assert server.compare_image(3, "mesh/edges/register_edged_curve.jpeg") == True
 
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["color"]["rpc"],
-        [{"id": "123456789", "color": {"r": 255, "g": 0, "b": 0}}],
+        [{"id": "22334455", "color": {"r": 255, "g": 0, "b": 0}}],
     )
     assert server.compare_image(3, "mesh/edges/edged_curve_color.jpeg") == True
 
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["visibility"]["rpc"],
-        [{"id": "123456789", "visibility": False}],
+        [{"id": "22334455", "visibility": False}],
     )
     assert server.compare_image(3, "mesh/edges/edged_curve_visibility.jpeg") == True
