@@ -24,7 +24,15 @@ def dev_config():
     if not os.path.exists(os.environ.get("DATA_FOLDER_PATH")):
         os.mkdir(os.environ.get("DATA_FOLDER_PATH"))
 
-def _copy_test_assets(src_data: str, tmp_data_root: str, test_ids: list[str], valid_exts: set[str], uploads_directory: str, structure_directory: str):
+
+def _copy_test_assets(
+    src_data: str,
+    tmp_data_root: str,
+    test_ids: list[str],
+    valid_exts: set[str],
+    uploads_directory: str,
+    structure_directory: str,
+):
     for root, directories, files in os.walk(src_data):
         for directory in directories:
             for test_id in test_ids:
@@ -39,6 +47,7 @@ def _copy_test_assets(src_data: str, tmp_data_root: str, test_ids: list[str], va
             copyfile(src, os.path.join(structure_directory, file))
             copyfile(src, os.path.join(uploads_directory, file))
 
+
 def test_config(path):
     default_config()
 
@@ -49,7 +58,15 @@ def test_config(path):
     if not os.path.isdir(src_data):
         raise FileNotFoundError(f"Test data folder not found: {src_data}")
 
-    test_ids = ["123456789", "12345678", "44556677", "22334455", "11223344", "33445566", "33445577"]
+    test_ids = [
+        "123456789",
+        "12345678",
+        "44556677",
+        "22334455",
+        "11223344",
+        "33445566",
+        "33445577",
+    ]
     valid_exts = {".vtp", ".vti", ".vtu", ".vtm"}
 
     project_uuid = "test-project-uuid"
