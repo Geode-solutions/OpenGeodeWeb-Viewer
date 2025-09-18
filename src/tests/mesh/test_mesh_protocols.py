@@ -1,8 +1,17 @@
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 
+from opengeodeweb_microservice.database.data import Data
+
 
 def test_register_mesh(server):
-
+    session = server.get_session()
+    session.add(
+        Data(
+            id="123456789",
+            viewable_file_name="hat.vtp",
+            # geode_object="mesh",
+        )
+    )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],

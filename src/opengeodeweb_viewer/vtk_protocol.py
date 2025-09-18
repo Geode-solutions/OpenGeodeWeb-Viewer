@@ -6,7 +6,8 @@ import vtk
 from vtk.web import protocols as vtk_protocols
 
 # Local application imports
-from .database.connection import db_manager, Data
+from opengeodeweb_microservice.database.connection import init_database, get_session
+from opengeodeweb_microservice.database.data import Data
 
 
 class VtkView(vtk_protocols.vtkWebProtocol):
@@ -17,8 +18,9 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-        if self.DATABASE_PATH and not db_manager._engine:
-            db_manager.initialize(self.DATABASE_PATH)
+        if self.DATABASE_PATH:
+            db_full_path = os.path.join(self.DATABASE_PATH, "project.db")
+            init_database(db_full_path)
 
     def get_data_base(self):
         return self.getSharedObject("db")
@@ -27,7 +29,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         if Data is None:
             raise Exception("Data model not available")
 
-        session = db_manager.get_session()
+        session = get_session()
         if not session:
             raise Exception("No database session available")
 
@@ -48,8 +50,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         except Exception as e:
             print(f"Error fetching data {data_id}: {e}")
             raise
-        finally:
-            session.close()
 
     def get_data_file_path(self, data_id, filename=None):
         if filename is None:

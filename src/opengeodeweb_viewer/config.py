@@ -1,5 +1,4 @@
 import os
-import tempfile
 from shutil import copyfile, copytree
 from sys import platform
 
@@ -19,8 +18,7 @@ def dev_config():
     if platform == "linux":
         os.environ["DATA_FOLDER_PATH"] = "/temp/OpenGeodeWeb_Data/"
     elif platform == "win32":
-        user_home = os.path.expanduser("~")
-        os.environ["DATA_FOLDER_PATH"] = os.path.join(user_home, "OpenGeodeWeb_Data")
+        os.environ["DATA_FOLDER_PATH"] = os.path.join("OpenGeodeWeb_Data")
     if not os.path.exists(os.environ.get("DATA_FOLDER_PATH")):
         os.mkdir(os.environ.get("DATA_FOLDER_PATH"))
 
@@ -50,51 +48,8 @@ def _copy_test_assets(
 
 def test_config(path):
     default_config()
-
-    tmp_data_root = tempfile.mkdtemp(prefix="ogw_test_data_")
-    os.environ["DATA_FOLDER_PATH"] = tmp_data_root
-
-    src_data = os.path.join(path, "data")
-    if not os.path.isdir(src_data):
-        raise FileNotFoundError(f"Test data folder not found: {src_data}")
-
-    test_ids = [
-        "123456789",
-        "12345678",
-        "44556677",
-        "22334455",
-        "11223344",
-        "33445566",
-        "33445577",
-    ]
-    valid_exts = {".vtp", ".vti", ".vtu", ".vtm"}
-
-    project_uuid = "test-project-uuid"
-    data_uuid = "test-data-uuid"
-    uploads_directory = os.path.join(tmp_data_root, project_uuid, "uploads")
-    structure_directory = os.path.join(tmp_data_root, project_uuid, data_uuid)
-
-    for directory in [
-        *test_ids,
-        uploads_directory,
-        structure_directory,
-    ]:
-        os.makedirs(
-            (
-                os.path.join(tmp_data_root, directory)
-                if isinstance(directory, str)
-                else directory
-            ),
-            exist_ok=True,
-        )
-
-    _copy_test_assets(
-        src_data=src_data,
-        tmp_data_root=tmp_data_root,
-        test_ids=test_ids,
-        valid_exts=valid_exts,
-        uploads_directory=uploads_directory,
-        structure_directory=structure_directory,
-    )
-
-    print(f"\nDATA_FOLDER_PATH set to: {tmp_data_root}", flush=True)
+    os.environ["DATA_FOLDER_PATH"] = os.path.join(path, "data")
+    os.environ["DATABASE_PATH"] = str(path)
+    db_file = os.path.join(path, "project.db")
+    if not os.path.exists(db_file):
+        open(db_file, "a").close()

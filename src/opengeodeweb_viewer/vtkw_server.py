@@ -7,6 +7,7 @@ import vtk
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
 from wslink import server
+from opengeodeweb_microservice.database import connection
 
 # Local application imports
 from .config import *
@@ -81,6 +82,10 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(publisher)
         self.setSharedObject("db", dict())
         self.setSharedObject("publisher", publisher)
+        db_path = os.environ.get("DATABASE_PATH")
+        if db_path:
+            db_full_path = os.path.join(db_path, "project.db")
+            connection.init_database(db_full_path)
 
         # Custom API
         mesh_protocols = VtkMeshView()

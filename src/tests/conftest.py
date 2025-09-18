@@ -1,18 +1,19 @@
 import pytest
 from pathlib import Path
-from websocket import create_connection
+from websocket import create_connection, WebSocketTimeoutException
 import json
 from xprocess import ProcessStarter
 import vtk
 import os
-from opengeodeweb_viewer import config
 import shutil
-from opengeodeweb_viewer.database.connection import db_manager
-from opengeodeweb_microservice.database.data import Data
-from shutil import copyfile
 import time
+import os
+from pathlib import Path
+import xml.etree.ElementTree as ET
 from typing import Callable
-from websocket import WebSocketTimeoutException
+from opengeodeweb_viewer import config
+from opengeodeweb_microservice.database.connection import get_session, init_database
+from opengeodeweb_microservice.database.data import Data
 
 
 class ServerMonitor:
@@ -144,6 +145,16 @@ class ServerMonitor:
             except WebSocketTimeoutException:
                 break
 
+    def print_log(self):
+        output = ""
+        with open(self.log) as f:
+            for line in f:
+                if "@@__xproc_block_delimiter__@@" in line:
+                    output = ""
+                    continue
+                output += line
+        print(output)
+
 
 class FixtureHelper:
     def __init__(self, root_path):
@@ -184,86 +195,11 @@ def server(xprocess):
 
 @pytest.fixture(scope="session", autouse=True)
 def configure_test_environment():
-    base_path = os.path.dirname(__file__)
+    base_path = Path(__file__).parent
     config.test_config(base_path)
-
-    tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
-    assert tmp_data_path, "DATA_FOLDER_PATH must be set by test_config"
-    database_path = os.path.join(tmp_data_path, "project.db")
-    os.environ["DATABASE_PATH"] = database_path
-
-    ok = db_manager.initialize(database_path)
-    if not ok:
-        raise RuntimeError("Failed to initialize test database")
-
-    def _seed_database(session):
-        if session.get(Data, "123456789") is None:
-            session.add(
-                Data(
-                    id="123456789",
-                    native_file_name="",
-                    viewable_file_name="hat.vtp",
-                    geode_object="mesh",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-        if session.get(Data, "12345678") is None:
-            session.add(
-                Data(
-                    id="12345678",
-                    native_file_name="",
-                    viewable_file_name="CrossSection.vtm",
-                    geode_object="model",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-        if session.get(Data, "33445566") is None:
-            session.add(
-                Data(
-                    id="33445566",
-                    native_file_name="",
-                    viewable_file_name="polygon_attribute.vtp",
-                    geode_object="mesh",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-        if session.get(Data, "33445577") is None:
-            session.add(
-                Data(
-                    id="33445577",
-                    native_file_name="",
-                    viewable_file_name="vertex_attribute.vtp",
-                    geode_object="mesh",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-        if session.get(Data, "11223344") is None:
-            session.add(
-                Data(
-                    id="11223344",
-                    native_file_name="",
-                    viewable_file_name="polyhedron_attribute.vtu",
-                    geode_object="mesh",
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
-                )
-            )
-
-    session = db_manager.get_session()
-    try:
-        _seed_database(session)
-        session.commit()
-    finally:
-        session.close()
+    db_path = base_path / "project.db"
+    init_database(db_path=str(db_path))
+    os.environ["TEST_DB_PATH"] = str(db_path)
 
     yield
     tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
@@ -274,44 +210,54 @@ def configure_test_environment():
 
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
-    base_path = os.path.dirname(__file__)
-    src_data = os.path.join(base_path, "data")
-    data_root = os.environ.get("DATA_FOLDER_PATH")
-    assert data_root, "DATA_FOLDER_PATH undefined"
 
-    def create_dataset(*, id: str, viewable_file_name: str) -> str:
-        dest_dir = os.path.join(data_root, id)
-        os.makedirs(dest_dir, exist_ok=True)
-        src = os.path.join(src_data, viewable_file_name)
-        dst = os.path.join(dest_dir, viewable_file_name)
-        copyfile(src, dst)
+    def create_dataset(
+        *, id: str, viewable_file_name: str, geode_object: str = None
+    ) -> str:
+        session = get_session()
+        if geode_object is None:
+            geode_object = (
+                "model" if viewable_file_name.lower().endswith(".vtm") else "mesh"
+            )
 
-        ext = os.path.splitext(viewable_file_name)[1].lower()
-        geode_object = "model" if ext == ".vtm" else "mesh"
-
-        session = db_manager.get_session()
-        if session is None:
-            raise RuntimeError("No database session available")
-        try:
-            row = session.get(Data, id)
-            if row is None:
-                session.add(
-                    Data(
-                        id=id,
-                        native_file_name="",
-                        viewable_file_name=viewable_file_name,
-                        geode_object=geode_object,
-                        light_viewable=None,
-                        input_file="",
-                        additional_files=[],
-                    )
+        row = session.get(Data, id)
+        if row is None:
+            session.add(
+                Data(
+                    id=id,
+                    native_file_name="",
+                    viewable_file_name=viewable_file_name,
+                    geode_object=geode_object,
+                    light_viewable=None,
+                    input_file="",
+                    additional_files=[],
                 )
-            else:
-                row.viewable_file_name = viewable_file_name
-                row.geode_object = geode_object
-            session.commit()
-        finally:
-            session.close()
+            )
+        else:
+            row.viewable_file_name = viewable_file_name
+            row.geode_object = geode_object
+        session.commit()
+
+        data_folder = Path(os.environ["DATA_FOLDER_PATH"]) / id
+        data_folder.mkdir(parents=True, exist_ok=True)
+
+        src_path = Path(__file__).parent / "data" / viewable_file_name
+        dst_path = data_folder / viewable_file_name
+        if not dst_path.exists() or dst_path.resolve() != src_path.resolve():
+            shutil.copy(src_path, dst_path)
+
+        if dst_path.suffix.lower() == ".vtm":
+            tree = ET.parse(dst_path)
+            root = tree.getroot()
+            for piece in root.findall(".//Piece"):
+                file_attr = piece.get("Source")
+                if file_attr:
+                    src_piece = src_path.parent / file_attr
+                    dst_piece = data_folder / file_attr
+                    dst_piece.parent.mkdir(parents=True, exist_ok=True)
+                    if src_piece.exists():
+                        shutil.copy(src_piece, dst_piece)
+
         return id
 
     return create_dataset
