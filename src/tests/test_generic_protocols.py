@@ -42,6 +42,6 @@ def test_deregister_model(server, dataset_factory):
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
-        [{"viewer_object": "model", "id": "12345678"}],
+        [{"viewer_object": "model", "id": "123456789"}],
     )
     assert server.compare_image(3, "model/deregister.jpeg") == True

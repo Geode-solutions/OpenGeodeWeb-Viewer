@@ -1,6 +1,7 @@
 import os
 from shutil import copyfile, copytree
 from sys import platform
+import tempfile
 
 
 def default_config():
@@ -48,7 +49,9 @@ def _copy_test_assets(
 
 def test_config(path):
     default_config()
-    os.environ["DATA_FOLDER_PATH"] = os.path.join(path, "data")
+    tmp_data_root = tempfile.mkdtemp(prefix="ogw_test_data_")
+    os.environ["DATA_FOLDER_PATH"] = tmp_data_root
+
     os.environ["DATABASE_PATH"] = str(path)
     db_file = os.path.join(path, "project.db")
     if not os.path.exists(db_file):

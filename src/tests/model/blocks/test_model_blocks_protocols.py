@@ -9,9 +9,9 @@ from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
 from src.tests.model.test_model_protocols import test_register_model_cube
 
 
-def test_blocks_polyhedra_visibility(server):
+def test_blocks_polyhedra_visibility(server, dataset_factory):
 
-    test_register_model_cube(server)
+    test_register_model_cube(server, dataset_factory)
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
@@ -42,9 +42,9 @@ def test_blocks_polyhedra_visibility(server):
     assert server.compare_image(3, "model/blocks/visibility.jpeg") == True
 
 
-def test_blocks_polyhedra_color(server):
+def test_blocks_polyhedra_color(server, dataset_factory):
 
-    test_blocks_polyhedra_visibility(server)
+    test_blocks_polyhedra_visibility(server, dataset_factory)
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix

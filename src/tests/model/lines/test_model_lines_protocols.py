@@ -9,9 +9,9 @@ from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
 from src.tests.model.test_model_protocols import test_register_model_cube
 
 
-def test_lines_edges_visibility(server):
+def test_lines_edges_visibility(server, dataset_factory):
 
-    test_register_model_cube(server)
+    test_register_model_cube(server, dataset_factory)
 
     server.call(
         VtkModelLinesView.model_lines_prefix
@@ -40,9 +40,9 @@ def test_lines_edges_visibility(server):
     assert server.compare_image(3, "model/lines/visibility.jpeg") == True
 
 
-def test_lines_edges_color(server):
+def test_lines_edges_color(server, dataset_factory):
 
-    test_lines_edges_visibility(server)
+    test_lines_edges_visibility(server, dataset_factory)
 
     server.call(
         VtkModelLinesView.model_lines_prefix

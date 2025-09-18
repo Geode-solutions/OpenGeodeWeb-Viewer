@@ -24,8 +24,29 @@ class VtkMeshView(VtkObjectView):
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
         data_id = params["id"]
         try:
-            self.registerObject(data_id)
-            reader = self.get_object(data_id)["reader"]
+            _ = self.get_data(data_id)
+            file_path = self.get_data_file_path(data_id)
+            ext = os.path.splitext(file_path)[1].lower()
+            if ext == ".vtu":
+                reader = vtk.vtkXMLUnstructuredGridReader()
+                reader.SetFileName(file_path)
+                mapper = vtk.vtkDataSetMapper()
+                mapper.SetInputConnection(reader.GetOutputPort())
+            else:
+                reader = vtk.vtkXMLPolyDataReader()
+                reader.SetFileName(file_path)
+                mapper = vtk.vtkPolyDataMapper()
+                mapper.SetInputConnection(reader.GetOutputPort())
+            
+            actor = vtk.vtkActor()
+            actor.SetMapper(mapper)
+            
+            renderer = self.get_renderer()
+            renderer.AddActor(actor)
+            
+            self.register_object(data_id, reader, None, actor, mapper, {})
+            
+            reader.Update()
             data_object = reader.GetOutput()
             data_set = vtk.vtkDataSet.SafeDownCast(data_object)
             cell_types = vtk.vtkCellTypes()
@@ -45,7 +66,12 @@ class VtkMeshView(VtkObjectView):
                 max_dimension = "polygons"
             elif max_id >= 7:
                 max_dimension = "polyhedra"
-            self.get_data_base()[data_id]["max_dimension"] = max_dimension
+            self.get_object(data_id)["max_dimension"] = max_dimension
+            
+            renderWindow = self.getView("-1")
+            renderer.ResetCamera()
+            renderWindow.Render()
+            self.render()
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
             raise

@@ -10,9 +10,9 @@ from src.tests.mesh.test_mesh_protocols import test_register_mesh
 # from src.tests.test_data_helpers import create_mesh_data
 
 
-def test_points_visibility(server):
+def test_points_visibility(server, dataset_factory):
     mesh_id = "123456789"
-    test_register_mesh(server)
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix
@@ -22,9 +22,9 @@ def test_points_visibility(server):
     assert server.compare_image(3, "mesh/points/visibility.jpeg") == True
 
 
-def test_points_size(server):
+def test_points_size(server, dataset_factory):
     mesh_id = "123456789"
-    test_points_visibility(server)
+    test_points_visibility(server, dataset_factory)
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix
@@ -34,9 +34,9 @@ def test_points_size(server):
     assert server.compare_image(3, "mesh/points/size.jpeg") == True
 
 
-def test_points_color(server):
+def test_points_color(server, dataset_factory):
     mesh_id = "123456789"
-    test_points_size(server)
+    test_points_size(server, dataset_factory)
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix

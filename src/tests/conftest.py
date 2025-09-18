@@ -70,7 +70,7 @@ class ServerMonitor:
             return vtk.vtkJPEGReader()
         return vtk.vtkJPEGReader()
 
-    def images_diff(self, first_image_path, second_image_path):
+    def images_diff(self, first_image_path, second_image_path, tolerance: float = 0.0):
         first_reader = self._reader_for_file(first_image_path)
         first_reader.SetFileName(first_image_path)
 
@@ -82,9 +82,11 @@ class ServerMonitor:
         images_diff.SetImageConnection(second_reader.GetOutputPort())
         images_diff.Update()
 
-        return images_diff.GetThresholdedError()
+        error = images_diff.GetThresholdedError()
+        print(f"Image comparison error for {second_image_path}: {error} (tolerance: {tolerance})", flush=True)
+        return error <= tolerance
 
-    def compare_image(self, nb_messages, filename):
+    def compare_image(self, nb_messages, filename, tolerance=0.0):
 
         self.ws.settimeout(4.0)
         image = None
@@ -97,7 +99,7 @@ class ServerMonitor:
             if isinstance(msg, bytes):
                 image = msg
                 break
-        if not isinstance(image, bytes):
+        if not isinstance(msg, bytes):
             return False
         test_file_path = os.path.abspath(
             os.path.join(self.test_output_dir, "test.jpeg")
@@ -122,7 +124,7 @@ class ServerMonitor:
             test_file_path = new_path
 
         path_image = os.path.join(self.images_dir_path, filename)
-        return self.images_diff(test_file_path, path_image) == 0.0
+        return self.images_diff(test_file_path, path_image, tolerance)
 
     def _init_ws(self):
         self.ws.send(
@@ -249,8 +251,8 @@ def dataset_factory() -> Callable[..., str]:
         if dst_path.suffix.lower() == ".vtm":
             tree = ET.parse(dst_path)
             root = tree.getroot()
-            for piece in root.findall(".//Piece"):
-                file_attr = piece.get("Source")
+            for dataset in root.findall(".//DataSet"):
+                file_attr = dataset.get("file")
                 if file_attr:
                     src_piece = src_path.parent / file_attr
                     dst_piece = data_folder / file_attr

@@ -9,7 +9,8 @@ from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
 # Local application imports
 
 
-def test_register_mesh(server):
+def test_register_mesh(server, dataset_factory):
+    dataset_factory(id="11223344", viewable_file_name="polyhedron_attribute.vtu")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -18,8 +19,8 @@ def test_register_mesh(server):
     assert server.compare_image(3, "mesh/polyhedra/register.jpeg") == True
 
 
-def test_polyhedra_color(server):
-    test_register_mesh(server)
+def test_polyhedra_color(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix
@@ -29,8 +30,8 @@ def test_polyhedra_color(server):
     assert server.compare_image(3, "mesh/polyhedra/color.jpeg") == True
 
 
-def test_polyhedra_visibility(server):
-    test_register_mesh(server)
+def test_polyhedra_visibility(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix
@@ -40,8 +41,8 @@ def test_polyhedra_visibility(server):
     assert server.compare_image(3, "mesh/polyhedra/visibility.jpeg") == True
 
 
-def test_vertex_attribute(server):
-    test_register_mesh(server)
+def test_vertex_attribute(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix
@@ -51,8 +52,8 @@ def test_vertex_attribute(server):
     assert server.compare_image(3, "mesh/polyhedra/vertex_attribute.jpeg") == True
 
 
-def test_polyhedron_attribute(server):
-    test_register_mesh(server)
+def test_polyhedron_attribute(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix

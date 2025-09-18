@@ -7,9 +7,9 @@ from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPoly
 from src.tests.mesh.test_mesh_protocols import test_register_mesh
 
 
-def test_polygons_color(server):
+def test_polygons_color(server, dataset_factory):
 
-    test_register_mesh(server)
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshPolygonsView.mesh_polygons_prefix
@@ -19,9 +19,9 @@ def test_polygons_color(server):
     assert server.compare_image(3, "mesh/polygons/color.jpeg") == True
 
 
-def test_polygons_visibility(server):
+def test_polygons_visibility(server, dataset_factory):
 
-    test_register_mesh(server)
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshPolygonsView.mesh_polygons_prefix

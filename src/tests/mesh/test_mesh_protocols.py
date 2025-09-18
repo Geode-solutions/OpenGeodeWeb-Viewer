@@ -3,15 +3,9 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_microservice.database.data import Data
 
 
-def test_register_mesh(server):
-    session = server.get_session()
-    session.add(
-        Data(
-            id="123456789",
-            viewable_file_name="hat.vtp",
-            # geode_object="mesh",
-        )
-    )
+def test_register_mesh(server, dataset_factory):
+    dataset_factory(id="123456789", viewable_file_name="hat.vtp")
+    
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
@@ -19,10 +13,14 @@ def test_register_mesh(server):
     assert server.compare_image(3, "mesh/register.jpeg") == True
 
 
-def test_deregister_mesh(server):
-
-    test_register_mesh(server)
-
+def test_deregister_mesh(server, dataset_factory):
+    dataset_factory(id="123456789", viewable_file_name="hat.vtp")
+    
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "123456789"}],
+    )
+    
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["deregister"]["rpc"],
         [{"id": "123456789"}],
@@ -30,9 +28,8 @@ def test_deregister_mesh(server):
     assert server.compare_image(3, "mesh/deregister.jpeg") == True
 
 
-def test_opacity(server):
-
-    test_register_mesh(server)
+def test_opacity(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["opacity"]["rpc"],
@@ -41,9 +38,8 @@ def test_opacity(server):
     assert server.compare_image(3, "mesh/opacity.jpeg") == True
 
 
-def test_visibility(server):
-
-    test_register_mesh(server)
+def test_visibility(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["visibility"]["rpc"],
@@ -52,9 +48,8 @@ def test_visibility(server):
     assert server.compare_image(3, "mesh/visibility.jpeg") == True
 
 
-def test_color(server):
-
-    test_register_mesh(server)
+def test_color(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"],
@@ -63,9 +58,8 @@ def test_color(server):
     assert server.compare_image(3, "mesh/color.jpeg") == True
 
 
-def test_apply_textures(server):
-
-    test_register_mesh(server)
+def test_apply_textures(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshView.mesh_prefix

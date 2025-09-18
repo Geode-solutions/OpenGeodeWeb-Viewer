@@ -8,8 +8,8 @@ from src.opengeodeweb_viewer.rpc.mesh.edges.mesh_edges_protocols import VtkMeshE
 from src.tests.mesh.test_mesh_protocols import test_register_mesh
 
 
-def test_edges_visibility(server):
-    test_register_mesh(server)
+def test_edges_visibility(server, dataset_factory):
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
@@ -19,8 +19,8 @@ def test_edges_visibility(server):
     assert server.compare_image(3, "mesh/edges/visibility.jpeg") == True
 
 
-def test_edges_color(server):
-    test_edges_visibility(server)
+def test_edges_color(server, dataset_factory):
+    test_edges_visibility(server, dataset_factory)
 
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
