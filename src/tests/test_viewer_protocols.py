@@ -319,32 +319,24 @@ def test_combined_scaling_and_grid(server, dataset_factory):
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
-
     assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
-
     dataset_factory(id="123456789", viewable_file_name="hat.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    # Get response to ensure registration was successful
     response = server.get_response()
     print(f"combined_scaling register response: {response}", flush=True)
-    
     assert server.compare_image(3, "viewer/register_hat.jpeg") == True
-
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
-
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
-
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
         [{"z_scale": 2.5}],
     )
-
     assert server.compare_image(3, "viewer/combined_scaling_and_grid.jpeg") == True
