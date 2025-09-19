@@ -10,11 +10,11 @@ from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
 
 
 def test_register_mesh(server, dataset_factory):
-    dataset_factory(id="11223344", viewable_file_name="polyhedron_attribute.vtu")
+    dataset_factory(id="123456789", viewable_file_name="polyhedron_attribute.vtu")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "11223344"}],
+        [{"id": "123456789"}],
     )
     assert server.compare_image(3, "mesh/polyhedra/register.jpeg") == True
 
@@ -25,7 +25,7 @@ def test_polyhedra_color(server, dataset_factory):
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix
         + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["color"]["rpc"],
-        [{"id": "11223344", "color": {"r": 255, "g": 0, "b": 0}}],
+        [{"id": "123456789", "color": {"r": 255, "g": 0, "b": 0}}],
     )
     assert server.compare_image(3, "mesh/polyhedra/color.jpeg") == True
 
@@ -36,7 +36,7 @@ def test_polyhedra_visibility(server, dataset_factory):
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix
         + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["visibility"]["rpc"],
-        [{"id": "11223344", "visibility": False}],
+        [{"id": "123456789", "visibility": False}],
     )
     assert server.compare_image(3, "mesh/polyhedra/visibility.jpeg") == True
 
@@ -47,7 +47,7 @@ def test_vertex_attribute(server, dataset_factory):
     server.call(
         VtkMeshPolyhedraView.mesh_polyhedra_prefix
         + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_attribute"]["rpc"],
-        [{"id": "11223344", "name": "toto_on_vertices"}],
+        [{"id": "123456789", "name": "toto_on_vertices"}],
     )
     assert server.compare_image(3, "mesh/polyhedra/vertex_attribute.jpeg") == True
 
@@ -60,6 +60,6 @@ def test_polyhedron_attribute(server, dataset_factory):
         + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["polyhedron_attribute"][
             "rpc"
         ],
-        [{"id": "11223344", "name": "toto_on_polyhedra"}],
+        [{"id": "123456789", "name": "toto_on_polyhedra"}],
     )
     assert server.compare_image(3, "mesh/polyhedra/polyhedron_attribute.jpeg") == True

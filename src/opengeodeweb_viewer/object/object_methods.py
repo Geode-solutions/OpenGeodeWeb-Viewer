@@ -52,14 +52,12 @@ class VtkObjectView(VtkView):
 
         for index, value in enumerate(textures):
             texture_name = value["texture_name"]
-            texture_file_name = value["texture_file_name"]
-            print(f"{texture_name=} {texture_file_name=}", flush=True)
+            id_texture = value["id"]
+            print(f"{texture_name=} {id_texture=}", flush=True)
 
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
-            texture_path = os.path.join(
-                self.DATA_FOLDER_PATH, data_id, texture_file_name
-            )
+            texture_path = os.path.join(self.DATA_FOLDER_PATH, data_id, id_texture)
             image_reader.SetFileName(texture_path)
 
             shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"

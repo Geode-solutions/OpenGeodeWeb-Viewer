@@ -66,7 +66,7 @@ def test_apply_textures(server, dataset_factory):
                 "textures": [
                     {
                         "texture_name": "lambert2SG",
-                        "texture_file_name": "hat_lambert2SG.vti",
+                        "id": "987654321",
                     }
                 ],
             }
