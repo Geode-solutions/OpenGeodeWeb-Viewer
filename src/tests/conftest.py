@@ -195,10 +195,10 @@ def configure_test_environment():
     os.environ["TEST_DB_PATH"] = str(db_path)
 
     yield
-    # tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
-    # if tmp_data_path and "ogw_test_data_" in tmp_data_path:
-    #     shutil.rmtree(tmp_data_path, ignore_errors=True)
-    #     print(f"Cleaned up test data folder: {tmp_data_path}", flush=True)
+    tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
+    if tmp_data_path and "ogw_test_data_" in tmp_data_path:
+        shutil.rmtree(tmp_data_path, ignore_errors=True)
+        print(f"Cleaned up test data folder: {tmp_data_path}", flush=True)
 
 
 @pytest.fixture
