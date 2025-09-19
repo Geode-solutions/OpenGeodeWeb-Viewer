@@ -56,6 +56,11 @@ def test_color(server, dataset_factory):
 
 def test_apply_textures(server, dataset_factory):
     test_register_mesh(server, dataset_factory)
+    texture_entry = dataset_factory(
+        id="987654321",
+        viewable_file_name="hat_lambert2SG.vti",
+        geode_object="RasterImage2D",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix

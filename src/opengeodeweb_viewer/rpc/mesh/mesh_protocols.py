@@ -4,6 +4,7 @@ import os
 # Third party imports
 import vtk
 from wslink import register as exportRpc
+from opengeodeweb_microservice.database.data import Data
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
@@ -37,15 +38,15 @@ class VtkMeshView(VtkObjectView):
                 reader.SetFileName(file_path)
                 mapper = vtk.vtkPolyDataMapper()
                 mapper.SetInputConnection(reader.GetOutputPort())
-            
+
             actor = vtk.vtkActor()
             actor.SetMapper(mapper)
-            
+
             renderer = self.get_renderer()
             renderer.AddActor(actor)
-            
+
             self.register_object(data_id, reader, None, actor, mapper, {})
-            
+
             reader.Update()
             data_object = reader.GetOutput()
             data_set = vtk.vtkDataSet.SafeDownCast(data_object)
@@ -67,7 +68,7 @@ class VtkMeshView(VtkObjectView):
             elif max_id >= 7:
                 max_dimension = "polyhedra"
             self.get_object(data_id)["max_dimension"] = max_dimension
-            
+
             renderWindow = self.getView("-1")
             renderer.ResetCamera()
             renderWindow.Render()
@@ -110,8 +111,25 @@ class VtkMeshView(VtkObjectView):
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
-        data_id, textures = params["id"], params["textures"]
-        self.applyTextures(data_id, textures)
+        data_id, textures_info = params["id"], params["textures"]
+        textures_data = []
+        for tex_info in textures_info:
+            texture_id = tex_info["id"]
+            texture_name = tex_info["texture_name"]
+            texture_data = Data.get(texture_id)
+            if texture_data and texture_data.geode_object == "RasterImage2D":
+                textures_data.append(
+                    {"texture_name": texture_name, "texture_data": texture_data}
+                )
+        self.applyTextures(data_id, textures_data)
+
+    def applyTextures(self, mesh_id: str, textures_data: list):
+        for tex_info in textures_data:
+            texture_name = tex_info["texture_name"]
+            texture_data = tex_info["texture_data"]
+            self.apply_single_texture(
+                mesh_id, texture_data.viewable_file_name, texture_name
+            )
 
     def displayAttributeOnVertices(self, data_id, name):
         reader = self.get_object(data_id)["reader"]

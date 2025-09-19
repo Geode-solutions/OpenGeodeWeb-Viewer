@@ -22,7 +22,7 @@
         },
         "required": [
           "texture_name",
-          "texture_file_name"
+          "id"
         ],
         "additionalProperties": false
       },
