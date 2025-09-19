@@ -138,16 +138,6 @@ class ServerMonitor:
             except WebSocketTimeoutException:
                 break
 
-    def print_log(self):
-        output = ""
-        with open(self.log) as f:
-            for line in f:
-                if "@@__xproc_block_delimiter__@@" in line:
-                    output = ""
-                    continue
-                output += line
-        print(output)
-
 
 class FixtureHelper:
     def __init__(self, root_path):
