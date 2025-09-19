@@ -93,7 +93,7 @@ def test_take_screenshot(server, dataset_factory):
         server.images_dir_path, "viewer/take_screenshot_with_background.jpg"
     )
 
-    assert server.images_diff(first_image_path, second_image_path) == True
+    assert server.images_diff(first_image_path, second_image_path) == 0.0
 
     # Take a screenshot without background png
     server.call(
@@ -122,7 +122,7 @@ def test_take_screenshot(server, dataset_factory):
         server.images_dir_path, "viewer/take_screenshot_without_background.png"
     )
 
-    assert server.images_diff(first_image_path, second_image_path) == True
+    assert server.images_diff(first_image_path, second_image_path) == 0.0
 
     # Take a screenshot with background png
     server.call(
@@ -151,7 +151,7 @@ def test_take_screenshot(server, dataset_factory):
         server.images_dir_path, "viewer/take_screenshot_with_background.png"
     )
 
-    assert server.images_diff(first_image_path, second_image_path) == True
+    assert server.images_diff(first_image_path, second_image_path) == 0.0
 
 
 def test_picked_ids(server, dataset_factory):
@@ -183,18 +183,17 @@ def test_picked_ids(server, dataset_factory):
 
 
 def test_grid_scale(server, dataset_factory):
+    data_id = "123456789"
+    dataset_factory(id=data_id, viewable_file_name="hat.vtp")
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
     assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
-    dataset_factory(id="123456789", viewable_file_name="hat.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": data_id}],
     )
-    response = server.get_response()
-    print(f"grid_scale register response: {response}", flush=True)
     assert server.compare_image(3, "viewer/register_hat.jpeg") == True
 
     server.call(
@@ -271,22 +270,19 @@ def test_render_now(server, dataset_factory):
 
 
 def test_set_z_scaling(server, dataset_factory):
+    dataset_factory(id="123456789", viewable_file_name="polygon_attribute.vtp")
 
-    dataset_factory(id="12345678", viewable_file_name="polygon_attribute.vtp")
-    server.call(
-        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "12345678"}],
-    )
-    response = server.get_response()
-    print(f"set_z_scaling register response (12345678): {response}", flush=True)
-    assert server.compare_image(3, "viewer/polygon_attribute.jpeg") == True
-    dataset_factory(id="123456789", viewable_file_name="vertex_attribute.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    response = server.get_response()
-    print(f"set_z_scaling register response (123456789): {response}", flush=True)
+    assert server.compare_image(3, "viewer/polygon_attribute.jpeg") == True
+
+    dataset_factory(id="987654321", viewable_file_name="vertex_attribute.vtp")
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "987654321"}],
+    )
     assert server.compare_image(3, "viewer/vertex_and_polygon_attribute.jpeg") == True
 
     camera_options = {
@@ -327,8 +323,6 @@ def test_combined_scaling_and_grid(server, dataset_factory):
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    response = server.get_response()
-    print(f"combined_scaling register response: {response}", flush=True)
     assert server.compare_image(3, "viewer/register_hat.jpeg") == True
     server.call(
         VtkViewerView.viewer_prefix
