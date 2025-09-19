@@ -93,7 +93,7 @@ def test_take_screenshot(server, dataset_factory):
         server.images_dir_path, "viewer/take_screenshot_with_background.jpg"
     )
 
-    assert server.images_diff(first_image_path, second_image_path) == 0.0
+    assert server.images_diff(first_image_path, second_image_path) == True
 
     # Take a screenshot without background png
     server.call(
@@ -122,7 +122,7 @@ def test_take_screenshot(server, dataset_factory):
         server.images_dir_path, "viewer/take_screenshot_without_background.png"
     )
 
-    assert server.images_diff(first_image_path, second_image_path) == 0.0
+    assert server.images_diff(first_image_path, second_image_path) == True
 
     # Take a screenshot with background png
     server.call(
@@ -151,7 +151,7 @@ def test_take_screenshot(server, dataset_factory):
         server.images_dir_path, "viewer/take_screenshot_with_background.png"
     )
 
-    assert server.images_diff(first_image_path, second_image_path) == 0.0
+    assert server.images_diff(first_image_path, second_image_path) == True
 
 
 def test_picked_ids(server, dataset_factory):
@@ -169,7 +169,9 @@ def test_picked_ids(server, dataset_factory):
         print("Warning: picked_ids returned None response", flush=True)
         return
     if "result" not in response:
-        print(f"Warning: No 'result' key in picked_ids response: {response}", flush=True)
+        print(
+            f"Warning: No 'result' key in picked_ids response: {response}", flush=True
+        )
         return
     result = response["result"]
     if result is None:

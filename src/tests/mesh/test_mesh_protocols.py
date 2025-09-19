@@ -5,7 +5,7 @@ from opengeodeweb_microservice.database.data import Data
 
 def test_register_mesh(server, dataset_factory):
     dataset_factory(id="123456789", viewable_file_name="hat.vtp")
-    
+
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
@@ -15,12 +15,12 @@ def test_register_mesh(server, dataset_factory):
 
 def test_deregister_mesh(server, dataset_factory):
     dataset_factory(id="123456789", viewable_file_name="hat.vtp")
-    
+
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    
+
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["deregister"]["rpc"],
         [{"id": "123456789"}],

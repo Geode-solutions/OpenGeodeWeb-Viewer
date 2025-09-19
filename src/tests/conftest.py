@@ -70,11 +70,17 @@ class ServerMonitor:
             return vtk.vtkJPEGReader()
         return vtk.vtkJPEGReader()
 
-    def images_diff(self, first_image_path, second_image_path, tolerance: float = 0.0):
-        first_reader = self._reader_for_file(first_image_path)
+    def images_diff(self, first_image_path, second_image_path):
+        if ".png" in first_image_path:
+            first_reader = vtk.vtkPNGReader()
+        elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
+            first_reader = vtk.vtkJPEGReader()
         first_reader.SetFileName(first_image_path)
 
-        second_reader = self._reader_for_file(second_image_path)
+        if ".png" in second_image_path:
+            second_reader = vtk.vtkPNGReader()
+        elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
+            second_reader = vtk.vtkJPEGReader()
         second_reader.SetFileName(second_image_path)
 
         images_diff = vtk.vtkImageDifference()
@@ -82,49 +88,34 @@ class ServerMonitor:
         images_diff.SetImageConnection(second_reader.GetOutputPort())
         images_diff.Update()
 
-        error = images_diff.GetThresholdedError()
-        print(f"Image comparison error for {second_image_path}: {error} (tolerance: {tolerance})", flush=True)
-        return error <= tolerance
+        print(f"{images_diff.GetThresholdedError()=}")
+        return images_diff.GetThresholdedError()
 
-    def compare_image(self, nb_messages, filename, tolerance=0.0):
-
-        self.ws.settimeout(4.0)
-        image = None
-        deadline = time.time() + 12.0
-        while time.time() < deadline:
-            try:
-                msg = self.ws.recv()
-            except WebSocketTimeoutException:
-                continue
-            if isinstance(msg, bytes):
-                image = msg
-                break
-        if not isinstance(msg, bytes):
-            return False
-        test_file_path = os.path.abspath(
-            os.path.join(self.test_output_dir, "test.jpeg")
-        )
-        with open(test_file_path, "wb") as f:
-            f.write(image)
-        format = "jpeg"
-        try:
-            meta = self.ws.recv()
-            try:
-                format = json.loads(meta)["result"]["format"]
-            except Exception:
-                pass
-        except WebSocketTimeoutException:
-            pass
-
-        if format != "jpeg":
-            new_path = os.path.abspath(
+    def compare_image(self, nb_messages, filename):
+        for message in range(nb_messages):
+            print(f"{message=}", flush=True)
+            image = self.ws.recv()
+            if isinstance(image, bytes):
+                test_file_path = os.path.abspath(
+                    os.path.join(self.test_output_dir, "test.jpeg")
+                )
+                with open(test_file_path, "wb") as f:
+                    f.write(image)
+                    f.close()
+        if isinstance(image, bytes):
+            response = self.ws.recv()
+            print(f"{response=}", flush=True)
+            format = json.loads(response)["result"]["format"]
+            test_file_path = os.path.abspath(
                 os.path.join(self.test_output_dir, f"test.{format}")
             )
-            os.replace(test_file_path, new_path)
-            test_file_path = new_path
+            with open(test_file_path, "wb") as f:
+                f.write(image)
+                f.close()
 
-        path_image = os.path.join(self.images_dir_path, filename)
-        return self.images_diff(test_file_path, path_image, tolerance)
+            path_image = os.path.join(self.images_dir_path, filename)
+
+            return self.images_diff(test_file_path, path_image) == 0.0
 
     def _init_ws(self):
         self.ws.send(
@@ -204,10 +195,10 @@ def configure_test_environment():
     os.environ["TEST_DB_PATH"] = str(db_path)
 
     yield
-    tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
-    if tmp_data_path and "ogw_test_data_" in tmp_data_path:
-        shutil.rmtree(tmp_data_path, ignore_errors=True)
-        print(f"Cleaned up test data folder: {tmp_data_path}", flush=True)
+    # tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
+    # if tmp_data_path and "ogw_test_data_" in tmp_data_path:
+    #     shutil.rmtree(tmp_data_path, ignore_errors=True)
+    #     print(f"Cleaned up test data folder: {tmp_data_path}", flush=True)
 
 
 @pytest.fixture

@@ -32,6 +32,7 @@ def test_points_size(server, dataset_factory):
         [{"id": mesh_id, "size": 15}],
     )
     assert server.compare_image(3, "mesh/points/size.jpeg") == True
+    print("####")
 
 
 def test_points_color(server, dataset_factory):
