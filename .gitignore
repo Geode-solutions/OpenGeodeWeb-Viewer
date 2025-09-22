@@ -12,3 +12,5 @@ build
 *.egg-info
 .coverage*
 .mypy_cache
+*.db
+tests/data

@@ -9,9 +9,9 @@ from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
 from src.tests.model.test_model_protocols import test_register_model
 
 
-def test_edges_visibility(server):
+def test_edges_visibility(server, dataset_factory):
 
-    test_register_model(server)
+    test_register_model(server, dataset_factory)
 
     server.call(
         VtkModelEdgesView.model_edges_prefix
