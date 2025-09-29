@@ -42,11 +42,22 @@ class VtkModelView(VtkObjectView):
             _ = self.get_data(data_id)
             file_path = self.get_data_file_path(data_id)
 
-            reader, geometry, mapper, actor = self._build_model_pipeline(file_path)
+            reader = vtk.vtkXMLMultiBlockDataReader()
+            reader.SetFileName(file_path)
+            filter = vtk.vtkGeometryFilter()
+            filter.SetInputConnection(reader.GetOutputPort())
+            mapper = vtk.vtkCompositePolyDataMapper()
+            mapper.SetInputConnection(filter.GetOutputPort())
+            attributes = vtkCompositeDataDisplayAttributes()
+            mapper.SetCompositeDataDisplayAttributes(attributes)
+
+            actor = vtk.vtkActor()
+            actor.SetMapper(mapper)
+
             renderer = self.get_renderer()
             renderer.AddActor(actor)
 
-            self.register_object(data_id, reader, geometry, actor, mapper, {})
+            self.register_object(data_id, reader, filter, actor, mapper, {})
             self.get_object(data_id)["max_dimension"] = "default"
             renderWindow = self.getView("-1")
             renderer.ResetCamera()

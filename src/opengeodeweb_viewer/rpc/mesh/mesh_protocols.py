@@ -112,24 +112,33 @@ class VtkMeshView(VtkObjectView):
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
         data_id, textures_info = params["id"], params["textures"]
-        textures_data = []
+        self.applyTextures(data_id, textures_info)
+
+    def applyTextures(self, mesh_id: str, textures_info: list):
         for tex_info in textures_info:
             texture_id = tex_info["id"]
             texture_name = tex_info["texture_name"]
             texture_data = Data.get(texture_id)
-            if texture_data and texture_data.geode_object == "RasterImage2D":
-                textures_data.append(
-                    {"texture_name": texture_name, "texture_data": texture_data}
-                )
-        self.applyTextures(data_id, textures_data)
-
-    def applyTextures(self, mesh_id: str, textures_data: list):
-        for tex_info in textures_data:
-            texture_name = tex_info["texture_name"]
-            texture_data = tex_info["texture_data"]
-            self.apply_single_texture(
-                mesh_id, texture_data.viewable_file_name, texture_name
-            )
+            if not texture_data or texture_data.geode_object != "RasterImage2D":
+                continue
+            texture_file_path = self.get_data_file_path(texture_id)
+            texture_reader = vtk.vtkXMLImageDataReader()
+            texture_reader.SetFileName(texture_file_path)
+            texture_reader.Update()
+            texture = vtk.vtkTexture()
+            texture.SetInputConnection(texture_reader.GetOutputPort())
+            texture.InterpolateOn()
+            reader = self.get_object(mesh_id)["reader"]
+            output = reader.GetOutput()
+            point_data = output.GetPointData()
+            for i in range(point_data.GetNumberOfArrays()):
+                array = point_data.GetArray(i)
+                if array.GetName() == texture_name:
+                    point_data.SetTCoords(array)
+                    break
+            actor = self.get_object(mesh_id)["actor"]
+            actor.SetTexture(texture)
+        self.render()
 
     def displayAttributeOnVertices(self, data_id, name):
         reader = self.get_object(data_id)["reader"]

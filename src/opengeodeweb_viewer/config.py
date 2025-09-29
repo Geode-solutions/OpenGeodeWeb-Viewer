@@ -19,7 +19,9 @@ def dev_config():
     if platform == "linux":
         os.environ["DATA_FOLDER_PATH"] = "/temp/OpenGeodeWeb_Data/"
     elif platform == "win32":
-        os.environ["DATA_FOLDER_PATH"] = os.path.join("OpenGeodeWeb_Data")
+        os.environ["DATA_FOLDER_PATH"] = os.path.join(
+            "C:/Users", os.getlogin(), "OpenGeodeWeb_Data"
+        )
     if not os.path.exists(os.environ.get("DATA_FOLDER_PATH")):
         os.mkdir(os.environ.get("DATA_FOLDER_PATH"))
 
