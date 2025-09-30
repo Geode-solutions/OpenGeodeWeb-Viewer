@@ -1,7 +1,7 @@
 import os
+import tempfile
 from shutil import copyfile, copytree
 from sys import platform
-import tempfile
 
 
 def default_config():

@@ -18,10 +18,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-        if self.DATABASE_PATH:
-            db_full_path = os.path.join(self.DATABASE_PATH, "project.db")
-            init_database(db_full_path)
-
     def get_data_base(self):
         return self.getSharedObject("db")
 

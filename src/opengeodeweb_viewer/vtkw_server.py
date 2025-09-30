@@ -146,8 +146,13 @@ def run_server(Server=_Server):
         args.host = os.environ["DEFAULT_HOST"]
     if not "port" in args or args.port == 8080:
         args.port = os.environ.get("DEFAULT_PORT")
-    if "data_folder_path" in args:
+    if "data_folder_path" in args and args.data_folder_path:
         os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
+
+    if "data_folder_path" in args and args.data_folder_path:
+        if not args.database_path:
+            args.database_path = args.data_folder_path
+            os.environ["DATABASE_PATH"] = args.data_folder_path
 
     print(f"{args=}", flush=True)
     Server.configure(args)
