@@ -121,7 +121,7 @@ class VtkObjectView(VtkView):
         actor = self.get_object(data_id)["actor"]
         max_dimension = self.get_object(data_id)["max_dimension"]
         if max_dimension == "edges":
-            self.SetColor(data_id: str, red, green, blue)
+            self.SetColor(data_id, red, green, blue)
         else:
             actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
         self.render()
@@ -145,7 +145,7 @@ class VtkObjectView(VtkView):
         actor = self.get_object(data_id)["actor"]
         max_dimension = self.get_object(data_id)["max_dimension"]
         if max_dimension == "points":
-            self.SetColor(data_id: str, red, green, blue)
+            self.SetColor(data_id, red, green, blue)
         else:
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
         self.render()
