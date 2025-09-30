@@ -33,7 +33,7 @@ def _copy_test_assets(
     valid_exts: set[str],
     uploads_directory: str,
     structure_directory: str,
-):
+) -> None:
     for root, directories, files in os.walk(src_data):
         for directory in directories:
             for test_id in test_ids:

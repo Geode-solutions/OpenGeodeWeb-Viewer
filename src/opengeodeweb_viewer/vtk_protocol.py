@@ -18,7 +18,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-    def get_data_base(self):
+    def get_data_base(self) -> dict:
         return self.getSharedObject("db")
 
     def get_data(self, data_id):
@@ -47,12 +47,12 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             print(f"Error fetching data {data_id}: {e}")
             raise
 
-    def get_data_file_path(self, data_id, filename=None):
+    def get_data_file_path(self, data_id: str, filename=None) -> str:
         if filename is None:
             data = self.get_data(data_id)
             filename = data["viewable_file_name"]
 
-        return os.path.join(self.DATA_FOLDER_PATH, data_id, filename)
+        return os.path.join(self.DATA_FOLDER_PATH, data_id: str, filename)
 
     def get_renderer(self):
         return self.getSharedObject("renderer")

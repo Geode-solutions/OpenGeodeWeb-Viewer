@@ -31,7 +31,7 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(self, rpc, params=[{}]):
+    def call(self, rpc, params=[{}]) -> None:
         return self.ws.send(
             json.dumps(
                 {
@@ -62,7 +62,7 @@ class ServerMonitor:
             return response
 
     @staticmethod
-    def _reader_for_file(path: str):
+    def _reader_for_file(path: str) -> vtk.vtkImageReader2:
         lower = path.lower()
         if lower.endswith(".png"):
             return vtk.vtkPNGReader()
@@ -70,7 +70,7 @@ class ServerMonitor:
             return vtk.vtkJPEGReader()
         return vtk.vtkJPEGReader()
 
-    def images_diff(self, first_image_path, second_image_path):
+    def images_diff(self, first_image_path: str, second_image_path: str) -> float:
         if ".png" in first_image_path:
             first_reader = vtk.vtkPNGReader()
         elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
@@ -117,7 +117,7 @@ class ServerMonitor:
 
             return self.images_diff(test_file_path, path_image) == 0.0
 
-    def _init_ws(self):
+    def _init_ws(self) -> None:
         self.ws.send(
             json.dumps(
                 {
@@ -129,7 +129,9 @@ class ServerMonitor:
         )
         self.call("viewport.image.push.observer.add", [-1])
 
-    def _drain_initial_messages(self, max_messages: int = 5, timeout: float = 4.0):
+    def _drain_initial_messages(
+        self, max_messages: int = 5, timeout: float = 4.0
+    ) -> None:
 
         self.ws.settimeout(timeout)
         for _ in range(max_messages):

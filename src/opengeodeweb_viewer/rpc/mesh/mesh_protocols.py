@@ -140,7 +140,7 @@ class VtkMeshView(VtkObjectView):
             actor.SetTexture(texture)
         self.render()
 
-    def displayAttributeOnVertices(self, data_id, name):
+    def displayAttributeOnVertices(self, data_id: str, name: str):
         reader = self.get_object(data_id)["reader"]
         points = reader.GetOutput().GetPointData()
         points.SetActiveScalars(name)

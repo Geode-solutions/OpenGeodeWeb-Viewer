@@ -20,7 +20,12 @@ class VtkModelView(VtkObjectView):
     def __init__(self):
         super().__init__()
 
-    def _build_model_pipeline(self, file_path: str):
+    def _build_model_pipeline(self, file_path: str) -> tuple[
+        vtk.vtkXMLMultiBlockDataReader,
+        vtk.vtkGeometryFilter,
+        vtk.vtkCompositePolyDataMapper,
+        vtk.vtkActor,
+    ]:
         reader = vtk.vtkXMLMultiBlockDataReader()
         reader.SetFileName(file_path)
         geometry = vtk.vtkGeometryFilter()
