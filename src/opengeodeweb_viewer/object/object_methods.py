@@ -130,7 +130,7 @@ class VtkObjectView(VtkView):
         actor = self.get_object(data_id)["actor"]
         max_dimension = self.get_object(data_id)["max_dimension"]
         if max_dimension == "points":
-            self.SetVisibility(data_id: str, visibility)
+            self.SetVisibility(data_id, visibility)
         else:
             actor.GetProperty().SetVertexVisibility(visibility)
             actor.GetProperty().SetEdgeVisibility(visibility)
