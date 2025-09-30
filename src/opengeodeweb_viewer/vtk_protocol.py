@@ -52,7 +52,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             data = self.get_data(data_id)
             filename = data["viewable_file_name"]
 
-        return os.path.join(self.DATA_FOLDER_PATH, data_id: str, filename)
+        return os.path.join(self.DATA_FOLDER_PATH, data_id, filename)
 
     def get_renderer(self):
         return self.getSharedObject("renderer")

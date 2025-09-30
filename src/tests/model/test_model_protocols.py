@@ -23,7 +23,7 @@ def test_register_model_cube(server, dataset_factory : callable):
 
 def test_visibility_model(server, dataset_factory : callable):
 
-    test_register_model(server, dataset_factory : callable)
+    test_register_model(server, dataset_factory)
 
     server.call(
         VtkModelView.model_prefix

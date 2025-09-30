@@ -24,7 +24,7 @@ def test_points_visibility(server, dataset_factory : callable):
 
 def test_points_size(server, dataset_factory : callable):
     mesh_id = "123456789"
-    test_points_visibility(server, dataset_factory : callable)
+    test_points_visibility(server, dataset_factory)
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix
@@ -36,7 +36,7 @@ def test_points_size(server, dataset_factory : callable):
 
 def test_points_color(server, dataset_factory : callable):
     mesh_id = "123456789"
-    test_points_size(server, dataset_factory : callable)
+    test_points_size(server, dataset_factory)
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix
