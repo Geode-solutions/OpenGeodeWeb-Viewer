@@ -31,10 +31,10 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(self, rpc: str, params: List[Dict[str, Any]] = None) -> None:
+    def call(self, rpc: str, params: Optional[List[Dict[str, Any]]] = None) -> None:
         if params is None:
             params = [{}]
-        return self.ws.send(
+        self.ws.send(
             json.dumps(
                 {
                     "id": "rpc:test",
@@ -60,7 +60,10 @@ class ServerMonitor:
             return response
         try:
             parsed = json.loads(response)
-            return parsed
+            if isinstance(parsed, dict):
+                return parsed
+            else:
+                return str(parsed)
         except Exception:
             return str(response)
 
@@ -132,7 +135,7 @@ class ServerMonitor:
                 }
             )
         )
-        self.call("viewport.image.push.observer.add", [-1])
+        self.call("viewport.image.push.observer.add", [{"observer_id": -1}])
 
     def _drain_initial_messages(
         self, max_messages: int = 5, timeout: float = 4.0
@@ -184,7 +187,7 @@ def server(xprocess: Any) -> Generator[ServerMonitor, None, None]:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def configure_test_environment() -> None:
+def configure_test_environment() -> Generator[None, None, None]:
     base_path = Path(__file__).parent
     config.test_config(base_path)
     db_path = base_path / "project.db"
