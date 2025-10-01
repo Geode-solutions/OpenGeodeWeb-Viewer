@@ -60,7 +60,7 @@ class VtkObjectView(VtkView):
 
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
-            texture_path = os.path.join(self.DATA_FOLDER_PATH, data_id, id_texture)
+            texture_path = self.get_data_file_path(data_id, id_texture)
             image_reader.SetFileName(texture_path)
 
             shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"
