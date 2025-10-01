@@ -15,12 +15,7 @@ class VtkObjectView(VtkView):
         super().__init__()
 
     def registerObject(
-        self, 
-        id: str, 
-        file_name: str, 
-        reader: Any, 
-        filter: Any, 
-        mapper: Any
+        self, id: str, file_name: str, reader: Any, filter: Any, mapper: Any
     ) -> None:
         actor = vtk.vtkActor()
         self.register_object(id, reader, filter, actor, mapper, {})
@@ -157,13 +152,17 @@ class VtkObjectView(VtkView):
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
         self.render()
 
-    def SetBlocksVisibility(self, data_id: str, block_ids: List[Any], visibility: bool) -> None:
+    def SetBlocksVisibility(
+        self, data_id: str, block_ids: List[Any], visibility: bool
+    ) -> None:
         mapper = self.get_object(data_id)["mapper"]
         for block_id in block_ids:
             mapper.SetBlockVisibility(block_id, visibility)
         self.render()
 
-    def SetBlocksColor(self, data_id: str, block_ids: List[Any], red: int, green: int, blue: int) -> None:
+    def SetBlocksColor(
+        self, data_id: str, block_ids: List[Any], red: int, green: int, blue: int
+    ) -> None:
         mapper = self.get_object(data_id)["mapper"]
         for block_id in block_ids:
             mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
