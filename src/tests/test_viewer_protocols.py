@@ -158,9 +158,7 @@ def test_take_screenshot(
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
 
-def test_picked_ids(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_mesh(server, dataset_factory)
 
@@ -188,9 +186,7 @@ def test_picked_ids(
     assert isinstance(array_ids, list)
 
 
-def test_grid_scale(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     data_id = "123456789"
     dataset_factory(id=data_id, viewable_file_name="hat.vtp")
     server.call(
@@ -212,9 +208,7 @@ def test_grid_scale(
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
 
 
-def test_axes(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_axes(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_reset_visualization(server)
 
@@ -251,9 +245,7 @@ def test_update_camera(
     assert server.compare_image(3, "viewer/update_camera.jpeg") == True
 
 
-def test_render_now(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_render_now(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     camera_options = {
