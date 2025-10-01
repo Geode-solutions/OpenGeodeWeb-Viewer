@@ -115,7 +115,7 @@ def test_take_screenshot(
     server.get_response()
     server.get_response()
     blob = server.get_response()
-    print(f"{blob=}", flush=True)
+    print(f"{blob!r}", flush=True)
     assert type(blob) is bytes
 
     with open(os.path.join(server.test_output_dir, "test.png"), "wb") as f:
@@ -144,7 +144,7 @@ def test_take_screenshot(
     server.get_response()
     server.get_response()
     blob = server.get_response()
-    print(f"{blob=}", flush=True)
+    print(f"{blob!r}", flush=True)
     assert type(blob) is bytes
 
     with open(os.path.join(server.test_output_dir, "test.png"), "wb") as f:
