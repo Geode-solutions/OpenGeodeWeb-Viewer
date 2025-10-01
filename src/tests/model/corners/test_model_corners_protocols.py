@@ -11,7 +11,9 @@ from src.tests.model.test_model_protocols import test_register_model_cube
 from ...conftest import ServerMonitor
 
 
-def test_corners_points_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_corners_points_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -42,7 +44,9 @@ def test_corners_points_visibility(server: ServerMonitor, dataset_factory: Calla
     assert server.compare_image(3, "model/corners/visibility.jpeg") == True
 
 
-def test_corners_points_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_corners_points_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_corners_points_visibility(server, dataset_factory)
 
