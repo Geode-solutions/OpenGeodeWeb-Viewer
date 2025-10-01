@@ -10,7 +10,7 @@ import time
 import os
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from typing import Callable
+from typing import Callable, Optional
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
@@ -199,7 +199,7 @@ def configure_test_environment():
 def dataset_factory() -> Callable[..., str]:
 
     def create_dataset(
-        *, id: str, viewable_file_name: str, geode_object: str = None
+        *, id: str, viewable_file_name: str, geode_object: Optional[str] = None
     ) -> str:
         session = get_session()
         if geode_object is None:
