@@ -54,7 +54,9 @@ class ServerMonitor:
                 output += line
         print(output)
 
-    def get_response(self) -> Union[bytes, dict[str, Union[str, int, float, bool, list, dict]], str]:
+    def get_response(
+        self,
+    ) -> Union[bytes, dict[str, Union[str, int, float, bool, list, dict]], str]:
         response = self.ws.recv()
         if isinstance(response, bytes):
             return response

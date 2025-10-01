@@ -28,7 +28,7 @@ class VtkMeshView(VtkObjectView):
         try:
             _ = self.get_data(data_id)
             file_path = self.get_data_file_path(data_id)
-            
+
             reader = vtk.vtkXMLGenericDataObjectReader()
             reader.SetFileName(file_path)
             filter = {}
@@ -81,7 +81,9 @@ class VtkMeshView(VtkObjectView):
         self.deregisterObject(data_id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
-    def SetMeshVisibility(self, params: dict[str, Union[str, int, float, bool]]) -> None:
+    def SetMeshVisibility(
+        self, params: dict[str, Union[str, int, float, bool]]
+    ) -> None:
         validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
         data_id, visibility = params["id"], params["visibility"]
         self.SetVisibility(data_id, visibility)
@@ -93,7 +95,9 @@ class VtkMeshView(VtkObjectView):
         self.SetOpacity(data_id, opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
-    def setMeshColor(self, params: dict[str, Union[str, int, float, bool, dict]]) -> None:
+    def setMeshColor(
+        self, params: dict[str, Union[str, int, float, bool, dict]]
+    ) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         data_id, red, green, blue = (
             params["id"],
