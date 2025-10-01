@@ -9,8 +9,8 @@ from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 
 # Local application imports
-from .mesh.test_mesh_protocols import test_register_mesh
-from .conftest import ServerMonitor
+from tests.mesh.test_mesh_protocols import test_register_mesh
+from tests.conftest import ServerMonitor
 
 
 def test_reset_visualization(server: ServerMonitor) -> None:

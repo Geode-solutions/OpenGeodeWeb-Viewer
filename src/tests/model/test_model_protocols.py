@@ -1,6 +1,6 @@
 from typing import Callable
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
-from ..conftest import ServerMonitor
+from tests.conftest import ServerMonitor
 
 
 def test_register_model(

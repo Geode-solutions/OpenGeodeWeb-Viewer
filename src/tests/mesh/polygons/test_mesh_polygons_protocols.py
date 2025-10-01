@@ -5,8 +5,8 @@ from typing import Callable
 from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 
 # Local application imports
-from src.tests.mesh.test_mesh_protocols import test_register_mesh
-from ...conftest import ServerMonitor
+from tests.mesh.test_mesh_protocols import test_register_mesh
+from tests.conftest import ServerMonitor
 
 
 def test_polygons_color(

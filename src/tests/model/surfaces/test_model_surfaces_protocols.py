@@ -7,8 +7,8 @@ from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
 )
 
 # Local application imports
-from src.tests.model.test_model_protocols import test_register_model_cube
-from ...conftest import ServerMonitor
+from tests.model.test_model_protocols import test_register_model_cube
+from tests.conftest import ServerMonitor
 
 
 def test_surfaces_polygons_visibility(

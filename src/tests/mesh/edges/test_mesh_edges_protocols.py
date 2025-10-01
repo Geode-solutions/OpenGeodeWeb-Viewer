@@ -6,8 +6,8 @@ from src.opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from src.opengeodeweb_viewer.rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 
 # Local application imports
-from src.tests.mesh.test_mesh_protocols import test_register_mesh
-from ...conftest import ServerMonitor
+from tests.mesh.test_mesh_protocols import test_register_mesh
+from tests.conftest import ServerMonitor
 
 
 def test_edges_visibility(

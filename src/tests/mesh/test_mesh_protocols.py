@@ -1,6 +1,6 @@
 from typing import Callable
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from ..conftest import ServerMonitor
+from tests.conftest import ServerMonitor
 
 
 def test_register_mesh(

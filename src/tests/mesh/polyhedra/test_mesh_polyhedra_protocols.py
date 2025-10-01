@@ -8,7 +8,7 @@ from src.opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
 )
 
 # Local application imports
-from ...conftest import ServerMonitor
+from tests.conftest import ServerMonitor
 
 
 def test_register_mesh(

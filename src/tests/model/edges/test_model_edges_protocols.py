@@ -7,8 +7,8 @@ from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
 )
 
 # Local application imports
-from src.tests.model.test_model_protocols import test_register_model
-from ...conftest import ServerMonitor
+from tests.model.test_model_protocols import test_register_model
+from tests.conftest import ServerMonitor
 
 
 def test_edges_visibility(
