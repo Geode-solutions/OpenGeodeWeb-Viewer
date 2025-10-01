@@ -31,7 +31,18 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(self, rpc: str, params: Optional[list[Union[dict[str, Union[str, int, float, bool, dict[str, int], list[str]]], int]]] = None) -> None:
+    def call(
+        self,
+        rpc: str,
+        params: Optional[
+            list[
+                Union[
+                    dict[str, Union[str, int, float, bool, dict[str, int], list[str]]],
+                    int,
+                ]
+            ]
+        ] = None,
+    ) -> None:
         if params is None:
             params = [{}]
         self.ws.send(
