@@ -11,7 +11,9 @@ from src.tests.model.test_model_protocols import test_register_model_cube
 from ...conftest import ServerMonitor
 
 
-def test_surfaces_polygons_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_surfaces_polygons_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -43,7 +45,9 @@ def test_surfaces_polygons_visibility(server: ServerMonitor, dataset_factory: Ca
     assert server.compare_image(3, "model/surfaces/visibility.jpeg") == True
 
 
-def test_surfaces_polygons_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_surfaces_polygons_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_surfaces_polygons_visibility(server, dataset_factory)
 

@@ -11,7 +11,9 @@ from src.tests.model.test_model_protocols import test_register_model
 from ...conftest import ServerMonitor
 
 
-def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_points_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_register_model(server, dataset_factory)
 
@@ -23,7 +25,9 @@ def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[...,
     assert server.compare_image(3, "model/points/visibility.jpeg") == True
 
 
-def test_points_size(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_points_size(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_points_visibility(server, dataset_factory)
 
