@@ -116,7 +116,7 @@ class ServerMonitor:
             path_image = os.path.join(self.images_dir_path, filename)
 
             return self.images_diff(test_file_path, path_image) == 0.0
-        
+
         return False  # Add explicit return for the case when image is not bytes
 
     def _init_ws(self) -> None:

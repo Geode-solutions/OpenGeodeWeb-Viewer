@@ -24,7 +24,7 @@ frozenlist==1.*,>=1.7.0
     #   aiosignal
 idna==3.10
     # via yarl
-kiwisolver==1.*,>=1.4.10rc0
+kiwisolver==1.4.10rc0
     # via matplotlib
 matplotlib==3.*,>=3.10.6
     # via vtk
@@ -44,9 +44,9 @@ propcache==0.*,>=0.3.2
     # via
     #   aiohttp
     #   yarl
-pyparsing==3.*,>=3.3.0a1
+pyparsing==3.3.0a1
     # via matplotlib
-python-dateutil==2.9.*,>=2.9.0.post0
+python-dateutil==2.9.0.post0
     # via matplotlib
 six==1.*,>=1.17.0
     # via python-dateutil

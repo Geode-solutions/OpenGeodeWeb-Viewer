@@ -9,7 +9,9 @@ from src.tests.mesh.test_mesh_protocols import test_register_mesh
 from ...conftest import ServerMonitor
 
 
-def test_polygons_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_polygons_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_register_mesh(server, dataset_factory)
 
@@ -21,7 +23,9 @@ def test_polygons_color(server: ServerMonitor, dataset_factory: Callable[..., st
     assert server.compare_image(3, "mesh/polygons/color.jpeg") == True
 
 
-def test_polygons_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_polygons_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_register_mesh(server, dataset_factory)
 

@@ -10,7 +10,9 @@ from src.tests.mesh.test_mesh_protocols import test_register_mesh
 from ...conftest import ServerMonitor
 
 
-def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_points_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     mesh_id = "123456789"
     test_register_mesh(server, dataset_factory)
 
@@ -22,7 +24,9 @@ def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[...,
     assert server.compare_image(3, "mesh/points/visibility.jpeg") == True
 
 
-def test_points_size(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_points_size(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     mesh_id = "123456789"
     test_points_visibility(server, dataset_factory)
 
@@ -34,7 +38,9 @@ def test_points_size(server: ServerMonitor, dataset_factory: Callable[..., str])
     assert server.compare_image(3, "mesh/points/size.jpeg") == True
 
 
-def test_points_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_points_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     mesh_id = "123456789"
     test_points_size(server, dataset_factory)
 
@@ -46,7 +52,9 @@ def test_points_color(server: ServerMonitor, dataset_factory: Callable[..., str]
     assert server.compare_image(3, "mesh/points/color.jpeg") == True
 
 
-def test_points_with_point_set(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_points_with_point_set(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     mesh_id = "44556677"
 
     dataset_factory(id=mesh_id, viewable_file_name="points.vtp")
