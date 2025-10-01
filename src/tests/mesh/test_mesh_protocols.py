@@ -3,7 +3,9 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from ..conftest import ServerMonitor
 
 
-def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_register_mesh(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     dataset_factory(id="123456789", viewable_file_name="hat.vtp")
 
     server.call(
@@ -13,7 +15,9 @@ def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str
     assert server.compare_image(3, "mesh/register.jpeg") == True
 
 
-def test_deregister_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_deregister_mesh(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -54,7 +58,9 @@ def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
     assert server.compare_image(3, "mesh/color.jpeg") == True
 
 
-def test_apply_textures(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_apply_textures(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
     texture_entry = dataset_factory(
         id="987654321",

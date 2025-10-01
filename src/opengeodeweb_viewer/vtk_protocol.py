@@ -56,7 +56,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         data_folder_path = self.DATA_FOLDER_PATH
         if data_folder_path is None:
             raise Exception("DATA_FOLDER_PATH environment variable not set")
-            
+
         return os.path.join(data_folder_path, data_id, filename)
 
     def get_renderer(self) -> Any:
@@ -78,7 +78,9 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             grid_scale.SetBounds(renderer_bounds)
         self.getSharedObject("publisher").imagePush({"view": view})
 
-    def register_object(self, id: str, reader: Any, filter: Any, actor: Any, mapper: Any, textures: Any) -> None:
+    def register_object(
+        self, id: str, reader: Any, filter: Any, actor: Any, mapper: Any, textures: Any
+    ) -> None:
         self.get_data_base()[id] = {
             "reader": reader,
             "filter": filter,
