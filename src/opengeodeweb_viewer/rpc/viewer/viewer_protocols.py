@@ -84,7 +84,10 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_background_color"]["rpc"])
     def setBackgroundColor(
-        self, params: dict[str, Union[str, int, float, bool, dict[str, Union[str, int, float]]]]
+        self,
+        params: dict[
+            str, Union[str, int, float, bool, dict[str, Union[str, int, float]]]
+        ],
     ) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["set_background_color"], self.viewer_prefix
@@ -264,7 +267,18 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
     def updateCamera(
-        self, params: dict[str, Union[str, int, float, bool, dict[str, Union[str, int, float, list[float]]], list[float]]]
+        self,
+        params: dict[
+            str,
+            Union[
+                str,
+                int,
+                float,
+                bool,
+                dict[str, Union[str, int, float, list[float]]],
+                list[float],
+            ],
+        ],
     ) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix
