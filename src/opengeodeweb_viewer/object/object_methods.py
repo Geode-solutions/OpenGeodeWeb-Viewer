@@ -15,12 +15,12 @@ class VtkObjectView(VtkView):
         super().__init__()
 
     def registerObject(
-        self, 
-        id: str, 
-        file_name: str, 
-        reader: vtk.vtkDataReader, 
-        filter: Optional[vtk.vtkAlgorithm], 
-        mapper: vtk.vtkMapper
+        self,
+        id: str,
+        file_name: str,
+        reader: vtk.vtkDataReader,
+        filter: Optional[vtk.vtkAlgorithm],
+        mapper: vtk.vtkMapper,
     ) -> None:
         actor = vtk.vtkActor()
         self.register_object(id, reader, filter, actor, mapper, {})
