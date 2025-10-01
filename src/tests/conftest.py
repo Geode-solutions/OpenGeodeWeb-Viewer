@@ -31,13 +31,7 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(
-        self,
-        rpc: str,
-        params: Optional[
-            list[Union[dict[str, Union[str, int, float, bool]], int]]
-        ] = None,
-    ) -> None:
+    def call(self, rpc: str, params: Optional[list[Union[dict[str, Union[str, int, float, bool]], int]]] = None) -> None:
         if params is None:
             params = [{}]
         self.ws.send(
@@ -60,23 +54,7 @@ class ServerMonitor:
                 output += line
         print(output)
 
-    def get_response(
-        self,
-    ) -> Union[
-        bytes,
-        dict[
-            str,
-            Union[
-                str,
-                int,
-                float,
-                bool,
-                list[Union[str, int, float, bool]],
-                dict[str, Union[str, int, float, bool]],
-            ],
-        ],
-        str,
-    ]:
+    def get_response(self) -> Union[bytes, dict[str, object], str]:
         response = self.ws.recv()
         if isinstance(response, bytes):
             return response
@@ -196,7 +174,7 @@ HELPER = FixtureHelper(ROOT_PATH)
 
 
 @pytest.fixture
-def server(xprocess: Union[object, type]) -> Generator[ServerMonitor, None, None]:
+def server(xprocess: object) -> Generator[ServerMonitor, None, None]:
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
     _, log = xprocess.ensure(name, Starter)
