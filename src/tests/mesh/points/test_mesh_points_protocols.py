@@ -1,4 +1,5 @@
 # Standard library imports
+from typing import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
@@ -6,11 +7,10 @@ from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPoi
 
 # Local application imports
 from src.tests.mesh.test_mesh_protocols import test_register_mesh
+from ...conftest import ServerMonitor
 
-# from src.tests.test_data_helpers import create_mesh_data
 
-
-def test_points_visibility(server, dataset_factory: callable):
+def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "123456789"
     test_register_mesh(server, dataset_factory)
 
@@ -22,7 +22,7 @@ def test_points_visibility(server, dataset_factory: callable):
     assert server.compare_image(3, "mesh/points/visibility.jpeg") == True
 
 
-def test_points_size(server, dataset_factory: callable):
+def test_points_size(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "123456789"
     test_points_visibility(server, dataset_factory)
 
@@ -34,7 +34,7 @@ def test_points_size(server, dataset_factory: callable):
     assert server.compare_image(3, "mesh/points/size.jpeg") == True
 
 
-def test_points_color(server, dataset_factory: callable):
+def test_points_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "123456789"
     test_points_size(server, dataset_factory)
 
@@ -46,7 +46,7 @@ def test_points_color(server, dataset_factory: callable):
     assert server.compare_image(3, "mesh/points/color.jpeg") == True
 
 
-def test_points_with_point_set(server, dataset_factory: callable):
+def test_points_with_point_set(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "44556677"
 
     dataset_factory(id=mesh_id, viewable_file_name="points.vtp")

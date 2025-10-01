@@ -91,7 +91,7 @@ class ServerMonitor:
         print(f"{images_diff.GetThresholdedError()=}")
         return images_diff.GetThresholdedError()
 
-    def compare_image(self, nb_messages, filename):
+    def compare_image(self, nb_messages: int, filename: str) -> bool:
         for message in range(nb_messages):
             print(f"{message=}", flush=True)
             image = self.ws.recv()
@@ -116,6 +116,8 @@ class ServerMonitor:
             path_image = os.path.join(self.images_dir_path, filename)
 
             return self.images_diff(test_file_path, path_image) == 0.0
+        
+        return False  # Add explicit return for the case when image is not bytes
 
     def _init_ws(self) -> None:
         self.ws.send(
