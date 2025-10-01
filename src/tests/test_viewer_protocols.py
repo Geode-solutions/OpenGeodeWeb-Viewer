@@ -51,8 +51,8 @@ def test_get_point_position(
     response = server.get_response()
     if response is None:
         assert False, "Response is None from get_point_position"
-    if "result" not in response:
-        assert False, f"No 'result' key in response: {response}"
+    if not isinstance(response, dict) or "result" not in response:
+        assert False, f"No 'result' key in response: {response!r}"
     result = response["result"]
     if result is None:
         return
@@ -168,13 +168,13 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
         [{"x": 0, "y": 0, "ids": ["123456789"]}],
     )
     response = server.get_response()
-    print(f"picked_ids response: {response}", flush=True)
+    print(f"picked_ids response: {response!r}", flush=True)
     if response is None:
         print("Warning: picked_ids returned None response", flush=True)
         return
-    if "result" not in response:
+    if not isinstance(response, dict) or "result" not in response:
         print(
-            f"Warning: No 'result' key in picked_ids response: {response}", flush=True
+            f"Warning: No 'result' key in picked_ids response: {response!r}", flush=True
         )
         return
     result = response["result"]
