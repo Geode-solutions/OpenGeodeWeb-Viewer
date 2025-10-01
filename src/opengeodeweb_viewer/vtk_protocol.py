@@ -7,7 +7,7 @@ import vtk
 from vtk.web import protocols as vtk_protocols
 
 # Local application imports
-from opengeodeweb_microservice.database.connection import init_database, get_session
+from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
 
 
@@ -22,11 +22,11 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def get_data_base(
         self,
     ) -> dict[
-        str, dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]
+        str, dict[str, Union[object, str]]
     ]:
         return self.getSharedObject("db")
 
-    def get_data(self, data_id: str) -> dict[str, str]:
+    def get_data(self, data_id: str) -> dict[str, Optional[Union[str, list[str]]]]:
         if Data is None:
             raise Exception("Data model not available")
 
@@ -68,7 +68,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     def get_object(
         self, id: str
-    ) -> dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]:
+    ) -> dict[str, Union[object, str]]:
         return self.get_data_base()[id]
 
     def get_protocol(self, name: str) -> vtk_protocols.vtkWebProtocol:
@@ -91,7 +91,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         filter: Optional[vtk.vtkAlgorithm],
         actor: vtk.vtkActor,
         mapper: vtk.vtkMapper,
-        textures: dict,
+        textures: dict[str, Union[str, int, float]],
     ) -> None:
         self.get_data_base()[id] = {
             "reader": reader,
