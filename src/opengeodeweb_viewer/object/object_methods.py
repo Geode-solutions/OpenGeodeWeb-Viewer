@@ -18,7 +18,7 @@ class VtkObjectView(VtkView):
         self, 
         id: str, 
         file_name: str, 
-        reader: vtk.vtkAlgorithm, 
+        reader: vtk.vtkDataReader, 
         filter: Optional[vtk.vtkAlgorithm], 
         mapper: vtk.vtkMapper
     ) -> None:
