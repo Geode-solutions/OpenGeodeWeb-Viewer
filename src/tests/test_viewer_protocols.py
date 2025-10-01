@@ -1,19 +1,19 @@
 # Standard library imports
 import os
+from typing import Callable
 
 # Third party imports
-import pytest
 
 # Local application imports
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 
-
 # Local application imports
 from .mesh.test_mesh_protocols import test_register_mesh
+from .conftest import ServerMonitor
 
 
-def test_reset_visualization(server):
+def test_reset_visualization(server: ServerMonitor) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
@@ -21,7 +21,7 @@ def test_reset_visualization(server):
     assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
 
 
-def test_reset_camera(server):
+def test_reset_camera(server: ServerMonitor) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_camera"]["rpc"]
@@ -29,7 +29,7 @@ def test_reset_camera(server):
     assert server.compare_image(3, "viewer/reset_camera.jpeg") == True
 
 
-def test_set_viewer_background_color(server):
+def test_set_viewer_background_color(server: ServerMonitor) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
@@ -38,7 +38,9 @@ def test_set_viewer_background_color(server):
     assert server.compare_image(3, "viewer/set_background_color.jpeg") == True
 
 
-def test_get_point_position(server, dataset_factory):
+def test_get_point_position(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -65,7 +67,9 @@ def test_get_point_position(server, dataset_factory):
     assert type(z) is float
 
 
-def test_take_screenshot(server, dataset_factory):
+def test_take_screenshot(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
 
     # Take a screenshot with background jpg
@@ -154,7 +158,9 @@ def test_take_screenshot(server, dataset_factory):
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
 
-def test_picked_ids(server, dataset_factory):
+def test_picked_ids(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_register_mesh(server, dataset_factory)
 
@@ -182,7 +188,9 @@ def test_picked_ids(server, dataset_factory):
     assert isinstance(array_ids, list)
 
 
-def test_grid_scale(server, dataset_factory):
+def test_grid_scale(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     data_id = "123456789"
     dataset_factory(id=data_id, viewable_file_name="hat.vtp")
     server.call(
@@ -204,7 +212,9 @@ def test_grid_scale(server, dataset_factory):
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
 
 
-def test_axes(server, dataset_factory):
+def test_axes(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
     test_reset_visualization(server)
 
@@ -216,7 +226,9 @@ def test_axes(server, dataset_factory):
     assert server.compare_image(3, "viewer/axes_off.jpeg") == True
 
 
-def test_update_camera(server, dataset_factory):
+def test_update_camera(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
 
     camera_options = {
@@ -239,7 +251,9 @@ def test_update_camera(server, dataset_factory):
     assert server.compare_image(3, "viewer/update_camera.jpeg") == True
 
 
-def test_render_now(server, dataset_factory):
+def test_render_now(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
 
     camera_options = {
@@ -269,7 +283,9 @@ def test_render_now(server, dataset_factory):
     assert server.compare_image(3, "viewer/render_now.jpeg") == True
 
 
-def test_set_z_scaling(server, dataset_factory):
+def test_set_z_scaling(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     dataset_factory(id="123456789", viewable_file_name="polygon_attribute.vtp")
 
     server.call(
@@ -312,7 +328,9 @@ def test_set_z_scaling(server, dataset_factory):
     assert server.compare_image(3, "viewer/set_z_scaling.jpeg") == True
 
 
-def test_combined_scaling_and_grid(server, dataset_factory):
+def test_combined_scaling_and_grid(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
