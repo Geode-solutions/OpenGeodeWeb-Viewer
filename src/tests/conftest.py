@@ -118,12 +118,9 @@ class ServerMonitor:
             with open(test_file_path, "wb") as f:
                 f.write(image)
                 f.close()
-
             path_image = os.path.join(self.images_dir_path, filename)
-
             return self.images_diff(test_file_path, path_image) == 0.0
-
-        return False  # Add explicit return for the case when image is not bytes
+        return False
 
     def _init_ws(self) -> None:
         self.ws.send(
@@ -135,20 +132,20 @@ class ServerMonitor:
                 }
             )
         )
-        self.call("viewport.image.push.observer.add", [{"observer_id": -1}])
-
+        self.call("viewport.image.push.observer.add", [-1])
+    
     def _drain_initial_messages(
         self, max_messages: int = 5, timeout: float = 10.0
     ) -> None:
         self.ws.settimeout(timeout)
         for i in range(max_messages):
+            print(f"{i=}", flush=True)
             try:
-                print(f"{i=}", flush=True)
                 response = self.ws.recv()
                 print(f"{response=}", flush=True)
             except WebSocketTimeoutException:
-                print(f"Timeout on message {i}, continuing...", flush=True)
-                break
+                print(f"Timeout on message {i}, but continuing to try remaining messages...", flush=True)
+                continue
 
 
 class FixtureHelper:
