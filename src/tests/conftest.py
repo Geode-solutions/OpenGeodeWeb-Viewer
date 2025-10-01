@@ -10,7 +10,7 @@ import time
 import os
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from typing import Callable, Optional, Union, Any, Generator
+from typing import Callable, Optional, Union, Generator
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
@@ -31,7 +31,7 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(self, rpc: str, params: Optional[list[dict[str, Any]]] = None) -> None:
+    def call(self, rpc: str, params: Optional[list[Union[dict, int]]] = None) -> None:
         if params is None:
             params = [{}]
         self.ws.send(
@@ -54,7 +54,7 @@ class ServerMonitor:
                 output += line
         print(output)
 
-    def get_response(self) -> Union[bytes, dict[str, Any], str]:
+    def get_response(self) -> Union[bytes, dict[str, Union[str, int, float, bool, list, dict]], str]:
         response = self.ws.recv()
         if isinstance(response, bytes):
             return response
@@ -174,7 +174,7 @@ HELPER = FixtureHelper(ROOT_PATH)
 
 
 @pytest.fixture
-def server(xprocess: Any) -> Generator[ServerMonitor, None, None]:
+def server(xprocess: Union[object, type]) -> Generator[ServerMonitor, None, None]:
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
     _, log = xprocess.ensure(name, Starter)

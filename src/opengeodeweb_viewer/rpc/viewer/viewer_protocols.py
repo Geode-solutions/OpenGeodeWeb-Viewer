@@ -1,7 +1,7 @@
 # Standard library imports
 import math
 import os
-from typing import Any
+from typing import Union
 
 # Third party imports
 import vtk
@@ -26,7 +26,7 @@ class VtkViewerView(VtkView):
         super().__init__()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["reset_visualization"]["rpc"])
-    def resetVisualization(self, params: dict[str, Any]) -> None:
+    def resetVisualization(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["reset_visualization"], self.viewer_prefix
         )
@@ -81,7 +81,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_background_color"]["rpc"])
-    def setBackgroundColor(self, params: dict[str, Any]) -> None:
+    def setBackgroundColor(self, params: dict[str, Union[str, int, float, bool, dict]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["set_background_color"], self.viewer_prefix
         )
@@ -99,7 +99,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["reset_camera"]["rpc"])
-    def resetCamera(self, params: dict[str, Any]) -> None:
+    def resetCamera(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["reset_camera"], self.viewer_prefix
         )
@@ -109,7 +109,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["take_screenshot"]["rpc"])
-    def takeScreenshot(self, params: dict[str, Any]) -> dict[str, Any]:
+    def takeScreenshot(self, params: dict[str, Union[str, int, float, bool]]) -> dict[str, Union[str, bytes]]:
         validate_schema(
             params, self.viewer_schemas_dict["take_screenshot"], self.viewer_prefix
         )
@@ -158,7 +158,7 @@ class VtkViewerView(VtkView):
         return {"blob": self.addAttachment(file_content)}
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["update_data"]["rpc"])
-    def updateData(self, params: dict[str, Any]) -> None:
+    def updateData(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["update_data"], self.viewer_prefix
         )
@@ -181,7 +181,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["get_point_position"]["rpc"])
-    def getPointPosition(self, params: dict[str, Any]) -> dict[str, float]:
+    def getPointPosition(self, params: dict[str, Union[str, int, float, bool]]) -> dict[str, float]:
         validate_schema(
             params, self.viewer_schemas_dict["get_point_position"], self.viewer_prefix
         )
@@ -193,7 +193,7 @@ class VtkViewerView(VtkView):
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
-    def computeEpsilon(self, renderer: Any, z: float) -> float:
+    def computeEpsilon(self, renderer: vtk.vtkRenderer, z: float) -> float:
         renderer.SetDisplayPoint(0, 0, z)
         renderer.DisplayToWorld()
         windowLowerLeft = renderer.GetWorldPoint()
@@ -209,7 +209,7 @@ class VtkViewerView(VtkView):
         return math.sqrt(epsilon) * 0.0125
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
-    def pickedIds(self, params: dict[str, Any]) -> dict[str, list[str]]:
+    def pickedIds(self, params: dict[str, Union[str, int, float, bool, list]]) -> dict[str, list[str]]:
         validate_schema(
             params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
         )
@@ -234,7 +234,7 @@ class VtkViewerView(VtkView):
         return {"array_ids": array_ids}
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
-    def toggleGridScale(self, params: dict[str, Any]) -> None:
+    def toggleGridScale(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
         )
@@ -245,7 +245,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["axes"]["rpc"])
-    def toggleAxes(self, params: dict[str, Any]) -> None:
+    def toggleAxes(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(params, self.viewer_schemas_dict["axes"], self.viewer_prefix)
         id, visibility = "axes", params["visibility"]
         actor = self.get_object(id)["actor"]
@@ -253,7 +253,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
-    def updateCamera(self, params: dict[str, Any]) -> None:
+    def updateCamera(self, params: dict[str, Union[str, int, float, bool, dict, list]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix
         )
@@ -275,14 +275,14 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
-    def renderNow(self, params: dict[str, Any]) -> None:
+    def renderNow(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
         )
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
-    def setZScaling(self, params: dict[str, Any]) -> None:
+    def setZScaling(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(
             params, self.viewer_schemas_dict["set_z_scaling"], self.viewer_prefix
         )

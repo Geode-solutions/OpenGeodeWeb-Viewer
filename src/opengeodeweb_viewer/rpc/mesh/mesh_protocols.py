@@ -1,6 +1,6 @@
 # Standard library imports
 import os
-from typing import Any
+from typing import Optional, Union
 
 # Third party imports
 import vtk
@@ -22,13 +22,13 @@ class VtkMeshView(VtkObjectView):
         super().__init__()
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
-    def registerMesh(self, params: dict[str, Any]) -> None:
+    def registerMesh(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
         data_id = params["id"]
         try:
             _ = self.get_data(data_id)
             file_path = self.get_data_file_path(data_id)
-
+            
             reader = vtk.vtkXMLGenericDataObjectReader()
             reader.SetFileName(file_path)
             filter = {}
@@ -75,25 +75,25 @@ class VtkMeshView(VtkObjectView):
             raise
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
-    def deregisterMesh(self, params: dict[str, Any]) -> None:
+    def deregisterMesh(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(params, self.mesh_schemas_dict["deregister"], self.mesh_prefix)
         data_id = params["id"]
         self.deregisterObject(data_id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
-    def SetMeshVisibility(self, params: dict[str, Any]) -> None:
+    def SetMeshVisibility(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
         data_id, visibility = params["id"], params["visibility"]
         self.SetVisibility(data_id, visibility)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
-    def setMeshOpacity(self, params: dict[str, Any]) -> None:
+    def setMeshOpacity(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
         data_id, opacity = params["id"], params["opacity"]
         self.SetOpacity(data_id, opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
-    def setMeshColor(self, params: dict[str, Any]) -> None:
+    def setMeshColor(self, params: dict[str, Union[str, int, float, bool, dict]]) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         data_id, red, green, blue = (
             params["id"],
@@ -104,14 +104,14 @@ class VtkMeshView(VtkObjectView):
         self.SetColor(data_id, red, green, blue)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
-    def meshApplyTextures(self, params: dict[str, Any]) -> None:
+    def meshApplyTextures(self, params: dict[str, Union[str, list]]) -> None:
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
         data_id, textures_info = params["id"], params["textures"]
         self.applyTextures(data_id, textures_info)
 
-    def applyTextures(self, mesh_id: str, textures_info: list[dict[str, Any]]) -> None:
+    def applyTextures(self, mesh_id: str, textures_info: list[dict[str, str]]) -> None:
         for tex_info in textures_info:
             texture_id = tex_info["id"]
             texture_name = tex_info["texture_name"]
