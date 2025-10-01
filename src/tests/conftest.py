@@ -31,7 +31,13 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(self, rpc: str, params: Optional[list[Union[dict[str, Union[str, int, float, bool]], int]]] = None) -> None:
+    def call(
+        self,
+        rpc: str,
+        params: Optional[
+            list[Union[dict[str, Union[str, int, float, bool]], int]]
+        ] = None,
+    ) -> None:
         if params is None:
             params = [{}]
         self.ws.send(
@@ -56,7 +62,21 @@ class ServerMonitor:
 
     def get_response(
         self,
-    ) -> Union[bytes, dict[str, Union[str, int, float, bool, list[Union[str, int, float, bool]], dict[str, Union[str, int, float, bool]]]], str]:
+    ) -> Union[
+        bytes,
+        dict[
+            str,
+            Union[
+                str,
+                int,
+                float,
+                bool,
+                list[Union[str, int, float, bool]],
+                dict[str, Union[str, int, float, bool]],
+            ],
+        ],
+        str,
+    ]:
         response = self.ws.recv()
         if isinstance(response, bytes):
             return response

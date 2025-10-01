@@ -96,7 +96,10 @@ class VtkMeshView(VtkObjectView):
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
     def setMeshColor(
-        self, params: dict[str, Union[str, int, float, bool, dict[str, Union[str, int, float]]]]
+        self,
+        params: dict[
+            str, Union[str, int, float, bool, dict[str, Union[str, int, float]]]
+        ],
     ) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         color_dict = params["color"]
@@ -109,7 +112,9 @@ class VtkMeshView(VtkObjectView):
         self.SetColor(data_id, red, green, blue)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
-    def meshApplyTextures(self, params: dict[str, Union[str, list[dict[str, str]]]]) -> None:
+    def meshApplyTextures(
+        self, params: dict[str, Union[str, list[dict[str, str]]]]
+    ) -> None:
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
