@@ -2,7 +2,9 @@ from typing import Callable
 from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
 
 
-def test_register_mesh(server: "ServerMonitor", dataset_factory: Callable[..., str]) -> None:
+def test_register_mesh(
+    server: "ServerMonitor", dataset_factory: Callable[..., str]
+) -> None:
     data_id = "123456789"
     dataset_factory(id=data_id, viewable_file_name="hat.vtp", geode_object="mesh")
 
@@ -14,7 +16,9 @@ def test_register_mesh(server: "ServerMonitor", dataset_factory: Callable[..., s
     assert server.compare_image(3, "mesh/register.jpeg") is True
 
 
-def test_register_model(server: "ServerMonitor", dataset_factory: Callable[..., str]) -> None:
+def test_register_model(
+    server: "ServerMonitor", dataset_factory: Callable[..., str]
+) -> None:
     data_id = "123456789"
     dataset_factory(id=data_id, viewable_file_name="CrossSection.vtm")
 
@@ -26,7 +30,9 @@ def test_register_model(server: "ServerMonitor", dataset_factory: Callable[..., 
     assert server.compare_image(3, "model/register.jpeg") is True
 
 
-def test_deregister_mesh(server: "ServerMonitor", dataset_factory: Callable[..., str]) -> None:
+def test_deregister_mesh(
+    server: "ServerMonitor", dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -37,7 +43,9 @@ def test_deregister_mesh(server: "ServerMonitor", dataset_factory: Callable[...,
     assert server.compare_image(3, "mesh/deregister.jpeg") == True
 
 
-def test_deregister_model(server: "ServerMonitor", dataset_factory: Callable[..., str]) -> None:
+def test_deregister_model(
+    server: "ServerMonitor", dataset_factory: Callable[..., str]
+) -> None:
     test_register_model(server, dataset_factory)
 
     server.call(
