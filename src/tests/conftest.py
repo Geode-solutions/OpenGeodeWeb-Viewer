@@ -138,14 +138,16 @@ class ServerMonitor:
         self.call("viewport.image.push.observer.add", [{"observer_id": -1}])
 
     def _drain_initial_messages(
-        self, max_messages: int = 5, timeout: float = 4.0
+        self, max_messages: int = 5, timeout: float = 10.0
     ) -> None:
-
         self.ws.settimeout(timeout)
-        for _ in range(max_messages):
+        for i in range(max_messages):
             try:
-                _ = self.ws.recv()
+                print(f"{i=}", flush=True)
+                response = self.ws.recv()
+                print(f"{response=}", flush=True)
             except WebSocketTimeoutException:
+                print(f"Timeout on message {i}, continuing...", flush=True)
                 break
 
 
