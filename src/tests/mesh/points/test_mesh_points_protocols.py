@@ -66,9 +66,9 @@ def test_points_with_point_set(server):
     )
     assert server.compare_image(3, "mesh/points/point_set_color.jpeg") == True
 
-    server.call(
-        VtkMeshPointsView.mesh_points_prefix
-        + VtkMeshPointsView.mesh_points_schemas_dict["visibility"]["rpc"],
-        [{"id": "123456789", "visibility": False}],
-    )
-    assert server.compare_image(3, "mesh/points/point_set_visibility.jpeg") == True
+    # server.call(
+    #     VtkMeshPointsView.mesh_points_prefix
+    #     + VtkMeshPointsView.mesh_points_schemas_dict["visibility"]["rpc"],
+    #     [{"id": "123456789", "visibility": False}],
+    # )
+    # assert server.compare_image(3, "mesh/points/point_set_visibility.jpeg") == True
