@@ -1,7 +1,9 @@
+from typing import Callable
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from ..conftest import ServerMonitor
 
 
-def test_register_model(server, dataset_factory: callable):
+def test_register_model(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(id="123456789", viewable_file_name="CrossSection.vtm")
     server.call(
@@ -11,7 +13,7 @@ def test_register_model(server, dataset_factory: callable):
     assert server.compare_image(3, "model/register.jpeg") == True
 
 
-def test_register_model_cube(server, dataset_factory: callable):
+def test_register_model_cube(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(id="123456789", viewable_file_name="cube.vtm")
     server.call(
@@ -21,7 +23,7 @@ def test_register_model_cube(server, dataset_factory: callable):
     assert server.compare_image(3, "model/cube_register.jpeg") == True
 
 
-def test_visibility_model(server, dataset_factory: callable):
+def test_visibility_model(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 
@@ -33,7 +35,7 @@ def test_visibility_model(server, dataset_factory: callable):
     assert server.compare_image(3, "model/visibility.jpeg") == True
 
 
-def test_deregister_model(server, dataset_factory: callable):
+def test_deregister_model(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 
