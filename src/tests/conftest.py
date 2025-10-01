@@ -10,14 +10,14 @@ import time
 import os
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from typing import Callable, Optional
+from typing import Callable, Optional, Union, Dict, Any, List
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 
 
 class ServerMonitor:
-    def __init__(self, log):
+    def __init__(self, log: str) -> None:
         self.log = log
         self.ws = create_connection("ws://localhost:1234/ws")
         self.images_dir_path = os.path.abspath(
@@ -31,7 +31,7 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(self, rpc, params=[{}]) -> None:
+    def call(self, rpc: str, params: List[Dict[str, Any]] = [{}]) -> None:
         return self.ws.send(
             json.dumps(
                 {
@@ -42,7 +42,7 @@ class ServerMonitor:
             )
         )
 
-    def print_log(self):
+    def print_log(self) -> None:
         output = ""
         with open(self.log) as f:
             for line in f:
@@ -52,7 +52,7 @@ class ServerMonitor:
                 output += line
         print(output)
 
-    def get_response(self):
+    def get_response(self) -> Union[bytes, Dict[str, Any], str]:
         response = self.ws.recv()
         if isinstance(response, bytes):
             return response
@@ -144,10 +144,10 @@ class ServerMonitor:
 
 
 class FixtureHelper:
-    def __init__(self, root_path):
+    def __init__(self, root_path: Path) -> None:
         self.root_path = Path(root_path)
 
-    def get_xprocess_args(self):
+    def get_xprocess_args(self) -> tuple:
         class Starter(ProcessStarter):
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
@@ -166,7 +166,7 @@ HELPER = FixtureHelper(ROOT_PATH)
 
 
 @pytest.fixture
-def server(xprocess):
+def server(xprocess) -> ServerMonitor:
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
     _, log = xprocess.ensure(name, Starter)
@@ -181,7 +181,7 @@ def server(xprocess):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def configure_test_environment():
+def configure_test_environment() -> None:
     base_path = Path(__file__).parent
     config.test_config(base_path)
     db_path = base_path / "project.db"
@@ -197,7 +197,6 @@ def configure_test_environment():
 
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
-
     def create_dataset(
         *, id: str, viewable_file_name: str, geode_object: Optional[str] = None
     ) -> str:

@@ -1,4 +1,5 @@
 # Standard library imports
+from typing import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
@@ -7,9 +8,10 @@ from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
 
 # Local application imports
 from src.tests.model.test_model_protocols import test_register_model_cube
+from ...conftest import ServerMonitor
 
 
-def test_lines_edges_visibility(server, dataset_factory):
+def test_lines_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -40,7 +42,7 @@ def test_lines_edges_visibility(server, dataset_factory):
     assert server.compare_image(3, "model/lines/visibility.jpeg") == True
 
 
-def test_lines_edges_color(server, dataset_factory):
+def test_lines_edges_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_lines_edges_visibility(server, dataset_factory)
 
