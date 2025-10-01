@@ -10,7 +10,9 @@ from src.tests.mesh.test_mesh_protocols import test_register_mesh
 from ...conftest import ServerMonitor
 
 
-def test_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_edges_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -21,7 +23,9 @@ def test_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., 
     assert server.compare_image(3, "mesh/edges/visibility.jpeg") == True
 
 
-def test_edges_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_edges_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     test_edges_visibility(server, dataset_factory)
 
     server.call(
@@ -32,7 +36,9 @@ def test_edges_color(server: ServerMonitor, dataset_factory: Callable[..., str])
     assert server.compare_image(3, "mesh/edges/color.jpeg") == True
 
 
-def test_edges_with_edged_curve(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_edges_with_edged_curve(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     dataset_factory(id="123456789", viewable_file_name="edged_curve.vtp")
 
     server.call(

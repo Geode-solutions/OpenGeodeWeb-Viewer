@@ -3,7 +3,9 @@ from typing import Callable
 
 # Third party imports
 from src.opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from src.opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
+from src.opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import (
+    VtkMeshPointsView,
+)
 
 # Local application imports
 from src.tests.mesh.test_mesh_protocols import test_register_mesh
