@@ -37,6 +37,7 @@ from .rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
 from .rpc.generic.generic_protocols import VtkGenericView
+from .rpc.utils_protocols import VtkUtilsView
 
 
 # =============================================================================
@@ -78,6 +79,7 @@ class _Server(vtk_wslink.ServerProtocol):
         model_protocols = VtkModelView()
         vtk_view = VtkView()
         self.registerVtkWebProtocol(vtk_view)
+        self.registerVtkWebProtocol(VtkUtilsView())
         self.registerVtkWebProtocol(VtkViewerView())
         self.registerVtkWebProtocol(mesh_protocols)
         self.registerVtkWebProtocol(VtkMeshPointsView())
