@@ -1,20 +1,20 @@
 import os
-import tempfile
 from shutil import copyfile, copytree
 from sys import platform
+from typing import List, Set
 
 
-def default_config():
+def default_config() -> None:
     os.environ["DEFAULT_HOST"] = "localhost"
     os.environ["DEFAULT_PORT"] = "1234"
 
 
-def prod_config():
+def prod_config() -> None:
     default_config()
     os.environ["DATA_FOLDER_PATH"] = "/data/"
 
 
-def dev_config():
+def dev_config() -> None:
     default_config()
     if platform == "linux":
         os.environ["DATA_FOLDER_PATH"] = "/temp/OpenGeodeWeb_Data/"
@@ -29,8 +29,8 @@ def dev_config():
 def _copy_test_assets(
     src_data: str,
     tmp_data_root: str,
-    test_ids: list[str],
-    valid_exts: set[str],
+    test_ids: List[str],
+    valid_exts: Set[str],
     uploads_directory: str,
     structure_directory: str,
 ) -> None:
@@ -49,7 +49,7 @@ def _copy_test_assets(
             copyfile(src, os.path.join(uploads_directory, file))
 
 
-def test_config(path):
+def test_config(path: str) -> None:
     default_config()
     os.environ["DATA_FOLDER_PATH"] = os.path.join(
         os.path.dirname(__file__), "..", "..", "tests", "data"
