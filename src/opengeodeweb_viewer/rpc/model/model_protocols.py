@@ -20,25 +20,6 @@ class VtkModelView(VtkObjectView):
     def __init__(self):
         super().__init__()
 
-    def _build_model_pipeline(self, file_path: str) -> tuple[
-        vtk.vtkXMLMultiBlockDataReader,
-        vtk.vtkGeometryFilter,
-        vtk.vtkCompositePolyDataMapper,
-        vtk.vtkActor,
-    ]:
-        reader = vtk.vtkXMLMultiBlockDataReader()
-        reader.SetFileName(file_path)
-        geometry = vtk.vtkGeometryFilter()
-        geometry.SetInputConnection(reader.GetOutputPort())
-        mapper = vtk.vtkCompositePolyDataMapper()
-        mapper.SetInputConnection(geometry.GetOutputPort())
-        attributes = vtkCompositeDataDisplayAttributes()
-        mapper.SetCompositeDataDisplayAttributes(attributes)
-        actor = vtk.vtkActor()
-        actor.SetMapper(mapper)
-
-        return reader, geometry, mapper, actor
-
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, params):
         validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
@@ -55,19 +36,8 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputConnection(filter.GetOutputPort())
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-
-            actor = vtk.vtkActor()
-            actor.SetMapper(mapper)
-
-            renderer = self.get_renderer()
-            renderer.AddActor(actor)
-
-            self.register_object(data_id, reader, filter, actor, mapper, {})
+            self.registerObject(data_id, file_path, reader, filter, mapper)
             self.get_object(data_id)["max_dimension"] = "default"
-            renderWindow = self.getView("-1")
-            renderer.ResetCamera()
-            renderWindow.Render()
-            self.render()
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)
             raise

@@ -1,7 +1,6 @@
 import os
 from shutil import copyfile, copytree
 from sys import platform
-from typing import List, Set
 
 
 def default_config() -> None:
@@ -29,8 +28,8 @@ def dev_config() -> None:
 def _copy_test_assets(
     src_data: str,
     tmp_data_root: str,
-    test_ids: List[str],
-    valid_exts: Set[str],
+    test_ids: list[str],
+    valid_exts: set[str],
     uploads_directory: str,
     structure_directory: str,
 ) -> None:

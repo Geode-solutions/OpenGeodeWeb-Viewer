@@ -1,6 +1,6 @@
 # Standard library imports
 import os
-from typing import Any, Dict, List
+from typing import Any
 
 # Third party imports
 import vtk
@@ -22,23 +22,18 @@ class VtkMeshView(VtkObjectView):
         super().__init__()
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
-    def registerMesh(self, params: Dict[str, Any]) -> None:
+    def registerMesh(self, params: dict[str, Any]) -> None:
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
         data_id = params["id"]
         try:
             _ = self.get_data(data_id)
             file_path = self.get_data_file_path(data_id)
-            ext = os.path.splitext(file_path)[1].lower()
-            if ext == ".vtu":
-                reader = vtk.vtkXMLUnstructuredGridReader()
-                reader.SetFileName(file_path)
-                mapper = vtk.vtkDataSetMapper()
-                mapper.SetInputConnection(reader.GetOutputPort())
-            else:
-                reader = vtk.vtkXMLPolyDataReader()
-                reader.SetFileName(file_path)
-                mapper = vtk.vtkPolyDataMapper()
-                mapper.SetInputConnection(reader.GetOutputPort())
+            
+            reader = vtk.vtkXMLGenericDataObjectReader()
+            reader.SetFileName(file_path)
+            filter = {}
+            mapper = vtk.vtkDataSetMapper()
+            mapper.SetInputConnection(reader.GetOutputPort())
 
             actor = vtk.vtkActor()
             actor.SetMapper(mapper)
@@ -46,7 +41,7 @@ class VtkMeshView(VtkObjectView):
             renderer = self.get_renderer()
             renderer.AddActor(actor)
 
-            self.register_object(data_id, reader, None, actor, mapper, {})
+            self.register_object(data_id, reader, filter, actor, mapper, {})
 
             reader.Update()
             data_object = reader.GetOutput()
@@ -68,36 +63,37 @@ class VtkMeshView(VtkObjectView):
                 max_dimension = "polygons"
             elif max_id >= 7:
                 max_dimension = "polyhedra"
-            self.get_object(data_id)["max_dimension"] = max_dimension
+            self.get_data_base()[data_id]["max_dimension"] = max_dimension
 
             renderWindow = self.getView("-1")
             renderer.ResetCamera()
             renderWindow.Render()
             self.render()
         except Exception as e:
+            print("error : ", str(e), flush=True)
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
             raise
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
-    def deregisterMesh(self, params: Dict[str, Any]) -> None:
+    def deregisterMesh(self, params: dict[str, Any]) -> None:
         validate_schema(params, self.mesh_schemas_dict["deregister"], self.mesh_prefix)
         data_id = params["id"]
         self.deregisterObject(data_id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
-    def SetMeshVisibility(self, params: Dict[str, Any]) -> None:
+    def SetMeshVisibility(self, params: dict[str, Any]) -> None:
         validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
         data_id, visibility = params["id"], params["visibility"]
         self.SetVisibility(data_id, visibility)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
-    def setMeshOpacity(self, params: Dict[str, Any]) -> None:
+    def setMeshOpacity(self, params: dict[str, Any]) -> None:
         validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
         data_id, opacity = params["id"], params["opacity"]
         self.SetOpacity(data_id, opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
-    def setMeshColor(self, params: Dict[str, Any]) -> None:
+    def setMeshColor(self, params: dict[str, Any]) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         data_id, red, green, blue = (
             params["id"],
@@ -108,14 +104,14 @@ class VtkMeshView(VtkObjectView):
         self.SetColor(data_id, red, green, blue)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
-    def meshApplyTextures(self, params: Dict[str, Any]) -> None:
+    def meshApplyTextures(self, params: dict[str, Any]) -> None:
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
         data_id, textures_info = params["id"], params["textures"]
         self.applyTextures(data_id, textures_info)
 
-    def applyTextures(self, mesh_id: str, textures_info: List[Dict[str, Any]]) -> None:
+    def applyTextures(self, mesh_id: str, textures_info: list[dict[str, Any]]) -> None:
         for tex_info in textures_info:
             texture_id = tex_info["id"]
             texture_name = tex_info["texture_name"]

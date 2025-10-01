@@ -10,7 +10,7 @@ import time
 import os
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from typing import Callable, Optional, Union, Dict, Any, List, Tuple, Generator
+from typing import Callable, Optional, Union, Any, Generator
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
@@ -31,7 +31,7 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(self, rpc: str, params: Optional[List[Dict[str, Any]]] = None) -> None:
+    def call(self, rpc: str, params: Optional[list[dict[str, Any]]] = None) -> None:
         if params is None:
             params = [{}]
         self.ws.send(
@@ -54,7 +54,7 @@ class ServerMonitor:
                 output += line
         print(output)
 
-    def get_response(self) -> Union[bytes, Dict[str, Any], str]:
+    def get_response(self) -> Union[bytes, dict[str, Any], str]:
         response = self.ws.recv()
         if isinstance(response, bytes):
             return response
@@ -155,7 +155,7 @@ class FixtureHelper:
     def __init__(self, root_path: Path) -> None:
         self.root_path = Path(root_path)
 
-    def get_xprocess_args(self) -> Tuple[str, type, type]:
+    def get_xprocess_args(self) -> tuple[str, type, type]:
         class Starter(ProcessStarter):
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"

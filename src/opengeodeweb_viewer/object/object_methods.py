@@ -1,12 +1,12 @@
 # Standard library imports
 import os
-from typing import Any, List, Dict
+from typing import Optional, Union
 
 # Third party imports
 import vtk
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+# from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
@@ -15,7 +15,12 @@ class VtkObjectView(VtkView):
         super().__init__()
 
     def registerObject(
-        self, id: str, file_name: str, reader: Any, filter: Any, mapper: Any
+        self, 
+        id: str, 
+        file_name: str, 
+        reader: vtk.vtkAlgorithm, 
+        filter: Optional[vtk.vtkAlgorithm], 
+        mapper: vtk.vtkMapper
     ) -> None:
         actor = vtk.vtkActor()
         self.register_object(id, reader, filter, actor, mapper, {})
@@ -41,9 +46,9 @@ class VtkObjectView(VtkView):
         self.deregister_object(data_id)
         self.render()
 
-    def applyTextures(self, data_id: str, textures: List[Dict[str, Any]]) -> None:
-        textures_array = []
-        images_reader_array = []
+    def applyTextures(self, data_id: str, textures: list[dict[str, str]]) -> None:
+        textures_array: list[vtk.vtkTexture] = []
+        images_reader_array: list[vtk.vtkXMLImageDataReader] = []
 
         data = self.get_object(data_id)
         mapper = data["mapper"]
@@ -153,7 +158,7 @@ class VtkObjectView(VtkView):
         self.render()
 
     def SetBlocksVisibility(
-        self, data_id: str, block_ids: List[Any], visibility: bool
+        self, data_id: str, block_ids: list[int], visibility: bool
     ) -> None:
         mapper = self.get_object(data_id)["mapper"]
         for block_id in block_ids:
@@ -161,7 +166,7 @@ class VtkObjectView(VtkView):
         self.render()
 
     def SetBlocksColor(
-        self, data_id: str, block_ids: List[Any], red: int, green: int, blue: int
+        self, data_id: str, block_ids: list[int], red: int, green: int, blue: int
     ) -> None:
         mapper = self.get_object(data_id)["mapper"]
         for block_id in block_ids:

@@ -1,6 +1,6 @@
 # Standard library imports
 import os
-from typing import Dict, Any, Optional
+from typing import Optional, Union
 
 # Third party imports
 import vtk
@@ -19,10 +19,10 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-    def get_data_base(self) -> Dict[str, Any]:
+    def get_data_base(self) -> dict[str, dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]]:
         return self.getSharedObject("db")
 
-    def get_data(self, data_id: str) -> Dict[str, Any]:
+    def get_data(self, data_id: str) -> dict[str, str]:
         if Data is None:
             raise Exception("Data model not available")
 
@@ -59,13 +59,13 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
         return os.path.join(data_folder_path, data_id, filename)
 
-    def get_renderer(self) -> Any:
+    def get_renderer(self) -> vtk.vtkRenderer:
         return self.getSharedObject("renderer")
 
-    def get_object(self, id: str) -> Any:
+    def get_object(self, id: str) -> dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]:
         return self.get_data_base()[id]
 
-    def get_protocol(self, name: str) -> Any:
+    def get_protocol(self, name: str) -> vtk_protocols.vtkWebProtocol:
         for p in self.coreServer.getLinkProtocols():
             if type(p).__name__ == name:
                 return p
@@ -79,7 +79,13 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.getSharedObject("publisher").imagePush({"view": view})
 
     def register_object(
-        self, id: str, reader: Any, filter: Any, actor: Any, mapper: Any, textures: Any
+        self, 
+        id: str, 
+        reader: vtk.vtkAlgorithm, 
+        filter: Optional[vtk.vtkAlgorithm], 
+        actor: vtk.vtkActor, 
+        mapper: vtk.vtkMapper, 
+        textures: dict
     ) -> None:
         self.get_data_base()[id] = {
             "reader": reader,
