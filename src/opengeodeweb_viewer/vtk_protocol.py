@@ -19,7 +19,11 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-    def get_data_base(self) -> dict[str, dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]]:
+    def get_data_base(
+        self,
+    ) -> dict[
+        str, dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]
+    ]:
         return self.getSharedObject("db")
 
     def get_data(self, data_id: str) -> dict[str, str]:
@@ -62,7 +66,9 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def get_renderer(self) -> vtk.vtkRenderer:
         return self.getSharedObject("renderer")
 
-    def get_object(self, id: str) -> dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]:
+    def get_object(
+        self, id: str
+    ) -> dict[str, Union[vtk.vtkAlgorithm, vtk.vtkActor, vtk.vtkMapper, dict, str]]:
         return self.get_data_base()[id]
 
     def get_protocol(self, name: str) -> vtk_protocols.vtkWebProtocol:
@@ -79,13 +85,13 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.getSharedObject("publisher").imagePush({"view": view})
 
     def register_object(
-        self, 
-        id: str, 
-        reader: vtk.vtkAlgorithm, 
-        filter: Optional[vtk.vtkAlgorithm], 
-        actor: vtk.vtkActor, 
-        mapper: vtk.vtkMapper, 
-        textures: dict
+        self,
+        id: str,
+        reader: vtk.vtkAlgorithm,
+        filter: Optional[vtk.vtkAlgorithm],
+        actor: vtk.vtkActor,
+        mapper: vtk.vtkMapper,
+        textures: dict,
     ) -> None:
         self.get_data_base()[id] = {
             "reader": reader,

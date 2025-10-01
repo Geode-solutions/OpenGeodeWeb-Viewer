@@ -28,7 +28,7 @@ class VtkMeshView(VtkObjectView):
         try:
             _ = self.get_data(data_id)
             file_path = self.get_data_file_path(data_id)
-            
+
             reader = vtk.vtkXMLGenericDataObjectReader()
             reader.SetFileName(file_path)
             filter = {}
