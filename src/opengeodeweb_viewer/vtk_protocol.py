@@ -21,9 +21,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     def get_data_base(
         self,
-    ) -> dict[
-        str, dict[str, Union[object, str]]
-    ]:
+    ) -> dict[str, dict[str, Union[object, str]]]:
         return self.getSharedObject("db")
 
     def get_data(self, data_id: str) -> dict[str, Optional[Union[str, list[str]]]]:
@@ -66,9 +64,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def get_renderer(self) -> vtk.vtkRenderer:
         return self.getSharedObject("renderer")
 
-    def get_object(
-        self, id: str
-    ) -> dict[str, Union[object, str]]:
+    def get_object(self, id: str) -> dict[str, Union[object, str]]:
         return self.get_data_base()[id]
 
     def get_protocol(self, name: str) -> vtk_protocols.vtkWebProtocol:
