@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+from typing import Dict, Any, Optional
 
 # Third party imports
 import vtk
@@ -11,17 +12,17 @@ from opengeodeweb_microservice.database.data import Data
 
 
 class VtkView(vtk_protocols.vtkWebProtocol):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
         self.DATABASE_PATH = os.getenv("DATABASE_PATH")
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-    def get_data_base(self) -> dict:
+    def get_data_base(self) -> Dict[str, Any]:
         return self.getSharedObject("db")
 
-    def get_data(self, data_id):
+    def get_data(self, data_id: str) -> Dict[str, Any]:
         if Data is None:
             raise Exception("Data model not available")
 
@@ -47,25 +48,29 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             print(f"Error fetching data {data_id}: {e}")
             raise
 
-    def get_data_file_path(self, data_id: str, filename=None) -> str:
+    def get_data_file_path(self, data_id: str, filename: Optional[str] = None) -> str:
         if filename is None:
             data = self.get_data(data_id)
             filename = data["viewable_file_name"]
 
-        return os.path.join(self.DATA_FOLDER_PATH, data_id, filename)
+        data_folder_path = self.DATA_FOLDER_PATH
+        if data_folder_path is None:
+            raise Exception("DATA_FOLDER_PATH environment variable not set")
+            
+        return os.path.join(data_folder_path, data_id, filename)
 
-    def get_renderer(self):
+    def get_renderer(self) -> Any:
         return self.getSharedObject("renderer")
 
-    def get_object(self, id):
+    def get_object(self, id: str) -> Any:
         return self.get_data_base()[id]
 
-    def get_protocol(self, name):
+    def get_protocol(self, name: str) -> Any:
         for p in self.coreServer.getLinkProtocols():
             if type(p).__name__ == name:
                 return p
 
-    def render(self, view=-1):
+    def render(self, view: int = -1) -> None:
         if "grid_scale" in self.get_data_base():
             renderer = self.get_renderer()
             renderer_bounds = renderer.ComputeVisiblePropBounds()
@@ -73,7 +78,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             grid_scale.SetBounds(renderer_bounds)
         self.getSharedObject("publisher").imagePush({"view": view})
 
-    def register_object(self, id, reader, filter, actor, mapper, textures):
+    def register_object(self, id: str, reader: Any, filter: Any, actor: Any, mapper: Any, textures: Any) -> None:
         self.get_data_base()[id] = {
             "reader": reader,
             "filter": filter,
@@ -82,6 +87,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             "textures": textures,
         }
 
-    def deregister_object(self, id):
+    def deregister_object(self, id: str) -> None:
         if id in self.get_data_base():
             del self.get_data_base()[id]
