@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+from typing import Union
 
 # Third party imports
 from wslink import register as exportRpc
@@ -15,11 +16,11 @@ class VtkMeshPointsView(VtkMeshView):
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, params):
+    def setMeshPointsVisibility(self, params: dict[str, Union[str, bool]]) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["visibility"], self.mesh_points_prefix
         )
@@ -27,7 +28,7 @@ class VtkMeshPointsView(VtkMeshView):
         self.SetPointsVisibility(id, visibility)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
-    def setMeshPointsColor(self, params):
+    def setMeshPointsColor(self, params: dict[str, Union[str, dict[str, int]]]) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
         )
@@ -40,7 +41,7 @@ class VtkMeshPointsView(VtkMeshView):
         self.SetPointsColor(id, red, green, blue)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
-    def setMeshPointsSize(self, params):
+    def setMeshPointsSize(self, params: dict[str, Union[str, int]]) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
         )
@@ -48,7 +49,7 @@ class VtkMeshPointsView(VtkMeshView):
         self.SetPointsSize(id, size)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_attribute"]["rpc"])
-    def setMeshPointsVertexAttribute(self, params):
+    def setMeshPointsVertexAttribute(self, params: dict[str, str]) -> None:
         validate_schema(
             params,
             self.mesh_points_schemas_dict["vertex_attribute"],

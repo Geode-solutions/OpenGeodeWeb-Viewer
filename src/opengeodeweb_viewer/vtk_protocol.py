@@ -25,7 +25,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def get_object(self, id: str) -> dict[str, Union[object, str]]:
         return self.get_data_base()[id]
 
-    def get_data(self, data_id: str) -> dict[str, Optional[Union[str, list[str]]]]:
+    def get_data(self, data_id: str) -> dict[str, Union[str, list[str], None]]:
         if Data is None:
             raise Exception("Data model not available")
 
@@ -54,7 +54,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def get_data_file_path(self, data_id: str, filename: Optional[str] = None) -> str:
         if filename is None:
             data = self.get_data(data_id)
-            filename = data["viewable_file_name"]
+            viewable_file_name = data["viewable_file_name"]
+            filename = str(viewable_file_name) if viewable_file_name is not None else ""
 
         data_folder_path = self.DATA_FOLDER_PATH
         if data_folder_path is None:

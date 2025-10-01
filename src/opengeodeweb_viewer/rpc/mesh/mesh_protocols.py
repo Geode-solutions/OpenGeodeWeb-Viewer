@@ -1,6 +1,6 @@
 # Standard library imports
 import os
-from typing import Optional, Union
+from typing import Optional, Union, cast
 
 # Third party imports
 import vtk
@@ -24,7 +24,7 @@ class VtkMeshView(VtkObjectView):
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
     def registerMesh(self, params: dict[str, Union[str, int, float, bool]]) -> None:
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
-        data_id = str(params["id"])  # Ensure it's a string
+        data_id = str(params["id"])
         try:
             _ = self.get_data(data_id)
             file_path = self.get_data_file_path(data_id)
@@ -102,7 +102,7 @@ class VtkMeshView(VtkObjectView):
         ],
     ) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
-        color_dict = params["color"]
+        color_dict = cast(dict[str, Union[str, int, float]], params["color"])
         data_id, red, green, blue = (
             str(params["id"]),
             int(color_dict["r"]),
@@ -118,7 +118,8 @@ class VtkMeshView(VtkObjectView):
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
-        data_id, textures_info = str(params["id"]), params["textures"]
+        data_id = str(params["id"])
+        textures_info = cast(list[dict[str, str]], params["textures"])
         self.applyTextures(data_id, textures_info)
 
     def applyTextures(self, mesh_id: str, textures_info: list[dict[str, str]]) -> None:
@@ -135,7 +136,7 @@ class VtkMeshView(VtkObjectView):
             texture = vtk.vtkTexture()
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
-            reader = self.get_object(mesh_id)["reader"]
+            reader = cast(vtk.vtkAlgorithm, self.get_object(mesh_id)["reader"])
             output = reader.GetOutput()
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
@@ -143,7 +144,7 @@ class VtkMeshView(VtkObjectView):
                 if array.GetName() == texture_name:
                     point_data.SetTCoords(array)
                     break
-            actor = self.get_object(mesh_id)["actor"]
+            actor = cast(vtk.vtkActor, self.get_object(mesh_id)["actor"])
             actor.SetTexture(texture)
         self.render()
 

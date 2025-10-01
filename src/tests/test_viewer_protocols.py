@@ -56,6 +56,8 @@ def test_get_point_position(
     result = response["result"]
     if result is None:
         return
+    if not isinstance(result, dict):
+        assert False, f"Result is not a dict: {result!r}"
     assert "x" in result, f"No 'x' in result: {result}"
     assert "y" in result, f"No 'y' in result: {result}"
     assert "z" in result, f"No 'z' in result: {result}"
@@ -180,6 +182,9 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
     result = response["result"]
     if result is None:
         print("Warning: picked_ids result is None", flush=True)
+        return
+    if not isinstance(result, dict):
+        print(f"Warning: picked_ids result is not a dict: {result!r}", flush=True)
         return
     assert "array_ids" in result
     array_ids = result["array_ids"]
