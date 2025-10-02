@@ -37,7 +37,7 @@ from .rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
 from .rpc.generic.generic_protocols import VtkGenericView
-from .rpc.utils_protocols import VtkUtilsView
+from .rpc.utils_protocols import VtkUtilsView  # type: ignore
 
 
 # =============================================================================
