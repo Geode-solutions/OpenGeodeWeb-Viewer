@@ -2,11 +2,10 @@
 import os
 
 # Third party imports
-import vtk
 from wslink import register as exportRpc
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import get_schemas_dict
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
