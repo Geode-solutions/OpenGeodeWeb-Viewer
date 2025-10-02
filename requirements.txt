@@ -4,21 +4,21 @@
 #
 #    pip-compile --output-file=./requirements.txt --pre ./requirements.in
 #
-aiohappyeyeballs==2.*,>=2.6.1
+aiohappyeyeballs~=2.0
     # via aiohttp
-aiohttp==3.*,>=3.12.15
+aiohttp~=3.0
     # via wslink
-aiosignal==1.*,>=1.4.0
+aiosignal~=1.0
     # via aiohttp
-attrs==25.*,>=25.3.0
+attrs~=25.0
     # via aiohttp
 contourpy==1.*,>=1.3.3
     # via matplotlib
-cycler==0.*,>=0.12.1
+cycler~=0.0
     # via matplotlib
 fonttools==4.*,>=4.60.1
     # via matplotlib
-frozenlist==1.*,>=1.7.0
+frozenlist~=1.0
     # via
     #   aiohttp
     #   aiosignal
@@ -28,35 +28,37 @@ kiwisolver==1.4.10rc0
     # via matplotlib
 matplotlib==3.*,>=3.10.6
     # via vtk
-multidict==6.*,>=6.6.4
+multidict~=6.0
     # via
     #   aiohttp
     #   yarl
-numpy==2.*,>=2.3.3
+numpy~=2.0
     # via
     #   contourpy
     #   matplotlib
 packaging==25.0
     # via matplotlib
-pillow==11.*,>=11.3.0
+pillow~=11.0
     # via matplotlib
-propcache==0.*,>=0.3.2
+propcache~=0.0
     # via
     #   aiohttp
     #   yarl
 pyparsing==3.3.0a1
+pyparsing==3.3.0a1
     # via matplotlib
 python-dateutil==2.9.0.post0
+python-dateutil==2.9.0.post0
     # via matplotlib
-six==1.*,>=1.17.0
+six~=1.0
     # via python-dateutil
 typing-extensions==4.*,>=4.15.0
     # via aiosignal
 vtk==9.5.2
     # via -r requirements.in
-websocket-client==1.*,>=1.8.0
+websocket-client~=1.0
     # via -r requirements.in
 wslink==1.12.4
     # via -r requirements.in
-yarl==1.*,>=1.20.1
+yarl~=1.0
     # via aiohttp
