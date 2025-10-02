@@ -9,7 +9,7 @@ from vtk.web import protocols as vtk_protocols
 
 
 class VtkView(vtk_protocols.vtkWebProtocol):  # type: ignore
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
         self.DataReader = vtk.vtkXMLPolyDataReader()

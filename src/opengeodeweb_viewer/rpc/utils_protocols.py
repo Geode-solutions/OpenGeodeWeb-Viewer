@@ -9,7 +9,7 @@ from opengeodeweb_viewer.utils_functions import get_schemas_dict
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
-class VtkUtilsView(VtkView):  # type: ignore
+class VtkUtilsView(VtkView):
     ogw_prefix = "opengeodeweb_viewer."
     ogw_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
