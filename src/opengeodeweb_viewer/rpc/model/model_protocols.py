@@ -36,7 +36,9 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputConnection(filter.GetOutputPort())
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            self.registerObject(data_id, file_path, reader, filter, mapper)
+            data = self.get_data(data_id)
+            file_name = data["viewable_file_name"]
+            self.registerObject(data_id, file_name, reader, filter, mapper)
             self.get_object(data_id)["max_dimension"] = "default"
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)

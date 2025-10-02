@@ -26,24 +26,16 @@ class VtkMeshView(VtkObjectView):
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
         data_id = str(params["id"])
         try:
-            _ = self.get_data(data_id)
-            file_path = self.get_data_file_path(data_id)
+            data = self.get_data(data_id)
+            file_name = str(data["viewable_file_name"])
 
             reader = vtk.vtkXMLGenericDataObjectReader()
-            reader.SetFileName(file_path)
             filter = {}
             mapper = vtk.vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
 
-            actor = vtk.vtkActor()
-            actor.SetMapper(mapper)
+            self.registerObject(data_id, file_name, reader, filter, mapper)
 
-            renderer = self.get_renderer()
-            renderer.AddActor(actor)
-
-            self.register_object(data_id, reader, filter, actor, mapper, {})
-
-            reader.Update()
             data_object = reader.GetOutput()
             data_set = vtk.vtkDataSet.SafeDownCast(data_object)
             cell_types = vtk.vtkCellTypes()
@@ -65,12 +57,7 @@ class VtkMeshView(VtkObjectView):
                 max_dimension = "polyhedra"
             self.get_data_base()[data_id]["max_dimension"] = max_dimension
 
-            renderWindow = self.getView("-1")
-            renderer.ResetCamera()
-            renderWindow.Render()
-            self.render()
         except Exception as e:
-            print("error : ", str(e), flush=True)
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
             raise
 
