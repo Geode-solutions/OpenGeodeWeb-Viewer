@@ -11,7 +11,7 @@ from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
 class VtkUtilsView(VtkView):
-    mesh_prefix = "opengeodeweb_viewer.utils"
+    mesh_prefix = "opengeodeweb_viewer."
     mesh_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
@@ -20,7 +20,6 @@ class VtkUtilsView(VtkView):
         super().__init__()
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["kill"]["rpc"])
-    def kill(self, params) -> None:
-        validate_schema(params, self.mesh_schemas_dict["kill"], self.mesh_prefix)
+    def kill(self) -> None:
         print("Manual viewer kill, shutting down...", flush=True)
         os._exit(0)
