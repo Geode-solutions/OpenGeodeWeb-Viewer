@@ -81,7 +81,9 @@ class VtkMeshView(VtkObjectView):
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
     def setMeshOpacity(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
-        data_id, opacity = str(params["id"]), float(params["opacity"])
+        data_id, opacity = str(params["id"]), float(
+            cast(int | float, params["opacity"])
+        )
         self.SetOpacity(data_id, opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])

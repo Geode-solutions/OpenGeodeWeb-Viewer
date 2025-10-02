@@ -51,7 +51,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             print(f"Error fetching data {data_id}: {e}")
             raise
 
-    def get_data_file_path(self, data_id: str, filename: str) -> str:
+    def get_data_file_path(self, data_id: str, filename: str | None = None) -> str:
         if filename is None:
             data = self.get_data(data_id)
             viewable_file_name = data["viewable_file_name"]
