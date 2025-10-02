@@ -8,7 +8,7 @@ from vtk.web import protocols as vtk_protocols
 # Local application imports
 
 
-class VtkView(vtk_protocols.vtkWebProtocol):
+class VtkView(vtk_protocols.vtkWebProtocol):  # type: ignore
     def __init__(self):
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
