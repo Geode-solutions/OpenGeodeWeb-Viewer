@@ -3,14 +3,14 @@ import os
 
 # Third party imports
 import vtk
-from vtk.web import protocols as vtk_protocols
+from vtk.web import protocols as vtk_protocols  # type: ignore
 
 # Local application imports
 
 
-class VtkView(vtk_protocols.vtkWebProtocol):
-    def __init__(self):
-        super().__init__()
+class VtkView(vtk_protocols.vtkWebProtocol):  # type: ignore
+    def __init__(self) -> None:
+        super().__init__()  # type: ignore
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
