@@ -1,12 +1,13 @@
+# type: ignore
 # Standard library imports
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from wslink import register as exportRpc
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict
-from opengeodeweb_viewer.vtk_protocol import VtkView  # type: ignore
+from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
 class VtkUtilsView(VtkView):
