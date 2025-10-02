@@ -6,14 +6,12 @@ from xprocess import ProcessStarter
 import vtk
 import os
 import shutil
-import time
-import os
-from pathlib import Path
 import xml.etree.ElementTree as ET
 from typing import Callable, Generator
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
+from opengeodeweb_viewer.utils_functions import RpcTestParams
 
 
 class ServerMonitor:
@@ -31,14 +29,7 @@ class ServerMonitor:
         self._init_ws()
         self._drain_initial_messages()
 
-    def call(
-        self,
-        rpc: str,
-        params: (
-            list[dict[str, str | int | float | bool | dict[str, int] | list[str]] | int]
-            | None
-        ) = None,
-    ) -> None:
+    def call(self, rpc: str, params: RpcTestParams = None) -> None:
         if params is None:
             params = [{}]
         self.ws.send(

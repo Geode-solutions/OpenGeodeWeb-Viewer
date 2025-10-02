@@ -1,12 +1,16 @@
 # Standard library imports
 import os
-from typing import Union
 
 # Third party imports
 from wslink import register as exportRpc
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+    RpcParamsWithColor,
+)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 
 
@@ -20,7 +24,7 @@ class VtkMeshPointsView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, params: dict[str, Union[str, bool]]) -> None:
+    def setMeshPointsVisibility(self, params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["visibility"], self.mesh_points_prefix
         )
@@ -28,7 +32,7 @@ class VtkMeshPointsView(VtkMeshView):
         self.SetPointsVisibility(id, visibility)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
-    def setMeshPointsColor(self, params: dict[str, Union[str, dict[str, int]]]) -> None:
+    def setMeshPointsColor(self, params: RpcParamsWithColor) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
         )
@@ -41,7 +45,7 @@ class VtkMeshPointsView(VtkMeshView):
         self.SetPointsColor(id, red, green, blue)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
-    def setMeshPointsSize(self, params: dict[str, Union[str, int]]) -> None:
+    def setMeshPointsSize(self, params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
         )
@@ -49,7 +53,7 @@ class VtkMeshPointsView(VtkMeshView):
         self.SetPointsSize(id, size)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_attribute"]["rpc"])
-    def setMeshPointsVertexAttribute(self, params: dict[str, str]) -> None:
+    def setMeshPointsVertexAttribute(self, params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_points_schemas_dict["vertex_attribute"],

@@ -8,7 +8,12 @@ from wslink import register as exportRpc
 from opengeodeweb_microservice.database.data import Data
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+    RpcParamsWithColor,
+)
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 
 
@@ -22,7 +27,7 @@ class VtkMeshView(VtkObjectView):
         super().__init__()
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
-    def registerMesh(self, params: dict[str, str | int | float | bool]) -> None:
+    def registerMesh(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
         data_id = str(params["id"])
         try:
@@ -62,30 +67,27 @@ class VtkMeshView(VtkObjectView):
             raise
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
-    def deregisterMesh(self, params: dict[str, str | int | float | bool]) -> None:
+    def deregisterMesh(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["deregister"], self.mesh_prefix)
         data_id = str(params["id"])
         self.deregisterObject(data_id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
-    def SetMeshVisibility(self, params: dict[str, str | int | float | bool]) -> None:
+    def SetMeshVisibility(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
         data_id, visibility = str(params["id"]), bool(params["visibility"])
         self.SetVisibility(data_id, visibility)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
-    def setMeshOpacity(self, params: dict[str, str | int | float | bool]) -> None:
+    def setMeshOpacity(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
         data_id, opacity = str(params["id"]), float(params["opacity"])
         self.SetOpacity(data_id, opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
-    def setMeshColor(
-        self,
-        params: dict[str, str | int | float | bool | dict[str, str | int | float]],
-    ) -> None:
+    def setMeshColor(self, params: RpcParamsWithColor) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
-        color_dict = cast(dict[str, str | int | float], params["color"])
+        color_dict = cast(dict[str, int], params["color"])
         data_id, red, green, blue = (
             str(params["id"]),
             int(color_dict["r"]),
@@ -95,7 +97,7 @@ class VtkMeshView(VtkObjectView):
         self.SetColor(data_id, red, green, blue)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
-    def meshApplyTextures(self, params: dict[str, str | list[dict[str, str]]]) -> None:
+    def meshApplyTextures(self, params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
