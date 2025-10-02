@@ -25,19 +25,16 @@ class VtkModelView(VtkObjectView):
         validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
         data_id = params["id"]
         try:
-            _ = self.get_data(data_id)
-            file_path = self.get_data_file_path(data_id)
+            data = self.get_data(data_id)
+            file_name = str(data["viewable_file_name"])
 
             reader = vtk.vtkXMLMultiBlockDataReader()
-            reader.SetFileName(file_path)
             filter = vtk.vtkGeometryFilter()
             filter.SetInputConnection(reader.GetOutputPort())
             mapper = vtk.vtkCompositePolyDataMapper()
             mapper.SetInputConnection(filter.GetOutputPort())
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            data = self.get_data(data_id)
-            file_name = data["viewable_file_name"]
             self.registerObject(data_id, file_name, reader, filter, mapper)
             self.get_object(data_id)["max_dimension"] = "default"
         except Exception as e:
