@@ -13,9 +13,6 @@ type RpcParams = dict[str, JsonValue]
 type ColorDict = dict[str, int]
 type RpcParamsWithColor = dict[str, JsonPrimitive | ColorDict]
 type RpcParamsWithList = dict[str, JsonPrimitive | list[str]]
-type RpcTestParams = list[
-    dict[str, str | int | float | bool | dict[str, int] | list[str]] | int
-] | None
 
 
 def get_schemas_dict(path):

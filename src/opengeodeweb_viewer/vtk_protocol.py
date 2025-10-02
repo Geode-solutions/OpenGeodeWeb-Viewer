@@ -1,6 +1,5 @@
 # Standard library imports
 import os
-from typing import Union
 
 # Third party imports
 import vtk
@@ -19,13 +18,13 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
-    def get_data_base(self) -> dict[str, dict[str, Union[object, str]]]:
+    def get_data_base(self) -> dict[str, dict[str, object | str]]:
         return self.getSharedObject("db")
 
-    def get_object(self, id: str) -> dict[str, Union[object, str]]:
+    def get_object(self, id: str) -> dict[str, object | str]:
         return self.get_data_base()[id]
 
-    def get_data(self, data_id: str) -> dict[str, Union[str, list[str], None]]:
+    def get_data(self, data_id: str) -> dict[str, str | list[str] | None]:
         if Data is None:
             raise Exception("Data model not available")
 
@@ -86,7 +85,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         filter: vtk.vtkAlgorithm,
         actor: vtk.vtkActor,
         mapper: vtk.vtkMapper,
-        textures: dict[str, Union[str, int, float]],
+        textures: dict[str, str | int | float],
     ) -> None:
         self.get_data_base()[id] = {
             "reader": reader,

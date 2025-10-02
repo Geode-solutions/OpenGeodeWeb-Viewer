@@ -13,6 +13,10 @@ from opengeodeweb_microservice.database.connection import get_session, init_data
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.utils_functions import RpcTestParams
 
+type RpcTestParams = list[
+    dict[str, str | int | float | bool | dict[str, int] | list[str]] | int
+] | None
+
 
 class ServerMonitor:
     def __init__(self, log: str) -> None:
