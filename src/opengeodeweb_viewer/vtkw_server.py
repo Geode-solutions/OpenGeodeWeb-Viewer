@@ -68,10 +68,6 @@ class _Server(vtk_wslink.ServerProtocol):
     def configure(args):
         # Standard args
         _Server.authKey = args.authKey
-        if args.data_folder_path:
-            os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
-        if args.database_path:
-            os.environ["DATABASE_PATH"] = args.database_path
 
     def initialize(self):
         # Bring used components

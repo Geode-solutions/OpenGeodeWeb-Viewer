@@ -47,15 +47,7 @@ class VtkModelView(VtkObjectView):
             params, self.model_schemas_dict["deregister"], self.model_prefix
         )
         data_id = params["id"]
-
-        if data_id in self.get_data_base():
-            obj = self.get_object(data_id)
-            if "actor" in obj and obj["actor"]:
-                renderer = self.get_renderer()
-                renderer.RemoveActor(obj["actor"])
-
-        self.deregister_object(data_id)
-        self.render()
+        self.deregisterObject(data_id)
 
     @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
     def setModelVisibility(self, params):

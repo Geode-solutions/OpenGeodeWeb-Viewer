@@ -11,7 +11,6 @@ from typing import Callable, Generator
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
-from opengeodeweb_viewer.utils_functions import RpcTestParams
 
 type RpcTestParams = list[
     dict[str, str | int | float | bool | dict[str, int] | list[str]] | int
