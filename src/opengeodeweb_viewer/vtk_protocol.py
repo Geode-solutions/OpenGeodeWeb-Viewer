@@ -1,6 +1,6 @@
 # Standard library imports
 import os
-from typing import Optional, Union
+from typing import Union
 
 # Third party imports
 import vtk
@@ -51,7 +51,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             print(f"Error fetching data {data_id}: {e}")
             raise
 
-    def get_data_file_path(self, data_id: str, filename: Optional[str] = None) -> str:
+    def get_data_file_path(self, data_id: str, filename: str = None) -> str:
         if filename is None:
             data = self.get_data(data_id)
             viewable_file_name = data["viewable_file_name"]
@@ -83,7 +83,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
         self,
         id: str,
         reader: vtk.vtkAlgorithm,
-        filter: Optional[vtk.vtkAlgorithm],
+        filter: vtk.vtkAlgorithm,
         actor: vtk.vtkActor,
         mapper: vtk.vtkMapper,
         textures: dict[str, Union[str, int, float]],

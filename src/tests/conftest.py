@@ -10,7 +10,7 @@ import time
 import os
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from typing import Callable, Optional, Union, Generator
+from typing import Callable, Generator
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
@@ -34,14 +34,10 @@ class ServerMonitor:
     def call(
         self,
         rpc: str,
-        params: Optional[
-            list[
-                Union[
-                    dict[str, Union[str, int, float, bool, dict[str, int], list[str]]],
-                    int,
-                ]
-            ]
-        ] = None,
+        params: (
+            list[dict[str, str | int | float | bool | dict[str, int] | list[str]] | int]
+            | None
+        ) = None,
     ) -> None:
         if params is None:
             params = [{}]
@@ -65,7 +61,7 @@ class ServerMonitor:
                 output += line
         print(output)
 
-    def get_response(self) -> Union[bytes, dict[str, object], str]:
+    def get_response(self) -> bytes | dict[str, object] | str:
         response = self.ws.recv()
         if isinstance(response, bytes):
             return response
@@ -217,7 +213,7 @@ def configure_test_environment() -> Generator[None, None, None]:
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
     def create_dataset(
-        *, id: str, viewable_file_name: str, geode_object: Optional[str] = None
+        *, id: str, viewable_file_name: str, geode_object: str | None = None
     ) -> str:
         session = get_session()
         if geode_object is None:

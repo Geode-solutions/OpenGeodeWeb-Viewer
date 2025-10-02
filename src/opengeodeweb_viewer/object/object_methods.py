@@ -1,12 +1,10 @@
 # Standard library imports
 import os
-from typing import Optional, Union
 
 # Third party imports
 import vtk
 
 # Local application imports
-# from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
@@ -19,7 +17,7 @@ class VtkObjectView(VtkView):
         id: str,
         file_name: str,
         reader: vtk.vtkDataReader,
-        filter: Optional[vtk.vtkAlgorithm],
+        filter: vtk.vtkAlgorithm | None,
         mapper: vtk.vtkMapper,
     ) -> None:
         actor = vtk.vtkActor()
