@@ -15,10 +15,10 @@ class VtkUtilsView(VtkView):  # type: ignore
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # type: ignore
         super().__init__()
 
     @exportRpc(ogw_prefix + ogw_schemas_dict["kill"]["rpc"])
-    def kill(self) -> None:
+    def kill(self) -> None:  # type: ignore
         print("Manual viewer kill, shutting down...", flush=True)
         os._exit(0)
