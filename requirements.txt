@@ -30,7 +30,7 @@ flask~=3.0
     # via
     #   flask-sqlalchemy
     #   opengeodeweb-microservice
-flask-sqlalchemy~=3.0
+flask-sqlalchemy==3.1.1
     # via opengeodeweb-microservice
 fonttools~=4.0
     # via matplotlib
@@ -42,7 +42,7 @@ greenlet~=3.0
     # via
     #   opengeodeweb-microservice
     #   sqlalchemy
-idna==3.10
+idna~=3.0
     # via yarl
 itsdangerous~=2.0
     # via
@@ -52,7 +52,7 @@ jinja2~=3.0
     # via
     #   flask
     #   opengeodeweb-microservice
-kiwisolver==1.4.10rc0
+kiwisolver~=1.0
     # via matplotlib
 markupsafe~=3.0
     # via
@@ -72,7 +72,7 @@ numpy~=2.0
     #   matplotlib
 opengeodeweb-microservice==1.0.1rc3
     # via -r requirements-internal.in
-packaging==25.0
+packaging~=25.0
     # via matplotlib
 pillow~=11.0
     # via matplotlib
@@ -80,7 +80,7 @@ propcache~=0.0
     # via
     #   aiohttp
     #   yarl
-pyparsing==3.3.0a1
+pyparsing~=3.0
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via matplotlib
@@ -90,20 +90,20 @@ sqlalchemy~=2.0
     # via
     #   flask-sqlalchemy
     #   opengeodeweb-microservice
-typing-extensions~=4.0
+typing-extensions==4.15.0
     # via
     #   aiosignal
     #   opengeodeweb-microservice
     #   sqlalchemy
-vtk==9.5.2
+vtk~=9.0
     # via -r requirements.in
-websocket-client~=1.0
+websocket-client==1.8.0
     # via -r requirements.in
 werkzeug~=3.0
     # via
     #   flask
     #   opengeodeweb-microservice
-wslink==1.12.4
+wslink~=1.0
     # via -r requirements.in
 yarl~=1.0
     # via aiohttp
