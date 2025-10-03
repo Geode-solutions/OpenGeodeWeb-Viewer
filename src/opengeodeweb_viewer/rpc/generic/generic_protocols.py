@@ -27,11 +27,17 @@ class VtkGenericView(VtkView):
             params, self.generic_schemas_dict["register"], self.generic_prefix
         )
         data_id = params["id"]
+        data = self.get_data(data_id)
+        enhanced_params = {
+            **params,
+            "file_name": data["viewable_file_name"],
+            "viewer_object": data["geode_object"],
+        }
         viewer_object = self.get_viewer_object_type(data_id)
         if viewer_object == "mesh":
-            self.mesh_protocols.registerMesh(params)
+            self.mesh_protocols.registerMesh(enhanced_params)
         elif viewer_object == "model":
-            self.model_protocols.registerModel(params)
+            self.model_protocols.registerModel(enhanced_params)
 
     @exportRpc(generic_prefix + generic_schemas_dict["deregister"]["rpc"])
     def deregister(self, params):
@@ -39,8 +45,14 @@ class VtkGenericView(VtkView):
             params, self.generic_schemas_dict["deregister"], self.generic_prefix
         )
         data_id = params["id"]
+        data = self.get_data(data_id)
+        enhanced_params = {
+            **params,
+            "file_name": data["viewable_file_name"],
+            "viewer_object": data["geode_object"],
+        }
         viewer_object = self.get_viewer_object_type(data_id)
         if viewer_object == "mesh":
-            self.mesh_protocols.deregisterMesh(params)
+            self.mesh_protocols.deregisterMesh(enhanced_params)
         elif viewer_object == "model":
-            self.model_protocols.deregisterModel(params)
+            self.model_protocols.deregisterModel(enhanced_params)
