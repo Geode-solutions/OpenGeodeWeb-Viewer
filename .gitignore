@@ -6,9 +6,9 @@ __pycache__/
 .env
 /node_modules
 latest_logs
-schemas.json
 build
 /src/tests/tests_output/
 *.egg-info
 .coverage*
 .mypy_cache
+opengeodeweb_viewer_schemas.json
