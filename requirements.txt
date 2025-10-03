@@ -30,7 +30,7 @@ flask~=3.0
     # via
     #   flask-sqlalchemy
     #   opengeodeweb-microservice
-flask-sqlalchemy==3.1.1
+flask-sqlalchemy~=3.0
     # via opengeodeweb-microservice
 fonttools~=4.0
     # via matplotlib
@@ -70,7 +70,7 @@ numpy~=2.0
     # via
     #   contourpy
     #   matplotlib
-opengeodeweb-microservice==1.0.1rc3
+opengeodeweb-microservice~=1.0
     # via -r requirements-internal.in
 packaging~=25.0
     # via matplotlib
@@ -90,20 +90,20 @@ sqlalchemy~=2.0
     # via
     #   flask-sqlalchemy
     #   opengeodeweb-microservice
-typing-extensions==4.15.0
+typing-extensions~=4.0
     # via
     #   aiosignal
     #   opengeodeweb-microservice
     #   sqlalchemy
-vtk~=9.0
+vtk==9.5.2
     # via -r requirements.in
-websocket-client==1.8.0
+websocket-client~=1.0
     # via -r requirements.in
 werkzeug~=3.0
     # via
     #   flask
     #   opengeodeweb-microservice
-wslink~=1.0
+wslink==1.12.4
     # via -r requirements.in
 yarl~=1.0
     # via aiohttp
