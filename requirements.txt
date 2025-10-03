@@ -16,14 +16,6 @@ contourpy~=1.0
     # via matplotlib
 cycler~=0.0
     # via matplotlib
-fastjsonschema~=2.0
-    # via opengeodeweb-microservice
-flask~=3.0
-    # via
-    #   flask-sqlalchemy
-    #   opengeodeweb-microservice
-flask-sqlalchemy~=3.0
-    # via opengeodeweb-microservice
 fonttools~=4.0
     # via matplotlib
 frozenlist~=1.0
@@ -44,8 +36,6 @@ numpy~=2.0
     # via
     #   contourpy
     #   matplotlib
-opengeodeweb-microservice~=1.0
-    # via -r requirements-internal.in
 packaging~=25.0
     # via matplotlib
 pillow~=11.0
@@ -60,23 +50,12 @@ python-dateutil==2.9.0.post0
     # via matplotlib
 six~=1.0
     # via python-dateutil
-sqlalchemy~=2.0
-    # via
-    #   flask-sqlalchemy
-    #   opengeodeweb-microservice
 typing-extensions~=4.0
-    # via
-    #   aiosignal
-    #   opengeodeweb-microservice
-    #   sqlalchemy
+    # via aiosignal
 vtk==9.5.2
     # via -r requirements.in
 websocket-client~=1.0
     # via -r requirements.in
-werkzeug~=3.0
-    # via
-    #   flask
-    #   opengeodeweb-microservice
 wslink==1.12.4
     # via -r requirements.in
 yarl~=1.0
