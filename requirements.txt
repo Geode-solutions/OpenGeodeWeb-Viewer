@@ -50,13 +50,13 @@ python-dateutil==2.9.0.post0
     # via matplotlib
 six~=1.0
     # via python-dateutil
-typing-extensions==4.15.0
+typing-extensions~=4.0
     # via aiosignal
-vtk~=9.0
+vtk==9.5.2
     # via -r requirements.in
 websocket-client~=1.0
     # via -r requirements.in
-wslink~=1.0
+wslink==1.12.4
     # via -r requirements.in
 yarl~=1.0
     # via aiohttp
