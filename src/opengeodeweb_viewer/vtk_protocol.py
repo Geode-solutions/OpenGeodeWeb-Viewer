@@ -24,6 +24,14 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def get_object(self, id: str) -> dict[str, object | str]:
         return self.get_data_base()[id]
 
+    def get_viewer_object_type(self, data_id: str) -> str:
+        data = self.get_data(data_id)
+        geode_object = data.get("geode_object")
+        if geode_object == "mesh":
+            return "mesh"
+        elif geode_object == "model":
+            return "model"
+
     def get_data(self, data_id: str) -> dict[str, str | list[str] | None]:
         if Data is None:
             raise Exception("Data model not available")
