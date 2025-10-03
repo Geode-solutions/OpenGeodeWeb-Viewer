@@ -4,76 +4,88 @@
 #
 #    pip-compile --output-file=requirements.txt requirements-internal.in requirements.in
 #
-aiohappyeyeballs==2.6.1
+aiohappyeyeballs~=2.0
     # via aiohttp
-aiohttp==3.12.15
+aiohttp~=3.0
     # via wslink
-aiosignal==1.4.0
+aiosignal~=1.0
     # via aiohttp
-attrs==25.3.0
+attrs~=25.0
     # via aiohttp
-blinker==1.9.0
-    # via flask
-click==8.3.0
-    # via flask
-contourpy==1.3.3
+blinker~=1.0
+    # via
+    #   flask
+    #   opengeodeweb-microservice
+click~=8.0
+    # via
+    #   flask
+    #   opengeodeweb-microservice
+contourpy~=1.0
     # via matplotlib
-cycler==0.12.1
+cycler~=0.0
     # via matplotlib
-fastjsonschema==2.21.1
+fastjsonschema~=2.0
     # via opengeodeweb-microservice
-flask==3.1.2
-    # via flask-sqlalchemy
+flask~=3.0
+    # via
+    #   flask-sqlalchemy
+    #   opengeodeweb-microservice
 flask-sqlalchemy==3.1.1
     # via opengeodeweb-microservice
-fonttools==4.60.1
+fonttools~=4.0
     # via matplotlib
-frozenlist==1.7.0
+frozenlist~=1.0
     # via
     #   aiohttp
     #   aiosignal
-greenlet==3.2.4
-    # via sqlalchemy
-idna==3.10
+greenlet~=3.0
+    # via
+    #   opengeodeweb-microservice
+    #   sqlalchemy
+idna~=3.0
     # via yarl
-itsdangerous==2.2.0
-    # via flask
-jinja2==3.1.6
-    # via flask
-kiwisolver==1.4.9
+itsdangerous~=2.0
+    # via
+    #   flask
+    #   opengeodeweb-microservice
+jinja2~=3.0
+    # via
+    #   flask
+    #   opengeodeweb-microservice
+kiwisolver~=1.0
     # via matplotlib
-markupsafe==3.0.3
+markupsafe~=3.0
     # via
     #   flask
     #   jinja2
     #   werkzeug
-matplotlib==3.10.6
+matplotlib~=3.0
     # via vtk
-multidict==6.6.4
+multidict~=6.0
     # via
     #   aiohttp
     #   yarl
-numpy==2.3.3
+numpy~=2.0
     # via
     #   contourpy
     #   matplotlib
-opengeodeweb-microservice==1.0.0
+opengeodeweb-microservice==1.0.1rc3
     # via -r requirements-internal.in
-packaging==25.0
+packaging~=25.0
     # via matplotlib
-pillow==11.3.0
+pillow~=11.0
     # via matplotlib
-propcache==0.3.2
+propcache~=0.0
     # via
     #   aiohttp
     #   yarl
-pyparsing==3.2.5
+pyparsing~=3.0
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via matplotlib
-six==1.17.0
+six~=1.0
     # via python-dateutil
-sqlalchemy==2.0.43
+sqlalchemy~=2.0
     # via
     #   flask-sqlalchemy
     #   opengeodeweb-microservice
@@ -81,13 +93,15 @@ typing-extensions==4.15.0
     # via
     #   aiosignal
     #   sqlalchemy
-vtk==9.5.2
+vtk~=9.0
     # via -r requirements.in
 websocket-client==1.8.0
     # via -r requirements.in
-werkzeug==3.1.3
-    # via flask
-wslink==1.12.4
+werkzeug~=3.0
+    # via
+    #   flask
+    #   opengeodeweb-microservice
+wslink~=1.0
     # via -r requirements.in
-yarl==1.20.1
+yarl~=1.0
     # via aiohttp
