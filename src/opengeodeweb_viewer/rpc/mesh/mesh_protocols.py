@@ -28,6 +28,7 @@ class VtkMeshView(VtkObjectView):
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
     def registerMesh(self, params: RpcParams) -> None:
+        print(f"{self.mesh_schemas_dict["register"]}", flush=True)
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
         data_id = str(params["id"])
         try:
