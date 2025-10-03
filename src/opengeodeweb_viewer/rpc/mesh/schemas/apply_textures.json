@@ -15,14 +15,14 @@
             "type": "string",
             "minLength": 1
           },
-          "texture_file_name": {
+          "id": {
             "type": "string",
             "minLength": 1
           }
         },
         "required": [
           "texture_name",
-          "texture_file_name"
+          "id"
         ],
         "additionalProperties": false
       },

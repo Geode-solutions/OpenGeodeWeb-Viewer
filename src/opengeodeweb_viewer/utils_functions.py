@@ -6,7 +6,13 @@ import json
 import fastjsonschema
 from fastjsonschema import JsonSchemaException
 
-# Local application imports
+type JsonPrimitive = str | int | float | bool
+type JsonValue = JsonPrimitive | dict[str, JsonValue] | list[JsonValue]
+type RpcParams = dict[str, JsonValue]
+
+type ColorDict = dict[str, int]
+type RpcParamsWithColor = dict[str, JsonPrimitive | ColorDict]
+type RpcParamsWithList = dict[str, JsonPrimitive | list[str]]
 
 
 def get_schemas_dict(path):
@@ -21,7 +27,9 @@ def get_schemas_dict(path):
     return schemas_dict
 
 
-def validate_schema(params, schema, prefix=""):
+def validate_schema(
+    params: RpcParams, schema: dict[str, JsonValue], prefix: str = ""
+) -> None:
     print(f"{prefix}{schema['rpc']}", f"{params=}", flush=True)
     try:
         validate = fastjsonschema.compile(schema)

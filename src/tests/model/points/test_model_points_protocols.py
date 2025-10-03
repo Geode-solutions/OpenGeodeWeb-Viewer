@@ -1,4 +1,5 @@
 # Standard library imports
+from typing import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
@@ -6,12 +7,15 @@ from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
 )
 
 # Local application imports
-from src.tests.model.test_model_protocols import test_register_model
+from tests.model.test_model_protocols import test_register_model
+from tests.conftest import ServerMonitor
 
 
-def test_points_visibility(server):
+def test_points_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
-    test_register_model(server)
+    test_register_model(server, dataset_factory)
 
     server.call(
         VtkModelPointsView.model_points_prefix
@@ -21,9 +25,11 @@ def test_points_visibility(server):
     assert server.compare_image(3, "model/points/visibility.jpeg") == True
 
 
-def test_points_size(server):
+def test_points_size(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
-    test_points_visibility(server)
+    test_points_visibility(server, dataset_factory)
 
     server.call(
         VtkModelPointsView.model_points_prefix
