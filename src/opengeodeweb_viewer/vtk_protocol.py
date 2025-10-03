@@ -31,6 +31,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
             return "mesh"
         elif geode_object == "model":
             return "model"
+        raise Exception(f"Unknown geode_object type: {geode_object}")
 
     def get_data(self, data_id: str) -> dict[str, str | list[str] | None]:
         if Data is None:
