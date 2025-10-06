@@ -78,10 +78,6 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(publisher)
         self.setSharedObject("db", dict())
         self.setSharedObject("publisher", publisher)
-        db_path = os.environ.get("DATABASE_PATH")
-        if db_path:
-            db_full_path = os.path.join(db_path, "project.db")
-            connection.init_database(db_full_path)
 
         # Custom API
         mesh_protocols = VtkMeshView()
@@ -149,9 +145,20 @@ def run_server(Server=_Server):
         if not args.database_path:
             args.database_path = args.data_folder_path
             os.environ["DATABASE_PATH"] = args.data_folder_path
+        else:
+            os.environ["DATABASE_PATH"] = args.database_path
+
+    db_path = os.environ.get("DATABASE_PATH")
+    if db_path:
+        db_full_path = os.path.join(db_path, "project.db")
+        connection.init_database(db_full_path)
+        print(f"Viewer database initialized at: {db_full_path}", flush=True)
+    else:
+        print("WARNING: No DATABASE_PATH set, database not initialized!", flush=True)
 
     print(f"{args=}", flush=True)
     Server.configure(args)
+
     server.start_webserver(options=args, protocol=Server)
 
 
