@@ -28,7 +28,7 @@ kiwisolver~=1.4
     # via matplotlib
 matplotlib~=3.10
     # via vtk
-multidict~=6.6
+multidict~=6.7
     # via
     #   aiohttp
     #   yarl
@@ -44,7 +44,7 @@ propcache~=0.4
     # via
     #   aiohttp
     #   yarl
-pyparsing~=3.2
+pyparsing~=3.3
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via matplotlib
