@@ -6,7 +6,7 @@
 #
 aiohappyeyeballs~=2.6
     # via aiohttp
-aiohttp~=3.12
+aiohttp~=3.13
     # via wslink
 aiosignal~=1.4
     # via aiohttp
