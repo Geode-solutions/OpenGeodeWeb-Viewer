@@ -14,7 +14,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self) -> None:
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
-        self.DATABASE_PATH = os.getenv("DATABASE_PATH")
         self.DataReader = vtk.vtkXMLPolyDataReader()
         self.ImageReader = vtk.vtkXMLImageDataReader()
 
@@ -26,38 +25,38 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
     def get_viewer_object_type(self, data_id: str) -> str:
         data = self.get_data(data_id)
-        geode_object = data.get("geode_object")
-        if geode_object == "mesh":
+        object_type = data.get("object_type")
+        if object_type == "mesh":
             return "mesh"
-        elif geode_object == "model":
+        elif object_type == "model":
             return "model"
-        raise Exception(f"Unknown geode_object type: {geode_object}")
+        raise Exception(f"Unknown object_type type: {object_type}")
 
     def get_data(self, data_id: str) -> dict[str, str | list[str] | None]:
         if Data is None:
             raise Exception("Data model not available")
 
-        session = get_session()
-        if not session:
-            raise Exception("No database session available")
+        with get_session() as session:
+            if not session:
+                raise Exception("No database session available")
 
-        try:
-            data = session.get(Data, data_id)
-            if not data:
-                raise Exception(f"Data with id {data_id} not found in database")
+            try:
+                data = session.get(Data, data_id)
+                if not data:
+                    raise Exception(f"Data with id {data_id} not found in database")
 
-            return {
-                "id": data.id,
-                "native_file_name": data.native_file_name,
-                "viewable_file_name": data.viewable_file_name,
-                "geode_object": data.geode_object,
-                "light_viewable": data.light_viewable,
-                "input_file": data.input_file,
-                "additional_files": data.additional_files,
-            }
-        except Exception as e:
-            print(f"Error fetching data {data_id}: {e}")
-            raise
+                return {
+                    "id": data.id,
+                    "native_file_name": data.native_file_name,
+                    "viewable_file_name": data.viewable_file_name,
+                    "geode_object": data.geode_object,
+                    "light_viewable": data.light_viewable,
+                    "input_file": data.input_file,
+                    "additional_files": data.additional_files,
+                }
+            except Exception as e:
+                print(f"Error fetching data {data_id}: {e}")
+                raise
 
     def get_data_file_path(self, data_id: str, filename: str | None = None) -> str:
         if filename is None:

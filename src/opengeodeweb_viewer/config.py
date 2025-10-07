@@ -48,13 +48,10 @@ def _copy_test_assets(
             copyfile(src, os.path.join(uploads_directory, file))
 
 
-def test_config(path: str) -> None:
+def test_config() -> None:
     default_config()
-    os.environ["DATA_FOLDER_PATH"] = os.path.join(
-        os.path.dirname(__file__), "..", "..", "tests", "data"
-    )
-
-    os.environ["DATABASE_PATH"] = str(path)
-    db_file = os.path.join(path, "project.db")
+    data_path = os.path.join(os.path.dirname(__file__), "..", "..", "tests", "data")
+    os.environ["DATA_FOLDER_PATH"] = data_path
+    db_file = os.path.join(data_path, "project.db")
     if not os.path.exists(db_file):
         open(db_file, "a").close()

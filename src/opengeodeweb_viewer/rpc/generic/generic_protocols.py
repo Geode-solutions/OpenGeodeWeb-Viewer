@@ -23,7 +23,6 @@ class VtkGenericView(VtkView):
 
     @exportRpc(generic_prefix + generic_schemas_dict["register"]["rpc"])
     def register(self, params):
-        print(f"{self.generic_schemas_dict["register"]}", flush=True)
         validate_schema(
             params, self.generic_schemas_dict["register"], self.generic_prefix
         )

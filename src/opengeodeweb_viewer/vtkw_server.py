@@ -58,11 +58,6 @@ class _Server(vtk_wslink.ServerProtocol):
             default=os.environ.get("DATA_FOLDER_PATH"),
             help="Path to the folder where data is stored",
         )
-        parser.add_argument(
-            "--database_path",
-            default=os.environ.get("DATABASE_PATH"),
-            help="Path to the SQLite database file",
-        )
 
     @staticmethod
     def configure(args):
@@ -141,20 +136,9 @@ def run_server(Server=_Server):
     if "data_folder_path" in args and args.data_folder_path:
         os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
 
-    if "data_folder_path" in args and args.data_folder_path:
-        if not args.database_path:
-            args.database_path = args.data_folder_path
-            os.environ["DATABASE_PATH"] = args.data_folder_path
-        else:
-            os.environ["DATABASE_PATH"] = args.database_path
-
-    db_path = os.environ.get("DATABASE_PATH")
-    if db_path:
-        db_full_path = os.path.join(db_path, "project.db")
-        connection.init_database(db_full_path)
-        print(f"Viewer database initialized at: {db_full_path}", flush=True)
-    else:
-        print("WARNING: No DATABASE_PATH set, database not initialized!", flush=True)
+    db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
+    connection.init_database(db_full_path)
+    print(f"Viewer connected to database at: {db_full_path}", flush=True)
 
     print(f"{args=}", flush=True)
     Server.configure(args)
