@@ -2,12 +2,21 @@
   "rpc": "deregister",
   "type": "object",
   "properties": {
+    "viewer_object": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "mesh",
+        "model"
+      ]
+    },
     "id": {
       "type": "string",
       "minLength": 1
     }
   },
   "required": [
+    "viewer_object",
     "id"
   ],
   "additionalProperties": false
