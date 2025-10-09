@@ -5,15 +5,21 @@ import os
 import vtk
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
 class VtkObjectView(VtkView):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-    def registerObject(self, id, file_name, reader, filter, mapper):
+    def registerObject(
+        self,
+        id: str,
+        file_name: str,
+        reader: vtk.vtkDataReader,
+        filter: vtk.vtkAlgorithm | None,
+        mapper: vtk.vtkMapper,
+    ) -> None:
         actor = vtk.vtkActor()
         self.register_object(id, reader, filter, actor, mapper, {})
         reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, id, file_name))
@@ -30,19 +36,19 @@ class VtkObjectView(VtkView):
         renderWindow.Render()
         self.render()
 
-    def deregisterObject(self, id):
-        actor = self.get_object(id)["actor"]
+    def deregisterObject(self, data_id: str) -> None:
+        actor = self.get_object(data_id)["actor"]
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(actor)
-        self.deregister_object(id)
+        self.deregister_object(data_id)
         self.render()
 
-    def applyTextures(self, id, textures):
-        textures_array = []
-        images_reader_array = []
+    def applyTextures(self, data_id: str, textures: list[dict[str, str]]) -> None:
+        textures_array: list[vtk.vtkTexture] = []
+        images_reader_array: list[vtk.vtkXMLImageDataReader] = []
 
-        data = self.get_object(id)
+        data = self.get_object(data_id)
         mapper = data["mapper"]
         actor = data["actor"]
         reader = data["reader"]
@@ -52,14 +58,13 @@ class VtkObjectView(VtkView):
 
         for index, value in enumerate(textures):
             texture_name = value["texture_name"]
-            texture_file_name = value["texture_file_name"]
-            print(f"{texture_name=} {texture_file_name=}", flush=True)
+            id_texture = value["id"]
+            print(f"{texture_name=} {id_texture=}", flush=True)
 
             new_texture = vtk.vtkTexture()
             image_reader = vtk.vtkXMLImageDataReader()
-            image_reader.SetFileName(
-                os.path.join(self.DATA_FOLDER_PATH, id, texture_file_name)
-            )
+            texture_path = self.get_data_file_path(data_id, id_texture)
+            image_reader.SetFileName(texture_path)
 
             shader_texture_name = f"VTK_TEXTURE_UNIT_{index}"
             polydata_mapper.MapDataArrayToMultiTextureAttribute(
@@ -87,83 +92,87 @@ class VtkObjectView(VtkView):
 
         self.render()
 
-    def SetVisibility(self, id, visibility):
-        actor = self.get_object(id)["actor"]
+    def SetVisibility(self, data_id: str, visibility: bool) -> None:
+        actor = self.get_object(data_id)["actor"]
         actor.SetVisibility(visibility)
         self.render()
 
-    def SetOpacity(self, id, opacity):
-        actor = self.get_object(id)["actor"]
+    def SetOpacity(self, data_id: str, opacity: float) -> None:
+        actor = self.get_object(data_id)["actor"]
         actor.GetProperty().SetOpacity(opacity)
         self.render()
 
-    def SetColor(self, id, red, green, blue):
-        mapper = self.get_object(id)["mapper"]
+    def SetColor(self, data_id: str, red: int, green: int, blue: int) -> None:
+        mapper = self.get_object(data_id)["mapper"]
         mapper.ScalarVisibilityOff()
-        actor = self.get_object(id)["actor"]
+        actor = self.get_object(data_id)["actor"]
         actor.GetProperty().SetColor([red / 255, green / 255, blue / 255])
         self.render()
 
-    def SetEdgesVisibility(self, id, visibility):
-        actor = self.get_object(id)["actor"]
-        max_dimension = self.get_object(id)["max_dimension"]
+    def SetEdgesVisibility(self, data_id: str, visibility: bool) -> None:
+        actor = self.get_object(data_id)["actor"]
+        max_dimension = self.get_object(data_id)["max_dimension"]
         if max_dimension == "edges":
-            self.SetVisibility(id, visibility)
+            self.SetVisibility(data_id, visibility)
         else:
             actor.GetProperty().SetEdgeVisibility(visibility)
         self.render()
 
-    def SetEdgesWidth(self, id, width):
-        actor = self.get_object(id)["actor"]
+    def SetEdgesWidth(self, data_id: str, width: float) -> None:
+        actor = self.get_object(data_id)["actor"]
         actor.GetProperty().SetEdgeWidth(width)
         self.render()
 
-    def SetEdgesColor(self, id, red, green, blue):
-        actor = self.get_object(id)["actor"]
-        max_dimension = self.get_object(id)["max_dimension"]
+    def SetEdgesColor(self, data_id: str, red: int, green: int, blue: int) -> None:
+        actor = self.get_object(data_id)["actor"]
+        max_dimension = self.get_object(data_id)["max_dimension"]
         if max_dimension == "edges":
-            self.SetColor(id, red, green, blue)
+            self.SetColor(data_id, red, green, blue)
         else:
             actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
         self.render()
 
-    def SetPointsVisibility(self, id, visibility):
-        actor = self.get_object(id)["actor"]
-        max_dimension = self.get_object(id)["max_dimension"]
+    def SetPointsVisibility(self, data_id: str, visibility: bool) -> None:
+        actor = self.get_object(data_id)["actor"]
+        max_dimension = self.get_object(data_id)["max_dimension"]
         if max_dimension == "points":
-            self.SetVisibility(id, visibility)
+            self.SetVisibility(data_id, visibility)
         else:
             actor.GetProperty().SetVertexVisibility(visibility)
         self.render()
 
-    def SetPointsSize(self, id, size):
-        actor = self.get_object(id)["actor"]
+    def SetPointsSize(self, data_id: str, size: float) -> None:
+        actor = self.get_object(data_id)["actor"]
         actor.GetProperty().SetPointSize(size)
         self.render()
 
-    def SetPointsColor(self, id, red, green, blue):
-        actor = self.get_object(id)["actor"]
-        max_dimension = self.get_object(id)["max_dimension"]
+    def SetPointsColor(self, data_id: str, red: int, green: int, blue: int) -> None:
+        actor = self.get_object(data_id)["actor"]
+        max_dimension = self.get_object(data_id)["max_dimension"]
         if max_dimension == "points":
-            self.SetColor(id, red, green, blue)
+            self.SetColor(data_id, red, green, blue)
         else:
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
         self.render()
 
-    def SetBlocksVisibility(self, id, block_ids, visibility):
-        mapper = self.get_object(id)["mapper"]
+    def SetBlocksVisibility(
+        self, data_id: str, block_ids: list[int], visibility: bool
+    ) -> None:
+        mapper = self.get_object(data_id)["mapper"]
         for block_id in block_ids:
             mapper.SetBlockVisibility(block_id, visibility)
         self.render()
 
-    def SetBlocksColor(self, id, block_ids, red, green, blue):
-        mapper = self.get_object(id)["mapper"]
+    def SetBlocksColor(
+        self, data_id: str, block_ids: list[int], red: int, green: int, blue: int
+    ) -> None:
+        mapper = self.get_object(data_id)["mapper"]
         for block_id in block_ids:
             mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
         self.render()
 
-    def clearColors(self, id):
-        db = self.get_object(id)
+    def clearColors(self, data_id: str) -> None:
+        db = self.get_object(data_id)
         mapper = db["mapper"]
         reader = db["reader"]
         reader.GetOutput().GetPointData().SetActiveScalars("")
