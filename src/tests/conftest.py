@@ -164,7 +164,7 @@ class FixtureHelper:
 
             # command to start process
             args = [
-                "opengeodeweb_viewer",
+                "opengeodeweb-viewer",
             ]
 
         return "vtkw_server", Starter, ServerMonitor
@@ -191,9 +191,11 @@ def server(xprocess: object) -> Generator[ServerMonitor, None, None]:
 
 @pytest.fixture(scope="session", autouse=True)
 def configure_test_environment() -> Generator[None, None, None]:
-    base_path = Path(__file__).parent
+    project_root = Path(__file__).parent.parent.parent.absolute()
+    os.environ["DATA_FOLDER_PATH"] = str(project_root / "tests" / "data")
+
     config.test_config()
-    db_path = base_path / "project.db"
+    db_path = Path(os.environ["DATA_FOLDER_PATH"]) / "project.db"
     init_database(db_path=str(db_path))
     os.environ["TEST_DB_PATH"] = str(db_path)
 
