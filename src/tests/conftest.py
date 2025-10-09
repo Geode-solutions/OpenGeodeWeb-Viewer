@@ -192,7 +192,7 @@ def server(xprocess: object) -> Generator[ServerMonitor, None, None]:
 @pytest.fixture(scope="session", autouse=True)
 def configure_test_environment() -> Generator[None, None, None]:
     base_path = Path(__file__).parent
-    config.test_config(base_path)
+    config.test_config()
     db_path = base_path / "project.db"
     init_database(db_path=str(db_path))
     os.environ["TEST_DB_PATH"] = str(db_path)
