@@ -55,6 +55,9 @@ def test_config() -> None:
         os.environ["DATA_FOLDER_PATH"] = os.path.abspath(data_path)
 
     data_path = os.environ["DATA_FOLDER_PATH"]
+    if not os.path.exists(data_path):
+        os.makedirs(data_path, exist_ok=True)
+
     db_file = os.path.join(data_path, "project.db")
     if not os.path.exists(db_file):
         open(db_file, "a").close()
