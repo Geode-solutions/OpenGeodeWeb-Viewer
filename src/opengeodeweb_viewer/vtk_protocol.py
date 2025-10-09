@@ -3,9 +3,11 @@ import os
 
 # Third party imports
 import vtk
-from vtk.web import protocols as vtk_protocols
+from vtk.web import protocols as vtk_protocols  # type: ignore
 
 # Local application imports
+
+# mypy: allow-untyped-defs
 
 
 class VtkView(vtk_protocols.vtkWebProtocol):

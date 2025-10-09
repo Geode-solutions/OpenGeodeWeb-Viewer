@@ -9,7 +9,7 @@ from fastjsonschema import JsonSchemaException
 # Local application imports
 
 
-def get_schemas_dict(path):
+def get_schemas_dict(path: str) -> object:
     json_files = os.listdir(path)
     schemas_dict = {}
     for json_file in json_files:
