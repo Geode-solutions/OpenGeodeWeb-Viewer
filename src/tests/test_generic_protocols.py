@@ -12,7 +12,7 @@ def test_register_mesh(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["register"]["rpc"],
-        [{"id": data_id}],
+        [{"id": data_id, "viewer_object": "mesh"}],
     )
     assert server.compare_image(3, "mesh/register.jpeg") is True
 
@@ -26,7 +26,7 @@ def test_register_model(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["register"]["rpc"],
-        [{"id": data_id}],
+        [{"id": data_id, "viewer_object": "model"}],
     )
     assert server.compare_image(3, "model/register.jpeg") is True
 
@@ -39,7 +39,7 @@ def test_deregister_mesh(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "viewer_object": "mesh"}],
     )
     assert server.compare_image(3, "mesh/deregister.jpeg") == True
 
@@ -52,6 +52,6 @@ def test_deregister_model(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "viewer_object": "model"}],
     )
     assert server.compare_image(3, "model/deregister.jpeg") == True
