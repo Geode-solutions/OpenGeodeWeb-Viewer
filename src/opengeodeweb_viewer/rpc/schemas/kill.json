@@ -1,0 +1,7 @@
+{
+  "rpc": "kill",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}
