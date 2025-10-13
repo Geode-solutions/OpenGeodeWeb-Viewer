@@ -31,6 +31,7 @@ dependencies = { file = ["requirements.txt"] }
 where = ["src"]
 
 [tool.setuptools.package-data]
+"opengeodeweb_viewer.rpc.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.generic.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.mesh.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.mesh.points.schemas" = ["*.json"]
