@@ -139,7 +139,7 @@ def run_server(Server=_Server):
         os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
 
     db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
-    connection.init_database(db_full_path)
+    connection.init_database(db_full_path, create_tables=False)
     print(f"Viewer connected to database at: {db_full_path}", flush=True)
 
     print(f"{args=}", flush=True)
