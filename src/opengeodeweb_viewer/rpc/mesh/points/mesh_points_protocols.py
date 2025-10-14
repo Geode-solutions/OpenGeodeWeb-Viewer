@@ -1,6 +1,5 @@
 # Standard library imports
 import os
-from typing import cast
 
 # Third party imports
 from wslink import register as exportRpc
