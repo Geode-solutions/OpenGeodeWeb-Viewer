@@ -23,7 +23,7 @@ class VtkMeshPointsView(VtkMeshView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
+    @exportRpc(mesh_points_prefix + str(mesh_points_schemas_dict["visibility"]["rpc"]))
     def setMeshPointsVisibility(self, params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["visibility"], self.mesh_points_prefix
@@ -31,7 +31,7 @@ class VtkMeshPointsView(VtkMeshView):
         id, visibility = params["id"], params["visibility"]
         self.SetPointsVisibility(id, visibility)
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
+    @exportRpc(mesh_points_prefix + str(mesh_points_schemas_dict["color"]["rpc"]))
     def setMeshPointsColor(self, params: RpcParamsWithColor) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
@@ -44,7 +44,7 @@ class VtkMeshPointsView(VtkMeshView):
         )
         self.SetPointsColor(id, red, green, blue)
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
+    @exportRpc(mesh_points_prefix + str(mesh_points_schemas_dict["size"]["rpc"]))
     def setMeshPointsSize(self, params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
@@ -52,7 +52,9 @@ class VtkMeshPointsView(VtkMeshView):
         id, size = params["id"], params["size"]
         self.SetPointsSize(id, size)
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_attribute"]["rpc"])
+    @exportRpc(
+        mesh_points_prefix + str(mesh_points_schemas_dict["vertex_attribute"]["rpc"])
+    )
     def setMeshPointsVertexAttribute(self, params: RpcParams) -> None:
         validate_schema(
             params,

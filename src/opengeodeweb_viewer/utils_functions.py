@@ -14,10 +14,13 @@ type ColorDict = dict[str, int]
 type RpcParamsWithColor = dict[str, JsonPrimitive | ColorDict]
 type RpcParamsWithList = dict[str, JsonPrimitive | list[str]]
 
+type SchemaDict = dict[str, JsonValue]
+type SchemasDict = dict[str, SchemaDict]
 
-def get_schemas_dict(path: str) -> dict[str, dict[str, JsonValue]]:
+
+def get_schemas_dict(path: str) -> SchemasDict:
     json_files = os.listdir(path)
-    schemas_dict: dict[str, dict[str, JsonValue]] = {}
+    schemas_dict: SchemasDict = {}
     for json_file in json_files:
         last_point = json_file.rfind(".")
         filename = json_file[: -len(json_file) + last_point]
@@ -27,9 +30,7 @@ def get_schemas_dict(path: str) -> dict[str, dict[str, JsonValue]]:
     return schemas_dict
 
 
-def validate_schema(
-    params: RpcParams, schema: dict[str, JsonValue], prefix: str = ""
-) -> None:
+def validate_schema(params: RpcParams, schema: SchemaDict, prefix: str = "") -> None:
     print(f"{prefix}{schema['rpc']}", f"{params=}", flush=True)
     try:
         validate = fastjsonschema.compile(schema)
