@@ -15,9 +15,9 @@ type RpcParamsWithColor = dict[str, JsonPrimitive | ColorDict]
 type RpcParamsWithList = dict[str, JsonPrimitive | list[str]]
 
 
-def get_schemas_dict(path: str) -> object:
+def get_schemas_dict(path: str) -> dict[str, dict[str, JsonValue]]:
     json_files = os.listdir(path)
-    schemas_dict = {}
+    schemas_dict: dict[str, dict[str, JsonValue]] = {}
     for json_file in json_files:
         last_point = json_file.rfind(".")
         filename = json_file[: -len(json_file) + last_point]
