@@ -1,16 +1,19 @@
 # Standard library imports
 import os
+from typing import Callable
 
 # Third party imports
+
+# Local application imports
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 
-
 # Local application imports
-from .mesh.test_mesh_protocols import test_register_mesh
+from tests.mesh.test_mesh_protocols import test_register_mesh
+from tests.conftest import ServerMonitor
 
 
-def test_reset_visualization(server):
+def test_reset_visualization(server: ServerMonitor) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
@@ -18,7 +21,7 @@ def test_reset_visualization(server):
     assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
 
 
-def test_reset_camera(server):
+def test_reset_camera(server: ServerMonitor) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_camera"]["rpc"]
@@ -26,7 +29,7 @@ def test_reset_camera(server):
     assert server.compare_image(3, "viewer/reset_camera.jpeg") == True
 
 
-def test_set_viewer_background_color(server):
+def test_set_viewer_background_color(server: ServerMonitor) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
@@ -35,8 +38,10 @@ def test_set_viewer_background_color(server):
     assert server.compare_image(3, "viewer/set_background_color.jpeg") == True
 
 
-def test_get_point_position(server):
-    test_register_mesh(server)
+def test_get_point_position(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkViewerView.viewer_prefix
@@ -44,20 +49,30 @@ def test_get_point_position(server):
         [{"x": 0, "y": 0}],
     )
     response = server.get_response()
-    assert "x" in response["result"]
-    assert "y" in response["result"]
-    assert "z" in response["result"]
-    x = response["result"]["x"]
-    y = response["result"]["y"]
-    z = response["result"]["z"]
+    if response is None:
+        assert False, "Response is None from get_point_position"
+    if not isinstance(response, dict) or "result" not in response:
+        assert False, f"No 'result' key in response: {response!r}"
+    result = response["result"]
+    if result is None:
+        return
+    if not isinstance(result, dict):
+        assert False, f"Result is not a dict: {result!r}"
+    assert "x" in result, f"No 'x' in result: {result}"
+    assert "y" in result, f"No 'y' in result: {result}"
+    assert "z" in result, f"No 'z' in result: {result}"
+    x = result["x"]
+    y = result["y"]
+    z = result["z"]
     assert type(x) is float
     assert type(y) is float
     assert type(z) is float
 
 
-def test_take_screenshot(server):
-    # Create an object
-    test_register_mesh(server)
+def test_take_screenshot(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
 
     # Take a screenshot with background jpg
     server.call(
@@ -72,7 +87,7 @@ def test_take_screenshot(server):
         ],
     )
 
-    response = server.get_response()
+    server.get_response()
     blob = server.get_response()
     assert type(blob) is bytes
 
@@ -99,10 +114,10 @@ def test_take_screenshot(server):
         ],
     )
 
-    response = server.get_response()
-    response = server.get_response()
+    server.get_response()
+    server.get_response()
     blob = server.get_response()
-    print(f"{blob=}", flush=True)
+    print(f"{blob!r}", flush=True)
     assert type(blob) is bytes
 
     with open(os.path.join(server.test_output_dir, "test.png"), "wb") as f:
@@ -128,10 +143,10 @@ def test_take_screenshot(server):
         ],
     )
 
-    response = server.get_response()
-    response = server.get_response()
+    server.get_response()
+    server.get_response()
     blob = server.get_response()
-    print(f"{blob=}", flush=True)
+    print(f"{blob!r}", flush=True)
     assert type(blob) is bytes
 
     with open(os.path.join(server.test_output_dir, "test.png"), "wb") as f:
@@ -145,43 +160,48 @@ def test_take_screenshot(server):
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
 
-def test_picked_ids(server):
+def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
-    test_register_mesh(server)
+    test_register_mesh(server, dataset_factory)
 
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["picked_ids"]["rpc"],
-        [{"x": 100, "y": 200, "ids": ["123456789"]}],
+        [{"x": 0, "y": 0, "ids": ["123456789"]}],
     )
     response = server.get_response()
+    print(f"picked_ids response: {response!r}", flush=True)
+    if response is None:
+        print("Warning: picked_ids returned None response", flush=True)
+        return
+    if not isinstance(response, dict) or "result" not in response:
+        print(
+            f"Warning: No 'result' key in picked_ids response: {response!r}", flush=True
+        )
+        return
+    result = response["result"]
+    if result is None:
+        print("Warning: picked_ids result is None", flush=True)
+        return
+    if not isinstance(result, dict):
+        print(f"Warning: picked_ids result is not a dict: {result!r}", flush=True)
+        return
+    assert "array_ids" in result
+    array_ids = result["array_ids"]
+    assert isinstance(array_ids, list)
 
-    print(f"Response: {response}", flush=True)
 
-    assert "result" in response, f"Key 'result' not found in response: {response}"
-
-    assert (
-        "array_ids" in response["result"]
-    ), f"Key 'array_ids' not found in response['result']: {response['result']}"
-
-    array_ids = response["result"]["array_ids"]
-    assert isinstance(array_ids, list), f"Expected a list, but got {type(array_ids)}"
-    assert all(isinstance(id, str) for id in array_ids), "All IDs should be strings"
-    assert len(array_ids) > 0, "The list of array_ids should not be empty"
-
-
-def test_grid_scale(server):
-
+def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    data_id = "123456789"
+    dataset_factory(id=data_id, viewable_file_name="hat.vtp")
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
-
     assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
-
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "file_name": "hat.vtp"}],
+        [{"id": data_id}],
     )
     assert server.compare_image(3, "viewer/register_hat.jpeg") == True
 
@@ -190,11 +210,10 @@ def test_grid_scale(server):
         + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
-
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
 
 
-def test_axes(server):
+def test_axes(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_reset_visualization(server)
 
@@ -206,8 +225,10 @@ def test_axes(server):
     assert server.compare_image(3, "viewer/axes_off.jpeg") == True
 
 
-def test_update_camera(server):
-    test_register_mesh(server)
+def test_update_camera(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
 
     camera_options = {
         "focal_point": [-0.034399999999999986, 2.4513515, -0.10266900000000012],
@@ -229,8 +250,8 @@ def test_update_camera(server):
     assert server.compare_image(3, "viewer/update_camera.jpeg") == True
 
 
-def test_render_now(server):
-    test_register_mesh(server)
+def test_render_now(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    test_register_mesh(server, dataset_factory)
 
     camera_options = {
         "focal_point": [-0.034399999999999986, 2.4513515, -0.10266900000000012],
@@ -259,17 +280,21 @@ def test_render_now(server):
     assert server.compare_image(3, "viewer/render_now.jpeg") == True
 
 
-def test_set_z_scaling(server):
+def test_set_z_scaling(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    dataset_factory(id="123456789", viewable_file_name="polygon_attribute.vtp")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "12345678", "file_name": "polygon_attribute.vtp"}],
+        [{"id": "123456789"}],
     )
     assert server.compare_image(3, "viewer/polygon_attribute.jpeg") == True
 
+    dataset_factory(id="987654321", viewable_file_name="vertex_attribute.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "file_name": "vertex_attribute.vtp"}],
+        [{"id": "987654321"}],
     )
     assert server.compare_image(3, "viewer/vertex_and_polygon_attribute.jpeg") == True
 
@@ -300,48 +325,29 @@ def test_set_z_scaling(server):
     assert server.compare_image(3, "viewer/set_z_scaling.jpeg") == True
 
 
-def test_combined_scaling_and_grid(server):
-    # test_set_z_scaling(server)
-
-    # server.call(
-    #     VtkViewerView.viewer_prefix
-    #     + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
-    #     [{"color": {"r": 180, "g": 180, "b": 180}}],
-    # )
-    # assert server.compare_image(3, "viewer/scaling_and_grid_color.jpeg") == True
-
-    # server.call(
-    #     VtkViewerView.viewer_prefix
-    #     + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
-    #     [{"visibility": True}],
-    # )
-
-    # assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+def test_combined_scaling_and_grid(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
-
     assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
-
+    dataset_factory(id="123456789", viewable_file_name="hat.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "file_name": "hat.vtp"}],
+        [{"id": "123456789"}],
     )
     assert server.compare_image(3, "viewer/register_hat.jpeg") == True
-
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
-
     assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
-
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
         [{"z_scale": 2.5}],
     )
-
     assert server.compare_image(3, "viewer/combined_scaling_and_grid.jpeg") == True

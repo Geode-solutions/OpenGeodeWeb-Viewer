@@ -7,6 +7,7 @@ import vtk
 from vtk.web import wslink as vtk_wslink
 from vtk.web import protocols as vtk_protocols
 from wslink import server
+from opengeodeweb_microservice.database import connection
 
 # Local application imports
 from .config import *
@@ -134,11 +135,16 @@ def run_server(Server=_Server):
         args.host = os.environ["DEFAULT_HOST"]
     if not "port" in args or args.port == 8080:
         args.port = os.environ.get("DEFAULT_PORT")
-    if "data_folder_path" in args:
+    if "data_folder_path" in args and args.data_folder_path:
         os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
+
+    db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
+    connection.init_database(db_full_path, create_tables=False)
+    print(f"Viewer connected to database at: {db_full_path}", flush=True)
 
     print(f"{args=}", flush=True)
     Server.configure(args)
+
     server.start_webserver(options=args, protocol=Server)
 
 

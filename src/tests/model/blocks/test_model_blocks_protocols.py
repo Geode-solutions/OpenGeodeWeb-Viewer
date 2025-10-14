@@ -1,4 +1,5 @@
 # Standard library imports
+from typing import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
@@ -6,12 +7,15 @@ from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
 )
 
 # Local application imports
-from src.tests.model.test_model_protocols import test_register_model_cube
+from tests.model.test_model_protocols import test_register_model_cube
+from tests.conftest import ServerMonitor
 
 
-def test_blocks_polyhedra_visibility(server):
+def test_blocks_polyhedra_visibility(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
-    test_register_model_cube(server)
+    test_register_model_cube(server, dataset_factory)
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
@@ -42,9 +46,11 @@ def test_blocks_polyhedra_visibility(server):
     assert server.compare_image(3, "model/blocks/visibility.jpeg") == True
 
 
-def test_blocks_polyhedra_color(server):
+def test_blocks_polyhedra_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
 
-    test_blocks_polyhedra_visibility(server)
+    test_blocks_polyhedra_visibility(server, dataset_factory)
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
