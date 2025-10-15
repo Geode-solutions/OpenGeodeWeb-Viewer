@@ -113,7 +113,9 @@ class VtkMeshView(VtkObjectView):
             texture_id = tex_info["id"]
             texture_name = tex_info["texture_name"]
             texture_data = Data.get(texture_id)
-            if not texture_data or texture_data.geode_object != "RasterImage2D":
+            if not texture_data or not texture_data.viewable_file_name.lower().endswith(
+                ".vti"
+            ):
                 continue
             texture_file_path = self.get_data_file_path(texture_id)
             texture_reader = vtk.vtkXMLImageDataReader()
