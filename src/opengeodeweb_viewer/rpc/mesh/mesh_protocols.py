@@ -113,8 +113,10 @@ class VtkMeshView(VtkObjectView):
             texture_id = tex_info["id"]
             texture_name = tex_info["texture_name"]
             texture_data = Data.get(texture_id)
+            if not texture_data:
+                continue
             texture_file = str(texture_data.viewable_file_name)
-            if not texture_data or not texture_file.lower().endswith(".vti"):
+            if not texture_file.lower().endswith(".vti"):
                 continue
             texture_file_path = self.get_data_file_path(texture_id)
             texture_reader = vtk.vtkXMLImageDataReader()
