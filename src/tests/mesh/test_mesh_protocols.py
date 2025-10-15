@@ -63,9 +63,7 @@ def test_apply_textures(
 ) -> None:
     test_register_mesh(server, dataset_factory)
     texture_entry = dataset_factory(
-        id="987654321",
-        viewable_file_name="hat_lambert2SG.vti",
-        geode_object="RasterImage2D",
+        id="987654321", viewable_file_name="hat_lambert2SG.vti"
     )
 
     server.call(
