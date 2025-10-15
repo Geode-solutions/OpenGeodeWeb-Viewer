@@ -229,7 +229,8 @@ def dataset_factory() -> Callable[..., str]:
             )
         else:
             row.viewable_file_name = viewable_file_name
-            row.geode_object = geode_object
+            row.geode_object = viewer_object
+            row.viewer_object = viewer_object
         session.commit()
 
         data_folder = Path(os.environ["DATA_FOLDER_PATH"]) / id
