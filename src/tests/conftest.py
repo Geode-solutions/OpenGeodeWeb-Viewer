@@ -209,11 +209,11 @@ def configure_test_environment() -> Generator[None, None, None]:
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
     def create_dataset(
-        *, id: str, viewable_file_name: str, geode_object: str | None = None
+        *, id: str, viewable_file_name: str, viewer_object: str | None = None
     ) -> str:
         session = get_session()
-        if geode_object is None:
-            geode_object = (
+        if viewer_object is None:
+            viewer_object = (
                 "model" if viewable_file_name.lower().endswith(".vtm") else "mesh"
             )
 
@@ -222,12 +222,9 @@ def dataset_factory() -> Callable[..., str]:
             session.add(
                 Data(
                     id=id,
-                    native_file_name="",
                     viewable_file_name=viewable_file_name,
-                    geode_object=geode_object,
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
+                    geode_object=viewer_object,
+                    viewer_object=viewer_object,
                 )
             )
         else:
