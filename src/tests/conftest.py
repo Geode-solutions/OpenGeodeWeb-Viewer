@@ -208,14 +208,11 @@ def configure_test_environment() -> Generator[None, None, None]:
 
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
-    def create_dataset(
-        *, id: str, viewable_file_name: str, viewer_object: str | None = None
-    ) -> str:
+    def create_dataset(*, id: str, viewable_file_name: str) -> str:
         session = get_session()
-        if viewer_object is None:
-            viewer_object = (
-                "model" if viewable_file_name.lower().endswith(".vtm") else "mesh"
-            )
+        viewer_object = (
+            "model" if viewable_file_name.lower().endswith(".vtm") else "mesh"
+        )
 
         row = session.get(Data, id)
         if row is None:
