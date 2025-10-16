@@ -26,8 +26,10 @@ class VtkGenericView(VtkView):
         validate_schema(
             params, self.generic_schemas_dict["register"], self.generic_prefix
         )
-        viewer_object = params["viewer_object"]
-        specific_params = {"id": params["id"]}
+        data_id = str(params["id"])
+        specific_params = {"id": data_id}
+        data = self.get_data(data_id)
+        viewer_object = str(data["viewer_object"])
         if viewer_object == "mesh":
             self.mesh_protocols.registerMesh(specific_params)
         elif viewer_object == "model":
@@ -38,8 +40,10 @@ class VtkGenericView(VtkView):
         validate_schema(
             params, self.generic_schemas_dict["deregister"], self.generic_prefix
         )
-        viewer_object = params["viewer_object"]
-        specific_params = {"id": params["id"]}
+        data_id = str(params["id"])
+        specific_params = {"id": data_id}
+        data = self.get_data(data_id)
+        viewer_object = str(data["viewer_object"])
         if viewer_object == "mesh":
             self.mesh_protocols.deregisterMesh(specific_params)
         elif viewer_object == "model":

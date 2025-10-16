@@ -49,12 +49,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
                 return {
                     "id": data.id,
-                    "native_file_name": data.native_file_name,
                     "viewable_file_name": data.viewable_file_name,
-                    "geode_object": data.geode_object,
-                    "light_viewable": data.light_viewable,
-                    "input_file": data.input_file,
-                    "additional_files": data.additional_files,
+                    "viewer_object": data.viewer_object,
                 }
             except Exception as e:
                 print(f"Error fetching data {data_id}: {e}")

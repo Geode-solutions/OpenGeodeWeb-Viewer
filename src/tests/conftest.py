@@ -208,31 +208,26 @@ def configure_test_environment() -> Generator[None, None, None]:
 
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
-    def create_dataset(
-        *, id: str, viewable_file_name: str, geode_object: str | None = None
-    ) -> str:
+    def create_dataset(*, id: str, viewable_file_name: str) -> str:
         session = get_session()
-        if geode_object is None:
-            geode_object = (
-                "model" if viewable_file_name.lower().endswith(".vtm") else "mesh"
-            )
+        viewer_object = (
+            "model" if viewable_file_name.lower().endswith(".vtm") else "mesh"
+        )
 
         row = session.get(Data, id)
         if row is None:
             session.add(
                 Data(
                     id=id,
-                    native_file_name="",
                     viewable_file_name=viewable_file_name,
-                    geode_object=geode_object,
-                    light_viewable=None,
-                    input_file="",
-                    additional_files=[],
+                    geode_object=viewer_object,
+                    viewer_object=viewer_object,
                 )
             )
         else:
             row.viewable_file_name = viewable_file_name
-            row.geode_object = geode_object
+            row.geode_object = viewer_object
+            row.viewer_object = viewer_object
         session.commit()
 
         data_folder = Path(os.environ["DATA_FOLDER_PATH"]) / id
