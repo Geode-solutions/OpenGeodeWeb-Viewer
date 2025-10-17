@@ -18,7 +18,7 @@ def test_reset_visualization(server: ServerMonitor) -> None:
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
     )
-    assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
+    assert server.compare_image("viewer/reset_visualization.jpeg") == True
 
 
 def test_reset_camera(server: ServerMonitor) -> None:
@@ -26,7 +26,7 @@ def test_reset_camera(server: ServerMonitor) -> None:
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_camera"]["rpc"]
     )
-    assert server.compare_image(3, "viewer/reset_camera.jpeg") == True
+    assert server.compare_image("viewer/reset_camera.jpeg") == True
 
 
 def test_set_viewer_background_color(server: ServerMonitor) -> None:
@@ -35,7 +35,7 @@ def test_set_viewer_background_color(server: ServerMonitor) -> None:
         + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
         [{"color": {"r": 0, "g": 0, "b": 255}}],
     )
-    assert server.compare_image(3, "viewer/set_background_color.jpeg") == True
+    assert server.compare_image("viewer/set_background_color.jpeg") == True
 
 
 def test_get_point_position(
@@ -198,19 +198,19 @@ def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) 
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
-    assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
+    assert server.compare_image("viewer/reset_visualization.jpeg") == True
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": data_id}],
     )
-    assert server.compare_image(3, "viewer/register_hat.jpeg") == True
+    assert server.compare_image("viewer/register_hat.jpeg") == True
 
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
-    assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+    assert server.compare_image("viewer/grid_scale_on.jpeg") == True
 
 
 def test_axes(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
@@ -222,7 +222,7 @@ def test_axes(server: ServerMonitor, dataset_factory: Callable[..., str]) -> Non
         [{"visibility": False}],
     )
 
-    assert server.compare_image(3, "viewer/axes_off.jpeg") == True
+    assert server.compare_image("viewer/axes_off.jpeg") == True
 
 
 def test_update_camera(
@@ -247,10 +247,10 @@ def test_update_camera(
             }
         ],
     )
-    assert server.compare_image(3, "viewer/update_camera.jpeg") == True
+    assert server.compare_image("viewer/update_camera.jpeg") == True
 
 
-def test_render_now(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_render(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     camera_options = {
@@ -274,10 +274,10 @@ def test_render_now(server: ServerMonitor, dataset_factory: Callable[..., str]) 
 
     server.call(
         VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["render_now"]["rpc"],
+        + VtkViewerView.viewer_schemas_dict["render"]["rpc"],
     )
 
-    assert server.compare_image(3, "viewer/render_now.jpeg") == True
+    assert server.compare_image("viewer/render.jpeg") == True
 
 
 def test_set_z_scaling(
@@ -289,14 +289,14 @@ def test_set_z_scaling(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    assert server.compare_image(3, "viewer/polygon_attribute.jpeg") == True
+    assert server.compare_image("viewer/polygon_attribute.jpeg") == True
 
     dataset_factory(id="987654321", viewable_file_name="vertex_attribute.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "987654321"}],
     )
-    assert server.compare_image(3, "viewer/vertex_and_polygon_attribute.jpeg") == True
+    assert server.compare_image("viewer/vertex_and_polygon_attribute.jpeg") == True
 
     camera_options = {
         "focal_point": [6.05, 5.7, 1.5],
@@ -315,14 +315,14 @@ def test_set_z_scaling(
             }
         ],
     )
-    server.compare_image(3, "mesh/register.jpeg")
+    server.compare_image("mesh/register.jpeg")
 
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
         [{"z_scale": 2.5}],
     )
-    assert server.compare_image(3, "viewer/set_z_scaling.jpeg") == True
+    assert server.compare_image("viewer/set_z_scaling.jpeg") == True
 
 
 def test_combined_scaling_and_grid(
@@ -332,22 +332,22 @@ def test_combined_scaling_and_grid(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
-    assert server.compare_image(3, "viewer/reset_visualization.jpeg") == True
+    assert server.compare_image("viewer/reset_visualization.jpeg") == True
     dataset_factory(id="123456789", viewable_file_name="hat.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    assert server.compare_image(3, "viewer/register_hat.jpeg") == True
+    assert server.compare_image("viewer/register_hat.jpeg") == True
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
-    assert server.compare_image(3, "viewer/grid_scale_on.jpeg") == True
+    assert server.compare_image("viewer/grid_scale_on.jpeg") == True
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
         [{"z_scale": 2.5}],
     )
-    assert server.compare_image(3, "viewer/combined_scaling_and_grid.jpeg") == True
+    assert server.compare_image("viewer/combined_scaling_and_grid.jpeg") == True

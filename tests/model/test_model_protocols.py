@@ -12,7 +12,7 @@ def test_register_model(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    assert server.compare_image(3, "model/register.jpeg") == True
+    assert server.compare_image("model/register.jpeg") == True
 
 
 def test_register_model_cube(
@@ -24,7 +24,7 @@ def test_register_model_cube(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
     )
-    assert server.compare_image(3, "model/cube_register.jpeg") == True
+    assert server.compare_image("model/cube_register.jpeg") == True
 
 
 def test_visibility_model(
@@ -38,7 +38,7 @@ def test_visibility_model(
         + VtkModelView.model_schemas_dict["visibility"]["rpc"],
         [{"id": "123456789", "visibility": False}],
     )
-    assert server.compare_image(3, "model/visibility.jpeg") == True
+    assert server.compare_image("model/visibility.jpeg") == True
 
 
 def test_deregister_model(
@@ -52,4 +52,4 @@ def test_deregister_model(
         + VtkModelView.model_schemas_dict["deregister"]["rpc"],
         [{"id": "123456789"}],
     )
-    assert server.compare_image(3, "model/deregister.jpeg") == True
+    assert server.compare_image("model/deregister.jpeg") == True

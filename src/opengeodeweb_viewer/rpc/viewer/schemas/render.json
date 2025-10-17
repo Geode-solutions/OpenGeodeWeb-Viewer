@@ -1,5 +1,5 @@
 {
-    "rpc": "render_now",
+    "rpc": "render",
     "type": "object",
     "properties": {},
     "required": [],

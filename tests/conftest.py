@@ -11,6 +11,7 @@ from typing import Callable, Generator
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 type RpcTestParams = list[
     dict[str, str | int | float | bool | dict[str, int] | list[str]] | int
@@ -38,7 +39,7 @@ class ServerMonitor:
         self.ws.send(
             json.dumps(
                 {
-                    "id": "rpc:test",
+                    "id": "rpc:" + rpc,
                     "method": rpc,
                     "args": params,
                 }
@@ -98,29 +99,27 @@ class ServerMonitor:
         print(f"{images_diff.GetThresholdedError()=}")
         return images_diff.GetThresholdedError()
 
-    def compare_image(self, nb_messages: int, filename: str) -> bool:
-        for message in range(nb_messages):
-            print(f"{message=}", flush=True)
+    def compare_image(self, filename: str) -> bool:
+        self.call(
+            VtkViewerView.viewer_prefix
+            + VtkViewerView.viewer_schemas_dict["render"]["rpc"]
+        )
+        while True:
             image = self.ws.recv()
             if isinstance(image, bytes):
+                response = self.ws.recv()
+                print(f"{response=}", flush=True)
+                format = json.loads(response)["result"]["format"]
                 test_file_path = os.path.abspath(
-                    os.path.join(self.test_output_dir, "test.jpeg")
+                    os.path.join(self.test_output_dir, f"test.{format}")
                 )
                 with open(test_file_path, "wb") as f:
                     f.write(image)
                     f.close()
-        if isinstance(image, bytes):
-            response = self.ws.recv()
-            print(f"{response=}", flush=True)
-            format = json.loads(response)["result"]["format"]
-            test_file_path = os.path.abspath(
-                os.path.join(self.test_output_dir, f"test.{format}")
-            )
-            with open(test_file_path, "wb") as f:
-                f.write(image)
-                f.close()
-            path_image = os.path.join(self.images_dir_path, filename)
-            return self.images_diff(test_file_path, path_image) == 0.0
+                path_image = os.path.join(self.images_dir_path, filename)
+                return self.images_diff(test_file_path, path_image) == 0.0
+            else:
+                print("response =", image, flush=True)
         return False
 
     def _init_ws(self) -> None:
@@ -140,10 +139,8 @@ class ServerMonitor:
     ) -> None:
         self.ws.settimeout(timeout)
         for i in range(max_messages):
-            print(f"{i=}", flush=True)
             try:
                 response = self.ws.recv()
-                print(f"{response=}", flush=True)
             except WebSocketTimeoutException:
                 print(
                     f"Timeout on message {i}, but continuing to try remaining messages...",
