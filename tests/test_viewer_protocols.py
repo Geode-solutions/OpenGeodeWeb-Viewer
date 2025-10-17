@@ -270,7 +270,7 @@ def test_render(server: ServerMonitor, dataset_factory: Callable[..., str]) -> N
             }
         ],
     )
-    server.compare_image(1, "mesh/register.jpeg")
+    server.compare_image("mesh/register.jpeg")
 
     server.call(
         VtkViewerView.viewer_prefix
