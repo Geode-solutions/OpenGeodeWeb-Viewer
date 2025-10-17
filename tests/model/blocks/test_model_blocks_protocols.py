@@ -29,7 +29,7 @@ def test_blocks_polyhedra_visibility(
         ],
     )
 
-    assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg") == True
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
@@ -43,7 +43,7 @@ def test_blocks_polyhedra_visibility(
         ],
     )
 
-    assert server.compare_image(3, "model/blocks/visibility.jpeg") == True
+    assert server.compare_image("model/blocks/visibility.jpeg") == True
 
 
 def test_blocks_polyhedra_color(
@@ -63,4 +63,4 @@ def test_blocks_polyhedra_color(
             }
         ],
     )
-    assert server.compare_image(3, "model/blocks/color.jpeg") == True
+    assert server.compare_image("model/blocks/color.jpeg") == True

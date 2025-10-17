@@ -82,8 +82,6 @@ class VtkViewerView(VtkView):
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 
         renderer.ResetCamera()
-        renderWindow.Render()
-        self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_background_color"]["rpc"])
     def setBackgroundColor(self, params: RpcParamsWithColor) -> None:
@@ -99,9 +97,6 @@ class VtkViewerView(VtkView):
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
 
         renderer.SetBackground([red / 255, green / 255, blue / 255])
-        renderer.ResetCamera()
-        renderWindow.Render()
-        self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["reset_camera"]["rpc"])
     def resetCamera(self, params: RpcParams) -> None:
@@ -110,8 +105,6 @@ class VtkViewerView(VtkView):
         )
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
-        renderWindow.Render()
-        self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, params: RpcParams) -> dict[str, str | bytes]:
@@ -183,7 +176,6 @@ class VtkViewerView(VtkView):
             tag,
         )
         mapper.SetScalarRange(scalars.GetRange())
-        self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["get_point_position"]["rpc"])
     def getPointPosition(self, params: RpcParams) -> dict[str, float]:
@@ -247,7 +239,6 @@ class VtkViewerView(VtkView):
         if "grid_scale" in self.get_data_base():
             actor = self.get_object(id)["actor"]
             actor.SetVisibility(visibility)
-        self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["axes"]["rpc"])
     def toggleAxes(self, params: RpcParams) -> None:
@@ -255,7 +246,6 @@ class VtkViewerView(VtkView):
         id, visibility = "axes", params["visibility"]
         actor = self.get_object(id)["actor"]
         actor.SetVisibility(visibility)
-        self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
     def updateCamera(self, params: RpcParams) -> None:
@@ -277,13 +267,10 @@ class VtkViewerView(VtkView):
         camera.SetPosition(*position)
         camera.SetViewAngle(view_angle)
         camera.SetClippingRange(*clipping_range)
-        self.render()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
+    @exportRpc(viewer_prefix + viewer_schemas_dict["render"]["rpc"])
     def renderNow(self, params: RpcParams) -> None:
-        validate_schema(
-            params, self.viewer_schemas_dict["render_now"], self.viewer_prefix
-        )
+        validate_schema(params, self.viewer_schemas_dict["render"], self.viewer_prefix)
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
@@ -302,4 +289,3 @@ class VtkViewerView(VtkView):
         if "grid_scale" in self.get_data_base():
             cube_axes_actor = self.get_object("grid_scale")["actor"]
             cube_axes_actor.SetUse2DMode(1)
-        self.render()

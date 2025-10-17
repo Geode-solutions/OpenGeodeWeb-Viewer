@@ -28,7 +28,7 @@ def test_surfaces_polygons_visibility(
             }
         ],
     )
-    assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg") == True
 
     server.call(
         VtkModelSurfacesView.model_surfaces_prefix
@@ -42,7 +42,7 @@ def test_surfaces_polygons_visibility(
         ],
     )
 
-    assert server.compare_image(3, "model/surfaces/visibility.jpeg") == True
+    assert server.compare_image("model/surfaces/visibility.jpeg") == True
 
 
 def test_surfaces_polygons_color(
@@ -62,4 +62,4 @@ def test_surfaces_polygons_color(
             }
         ],
     )
-    assert server.compare_image(3, "model/surfaces/color.jpeg") == True
+    assert server.compare_image("model/surfaces/color.jpeg") == True

@@ -135,7 +135,6 @@ class VtkMeshView(VtkObjectView):
                     break
             actor = cast(vtk.vtkActor, self.get_object(mesh_id)["actor"])
             actor.SetTexture(texture)
-        self.render()
 
     def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
         reader = self.get_object(data_id)["reader"]
@@ -145,7 +144,6 @@ class VtkMeshView(VtkObjectView):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetScalarRange(points.GetScalars().GetRange())
-        self.render()
 
     def displayAttributeOnCells(self, data_id: str, name: str) -> None:
         reader = self.get_object(data_id)["reader"]
@@ -155,4 +153,3 @@ class VtkMeshView(VtkObjectView):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetScalarRange(cells.GetScalars().GetRange())
-        self.render()

@@ -20,7 +20,7 @@ def test_polygons_color(
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["color"]["rpc"],
         [{"id": "123456789", "color": {"r": 255, "g": 0, "b": 0}}],
     )
-    assert server.compare_image(3, "mesh/polygons/color.jpeg") == True
+    assert server.compare_image("mesh/polygons/color.jpeg") == True
 
 
 def test_polygons_visibility(
@@ -34,4 +34,4 @@ def test_polygons_visibility(
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["visibility"]["rpc"],
         [{"id": "123456789", "visibility": False}],
     )
-    assert server.compare_image(3, "mesh/polygons/visibility.jpeg") == True
+    assert server.compare_image("mesh/polygons/visibility.jpeg") == True
