@@ -15,6 +15,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParamsWithColor,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from . import schemas
 
 
 class VtkMeshView(VtkObjectView):
@@ -30,7 +31,8 @@ class VtkMeshView(VtkObjectView):
     def registerMesh(self, params: RpcParams) -> None:
         print(f"{self.mesh_schemas_dict["register"]}", flush=True)
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
-        data_id = str(params["id"])
+        params = schemas.Register.from_dict(params)
+        data_id = params.id
         try:
             data = self.get_data(data_id)
             file_name = str(data["viewable_file_name"])
@@ -70,52 +72,41 @@ class VtkMeshView(VtkObjectView):
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["deregister"], self.mesh_prefix)
-        data_id = str(params["id"])
-        self.deregisterObject(data_id)
+        params = schemas.Deregister.from_dict(params)
+        self.deregisterObject(params.id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
     def SetMeshVisibility(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
-        data_id, visibility = str(params["id"]), bool(params["visibility"])
-        self.SetVisibility(data_id, visibility)
+        params = schemas.Visibility.from_dict(params)
+        self.SetVisibility(params.id, parmas.visibility)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
     def setMeshOpacity(self, params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
-        data_id, opacity = str(params["id"]), float(
-            cast(int | float, params["opacity"])
-        )
-        self.SetOpacity(data_id, opacity)
+        params = schemas.Opacity.from_dict(params)
+        self.SetOpacity(params.id, params.opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
     def setMeshColor(self, params: RpcParamsWithColor) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
-        color_dict = cast(dict[str, int], params["color"])
-        data_id, red, green, blue = (
-            str(params["id"]),
-            int(color_dict["r"]),
-            int(color_dict["g"]),
-            int(color_dict["b"]),
-        )
-        self.SetColor(data_id, red, green, blue)
+        params = schemas.Color.from_dict(params)
+        color = params.color
+        self.SetColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
     def meshApplyTextures(self, params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
-        data_id = str(params["id"])
-        textures_info = cast(list[dict[str, str]], params["textures"])
-        self.applyTextures(data_id, textures_info)
-
-    def applyTextures(self, mesh_id: str, textures_info: list[dict[str, str]]) -> None:
-        for tex_info in textures_info:
-            texture_id = tex_info["id"]
-            texture_name = tex_info["texture_name"]
+        params = schemas.ApplyTextures.from_dict(params)
+        mesh_id = params.id
+        for tex_info in params.textures:
+            texture_id = tex_info.id
             texture_data = Data.get(texture_id)
-            if not texture_data:
+            if texture_data is None:
                 continue
-            texture_file = str(texture_data.viewable_file_name)
+            texture_file = texture_data.viewable_file_name
             if not texture_file.lower().endswith(".vti"):
                 continue
             texture_file_path = self.get_data_file_path(texture_id)
@@ -130,7 +121,7 @@ class VtkMeshView(VtkObjectView):
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
                 array = point_data.GetArray(i)
-                if array.GetName() == texture_name:
+                if array.GetName() == tex_info.texture_name:
                     point_data.SetTCoords(array)
                     break
             actor = cast(vtk.vtkActor, self.get_object(mesh_id)["actor"])

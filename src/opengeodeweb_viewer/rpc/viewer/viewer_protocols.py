@@ -19,6 +19,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParamsWithList,
 )
 from opengeodeweb_viewer.vtk_protocol import VtkView
+from . import schemas
 
 
 class VtkViewerView(VtkView):
@@ -90,15 +91,12 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["set_background_color"], self.viewer_prefix
         )
-        red, green, blue = (
-            params["color"]["r"],
-            params["color"]["g"],
-            params["color"]["b"],
-        )
+        params = schemas.SetBackgroundColor.from_dict(params)
+        color = params.color
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
 
-        renderer.SetBackground([red / 255, green / 255, blue / 255])
+        renderer.SetBackground([color.r / 255, color.g / 255, color.b / 255])
         renderer.ResetCamera()
         renderWindow.Render()
         self.render()
@@ -118,17 +116,12 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["take_screenshot"], self.viewer_prefix
         )
-
-        filename, output_extension, include_background = (
-            params["filename"],
-            params["output_extension"],
-            params["include_background"],
-        )
+        params = schemas.TakeScreenshot.from_dict(params)
         renderWindow = self.getView("-1")
         renderer = self.get_renderer()
 
         w2if = vtkWindowToImageFilter()
-
+        include_background = params.include_background
         if not include_background:
             renderWindow.SetAlphaBitPlanes(1)
             w2if.SetInputBufferTypeToRGBA()
@@ -141,7 +134,7 @@ class VtkViewerView(VtkView):
         w2if.SetInput(renderWindow)
         w2if.ReadFrontBufferOff()
         w2if.Update()
-
+        output_extension = params.output_extension
         if output_extension == "png":
             writer = vtkPNGWriter()
         elif output_extension in ["jpg", "jpeg"]:
@@ -151,7 +144,7 @@ class VtkViewerView(VtkView):
         else:
             raise Exception("output_extension not supported")
 
-        new_filename = filename + "." + output_extension
+        new_filename = params.filename + "." + output_extension
         file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
         writer.SetFileName(file_path)
         writer.SetInputConnection(w2if.GetOutputPort())
@@ -167,9 +160,8 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["update_data"], self.viewer_prefix
         )
-        id = params["id"]
-
-        data = self.get_object(id)
+        params = schemas.UpdateData.from_dict(params)
+        data = self.get_object(params.id)
         reader = data["reader"]
         reader.Update()
         mapper = data["mapper"]
@@ -190,9 +182,8 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["get_point_position"], self.viewer_prefix
         )
-        x = float(params["x"])
-        y = float(params["y"])
-        xyz = [x, y, 0.0]
+        params = schemas.GetPointPosition.from_dict(params)
+        xyz = [params.x, params.y, 0.0]
         picker = vtk.vtkWorldPointPicker()
         picker.Pick(xyz, self.get_renderer())
         ppos = picker.GetPickPosition()
@@ -218,12 +209,11 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
         )
-        x, y, ids = params["x"], params["y"], params["ids"]
-
+        params = schemas.PickedIDS.from_dict(params)
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         picker = vtk.vtkWorldPointPicker()
-        picker.Pick([x, y, 0], renderer)
+        picker.Pick([params.x, params.y, 0], renderer)
         point = picker.GetPickPosition()
         epsilon = self.computeEpsilon(renderer, point[2])
         bbox = vtk.vtkBoundingBox()
@@ -231,7 +221,7 @@ class VtkViewerView(VtkView):
         bbox.AddPoint(point[0] - epsilon, point[1] - epsilon, point[2] - epsilon)
 
         array_ids = []
-        for id in ids:
+        for id in params.ids:
             bounds = self.get_object(id)["actor"].GetBounds()
             if bbox.Intersects(bounds):
                 array_ids.append(id)
@@ -243,18 +233,18 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
         )
-        id, visibility = "grid_scale", params["visibility"]
+        params = schemas.GridScale.from_dict(params)
         if "grid_scale" in self.get_data_base():
-            actor = self.get_object(id)["actor"]
-            actor.SetVisibility(visibility)
+            actor = self.get_object("grid_scale")["actor"]
+            actor.SetVisibility(params.visibility)
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["axes"]["rpc"])
     def toggleAxes(self, params: RpcParams) -> None:
         validate_schema(params, self.viewer_schemas_dict["axes"], self.viewer_prefix)
-        id, visibility = "axes", params["visibility"]
-        actor = self.get_object(id)["actor"]
-        actor.SetVisibility(visibility)
+        params = schemas.Axes.from_dict(params)
+        actor = self.get_object("axes")["actor"]
+        actor.SetVisibility(params.visibility)
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
@@ -262,21 +252,17 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix
         )
-        camera_options = params["camera_options"]
-        focal_point = camera_options["focal_point"]
-        view_up = camera_options["view_up"]
-        position = camera_options["position"]
-        view_angle = camera_options["view_angle"]
-        clipping_range = camera_options["clipping_range"]
+        params = schemas.UpdateCamera.from_dict(params)
+        camera_options = params.camera_options
 
         renderWindow = self.getView("-1")
         camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
 
-        camera.SetFocalPoint(*focal_point)
-        camera.SetViewUp(*view_up)
-        camera.SetPosition(*position)
-        camera.SetViewAngle(view_angle)
-        camera.SetClippingRange(*clipping_range)
+        camera.SetFocalPoint(*camara_options.focal_point)
+        camera.SetViewUp(*camara_options.view_up)
+        camera.SetPosition(*camara_options.position)
+        camera.SetViewAngle(camara_options.view_angle)
+        camera.SetClippingRange(*camara_options.clipping_range)
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])
@@ -291,12 +277,12 @@ class VtkViewerView(VtkView):
         validate_schema(
             params, self.viewer_schemas_dict["set_z_scaling"], self.viewer_prefix
         )
-        z_scale = params["z_scale"]
+        params = schemas.SetZScaling.from_dict(params)
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         cam = renderer.GetActiveCamera()
         transform = vtk.vtkTransform()
-        transform.Scale(1, 1, z_scale)
+        transform.Scale(1, 1, params.z_scale)
         cam.SetModelTransformMatrix(transform.GetMatrix())
 
         if "grid_scale" in self.get_data_base():

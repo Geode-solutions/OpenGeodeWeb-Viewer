@@ -12,6 +12,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParamsWithColor,
 )
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from . import schemas
 
 
 class VtkMeshPointsView(VtkMeshView):
@@ -28,29 +29,25 @@ class VtkMeshPointsView(VtkMeshView):
         validate_schema(
             params, self.mesh_points_schemas_dict["visibility"], self.mesh_points_prefix
         )
-        id, visibility = params["id"], params["visibility"]
-        self.SetPointsVisibility(id, visibility)
+        params = schemas.Visibility.from_dict(params)
+        self.SetPointsVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
     def setMeshPointsColor(self, params: RpcParamsWithColor) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
         )
-        id, red, green, blue = (
-            params["id"],
-            params["color"]["r"],
-            params["color"]["g"],
-            params["color"]["b"],
-        )
-        self.SetPointsColor(id, red, green, blue)
+        params = schemas.Color.from_dict(params)
+        color = params.color
+        self.SetPointsColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
     def setMeshPointsSize(self, params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
         )
-        id, size = params["id"], params["size"]
-        self.SetPointsSize(id, size)
+        params = schemas.Size.from_dict(params)
+        self.SetPointsSize(params.id, params.size)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_attribute"]["rpc"])
     def setMeshPointsVertexAttribute(self, params: RpcParams) -> None:
@@ -59,5 +56,5 @@ class VtkMeshPointsView(VtkMeshView):
             self.mesh_points_schemas_dict["vertex_attribute"],
             self.mesh_points_prefix,
         )
-        id, name = params["id"], params["name"]
-        self.displayAttributeOnVertices(id, name)
+        params = schemas.VertexAttribute.from_dict(params)
+        self.displayAttributeOnVertices(params.id, pramas.name)

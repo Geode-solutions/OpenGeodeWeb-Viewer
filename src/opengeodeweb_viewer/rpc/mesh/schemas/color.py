@@ -1,18 +1,15 @@
+from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from typing import List, Optional
 
 
 @dataclass
-class Point:
-    x: float
-    y: float
+class ColorClass(DataClassJsonMixin):
+    b: int
+    g: int
+    r: int
 
 
 @dataclass
-class Color:
-    name: str
-    """Name of the AOI"""
-
-    points: List[Point]
-    z: float
-    id: Optional[str] = None
+class Color(DataClassJsonMixin):
+    color: ColorClass
+    id: str

@@ -7,6 +7,7 @@ from wslink import register as exportRpc
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from . import schemas
 
 
 class VtkMeshPolygonsView(VtkMeshView):
@@ -25,8 +26,8 @@ class VtkMeshPolygonsView(VtkMeshView):
             self.mesh_polygons_schemas_dict["visibility"],
             self.mesh_polygons_prefix,
         )
-        id, visibility = params["id"], params["visibility"]
-        self.SetVisibility(id, visibility)
+        params = schemas.Visibility.from_dict(params)
+        self.SetVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["color"]["rpc"])
     def setMeshPolygonsColor(self, params):
@@ -35,13 +36,9 @@ class VtkMeshPolygonsView(VtkMeshView):
             self.mesh_polygons_schemas_dict["color"],
             self.mesh_polygons_prefix,
         )
-        id, red, green, blue = (
-            params["id"],
-            params["color"]["r"],
-            params["color"]["g"],
-            params["color"]["b"],
-        )
-        self.SetColor(id, red, green, blue)
+        params = schemas.Color.from_dict(params)
+        color = params.color
+        self.SetColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(
         mesh_polygons_prefix + mesh_polygons_schemas_dict["vertex_attribute"]["rpc"]
@@ -52,8 +49,8 @@ class VtkMeshPolygonsView(VtkMeshView):
             self.mesh_polygons_schemas_dict["vertex_attribute"],
             self.mesh_polygons_prefix,
         )
-        id, name = params["id"], params["name"]
-        self.displayAttributeOnVertices(id, name)
+        params = schemas.Color.from_dict(params)
+        self.displayAttributeOnVertices(params.id, params.name)
 
     @exportRpc(
         mesh_polygons_prefix + mesh_polygons_schemas_dict["polygon_attribute"]["rpc"]
@@ -64,5 +61,5 @@ class VtkMeshPolygonsView(VtkMeshView):
             self.mesh_polygons_schemas_dict["polygon_attribute"],
             self.mesh_polygons_prefix,
         )
-        id, name = params["id"], params["name"]
-        self.displayAttributeOnCells(id, name)
+        params = schemas.Color.from_dict(params)
+        self.displayAttributeOnCells(params.id, params.name)

@@ -9,6 +9,7 @@ from wslink import register as exportRpc
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from . import schemas
 
 
 class VtkModelView(VtkObjectView):
@@ -23,7 +24,8 @@ class VtkModelView(VtkObjectView):
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, params):
         validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
-        data_id = params["id"]
+        params = schemas.Register.from_dict(params)
+        data_id = params.id
         try:
             data = self.get_data(data_id)
             file_name = str(data["viewable_file_name"])
@@ -46,13 +48,13 @@ class VtkModelView(VtkObjectView):
         validate_schema(
             params, self.model_schemas_dict["deregister"], self.model_prefix
         )
-        data_id = params["id"]
-        self.deregisterObject(data_id)
+        params = schemas.Deregister.from_dict(params)
+        self.deregisterObject(params.id)
 
     @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
     def setModelVisibility(self, params):
         validate_schema(
             params, self.model_schemas_dict["visibility"], self.model_prefix
         )
-        data_id, visibility = params["id"], params["visibility"]
-        self.SetVisibility(data_id, visibility)
+        params = schemas.Visibility.from_dict(params)
+        self.SetVisibility(params.id, params.visibility)

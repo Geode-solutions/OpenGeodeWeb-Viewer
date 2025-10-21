@@ -7,6 +7,7 @@ from wslink import register as exportRpc
 # Local application imports
 from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from . import schemas
 
 
 class VtkMeshEdgesView(VtkMeshView):
@@ -15,7 +16,7 @@ class VtkMeshEdgesView(VtkMeshView):
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["visibility"]["rpc"])
@@ -23,26 +24,22 @@ class VtkMeshEdgesView(VtkMeshView):
         validate_schema(
             params, self.mesh_edges_schemas_dict["visibility"], self.mesh_edges_prefix
         )
-        id, visibility = params["id"], params["visibility"]
-        self.SetEdgesVisibility(id, visibility)
+        params = schemas.Visibility.from_dict(params)
+        self.SetEdgesVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["color"]["rpc"])
     def setMeshEdgesColor(self, params):
         validate_schema(
             params, self.mesh_edges_schemas_dict["color"], self.mesh_edges_prefix
         )
-        id, red, green, blue = (
-            params["id"],
-            params["color"]["r"],
-            params["color"]["g"],
-            params["color"]["b"],
-        )
-        self.SetEdgesColor(id, red, green, blue)
+        params = schemas.Color.from_dict(params)
+        color = params.color
+        self.SetEdgesColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["width"]["rpc"])
     def setMeshEdgesWidth(self, params):
         validate_schema(
             params, self.mesh_edges_schemas_dict["width"], self.mesh_edges_prefix
         )
-        id, size = params["id"], params["width"]
-        self.SetEdgesWidth(id, width)
+        params = schemas.Color.from_dict(params)
+        self.SetEdgesWidth(params.id, params.width)
