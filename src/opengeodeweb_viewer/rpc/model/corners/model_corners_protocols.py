@@ -19,22 +19,22 @@ class VtkModelCornersView(VtkModelView):
         super().__init__()
 
     @exportRpc(model_corners_prefix + model_corners_schemas_dict["visibility"]["rpc"])
-    def setModelCornersPointsVisibility(self, params):
+    def setModelCornersPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.model_corners_schemas_dict["visibility"],
             self.model_corners_prefix,
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
 
     @exportRpc(model_corners_prefix + model_corners_schemas_dict["color"]["rpc"])
-    def setModelCornersPointsColor(self, params):
+    def setModelCornersPointsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.model_corners_schemas_dict["color"],
             self.model_corners_prefix,
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         color = params.color
         self.SetBlocksColor(params.id, params.block_ids, color.r, color.g, color.b)

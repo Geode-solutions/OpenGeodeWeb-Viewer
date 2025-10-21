@@ -20,19 +20,19 @@ class VtkModelPointsView(VtkModelView):
         super().__init__()
 
     @exportRpc(model_points_prefix + model_points_schemas_dict["visibility"]["rpc"])
-    def setModelPointsVisibility(self, params):
+    def setModelPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.model_points_schemas_dict["visibility"],
             self.model_points_prefix,
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetPointsVisibility(params.id, params.visibility)
 
     @exportRpc(model_points_prefix + model_points_schemas_dict["size"]["rpc"])
-    def setModelPointsSize(self, params):
+    def setModelPointsSize(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.model_points_schemas_dict["size"], self.model_points_prefix
         )
-        params = schemas.Size.from_dict(params)
+        params = schemas.Size.from_dict(rpc_params)
         self.SetPointsSize(params.id, params.size)

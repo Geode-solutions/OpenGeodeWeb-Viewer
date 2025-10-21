@@ -25,36 +25,36 @@ class VtkMeshPointsView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, params: RpcParams) -> None:
+    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["visibility"], self.mesh_points_prefix
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetPointsVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
-    def setMeshPointsColor(self, params: RpcParamsWithColor) -> None:
+    def setMeshPointsColor(self, rpc_params: RpcParamsWithColor) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         color = params.color
         self.SetPointsColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
-    def setMeshPointsSize(self, params: RpcParams) -> None:
+    def setMeshPointsSize(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
         )
-        params = schemas.Size.from_dict(params)
+        params = schemas.Size.from_dict(rpc_params)
         self.SetPointsSize(params.id, params.size)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_attribute"]["rpc"])
-    def setMeshPointsVertexAttribute(self, params: RpcParams) -> None:
+    def setMeshPointsVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_points_schemas_dict["vertex_attribute"],
             self.mesh_points_prefix,
         )
-        params = schemas.VertexAttribute.from_dict(params)
+        params = schemas.VertexAttribute.from_dict(rpc_params)
         self.displayAttributeOnVertices(params.id, pramas.name)

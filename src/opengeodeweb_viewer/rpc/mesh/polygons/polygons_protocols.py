@@ -20,46 +20,46 @@ class VtkMeshPolygonsView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["visibility"]["rpc"])
-    def setMeshPolygonsVisibility(self, params):
+    def setMeshPolygonsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polygons_schemas_dict["visibility"],
             self.mesh_polygons_prefix,
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["color"]["rpc"])
-    def setMeshPolygonsColor(self, params):
+    def setMeshPolygonsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polygons_schemas_dict["color"],
             self.mesh_polygons_prefix,
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         color = params.color
         self.SetColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(
         mesh_polygons_prefix + mesh_polygons_schemas_dict["vertex_attribute"]["rpc"]
     )
-    def setMeshPolygonsVertexAttribute(self, params):
+    def setMeshPolygonsVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polygons_schemas_dict["vertex_attribute"],
             self.mesh_polygons_prefix,
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         self.displayAttributeOnVertices(params.id, params.name)
 
     @exportRpc(
         mesh_polygons_prefix + mesh_polygons_schemas_dict["polygon_attribute"]["rpc"]
     )
-    def setMeshPolygonsPolygonAttribute(self, params):
+    def setMeshPolygonsPolygonAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polygons_schemas_dict["polygon_attribute"],
             self.mesh_polygons_prefix,
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)

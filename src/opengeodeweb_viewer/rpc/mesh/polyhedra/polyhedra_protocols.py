@@ -20,47 +20,47 @@ class VtkMeshPolyhedraView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["visibility"]["rpc"])
-    def setMeshPolyhedraVisibility(self, params):
+    def setMeshPolyhedraVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polyhedra_schemas_dict["visibility"],
             self.mesh_polyhedra_prefix,
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["color"]["rpc"])
-    def setMeshPolyhedraColor(self, params):
+    def setMeshPolyhedraColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polyhedra_schemas_dict["color"],
             self.mesh_polyhedra_prefix,
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         color = params.color
         self.SetColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(
         mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["vertex_attribute"]["rpc"]
     )
-    def setMeshPolyhedraVertexAttribute(self, params):
+    def setMeshPolyhedraVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polyhedra_schemas_dict["vertex_attribute"],
             self.mesh_polyhedra_prefix,
         )
-        params = schemas.VertexAttribute.from_dict(params)
+        params = schemas.VertexAttribute.from_dict(rpc_params)
         self.displayAttributeOnVertices(params.id, params.name)
 
     @exportRpc(
         mesh_polyhedra_prefix
         + mesh_polyhedra_schemas_dict["polyhedron_attribute"]["rpc"]
     )
-    def setMeshPolyhedraPolyhedronAttribute(self, params):
+    def setMeshPolyhedraPolyhedronAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.mesh_polyhedra_schemas_dict["polyhedron_attribute"],
             self.mesh_polyhedra_prefix,
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)

@@ -28,10 +28,10 @@ class VtkMeshView(VtkObjectView):
         super().__init__()
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
-    def registerMesh(self, params: RpcParams) -> None:
+    def registerMesh(self, rpc_params: RpcParams) -> None:
         print(f"{self.mesh_schemas_dict["register"]}", flush=True)
         validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
-        params = schemas.Register.from_dict(params)
+        params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
             data = self.get_data(data_id)
@@ -70,36 +70,36 @@ class VtkMeshView(VtkObjectView):
             raise
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
-    def deregisterMesh(self, params: RpcParams) -> None:
+    def deregisterMesh(self, rpc_params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["deregister"], self.mesh_prefix)
-        params = schemas.Deregister.from_dict(params)
+        params = schemas.Deregister.from_dict(rpc_params)
         self.deregisterObject(params.id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
-    def SetMeshVisibility(self, params: RpcParams) -> None:
+    def SetMeshVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, parmas.visibility)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
-    def setMeshOpacity(self, params: RpcParams) -> None:
+    def setMeshOpacity(self, rpc_params: RpcParams) -> None:
         validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
-        params = schemas.Opacity.from_dict(params)
+        params = schemas.Opacity.from_dict(rpc_params)
         self.SetOpacity(params.id, params.opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
-    def setMeshColor(self, params: RpcParamsWithColor) -> None:
+    def setMeshColor(self, rpc_params: RpcParamsWithColor) -> None:
         validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         color = params.color
         self.SetColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
-    def meshApplyTextures(self, params: RpcParams) -> None:
+    def meshApplyTextures(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
-        params = schemas.ApplyTextures.from_dict(params)
+        params = schemas.ApplyTextures.from_dict(rpc_params)
         mesh_id = params.id
         for tex_info in params.textures:
             texture_id = tex_info.id

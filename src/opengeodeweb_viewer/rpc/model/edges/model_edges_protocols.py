@@ -20,9 +20,9 @@ class VtkModelEdgesView(VtkModelView):
         super().__init__()
 
     @exportRpc(model_edges_prefix + model_edges_schemas_dict["visibility"]["rpc"])
-    def setModelEdgesVisibility(self, params):
+    def setModelEdgesVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.model_edges_schemas_dict["visibility"], self.model_edges_prefix
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetEdgesVisibility(params.id, params.visibility)

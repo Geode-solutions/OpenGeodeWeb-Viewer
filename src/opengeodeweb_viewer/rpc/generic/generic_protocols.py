@@ -27,11 +27,11 @@ class VtkGenericView(VtkView):
         self.model_protocols = model_protocols
 
     @exportRpc(generic_prefix + generic_schemas_dict["register"]["rpc"])
-    def register(self, params):
+    def register(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.generic_schemas_dict["register"], self.generic_prefix
         )
-        params = schemas.Register.from_dict(params)
+        params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         specific_params = {"id": data_id}
         data = self.get_data(data_id)
@@ -42,11 +42,11 @@ class VtkGenericView(VtkView):
             self.model_protocols.registerModel(specific_params)
 
     @exportRpc(generic_prefix + generic_schemas_dict["deregister"]["rpc"])
-    def deregister(self, params):
+    def deregister(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.generic_schemas_dict["deregister"], self.generic_prefix
         )
-        params = schemas.Deregister.from_dict(params)
+        params = schemas.Deregister.from_dict(rpc_params)
         data_id = params.id
         specific_params = {"id": data_id}
         data = self.get_data(data_id)

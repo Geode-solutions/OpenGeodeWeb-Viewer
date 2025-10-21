@@ -20,22 +20,22 @@ class VtkModelBlocksView(VtkModelView):
         super().__init__()
 
     @exportRpc(model_blocks_prefix + model_blocks_schemas_dict["visibility"]["rpc"])
-    def setModelBlocksPolyhedraVisibility(self, params):
+    def setModelBlocksPolyhedraVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.model_blocks_schemas_dict["visibility"],
             self.model_blocks_prefix,
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
 
     @exportRpc(model_blocks_prefix + model_blocks_schemas_dict["color"]["rpc"])
-    def setModelBlocksPolyhedraColor(self, params):
+    def setModelBlocksPolyhedraColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params,
             self.model_blocks_schemas_dict["color"],
             self.model_blocks_prefix,
         )
-        params = schemas.Color.from_dict(params)
+        params = schemas.Color.from_dict(rpc_params)
         color = params.color
         self.SetBlocksColor(params.id, params.block_ids, color.r, color.g, color.b)

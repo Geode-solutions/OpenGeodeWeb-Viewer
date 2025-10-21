@@ -27,7 +27,9 @@ def get_schemas_dict(path: str) -> dict[str, SchemaDict]:
     return schemas_dict
 
 
-def validate_schema(params: RpcParams, schema: SchemaDict, prefix: str = "") -> None:
+def validate_schema(
+    rpc_params: RpcParams, schema: SchemaDict, prefix: str = ""
+) -> None:
     print(f"{prefix}{schema['rpc']}", f"{params=}", flush=True)
     try:
         validate = fastjsonschema.compile(schema)

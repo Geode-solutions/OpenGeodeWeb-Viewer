@@ -22,9 +22,9 @@ class VtkModelView(VtkObjectView):
         super().__init__()
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
-    def registerModel(self, params):
+    def registerModel(self, rpc_params: RpcParams) -> None:
         validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
-        params = schemas.Register.from_dict(params)
+        params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
             data = self.get_data(data_id)
@@ -44,17 +44,17 @@ class VtkModelView(VtkObjectView):
             raise
 
     @exportRpc(model_prefix + model_schemas_dict["deregister"]["rpc"])
-    def deregisterModel(self, params):
+    def deregisterModel(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.model_schemas_dict["deregister"], self.model_prefix
         )
-        params = schemas.Deregister.from_dict(params)
+        params = schemas.Deregister.from_dict(rpc_params)
         self.deregisterObject(params.id)
 
     @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
-    def setModelVisibility(self, params):
+    def setModelVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             params, self.model_schemas_dict["visibility"], self.model_prefix
         )
-        params = schemas.Visibility.from_dict(params)
+        params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, params.visibility)
