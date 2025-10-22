@@ -2,10 +2,14 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from . import schemas
 
@@ -22,7 +26,7 @@ class VtkMeshPolyhedraView(VtkMeshView):
     @exportRpc(mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["visibility"]["rpc"])
     def setMeshPolyhedraVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polyhedra_schemas_dict["visibility"],
             self.mesh_polyhedra_prefix,
         )
@@ -32,7 +36,7 @@ class VtkMeshPolyhedraView(VtkMeshView):
     @exportRpc(mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["color"]["rpc"])
     def setMeshPolyhedraColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polyhedra_schemas_dict["color"],
             self.mesh_polyhedra_prefix,
         )
@@ -45,7 +49,7 @@ class VtkMeshPolyhedraView(VtkMeshView):
     )
     def setMeshPolyhedraVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polyhedra_schemas_dict["vertex_attribute"],
             self.mesh_polyhedra_prefix,
         )
@@ -58,9 +62,9 @@ class VtkMeshPolyhedraView(VtkMeshView):
     )
     def setMeshPolyhedraPolyhedronAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polyhedra_schemas_dict["polyhedron_attribute"],
             self.mesh_polyhedra_prefix,
         )
-        params = schemas.Color.from_dict(rpc_params)
+        params = schemas.PolyhedronAttribute.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)

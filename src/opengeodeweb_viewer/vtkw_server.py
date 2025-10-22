@@ -3,10 +3,10 @@ import argparse
 import os
 
 # Third party imports
-import vtk
-from vtk.web import wslink as vtk_wslink
-from vtk.web import protocols as vtk_protocols
-from wslink import server
+from vtk.web import wslink as vtk_wslink  # type: ignore
+from vtk.web import protocols as vtk_protocols  # type: ignore
+from wslink import server  # type: ignore
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from opengeodeweb_microservice.database import connection
 
 # Local application imports
@@ -104,8 +104,8 @@ class _Server(vtk_wslink.ServerProtocol):
         self.updateSecret(_Server.authKey)
 
         if not _Server.view:
-            renderer = vtk.vtkRenderer()
-            renderWindow = vtk.vtkRenderWindow()
+            renderer = vtkRenderer()
+            renderWindow = vtkRenderWindow()
             renderWindow.AddRenderer(renderer)
             self.setSharedObject("renderer", renderer)
             self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", renderWindow)

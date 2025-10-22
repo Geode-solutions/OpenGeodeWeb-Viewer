@@ -8,7 +8,7 @@ import fastjsonschema  # type: ignore
 
 type JsonPrimitive = str | int | float | bool
 type JsonValue = JsonPrimitive | dict[str, JsonValue] | list[JsonValue]
-type RpcParams = dict[str, JsonValue]
+type RpcParams = dict[str, str]
 
 type ColorDict = dict[str, int]
 type RpcParamsWithColor = dict[str, JsonPrimitive | ColorDict]
@@ -30,10 +30,10 @@ def get_schemas_dict(path: str) -> dict[str, SchemaDict]:
 def validate_schema(
     rpc_params: RpcParams, schema: SchemaDict, prefix: str = ""
 ) -> None:
-    print(f"{prefix}{schema['rpc']}", f"{params=}", flush=True)
+    print(f"{prefix}{schema['rpc']}", f"{rpc_params=}", flush=True)
     try:
         validate = fastjsonschema.compile(schema)
-        validate(params)
+        validate(rpc_params)
     except fastjsonschema.JsonSchemaException as e:
         print(f"Validation error: {e.message}", flush=True)
         raise Exception(

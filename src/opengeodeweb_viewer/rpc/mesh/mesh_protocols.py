@@ -3,8 +3,11 @@ import os
 from typing import cast
 
 # Third party imports
-import vtk
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
+from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
+from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkActor, vtkTexture
+from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
+from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from opengeodeweb_microservice.database.data import Data
 
 # Local application imports
@@ -15,6 +18,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParamsWithColor,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from opengeodeweb_viewer.vtk_protocol import vtkData
 from . import schemas
 
 
@@ -30,23 +34,21 @@ class VtkMeshView(VtkObjectView):
     @exportRpc(mesh_prefix + mesh_schemas_dict["register"]["rpc"])
     def registerMesh(self, rpc_params: RpcParams) -> None:
         print(f"{self.mesh_schemas_dict["register"]}", flush=True)
-        validate_schema(params, self.mesh_schemas_dict["register"], self.mesh_prefix)
+        validate_schema(
+            rpc_params, self.mesh_schemas_dict["register"], self.mesh_prefix
+        )
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            data = self.get_data(data_id)
-            file_name = str(data["viewable_file_name"])
-
-            reader = vtk.vtkXMLGenericDataObjectReader()
-            filter = {}
-            mapper = vtk.vtkDataSetMapper()
+            file_name = str(self.get_data(data_id)["viewable_file_name"])
+            reader = vtkXMLGenericDataObjectReader()
+            mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-
-            self.registerObject(data_id, file_name, reader, filter, mapper)
-
+            data = vtkData(reader, mapper)
+            self.registerObject(data_id, file_name, data)
             data_object = reader.GetOutput()
-            data_set = vtk.vtkDataSet.SafeDownCast(data_object)
-            cell_types = vtk.vtkCellTypes()
+            data_set = vtkDataSet.SafeDownCast(data_object)
+            cell_types = vtkCellTypes()
             data_set.GetCellTypes(cell_types)
             cell_data = cell_types.GetCellTypesArray()
             max_id = -1
@@ -54,16 +56,14 @@ class VtkMeshView(VtkObjectView):
                 t_id = cell_data.GetValue(t)
                 max_id = max(max_id, t_id)
             print(f"{max_id=}", flush=True)
-            max_dimension = ""
             if max_id < 3:
-                max_dimension = "points"
+                data.max_dimension = "points"
             elif max_id < 5:
-                max_dimension = "edges"
+                data.max_dimension = "edges"
             elif max_id < 7:
-                max_dimension = "polygons"
+                data.max_dimension = "polygons"
             elif max_id >= 7:
-                max_dimension = "polyhedra"
-            self.get_data_base()[data_id]["max_dimension"] = max_dimension
+                data.max_dimension = "polyhedra"
 
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
@@ -71,25 +71,29 @@ class VtkMeshView(VtkObjectView):
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["deregister"]["rpc"])
     def deregisterMesh(self, rpc_params: RpcParams) -> None:
-        validate_schema(params, self.mesh_schemas_dict["deregister"], self.mesh_prefix)
+        validate_schema(
+            rpc_params, self.mesh_schemas_dict["deregister"], self.mesh_prefix
+        )
         params = schemas.Deregister.from_dict(rpc_params)
         self.deregisterObject(params.id)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["visibility"]["rpc"])
     def SetMeshVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(params, self.mesh_schemas_dict["visibility"], self.mesh_prefix)
+        validate_schema(
+            rpc_params, self.mesh_schemas_dict["visibility"], self.mesh_prefix
+        )
         params = schemas.Visibility.from_dict(rpc_params)
-        self.SetVisibility(params.id, parmas.visibility)
+        self.SetVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
     def setMeshOpacity(self, rpc_params: RpcParams) -> None:
-        validate_schema(params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
+        validate_schema(rpc_params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
         params = schemas.Opacity.from_dict(rpc_params)
         self.SetOpacity(params.id, params.opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
     def setMeshColor(self, rpc_params: RpcParamsWithColor) -> None:
-        validate_schema(params, self.mesh_schemas_dict["color"], self.mesh_prefix)
+        validate_schema(rpc_params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         params = schemas.Color.from_dict(rpc_params)
         color = params.color
         self.SetColor(params.id, color.r, color.g, color.b)
@@ -97,7 +101,7 @@ class VtkMeshView(VtkObjectView):
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
     def meshApplyTextures(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
+            rpc_params, self.mesh_schemas_dict["apply_textures"], self.mesh_prefix
         )
         params = schemas.ApplyTextures.from_dict(rpc_params)
         mesh_id = params.id
@@ -110,13 +114,13 @@ class VtkMeshView(VtkObjectView):
             if not texture_file.lower().endswith(".vti"):
                 continue
             texture_file_path = self.get_data_file_path(texture_id)
-            texture_reader = vtk.vtkXMLImageDataReader()
+            texture_reader = vtkXMLImageDataReader()
             texture_reader.SetFileName(texture_file_path)
             texture_reader.Update()
-            texture = vtk.vtkTexture()
+            texture = vtkTexture()
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
-            reader = cast(vtk.vtkAlgorithm, self.get_object(mesh_id)["reader"])
+            reader = cast(vtkAlgorithm, self.get_object(mesh_id).reader)
             output = reader.GetOutput()
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
@@ -124,25 +128,25 @@ class VtkMeshView(VtkObjectView):
                 if array.GetName() == tex_info.texture_name:
                     point_data.SetTCoords(array)
                     break
-            actor = cast(vtk.vtkActor, self.get_object(mesh_id)["actor"])
+            actor = cast(vtkActor, self.get_object(mesh_id).actor)
             actor.SetTexture(texture)
         self.render()
 
     def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
-        reader = self.get_object(data_id)["reader"]
+        reader = self.get_object(data_id).reader
         points = reader.GetOutput().GetPointData()
         points.SetActiveScalars(name)
-        mapper = self.get_object(data_id)["mapper"]
+        mapper = self.get_object(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetScalarRange(points.GetScalars().GetRange())
         self.render()
 
     def displayAttributeOnCells(self, data_id: str, name: str) -> None:
-        reader = self.get_object(data_id)["reader"]
+        reader = self.get_object(data_id).reader
         cells = reader.GetOutput().GetCellData()
         cells.SetActiveScalars(name)
-        mapper = self.get_object(data_id)["mapper"]
+        mapper = self.get_object(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetScalarRange(cells.GetScalars().GetRange())

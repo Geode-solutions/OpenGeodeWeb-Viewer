@@ -2,10 +2,14 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+)
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from . import schemas
 
@@ -22,7 +26,7 @@ class VtkModelPointsView(VtkModelView):
     @exportRpc(model_points_prefix + model_points_schemas_dict["visibility"]["rpc"])
     def setModelPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.model_points_schemas_dict["visibility"],
             self.model_points_prefix,
         )
@@ -32,7 +36,7 @@ class VtkModelPointsView(VtkModelView):
     @exportRpc(model_points_prefix + model_points_schemas_dict["size"]["rpc"])
     def setModelPointsSize(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.model_points_schemas_dict["size"], self.model_points_prefix
+            rpc_params, self.model_points_schemas_dict["size"], self.model_points_prefix
         )
         params = schemas.Size.from_dict(rpc_params)
         self.SetPointsSize(params.id, params.size)

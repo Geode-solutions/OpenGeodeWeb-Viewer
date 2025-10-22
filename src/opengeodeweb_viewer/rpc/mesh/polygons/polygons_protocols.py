@@ -2,10 +2,14 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from . import schemas
 
@@ -22,7 +26,7 @@ class VtkMeshPolygonsView(VtkMeshView):
     @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["visibility"]["rpc"])
     def setMeshPolygonsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polygons_schemas_dict["visibility"],
             self.mesh_polygons_prefix,
         )
@@ -32,7 +36,7 @@ class VtkMeshPolygonsView(VtkMeshView):
     @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["color"]["rpc"])
     def setMeshPolygonsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polygons_schemas_dict["color"],
             self.mesh_polygons_prefix,
         )
@@ -45,7 +49,7 @@ class VtkMeshPolygonsView(VtkMeshView):
     )
     def setMeshPolygonsVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polygons_schemas_dict["vertex_attribute"],
             self.mesh_polygons_prefix,
         )
@@ -57,7 +61,7 @@ class VtkMeshPolygonsView(VtkMeshView):
     )
     def setMeshPolygonsPolygonAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_polygons_schemas_dict["polygon_attribute"],
             self.mesh_polygons_prefix,
         )

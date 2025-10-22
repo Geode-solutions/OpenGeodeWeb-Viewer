@@ -2,14 +2,18 @@
 import os
 
 # Third party imports
-from vtk.web import protocols as vtk_protocols
-from wslink import register as exportRpc
+from vtk.web import protocols as vtk_protocols  # type: ignore
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+)
 from . import schemas
 
 
@@ -29,7 +33,7 @@ class VtkGenericView(VtkView):
     @exportRpc(generic_prefix + generic_schemas_dict["register"]["rpc"])
     def register(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.generic_schemas_dict["register"], self.generic_prefix
+            rpc_params, self.generic_schemas_dict["register"], self.generic_prefix
         )
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
@@ -44,7 +48,7 @@ class VtkGenericView(VtkView):
     @exportRpc(generic_prefix + generic_schemas_dict["deregister"]["rpc"])
     def deregister(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.generic_schemas_dict["deregister"], self.generic_prefix
+            rpc_params, self.generic_schemas_dict["deregister"], self.generic_prefix
         )
         params = schemas.Deregister.from_dict(rpc_params)
         data_id = params.id

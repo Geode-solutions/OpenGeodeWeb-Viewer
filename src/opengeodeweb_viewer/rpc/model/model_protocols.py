@@ -2,13 +2,22 @@
 import os
 
 # Third party imports
-import vtk
-from vtkmodules.vtkRenderingCore import vtkCompositeDataDisplayAttributes
-from wslink import register as exportRpc
+from vtkmodules.vtkRenderingCore import (
+    vtkCompositeDataDisplayAttributes,
+    vtkCompositePolyDataMapper,
+)
+from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
+from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+)
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from opengeodeweb_viewer.vtk_protocol import vtkData
 from . import schemas
 
 
@@ -23,22 +32,22 @@ class VtkModelView(VtkObjectView):
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
-        validate_schema(params, self.model_schemas_dict["register"], self.model_prefix)
+        validate_schema(
+            rpc_params, self.model_schemas_dict["register"], self.model_prefix
+        )
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            data = self.get_data(data_id)
-            file_name = str(data["viewable_file_name"])
-
-            reader = vtk.vtkXMLMultiBlockDataReader()
-            filter = vtk.vtkGeometryFilter()
+            file_name = str(self.get_data(data_id)["viewable_file_name"])
+            reader = vtkXMLMultiBlockDataReader()
+            filter = vtkGeometryFilter()
             filter.SetInputConnection(reader.GetOutputPort())
-            mapper = vtk.vtkCompositePolyDataMapper()
+            mapper = vtkCompositePolyDataMapper()
             mapper.SetInputConnection(filter.GetOutputPort())
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            self.registerObject(data_id, file_name, reader, filter, mapper)
-            self.get_object(data_id)["max_dimension"] = "default"
+            data = vtkData(reader, mapper, filter)
+            self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)
             raise
@@ -46,7 +55,7 @@ class VtkModelView(VtkObjectView):
     @exportRpc(model_prefix + model_schemas_dict["deregister"]["rpc"])
     def deregisterModel(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.model_schemas_dict["deregister"], self.model_prefix
+            rpc_params, self.model_schemas_dict["deregister"], self.model_prefix
         )
         params = schemas.Deregister.from_dict(rpc_params)
         self.deregisterObject(params.id)
@@ -54,7 +63,7 @@ class VtkModelView(VtkObjectView):
     @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
     def setModelVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.model_schemas_dict["visibility"], self.model_prefix
+            rpc_params, self.model_schemas_dict["visibility"], self.model_prefix
         )
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, params.visibility)

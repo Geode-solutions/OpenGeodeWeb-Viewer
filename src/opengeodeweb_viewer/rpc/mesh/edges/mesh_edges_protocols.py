@@ -2,10 +2,14 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from . import schemas
 
@@ -22,7 +26,9 @@ class VtkMeshEdgesView(VtkMeshView):
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["visibility"]["rpc"])
     def setMeshEdgesVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.mesh_edges_schemas_dict["visibility"], self.mesh_edges_prefix
+            rpc_params,
+            self.mesh_edges_schemas_dict["visibility"],
+            self.mesh_edges_prefix,
         )
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetEdgesVisibility(params.id, params.visibility)
@@ -30,7 +36,7 @@ class VtkMeshEdgesView(VtkMeshView):
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["color"]["rpc"])
     def setMeshEdgesColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.mesh_edges_schemas_dict["color"], self.mesh_edges_prefix
+            rpc_params, self.mesh_edges_schemas_dict["color"], self.mesh_edges_prefix
         )
         params = schemas.Color.from_dict(rpc_params)
         color = params.color
@@ -39,7 +45,7 @@ class VtkMeshEdgesView(VtkMeshView):
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["width"]["rpc"])
     def setMeshEdgesWidth(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.mesh_edges_schemas_dict["width"], self.mesh_edges_prefix
+            rpc_params, self.mesh_edges_schemas_dict["width"], self.mesh_edges_prefix
         )
         params = schemas.Color.from_dict(rpc_params)
         self.SetEdgesWidth(params.id, params.width)

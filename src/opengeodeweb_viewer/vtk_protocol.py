@@ -1,29 +1,66 @@
 # Standard library imports
 import os
+from typing import cast, Any, Literal
+from dataclasses import dataclass
 
 # Third party imports
-import vtk
 from vtk.web import protocols as vtk_protocols  # type: ignore
+from vtkmodules.vtkIOXML import vtkXMLPolyDataReader, vtkXMLImageDataReader
+from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
+from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkMapper,
+    vtkRenderer,
+)
+from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
+from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Local application imports
 from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
 
-# mypy: allow-untyped-defs
+
+@dataclass
+class vtkData:
+    reader: vtkAlgorithm
+    mapper: vtkMapper
+    filter: vtkAlgorithm | None = None
+    actor: vtkActor = vtkActor()
+    max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
+        "default"
+    )
 
 
-class VtkView(vtk_protocols.vtkWebProtocol):
+class VtkView(vtk_protocols.vtkWebProtocol):  # type: ignore
     def __init__(self) -> None:
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
-        self.DataReader = vtk.vtkXMLPolyDataReader()
-        self.ImageReader = vtk.vtkXMLImageDataReader()
+        self.DataReader = vtkXMLPolyDataReader()
+        self.ImageReader = vtkXMLImageDataReader()
 
-    def get_data_base(self) -> dict[str, dict[str, object | str]]:
+    def get_data_base(self) -> Any:
         return self.getSharedObject("db")
 
-    def get_object(self, id: str) -> dict[str, object | str]:
-        return self.get_data_base()[id]
+    def get_object(self, id: str) -> vtkData:
+        return cast(vtkData, self.get_data_base()[id])
+
+    def get_grid_scale(self) -> vtkCubeAxesActor | None:
+        return cast(vtkCubeAxesActor | None, self.getSharedObject("grid_scale"))
+
+    def set_grid_scale(self, grid_scale: vtkCubeAxesActor) -> None:
+        self.coreServer.setSharedObject("grid_scale", grid_scale)
+
+    def get_axes(self) -> vtkAxesActor | None:
+        return cast(vtkAxesActor | None, self.getSharedObject("axes"))
+
+    def set_axes(self, axes: vtkAxesActor) -> None:
+        self.coreServer.setSharedObject("axes", axes)
+
+    def get_widget(self) -> vtkOrientationMarkerWidget | None:
+        return cast(vtkOrientationMarkerWidget | None, self.getSharedObject("widget"))
+
+    def set_widget(self, widget: vtkOrientationMarkerWidget) -> None:
+        self.coreServer.setSharedObject("widget", widget)
 
     def get_viewer_object_type(self, data_id: str) -> str:
         data = self.get_data(data_id)
@@ -68,8 +105,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
         return os.path.join(data_folder_path, data_id, filename)
 
-    def get_renderer(self) -> vtk.vtkRenderer:
-        return self.getSharedObject("renderer")
+    def get_renderer(self) -> vtkRenderer:
+        return cast(vtkRenderer, self.getSharedObject("renderer"))
 
     def get_protocol(self, name: str) -> vtk_protocols.vtkWebProtocol:
         for p in self.coreServer.getLinkProtocols():
@@ -77,29 +114,15 @@ class VtkView(vtk_protocols.vtkWebProtocol):
                 return p
 
     def render(self, view: int = -1) -> None:
-        if "grid_scale" in self.get_data_base():
+        grid_scale = self.get_grid_scale()
+        if grid_scale is not None:
             renderer = self.get_renderer()
             renderer_bounds = renderer.ComputeVisiblePropBounds()
-            grid_scale = self.get_object("grid_scale")["actor"]
             grid_scale.SetBounds(renderer_bounds)
         self.getSharedObject("publisher").imagePush({"view": view})
 
-    def register_object(
-        self,
-        id: str,
-        reader: vtk.vtkAlgorithm,
-        filter: vtk.vtkAlgorithm,
-        actor: vtk.vtkActor,
-        mapper: vtk.vtkMapper,
-        textures: dict[str, str | int | float],
-    ) -> None:
-        self.get_data_base()[id] = {
-            "reader": reader,
-            "filter": filter,
-            "actor": actor,
-            "mapper": mapper,
-            "textures": textures,
-        }
+    def register_object(self, id: str, data: vtkData) -> None:
+        self.get_data_base()[id] = data
 
     def deregister_object(self, id: str) -> None:
         if id in self.get_data_base():

@@ -2,11 +2,16 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.utils_functions import (
+    get_schemas_dict,
+    validate_schema,
+    RpcParams,
+)
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from . import schemas
 
 
 class VtkModelCornersView(VtkModelView):
@@ -21,7 +26,7 @@ class VtkModelCornersView(VtkModelView):
     @exportRpc(model_corners_prefix + model_corners_schemas_dict["visibility"]["rpc"])
     def setModelCornersPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.model_corners_schemas_dict["visibility"],
             self.model_corners_prefix,
         )
@@ -31,7 +36,7 @@ class VtkModelCornersView(VtkModelView):
     @exportRpc(model_corners_prefix + model_corners_schemas_dict["color"]["rpc"])
     def setModelCornersPointsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.model_corners_schemas_dict["color"],
             self.model_corners_prefix,
         )
