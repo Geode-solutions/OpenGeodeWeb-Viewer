@@ -2,7 +2,7 @@
 import os
 
 # Third party imports
-from vtk.web import protocols as vtk_protocols  # type: ignore
+from vtkmodules.web import protocols as vtk_protocols
 from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 

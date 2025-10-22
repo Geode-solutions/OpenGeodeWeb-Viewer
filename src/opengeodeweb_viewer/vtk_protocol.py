@@ -4,7 +4,7 @@ from typing import cast, Any, Literal
 from dataclasses import dataclass, field
 
 # Third party imports
-from vtk.web import protocols as vtk_protocols  # type: ignore
+from vtkmodules.web import protocols as vtk_protocols
 from vtkmodules.vtkIOXML import (
     vtkXMLReader,
 )
@@ -33,7 +33,7 @@ class vtkData:
     )
 
 
-class VtkView(vtk_protocols.vtkWebProtocol):  # type: ignore
+class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self) -> None:
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH", ".")
@@ -107,11 +107,6 @@ class VtkView(vtk_protocols.vtkWebProtocol):  # type: ignore
 
     def get_renderer(self) -> vtkRenderer:
         return cast(vtkRenderer, self.getSharedObject("renderer"))
-
-    def get_protocol(self, name: str) -> vtk_protocols.vtkWebProtocol:
-        for p in self.coreServer.getLinkProtocols():
-            if type(p).__name__ == name:
-                return p
 
     def render(self, view: int = -1) -> None:
         grid_scale = self.get_grid_scale()

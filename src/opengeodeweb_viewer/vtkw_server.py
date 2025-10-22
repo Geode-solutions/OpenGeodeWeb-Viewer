@@ -3,8 +3,8 @@ import argparse
 import os
 
 # Third party imports
-from vtk.web import wslink as vtk_wslink  # type: ignore
-from vtk.web import protocols as vtk_protocols
+from vtkmodules.web import wslink as vtk_wslink
+from vtkmodules.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from opengeodeweb_microservice.database import connection
@@ -38,7 +38,7 @@ from .rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
 from .rpc.generic.generic_protocols import VtkGenericView
-from .rpc.utils_protocols import VtkUtilsView  # type: ignore
+from .rpc.utils_protocols import VtkUtilsView
 
 
 # =============================================================================
