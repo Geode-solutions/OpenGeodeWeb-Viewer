@@ -3,15 +3,15 @@ import os
 
 # Third party imports
 from wslink import register as exportRpc
+from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import (
-    get_schemas_dict,
     validate_schema,
     RpcParams,
-    RpcParamsWithColor,
 )
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from . import schemas
 
 
 class VtkMeshPointsView(VtkMeshView):
@@ -24,40 +24,38 @@ class VtkMeshPointsView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, params: RpcParams) -> None:
+    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.mesh_points_schemas_dict["visibility"], self.mesh_points_prefix
+            rpc_params,
+            self.mesh_points_schemas_dict["visibility"],
+            self.mesh_points_prefix,
         )
-        id, visibility = params["id"], params["visibility"]
-        self.SetPointsVisibility(id, visibility)
+        params = schemas.Visibility.from_dict(rpc_params)
+        self.SetPointsVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
-    def setMeshPointsColor(self, params: RpcParamsWithColor) -> None:
+    def setMeshPointsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
+            rpc_params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
         )
-        id, red, green, blue = (
-            params["id"],
-            params["color"]["r"],
-            params["color"]["g"],
-            params["color"]["b"],
-        )
-        self.SetPointsColor(id, red, green, blue)
+        params = schemas.Color.from_dict(rpc_params)
+        color = params.color
+        self.SetPointsColor(params.id, color.r, color.g, color.b)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
-    def setMeshPointsSize(self, params: RpcParams) -> None:
+    def setMeshPointsSize(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
+            rpc_params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
         )
-        id, size = params["id"], params["size"]
-        self.SetPointsSize(id, size)
+        params = schemas.Size.from_dict(rpc_params)
+        self.SetPointsSize(params.id, params.size)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_attribute"]["rpc"])
-    def setMeshPointsVertexAttribute(self, params: RpcParams) -> None:
+    def setMeshPointsVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params,
+            rpc_params,
             self.mesh_points_schemas_dict["vertex_attribute"],
             self.mesh_points_prefix,
         )
-        id, name = params["id"], params["name"]
-        self.displayAttributeOnVertices(id, name)
+        params = schemas.VertexAttribute.from_dict(rpc_params)
+        self.displayAttributeOnVertices(params.id, params.name)
