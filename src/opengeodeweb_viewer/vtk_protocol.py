@@ -6,9 +6,7 @@ from dataclasses import dataclass, field
 # Third party imports
 from vtk.web import protocols as vtk_protocols  # type: ignore
 from vtkmodules.vtkIOXML import (
-    vtkXMLPolyDataReader,
-    vtkXMLImageDataReader,
-    vtkXMLDataReader,
+    vtkXMLReader,
 )
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from vtkmodules.vtkRenderingCore import (
@@ -26,7 +24,7 @@ from opengeodeweb_microservice.database.data import Data
 
 @dataclass
 class vtkData:
-    reader: vtkXMLDataReader
+    reader: vtkXMLReader
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
@@ -38,9 +36,7 @@ class vtkData:
 class VtkView(vtk_protocols.vtkWebProtocol):  # type: ignore
     def __init__(self) -> None:
         super().__init__()
-        self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH")
-        self.DataReader = vtkXMLPolyDataReader()
-        self.ImageReader = vtkXMLImageDataReader()
+        self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH", ".")
 
     def get_data_base(self) -> Any:
         return self.getSharedObject("db")
