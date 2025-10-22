@@ -8,10 +8,10 @@ from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkActor, vtkTexture
 from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from opengeodeweb_microservice.database.data import Data
+from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import (
-    get_schemas_dict,
     validate_schema,
     RpcParams,
 )

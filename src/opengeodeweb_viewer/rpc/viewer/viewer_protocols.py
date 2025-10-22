@@ -17,10 +17,10 @@ from vtkmodules.vtkCommonCore import reference
 from vtkmodules.vtkCommonDataModel import vtkBoundingBox
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
+from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import (
-    get_schemas_dict,
     validate_schema,
     RpcParams,
 )

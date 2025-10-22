@@ -3,10 +3,10 @@ import os
 
 # Third party imports
 from wslink import register as exportRpc
+from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import (
-    get_schemas_dict,
     validate_schema,
     RpcParams,
 )

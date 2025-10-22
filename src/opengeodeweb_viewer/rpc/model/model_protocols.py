@@ -9,10 +9,10 @@ from vtkmodules.vtkRenderingCore import (
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from wslink import register as exportRpc  # type: ignore
+from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import (
-    get_schemas_dict,
     validate_schema,
     RpcParams,
 )

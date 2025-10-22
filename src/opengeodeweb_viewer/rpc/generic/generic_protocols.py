@@ -4,13 +4,13 @@ import os
 # Third party imports
 from vtk.web import protocols as vtk_protocols  # type: ignore
 from wslink import register as exportRpc  # type: ignore
+from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.utils_functions import (
-    get_schemas_dict,
     validate_schema,
     RpcParams,
 )
