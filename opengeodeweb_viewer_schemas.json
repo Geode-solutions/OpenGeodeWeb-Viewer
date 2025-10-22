@@ -1,3 +1,1397 @@
 {
-  "opengeodeweb_viewer": {}
+  "opengeodeweb_viewer": {
+    "generic": {
+      "register": {
+        "$id": "opengeodeweb_viewer.generic.register",
+        "rpc": "register",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "deregister": {
+        "$id": "opengeodeweb_viewer.generic.deregister",
+        "rpc": "deregister",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "mesh": {
+      "edges": {
+        "width": {
+          "$id": "opengeodeweb_viewer.mesh.edges.size",
+          "rpc": "size",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "width": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "width"
+          ],
+          "additionalProperties": false
+        },
+        "visibility": {
+          "$id": "opengeodeweb_viewer.mesh.edges.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.edges.vertex_attribute",
+          "rpc": "vertex_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "size": {
+          "$id": "opengeodeweb_viewer.mesh.edges.size",
+          "rpc": "size",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "size"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.mesh.edges.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "points": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.mesh.points.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.points.vertex_attribute",
+          "rpc": "vertex_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "size": {
+          "$id": "opengeodeweb_viewer.mesh.points.size",
+          "rpc": "size",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "size"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.mesh.points.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "polygons": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.vertex_attribute",
+          "rpc": "vertex_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "polygon_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.polygon_attribute",
+          "rpc": "polygon_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "polyhedra": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.vertex_attribute",
+          "rpc": "vertex_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "polyhedron_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.polyhedron_attribute",
+          "rpc": "polyhedron_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "visibility": {
+        "$id": "opengeodeweb_viewer.mesh.visibility",
+        "rpc": "visibility",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "visibility": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "visibility"
+        ],
+        "additionalProperties": false
+      },
+      "register": {
+        "$id": "opengeodeweb_viewer.mesh.register",
+        "rpc": "register",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "opacity": {
+        "$id": "opengeodeweb_viewer.mesh.opacity",
+        "rpc": "opacity",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "opacity": {
+            "type": "number",
+            "min": 0,
+            "max": 1
+          }
+        },
+        "required": [
+          "id",
+          "opacity"
+        ],
+        "additionalProperties": false
+      },
+      "deregister": {
+        "$id": "opengeodeweb_viewer.mesh.deregister",
+        "rpc": "deregister",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "color": {
+        "$id": "opengeodeweb_viewer.mesh.color",
+        "rpc": "color",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "color": {
+            "type": "object",
+            "properties": {
+              "r": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "g": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "b": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              }
+            },
+            "required": [
+              "r",
+              "g",
+              "b"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "color"
+        ],
+        "additionalProperties": false
+      },
+      "apply_textures": {
+        "$id": "opengeodeweb_viewer.mesh.apply_textures",
+        "rpc": "apply_textures",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "textures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "texture_name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "texture_name",
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "textures"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "model": {
+      "blocks": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.model.blocks.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.model.blocks.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "corners": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.model.corners.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.model.corners.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "edges": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.model.edges.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "visibility"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "lines": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.model.lines.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.model.lines.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "points": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.model.points.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "size": {
+          "$id": "opengeodeweb_viewer.model.points.size",
+          "rpc": "size",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "size"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "visibility": {
+        "$id": "opengeodeweb_viewer.model.visibility",
+        "rpc": "visibility",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "visibility": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "visibility"
+        ],
+        "additionalProperties": false
+      },
+      "register": {
+        "$id": "opengeodeweb_viewer.model.register",
+        "rpc": "register",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "deregister": {
+        "$id": "opengeodeweb_viewer.model.deregister",
+        "rpc": "deregister",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "surfaces": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.model.surfaces.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.model.surfaces.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "color"
+          ],
+          "additionalProperties": false
+        },
+        "apply_textures": {
+          "$id": "opengeodeweb_viewer.model.surfaces.apply_textures",
+          "rpc": "apply_textures",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "textures": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "texture_name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "texture_file_name": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "texture_name",
+                  "texture_file_name"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "id",
+            "textures"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "kill": {
+      "$id": "opengeodeweb_viewer.kill",
+      "rpc": "kill",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "viewer": {
+      "update_data": {
+        "$id": "opengeodeweb_viewer.viewer.update_data",
+        "rpc": "update_data",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "update_camera": {
+        "$id": "opengeodeweb_viewer.viewer.update_camera",
+        "rpc": "update_camera",
+        "type": "object",
+        "properties": {
+          "camera_options": {
+            "type": "object",
+            "properties": {
+              "focal_point": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "view_up": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "position": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "view_angle": {
+                "type": "number"
+              },
+              "clipping_range": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "required": [
+              "focal_point",
+              "view_up",
+              "position",
+              "view_angle",
+              "clipping_range"
+            ]
+          }
+        },
+        "required": [
+          "camera_options"
+        ]
+      },
+      "take_screenshot": {
+        "$id": "opengeodeweb_viewer.viewer.take_screenshot",
+        "rpc": "take_screenshot",
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "minLength": 1
+          },
+          "output_extension": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "png",
+              "jpg"
+            ]
+          },
+          "include_background": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "filename",
+          "output_extension",
+          "include_background"
+        ],
+        "additionalProperties": false
+      },
+      "set_z_scaling": {
+        "$id": "opengeodeweb_viewer.viewer.set_z_scaling",
+        "rpc": "set_z_scaling",
+        "type": "object",
+        "properties": {
+          "z_scale": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "z_scale"
+        ],
+        "additionalProperties": false
+      },
+      "set_background_color": {
+        "$id": "opengeodeweb_viewer.viewer.set_background_color",
+        "rpc": "set_background_color",
+        "type": "object",
+        "properties": {
+          "color": {
+            "type": "object",
+            "properties": {
+              "r": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "g": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "b": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              }
+            },
+            "required": [
+              "r",
+              "g",
+              "b"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "color"
+        ],
+        "additionalProperties": false
+      },
+      "reset_visualization": {
+        "$id": "opengeodeweb_viewer.viewer.reset_visualization",
+        "rpc": "reset_visualization",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "reset_camera": {
+        "$id": "opengeodeweb_viewer.viewer.reset_camera",
+        "rpc": "reset_camera",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "render_now": {
+        "$id": "opengeodeweb_viewer.viewer.render_now",
+        "rpc": "render_now",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "picked_ids": {
+        "$id": "opengeodeweb_viewer.viewer.picked_ids",
+        "rpc": "picked_ids",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "ids"
+        ],
+        "additionalProperties": false
+      },
+      "grid_scale": {
+        "$id": "opengeodeweb_viewer.viewer.grid_scale",
+        "rpc": "grid_scale",
+        "type": "object",
+        "properties": {
+          "visibility": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "visibility"
+        ],
+        "additionalProperties": false
+      },
+      "get_point_position": {
+        "$id": "opengeodeweb_viewer.viewer.get_point_position",
+        "rpc": "get_point_position",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "additionalProperties": false
+      },
+      "axes": {
+        "$id": "opengeodeweb_viewer.viewer.axes",
+        "rpc": "axes",
+        "type": "object",
+        "properties": {
+          "visibility": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "visibility"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
 }
