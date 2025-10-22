@@ -15,7 +15,6 @@ from opengeodeweb_viewer.utils_functions import (
     get_schemas_dict,
     validate_schema,
     RpcParams,
-    RpcParamsWithColor,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.vtk_protocol import vtkData
@@ -92,7 +91,7 @@ class VtkMeshView(VtkObjectView):
         self.SetOpacity(params.id, params.opacity)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
-    def setMeshColor(self, rpc_params: RpcParamsWithColor) -> None:
+    def setMeshColor(self, rpc_params: RpcParams) -> None:
         validate_schema(rpc_params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         params = schemas.Color.from_dict(rpc_params)
         color = params.color

@@ -6,14 +6,7 @@ import json
 # Third party imports
 import fastjsonschema  # type: ignore
 
-type JsonPrimitive = str | int | float | bool
-type JsonValue = JsonPrimitive | dict[str, JsonValue] | list[JsonValue]
 type RpcParams = dict[str, str]
-
-type ColorDict = dict[str, int]
-type RpcParamsWithColor = dict[str, JsonPrimitive | ColorDict]
-type RpcParamsWithList = dict[str, JsonPrimitive | list[str]]
-
 type SchemaDict = dict[str, str]
 
 

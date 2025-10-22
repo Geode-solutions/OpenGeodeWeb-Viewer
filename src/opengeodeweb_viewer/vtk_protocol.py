@@ -1,7 +1,7 @@
 # Standard library imports
 import os
 from typing import cast, Any, Literal
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 # Third party imports
 from vtk.web import protocols as vtk_protocols  # type: ignore
@@ -25,7 +25,7 @@ class vtkData:
     reader: vtkAlgorithm
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
-    actor: vtkActor = vtkActor()
+    actor: vtkActor = field(default_factory=vtkActor)
     max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
         "default"
     )

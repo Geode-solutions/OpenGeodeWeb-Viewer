@@ -65,5 +65,5 @@ class VtkMeshPolygonsView(VtkMeshView):
             self.mesh_polygons_schemas_dict["polygon_attribute"],
             self.mesh_polygons_prefix,
         )
-        params = schemas.Color.from_dict(rpc_params)
+        params = schemas.PolygonAttribute.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)

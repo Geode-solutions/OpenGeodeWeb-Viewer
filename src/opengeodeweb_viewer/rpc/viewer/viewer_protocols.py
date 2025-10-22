@@ -23,8 +23,6 @@ from opengeodeweb_viewer.utils_functions import (
     get_schemas_dict,
     validate_schema,
     RpcParams,
-    RpcParamsWithColor,
-    RpcParamsWithList,
 )
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from . import schemas
@@ -97,7 +95,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_background_color"]["rpc"])
-    def setBackgroundColor(self, rpc_params: RpcParamsWithColor) -> None:
+    def setBackgroundColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.viewer_schemas_dict["set_background_color"],
@@ -147,16 +145,16 @@ class VtkViewerView(VtkView):
         w2if.ReadFrontBufferOff()
         w2if.Update()
         output_extension = params.output_extension
-        if output_extension == "png":
+        if output_extension == schemas.OutputExtension.PNG:
             writer = vtkPNGWriter()
-        elif output_extension in ["jpg", "jpeg"]:
+        elif output_extension == schemas.OutputExtension.JPG:
             if not include_background:
                 raise Exception("output_extension not supported with background")
             writer = vtkJPEGWriter()
         else:
             raise Exception("output_extension not supported")
 
-        new_filename = params.filename + "." + output_extension
+        new_filename = params.filename + "." + output_extension.value
         file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
         writer.SetFileName(file_path)
         writer.SetInputConnection(w2if.GetOutputPort())
@@ -219,7 +217,7 @@ class VtkViewerView(VtkView):
         return math.sqrt(epsilon) * 0.0125
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
-    def pickedIds(self, rpc_params: RpcParamsWithList) -> dict[str, list[str]]:
+    def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str]]:
         validate_schema(
             rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
         )
@@ -275,11 +273,11 @@ class VtkViewerView(VtkView):
         renderWindow = self.getView("-1")
         camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
 
-        camera.SetFocalPoint(*camara_options.focal_point)
-        camera.SetViewUp(*camara_options.view_up)
-        camera.SetPosition(*camara_options.position)
-        camera.SetViewAngle(camara_options.view_angle)
-        camera.SetClippingRange(*camara_options.clipping_range)
+        camera.SetFocalPoint(camera_options.focal_point)
+        camera.SetViewUp(camera_options.view_up)
+        camera.SetPosition(camera_options.position)
+        camera.SetViewAngle(camera_options.view_angle)
+        camera.SetClippingRange(camera_options.clipping_range)
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render_now"]["rpc"])

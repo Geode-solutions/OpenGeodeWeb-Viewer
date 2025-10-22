@@ -4,7 +4,7 @@ import os
 
 # Third party imports
 from vtk.web import wslink as vtk_wslink  # type: ignore
-from vtk.web import protocols as vtk_protocols  # type: ignore
+from vtk.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from opengeodeweb_microservice.database import connection

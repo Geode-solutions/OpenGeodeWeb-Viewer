@@ -9,7 +9,6 @@ from opengeodeweb_viewer.utils_functions import (
     get_schemas_dict,
     validate_schema,
     RpcParams,
-    RpcParamsWithColor,
 )
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from . import schemas
@@ -35,7 +34,7 @@ class VtkMeshPointsView(VtkMeshView):
         self.SetPointsVisibility(params.id, params.visibility)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
-    def setMeshPointsColor(self, rpc_params: RpcParamsWithColor) -> None:
+    def setMeshPointsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
         )
@@ -59,4 +58,4 @@ class VtkMeshPointsView(VtkMeshView):
             self.mesh_points_prefix,
         )
         params = schemas.VertexAttribute.from_dict(rpc_params)
-        self.displayAttributeOnVertices(params.id, pramas.name)
+        self.displayAttributeOnVertices(params.id, params.name)

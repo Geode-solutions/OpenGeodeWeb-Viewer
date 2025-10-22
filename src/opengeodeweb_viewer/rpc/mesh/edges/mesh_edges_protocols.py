@@ -47,5 +47,5 @@ class VtkMeshEdgesView(VtkMeshView):
         validate_schema(
             rpc_params, self.mesh_edges_schemas_dict["width"], self.mesh_edges_prefix
         )
-        params = schemas.Color.from_dict(rpc_params)
+        params = schemas.Width.from_dict(rpc_params)
         self.SetEdgesWidth(params.id, params.width)
