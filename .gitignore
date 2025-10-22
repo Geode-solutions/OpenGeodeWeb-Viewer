@@ -12,4 +12,3 @@ build
 .mypy_cache
 *.db
 tests/tests_output/
-opengeodeweb_viewer_schemas.json
