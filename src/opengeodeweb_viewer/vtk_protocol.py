@@ -5,7 +5,11 @@ from dataclasses import dataclass, field
 
 # Third party imports
 from vtk.web import protocols as vtk_protocols  # type: ignore
-from vtkmodules.vtkIOXML import vtkXMLPolyDataReader, vtkXMLImageDataReader
+from vtkmodules.vtkIOXML import (
+    vtkXMLPolyDataReader,
+    vtkXMLImageDataReader,
+    vtkXMLDataReader,
+)
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
@@ -22,7 +26,7 @@ from opengeodeweb_microservice.database.data import Data
 
 @dataclass
 class vtkData:
-    reader: vtkAlgorithm
+    reader: vtkXMLDataReader
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)

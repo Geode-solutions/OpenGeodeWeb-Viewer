@@ -1,6 +1,5 @@
 # Standard library imports
 import os
-from typing import cast
 
 # Third party imports
 from wslink import register as exportRpc  # type: ignore
@@ -119,7 +118,7 @@ class VtkMeshView(VtkObjectView):
             texture = vtkTexture()
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
-            reader = cast(vtkAlgorithm, self.get_object(mesh_id).reader)
+            reader = self.get_object(mesh_id).reader
             output = reader.GetOutput()
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
@@ -127,7 +126,7 @@ class VtkMeshView(VtkObjectView):
                 if array.GetName() == tex_info.texture_name:
                     point_data.SetTCoords(array)
                     break
-            actor = cast(vtkActor, self.get_object(mesh_id).actor)
+            actor = self.get_object(mesh_id).actor
             actor.SetTexture(texture)
         self.render()
 

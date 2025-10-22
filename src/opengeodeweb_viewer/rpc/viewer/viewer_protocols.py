@@ -301,5 +301,5 @@ class VtkViewerView(VtkView):
         cam.SetModelTransformMatrix(transform.GetMatrix())
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
-            grid_scale.SetUse2DMode(1)
+            grid_scale.SetUse2DMode(True)
         self.render()
