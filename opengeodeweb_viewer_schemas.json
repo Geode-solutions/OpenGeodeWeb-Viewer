@@ -1312,9 +1312,9 @@
         "required": [],
         "additionalProperties": false
       },
-      "render_now": {
-        "$id": "opengeodeweb_viewer.viewer.render_now",
-        "rpc": "render_now",
+      "render": {
+        "$id": "opengeodeweb_viewer.viewer.render",
+        "rpc": "render",
         "type": "object",
         "properties": {},
         "required": [],
