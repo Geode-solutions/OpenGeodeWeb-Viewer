@@ -1,9 +1,8 @@
-# type: ignore
 # Standard library imports
 import os
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
