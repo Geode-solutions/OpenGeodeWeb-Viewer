@@ -13,6 +13,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkAbstractMapper,
     vtkWorldPointPicker,
 )
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference
 from vtkmodules.vtkCommonDataModel import vtkBoundingBox
 from vtkmodules.vtkCommonTransforms import vtkTransform
@@ -75,7 +76,8 @@ class VtkViewerView(VtkView):
 
         renderWindowInteractor = vtkRenderWindowInteractor()
         renderWindowInteractor.SetRenderWindow(renderWindow)
-        renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
+        style = vtkInteractorStyleTrackball()
+        renderWindowInteractor.SetInteractorStyle(style)
         renderWindowInteractor.EnableRenderOff()
         widget = vtkOrientationMarkerWidget()
         widget.SetInteractor(renderWindowInteractor)

@@ -4,6 +4,7 @@ from typing import cast, Any, Literal
 from dataclasses import dataclass, field
 
 # Third party imports
+import vtkmodules.vtkRenderingVolumeOpenGL2
 from vtkmodules.web import protocols as vtk_protocols
 from vtkmodules.vtkIOXML import (
     vtkXMLReader,
