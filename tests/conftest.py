@@ -3,7 +3,8 @@ from pathlib import Path
 from websocket import create_connection, WebSocketTimeoutException
 import json
 from xprocess import ProcessStarter
-import vtk
+from vtkmodules.vtkIOImage import vtkImageReader2, vtkPNGReader, vtkJPEGReader
+from vtkmodules.vtkImagingCore import vtkImageDifference
 import os
 import shutil
 import xml.etree.ElementTree as ET
@@ -70,28 +71,28 @@ class ServerMonitor:
             return str(response)
 
     @staticmethod
-    def _reader_for_file(path: str) -> vtk.vtkImageReader2:
+    def _reader_for_file(path: str) -> vtkImageReader2:
         lower = path.lower()
         if lower.endswith(".png"):
-            return vtk.vtkPNGReader()
+            return vtkPNGReader()
         if lower.endswith(".jpg") or lower.endswith(".jpeg"):
-            return vtk.vtkJPEGReader()
-        return vtk.vtkJPEGReader()
+            return vtkJPEGReader()
+        return vtkJPEGReader()
 
     def images_diff(self, first_image_path: str, second_image_path: str) -> float:
         if ".png" in first_image_path:
-            first_reader = vtk.vtkPNGReader()
+            first_reader = vtkPNGReader()
         elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
-            first_reader = vtk.vtkJPEGReader()
+            first_reader = vtkJPEGReader()
         first_reader.SetFileName(first_image_path)
 
         if ".png" in second_image_path:
-            second_reader = vtk.vtkPNGReader()
+            second_reader = vtkPNGReader()
         elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
-            second_reader = vtk.vtkJPEGReader()
+            second_reader = vtkJPEGReader()
         second_reader.SetFileName(second_image_path)
 
-        images_diff = vtk.vtkImageDifference()
+        images_diff = vtkImageDifference()
         images_diff.SetInputConnection(first_reader.GetOutputPort())
         images_diff.SetImageConnection(second_reader.GetOutputPort())
         images_diff.Update()

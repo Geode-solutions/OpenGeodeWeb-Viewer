@@ -2,12 +2,19 @@
 import os
 
 # Third party imports
-from vtk.web import protocols as vtk_protocols
-from wslink import register as exportRpc
+from vtkmodules.web import protocols as vtk_protocols
+from wslink import register as exportRpc  # type: ignore
+from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView
-from opengeodeweb_viewer.utils_functions import get_schemas_dict, validate_schema
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.utils_functions import (
+    validate_schema,
+    RpcParams,
+)
+from . import schemas
 
 
 class VtkGenericView(VtkView):
@@ -16,17 +23,20 @@ class VtkGenericView(VtkView):
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self, mesh_protocols, model_protocols):
+    def __init__(
+        self, mesh_protocols: VtkMeshView, model_protocols: VtkModelView
+    ) -> None:
         super().__init__()
         self.mesh_protocols = mesh_protocols
         self.model_protocols = model_protocols
 
     @exportRpc(generic_prefix + generic_schemas_dict["register"]["rpc"])
-    def register(self, params):
+    def register(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.generic_schemas_dict["register"], self.generic_prefix
+            rpc_params, self.generic_schemas_dict["register"], self.generic_prefix
         )
-        data_id = str(params["id"])
+        params = schemas.Register.from_dict(rpc_params)
+        data_id = params.id
         specific_params = {"id": data_id}
         data = self.get_data(data_id)
         viewer_object = str(data["viewer_object"])
@@ -36,11 +46,12 @@ class VtkGenericView(VtkView):
             self.model_protocols.registerModel(specific_params)
 
     @exportRpc(generic_prefix + generic_schemas_dict["deregister"]["rpc"])
-    def deregister(self, params):
+    def deregister(self, rpc_params: RpcParams) -> None:
         validate_schema(
-            params, self.generic_schemas_dict["deregister"], self.generic_prefix
+            rpc_params, self.generic_schemas_dict["deregister"], self.generic_prefix
         )
-        data_id = str(params["id"])
+        params = schemas.Deregister.from_dict(rpc_params)
+        data_id = params.id
         specific_params = {"id": data_id}
         data = self.get_data(data_id)
         viewer_object = str(data["viewer_object"])
