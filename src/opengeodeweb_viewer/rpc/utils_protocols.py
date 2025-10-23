@@ -2,7 +2,7 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from wslink import register as exportRpc, server  # type: ignore
 
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -21,4 +21,5 @@ class VtkUtilsView(VtkView):
     @exportRpc(utils_prefix + utils_schemas_dict["kill"]["rpc"])
     def kill(self) -> None:
         print("Manual viewer kill, shutting down...", flush=True)
+        server.stop_webserver()
         os._exit(0)
