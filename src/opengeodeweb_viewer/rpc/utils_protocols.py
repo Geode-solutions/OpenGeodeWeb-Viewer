@@ -1,9 +1,8 @@
 # Standard library imports
 import os
-import asyncio
 
 # Third party imports
-from wslink import register as exportRpc, server  # type: ignore
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -20,7 +19,7 @@ class VtkUtilsView(VtkView):
         super().__init__()
 
     @exportRpc(utils_prefix + utils_schemas_dict["kill"]["rpc"])
-    async def kill(self) -> None:
+    def kill(self) -> None:
         print("Manual viewer kill, shutting down...", flush=True)
-        await server.stop_webserver()
+        self.publish("kill", "Viewer killed")
         os._exit(0)
