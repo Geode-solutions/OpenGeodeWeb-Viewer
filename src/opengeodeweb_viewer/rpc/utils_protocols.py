@@ -20,6 +20,8 @@ class VtkUtilsView(VtkView):
 
     @exportRpc(utils_prefix + utils_schemas_dict["kill"]["rpc"])
     def kill(self) -> None:
-        print(f"{self.utils_prefix + self.utils_schemas_dict['kill']['rpc']}", flush=True)
+        print(
+            f"{self.utils_prefix + self.utils_schemas_dict['kill']['rpc']}", flush=True
+        )
         print("Manual viewer kill, shutting down...", flush=True)
         os._exit(0)
