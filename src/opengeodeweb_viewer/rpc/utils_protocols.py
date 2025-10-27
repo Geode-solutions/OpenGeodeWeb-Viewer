@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+import time
 
 # Third party imports
 from wslink import register as exportRpc  # type: ignore
@@ -22,4 +23,5 @@ class VtkUtilsView(VtkView):
     def kill(self) -> None:
         print("Manual viewer kill, shutting down...", flush=True)
         self.publish("kill", "Viewer killed")
+        time.sleep(2)
         os._exit(0)
