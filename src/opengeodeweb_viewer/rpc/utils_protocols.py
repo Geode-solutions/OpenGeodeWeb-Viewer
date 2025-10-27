@@ -23,5 +23,5 @@ class VtkUtilsView(VtkView):
     def kill(self) -> None:
         print("Manual viewer kill, shutting down...", flush=True)
         self.publish("kill", "Viewer killed")
-        time.sleep(2)
+        time.sleep(5)
         os._exit(0)
