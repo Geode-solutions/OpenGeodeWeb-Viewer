@@ -1,0 +1,7 @@
+{
+  "rpc": "reset_project",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}
