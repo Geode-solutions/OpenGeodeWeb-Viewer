@@ -1,4 +1,7 @@
-from typing import TypedDict
+from dataclasses_json import DataClassJsonMixin
+from dataclasses import dataclass
 
-class ImportProjectParams(TypedDict):
+
+@dataclass
+class ImportProject(DataClassJsonMixin):
     pass

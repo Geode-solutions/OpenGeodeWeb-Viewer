@@ -36,7 +36,9 @@ class VtkUtilsView(VtkView):
             flush=True,
         )
         validate_schema(
-            rpc_params, self.utils_schemas_dict["import_project"], self.utils_prefix,
+            rpc_params,
+            self.utils_schemas_dict["import_project"],
+            self.utils_prefix,
         )
 
         widget = self.get_widget()

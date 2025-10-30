@@ -1135,17 +1135,17 @@
         }
       }
     },
-    "reset_project": {
-      "$id": "opengeodeweb_viewer.reset_project",
-      "rpc": "reset_project",
+    "kill": {
+      "$id": "opengeodeweb_viewer.kill",
+      "rpc": "kill",
       "type": "object",
       "properties": {},
       "required": [],
       "additionalProperties": false
     },
-    "kill": {
-      "$id": "opengeodeweb_viewer.kill",
-      "rpc": "kill",
+    "import_project": {
+      "$id": "opengeodeweb_viewer.import_project",
+      "rpc": "import_project",
       "type": "object",
       "properties": {},
       "required": [],
