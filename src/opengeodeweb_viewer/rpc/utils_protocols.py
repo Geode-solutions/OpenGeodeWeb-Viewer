@@ -56,7 +56,9 @@ class VtkUtilsView(VtkView):
         if connection.engine is not None:
             connection.engine.dispose()
         # Reset all connection attributes to None
-        connection.engine = connection.session_factory = connection.scoped_session_registry = None
+        connection.engine = connection.session_factory = (
+            connection.scoped_session_registry
+        ) = None
 
         db_full_path = os.path.join(self.DATA_FOLDER_PATH, "project.db")
         connection.init_database(db_full_path, create_tables=False)

@@ -38,7 +38,7 @@ def test_reset_project_after_import(
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
     )
     assert server.compare_image(3, "viewer/reset_visualization.jpeg") is True
-    
+
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": post_id}],

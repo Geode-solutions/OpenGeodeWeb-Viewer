@@ -1135,6 +1135,14 @@
         }
       }
     },
+    "reset_project": {
+      "$id": "opengeodeweb_viewer.reset_project",
+      "rpc": "reset_project",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
     "kill": {
       "$id": "opengeodeweb_viewer.kill",
       "rpc": "kill",
