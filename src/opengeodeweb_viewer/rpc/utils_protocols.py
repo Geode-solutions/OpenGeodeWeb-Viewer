@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+from typing import cast
 
 # Third party imports
 from wslink import register as exportRpc  # type: ignore
@@ -36,7 +37,7 @@ class VtkUtilsView(VtkView):
             flush=True,
         )
         validate_schema(
-            rpc_params.to_dict(),
+            cast(dict[str, str], rpc_params.to_dict()),
             self.utils_schemas_dict["import_project"],
             self.utils_prefix,
         )
