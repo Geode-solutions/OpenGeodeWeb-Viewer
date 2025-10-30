@@ -36,7 +36,7 @@ class VtkUtilsView(VtkView):
             flush=True,
         )
         validate_schema(
-            rpc_params,
+            rpc_params.to_dict(),
             self.utils_schemas_dict["import_project"],
             self.utils_prefix,
         )
