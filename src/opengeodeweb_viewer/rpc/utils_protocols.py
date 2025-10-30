@@ -9,7 +9,7 @@ from opengeodeweb_microservice.schemas import get_schemas_dict
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_microservice.database import connection
 from opengeodeweb_viewer.utils_functions import validate_schema
-from opengeodeweb_viewer.rpc.schemas.import_project import ImportProjectParams
+from opengeodeweb_viewer.rpc.schemas.import_project import ImportProject
 
 
 class VtkUtilsView(VtkView):
@@ -30,7 +30,7 @@ class VtkUtilsView(VtkView):
         os._exit(0)
 
     @exportRpc(utils_prefix + utils_schemas_dict["import_project"]["rpc"])
-    def importProject(self, rpc_params: ImportProjectParams) -> None:
+    def importProject(self, rpc_params: ImportProject) -> None:
         print(
             f"{self.utils_prefix + self.utils_schemas_dict['import_project']['rpc']}",
             flush=True,

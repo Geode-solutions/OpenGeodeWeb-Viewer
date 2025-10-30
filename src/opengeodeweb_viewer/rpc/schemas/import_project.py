@@ -1,4 +1,4 @@
 from typing import TypedDict
 
-class ImportProjectParams(TypedDict):
+class ImportProject(TypedDict):
     pass
