@@ -8,6 +8,8 @@ from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_microservice.database import connection
+from opengeodeweb_viewer.utils_functions import validate_schema
+from opengeodeweb_viewer.rpc.schemas.import_project import ImportProjectParams
 
 
 class VtkUtilsView(VtkView):
@@ -27,16 +29,15 @@ class VtkUtilsView(VtkView):
         print("Manual viewer kill, shutting down...", flush=True)
         os._exit(0)
 
-    @exportRpc(utils_prefix + utils_schemas_dict["reset_project"]["rpc"])
-    def resetProject(self, rpc_params: dict | None = None) -> None:
+    @exportRpc(utils_prefix + utils_schemas_dict["import_project"]["rpc"])
+    def importProject(self, rpc_params: ImportProjectParams) -> None:
         print(
-            f"{self.utils_prefix + self.utils_schemas_dict['reset_project']['rpc']}",
+            f"{self.utils_prefix + self.utils_schemas_dict['import_project']['rpc']}",
             flush=True,
         )
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
-
-        renderer.RemoveAllViewProps()
+        validate_schema(
+            rpc_params, self.utils_schemas_dict["import_project"], self.utils_prefix,
+        )
 
         widget = self.get_widget()
         if widget is not None:

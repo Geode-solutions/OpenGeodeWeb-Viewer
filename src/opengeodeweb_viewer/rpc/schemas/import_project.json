@@ -1,5 +1,5 @@
 {
-  "rpc": "reset_project",
+  "rpc": "import_project",
   "type": "object",
   "properties": {},
   "required": [],
