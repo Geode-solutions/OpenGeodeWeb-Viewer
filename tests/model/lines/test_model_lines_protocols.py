@@ -28,7 +28,7 @@ def test_lines_edges_visibility(
             }
         ],
     )
-    assert server.compare_image(3, "model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg") == True
 
     server.call(
         VtkModelLinesView.model_lines_prefix
@@ -41,7 +41,7 @@ def test_lines_edges_visibility(
             }
         ],
     )
-    assert server.compare_image(3, "model/lines/visibility.jpeg") == True
+    assert server.compare_image("model/lines/visibility.jpeg") == True
 
 
 def test_lines_edges_color(
@@ -61,4 +61,4 @@ def test_lines_edges_color(
             }
         ],
     )
-    assert server.compare_image(3, "model/lines/color.jpeg") == True
+    assert server.compare_image("model/lines/color.jpeg") == True

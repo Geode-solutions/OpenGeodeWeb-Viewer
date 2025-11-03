@@ -14,7 +14,7 @@ def test_register_mesh(
         + VtkGenericView.generic_schemas_dict["register"]["rpc"],
         [{"id": data_id}],
     )
-    assert server.compare_image(3, "mesh/register.jpeg") is True
+    assert server.compare_image("mesh/register.jpeg") is True
 
 
 def test_register_model(
@@ -28,7 +28,7 @@ def test_register_model(
         + VtkGenericView.generic_schemas_dict["register"]["rpc"],
         [{"id": data_id}],
     )
-    assert server.compare_image(3, "model/register.jpeg") is True
+    assert server.compare_image("model/register.jpeg") is True
 
 
 def test_deregister_mesh(
@@ -41,7 +41,7 @@ def test_deregister_mesh(
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
         [{"id": "123456789"}],
     )
-    assert server.compare_image(3, "mesh/deregister.jpeg") == True
+    assert server.compare_image("mesh/deregister.jpeg") == True
 
 
 def test_deregister_model(
@@ -54,4 +54,4 @@ def test_deregister_model(
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
         [{"id": "123456789"}],
     )
-    assert server.compare_image(3, "model/deregister.jpeg") == True
+    assert server.compare_image("model/deregister.jpeg") == True
