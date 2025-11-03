@@ -22,7 +22,7 @@ def test_points_visibility(
         + VtkModelPointsView.model_points_schemas_dict["visibility"]["rpc"],
         [{"id": "123456789", "visibility": True}],
     )
-    assert server.compare_image(3, "model/points/visibility.jpeg") == True
+    assert server.compare_image("model/points/visibility.jpeg") == True
 
 
 def test_points_size(
@@ -36,4 +36,4 @@ def test_points_size(
         + VtkModelPointsView.model_points_schemas_dict["size"]["rpc"],
         [{"id": "123456789", "size": 20}],
     )
-    assert server.compare_image(3, "model/points/size.jpeg") == True
+    assert server.compare_image("model/points/size.jpeg") == True
