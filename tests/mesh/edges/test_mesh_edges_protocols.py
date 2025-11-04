@@ -2,8 +2,8 @@
 from typing import Callable
 
 # Third party imports
-from src.opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from src.opengeodeweb_viewer.rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
 
 # Local application imports
 from tests.mesh.test_mesh_protocols import test_register_mesh

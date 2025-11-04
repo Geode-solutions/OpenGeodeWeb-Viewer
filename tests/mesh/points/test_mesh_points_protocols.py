@@ -2,8 +2,8 @@
 from typing import Callable, cast
 
 # Third party imports
-from src.opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from src.opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import (
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import (
     VtkMeshPointsView,
 )
 
