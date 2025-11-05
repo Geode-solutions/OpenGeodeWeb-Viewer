@@ -22,4 +22,4 @@ def test_edges_visibility(
         + VtkModelEdgesView.model_edges_schemas_dict["visibility"]["rpc"],
         [{"id": "123456789", "visibility": True}],
     )
-    assert server.compare_image(3, "model/edges/visibility.jpeg") == True
+    assert server.compare_image("model/edges/visibility.jpeg") == True

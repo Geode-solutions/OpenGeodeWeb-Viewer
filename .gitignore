@@ -12,3 +12,4 @@ build
 .mypy_cache
 *.db
 tests/tests_output/
+package-lock.json
