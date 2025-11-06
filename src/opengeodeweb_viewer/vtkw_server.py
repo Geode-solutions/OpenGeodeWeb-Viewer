@@ -1,14 +1,13 @@
 # Standard library imports
 import argparse
 import os
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
-from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 
 # Third party imports
 from vtkmodules.web import wslink as vtk_wslink
 from vtkmodules.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
+from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 from opengeodeweb_microservice.database import connection
 
 # Local application imports
