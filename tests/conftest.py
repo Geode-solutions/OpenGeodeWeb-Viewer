@@ -110,9 +110,11 @@ class ServerMonitor:
             if isinstance(image, bytes):
                 response = self.ws.recv()
                 print(f"{response=}", flush=True)
-                format = json.loads(response)["result"]["format"]
+                result = json.loads(response)["result"]
+                if result["stale"]:
+                    continue
                 test_file_path = os.path.abspath(
-                    os.path.join(self.test_output_dir, f"test.{format}")
+                    os.path.join(self.test_output_dir, f"test.{result["format"]}")
                 )
                 with open(test_file_path, "wb") as f:
                     f.write(image)
