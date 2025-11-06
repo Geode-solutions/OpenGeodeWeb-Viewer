@@ -1,7 +1,6 @@
 # Standard library imports
 import argparse
 import os
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 
 # Third party imports
