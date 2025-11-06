@@ -1,6 +1,7 @@
 # Standard library imports
 import argparse
 import os
+import vtk
 
 # Third party imports
 from vtkmodules.web import wslink as vtk_wslink
@@ -102,6 +103,11 @@ class _Server(vtk_wslink.ServerProtocol):
 
         # Update authentication key to use
         self.updateSecret(_Server.authKey)
+
+        errOut = vtk.vtkFileOutputWindow()
+        errOut.SetFileName("VTK.txt")
+        vtkStdErrOut = vtk.vtkOutputWindow()
+        vtkStdErrOut.SetInstance(errOut)
 
         if not _Server.view:
             renderer = vtkRenderer()
