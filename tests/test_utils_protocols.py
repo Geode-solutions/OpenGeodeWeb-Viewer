@@ -6,6 +6,7 @@ from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
 from tests.conftest import ServerMonitor
 
+
 def test_reset_project_after_import(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
