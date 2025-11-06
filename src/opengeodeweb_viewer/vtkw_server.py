@@ -1,6 +1,7 @@
 # Standard library imports
 import argparse
 import os
+import vtk  # type: ignore[import-untyped]
 
 # Third party imports
 from vtkmodules.web import wslink as vtk_wslink
