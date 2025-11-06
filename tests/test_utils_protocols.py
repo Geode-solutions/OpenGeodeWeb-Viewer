@@ -6,7 +6,6 @@ from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
 from tests.conftest import ServerMonitor
 
-
 def test_reset_project_after_import(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
@@ -17,7 +16,7 @@ def test_reset_project_after_import(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": pre_id}],
     )
-    assert server.compare_image(3, "mesh/register.jpeg") is True
+    assert server.compare_image("mesh/register.jpeg") is True
 
     # Import
     with get_session() as session:
@@ -37,10 +36,10 @@ def test_reset_project_after_import(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
     )
-    assert server.compare_image(3, "viewer/reset_visualization.jpeg") is True
+    assert server.compare_image("viewer/reset_visualization.jpeg") is True
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": post_id}],
     )
-    assert server.compare_image(3, "viewer/import_project.jpeg") is True
+    assert server.compare_image("viewer/import_project.jpeg") is True
