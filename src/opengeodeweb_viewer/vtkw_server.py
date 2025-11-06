@@ -8,6 +8,7 @@ from vtkmodules.web import wslink as vtk_wslink
 from vtkmodules.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
+from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 from opengeodeweb_microservice.database import connection
 
 # Local application imports
@@ -104,8 +105,9 @@ class _Server(vtk_wslink.ServerProtocol):
         # Update authentication key to use
         self.updateSecret(_Server.authKey)
 
-        errOut = vtk.vtkFileOutputWindow()
-        vtkStdErrOut = vtk.vtkOutputWindow()
+        errOut = vtkFileOutputWindow()
+        errOut.SetFileName("VTK.txt")
+        vtkStdErrOut = vtkOutputWindow()
         vtkStdErrOut.SetInstance(errOut)
 
         if not _Server.view:
