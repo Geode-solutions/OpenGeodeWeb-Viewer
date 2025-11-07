@@ -3,5 +3,5 @@ from dataclasses import dataclass
 
 
 @dataclass
-class RenderNow(DataClassJsonMixin):
+class Render(DataClassJsonMixin):
     pass

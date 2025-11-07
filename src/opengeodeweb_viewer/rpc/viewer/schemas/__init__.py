@@ -5,7 +5,7 @@ from .set_z_scaling import *
 from .set_background_color import *
 from .reset_visualization import *
 from .reset_camera import *
-from .render_now import *
+from .render import *
 from .picked_ids import *
 from .grid_scale import *
 from .get_point_position import *

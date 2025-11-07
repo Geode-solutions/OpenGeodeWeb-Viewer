@@ -250,7 +250,7 @@ def test_update_camera(
     assert server.compare_image("viewer/update_camera.jpeg") == True
 
 
-def test_render_now(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_render(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     camera_options = {
@@ -274,10 +274,10 @@ def test_render_now(server: ServerMonitor, dataset_factory: Callable[..., str]) 
 
     server.call(
         VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["render_now"]["rpc"],
+        + VtkViewerView.viewer_schemas_dict["render"]["rpc"],
     )
 
-    assert server.compare_image("viewer/render_now.jpeg") == True
+    assert server.compare_image("viewer/render.jpeg") == True
 
 
 def test_set_z_scaling(
