@@ -12,6 +12,7 @@ from typing import Callable, Generator
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 type RpcTestParams = list[
     dict[str, str | int | float | bool | dict[str, int] | list[str]] | int
@@ -39,7 +40,7 @@ class ServerMonitor:
         self.ws.send(
             json.dumps(
                 {
-                    "id": "rpc:test",
+                    "id": "rpc:" + rpc,
                     "method": rpc,
                     "args": params,
                 }
@@ -100,6 +101,10 @@ class ServerMonitor:
         return images_diff.GetThresholdedError()
 
     def compare_image(self, filename: str) -> bool:
+        self.call(
+            VtkViewerView.viewer_prefix
+            + VtkViewerView.viewer_schemas_dict["render"]["rpc"]
+        )
         while True:
             image = self.ws.recv()
             if isinstance(image, bytes):
