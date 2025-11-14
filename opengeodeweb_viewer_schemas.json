@@ -1135,6 +1135,14 @@
       "required": [],
       "additionalProperties": false
     },
+    "import_project": {
+      "$id": "opengeodeweb_viewer.import_project",
+      "rpc": "import_project",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
     "viewer": {
       "update_data": {
         "$id": "opengeodeweb_viewer.viewer.update_data",

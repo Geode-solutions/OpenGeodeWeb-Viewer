@@ -1,0 +1,7 @@
+{
+  "rpc": "import_project",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}
