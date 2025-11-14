@@ -4,4 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Axes(DataClassJsonMixin):
+    def __post_init__(self):
+        print(self, flush=True)
+
     visibility: bool

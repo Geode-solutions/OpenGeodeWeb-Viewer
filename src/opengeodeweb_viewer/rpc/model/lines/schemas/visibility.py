@@ -5,6 +5,9 @@ from typing import List
 
 @dataclass
 class Visibility(DataClassJsonMixin):
+    def __post_init__(self):
+        print(self, flush=True)
+
     block_ids: List[int]
     id: str
     visibility: bool
