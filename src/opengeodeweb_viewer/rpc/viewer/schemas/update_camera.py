@@ -5,7 +5,7 @@ from typing import List
 
 @dataclass
 class CameraOptions(DataClassJsonMixin):
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         print(self, flush=True)
 
     clipping_range: List[float]
@@ -17,7 +17,7 @@ class CameraOptions(DataClassJsonMixin):
 
 @dataclass
 class UpdateCamera(DataClassJsonMixin):
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         print(self, flush=True)
 
     camera_options: CameraOptions

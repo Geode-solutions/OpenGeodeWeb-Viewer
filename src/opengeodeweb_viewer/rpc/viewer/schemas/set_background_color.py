@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Color(DataClassJsonMixin):
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         print(self, flush=True)
 
     b: int
@@ -14,7 +14,7 @@ class Color(DataClassJsonMixin):
 
 @dataclass
 class SetBackgroundColor(DataClassJsonMixin):
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         print(self, flush=True)
 
     color: Color
