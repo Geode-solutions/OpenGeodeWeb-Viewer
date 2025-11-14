@@ -10,6 +10,9 @@ class OutputExtension(Enum):
 
 @dataclass
 class TakeScreenshot(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print(self, flush=True)
+
     filename: str
     include_background: bool
     output_extension: OutputExtension
