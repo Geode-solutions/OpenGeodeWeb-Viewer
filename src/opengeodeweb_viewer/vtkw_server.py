@@ -17,6 +17,7 @@ from .rpc.viewer.viewer_protocols import VtkViewerView
 from .rpc.mesh.mesh_protocols import VtkMeshView
 from .rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
 from .rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
+from .rpc.mesh.cells.cells_protocols import VtkMeshCellsView
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 from .rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
 from .rpc.model.model_protocols import VtkModelView
@@ -86,6 +87,7 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(mesh_protocols)
         self.registerVtkWebProtocol(VtkMeshPointsView())
         self.registerVtkWebProtocol(VtkMeshEdgesView())
+        self.registerVtkWebProtocol(VtkMeshCellsView())
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
         self.registerVtkWebProtocol(VtkMeshPolyhedraView())
         self.registerVtkWebProtocol(model_protocols)

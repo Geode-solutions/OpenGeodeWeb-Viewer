@@ -33,6 +33,115 @@
       }
     },
     "mesh": {
+      "cells": {
+        "visibility": {
+          "$id": "opengeodeweb_viewer.mesh.cells.visibility",
+          "rpc": "visibility",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.cells.vertex_attribute",
+          "rpc": "vertex_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "color": {
+          "$id": "opengeodeweb_viewer.mesh.cells.color",
+          "rpc": "color",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "color": {
+              "type": "object",
+              "properties": {
+                "r": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "g": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "b": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "a": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 1
+                }
+              },
+              "required": [
+                "r",
+                "g",
+                "b"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "id",
+            "color"
+          ],
+          "additionalProperties": false
+        },
+        "cell_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.cells.polygon_attribute",
+          "rpc": "polygon_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      },
       "edges": {
         "width": {
           "$id": "opengeodeweb_viewer.mesh.edges.size",

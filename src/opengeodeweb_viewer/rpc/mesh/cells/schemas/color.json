@@ -1,0 +1,47 @@
+{
+  "rpc": "color",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "color": {
+      "type": "object",
+      "properties": {
+        "r": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "g": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "b": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "a": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        }
+      },
+      "required": [
+        "r",
+        "g",
+        "b"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "color"
+  ],
+  "additionalProperties": false
+}
