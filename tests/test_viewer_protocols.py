@@ -193,7 +193,7 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
 
 def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     data_id = "123456789"
-    dataset_factory(id=data_id, viewable_file_name="hat.vtp")
+    dataset_factory(id=data_id, viewable_filename="hat.vtp")
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
@@ -283,7 +283,7 @@ def test_render(server: ServerMonitor, dataset_factory: Callable[..., str]) -> N
 def test_set_z_scaling(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    dataset_factory(id="123456789", viewable_file_name="polygon_attribute.vtp")
+    dataset_factory(id="123456789", viewable_filename="polygon_attribute.vtp")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -291,7 +291,7 @@ def test_set_z_scaling(
     )
     assert server.compare_image("viewer/polygon_attribute.jpeg") == True
 
-    dataset_factory(id="987654321", viewable_file_name="vertex_attribute.vtp")
+    dataset_factory(id="987654321", viewable_filename="vertex_attribute.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "987654321"}],
@@ -333,7 +333,7 @@ def test_combined_scaling_and_grid(
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
     assert server.compare_image("viewer/reset_visualization.jpeg") == True
-    dataset_factory(id="123456789", viewable_file_name="hat.vtp")
+    dataset_factory(id="123456789", viewable_filename="hat.vtp")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],

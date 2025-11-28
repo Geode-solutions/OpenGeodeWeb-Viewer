@@ -14,7 +14,7 @@ from tests.conftest import ServerMonitor
 def test_register_mesh(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    dataset_factory(id="123456789", viewable_file_name="polyhedron_attribute.vtu")
+    dataset_factory(id="123456789", viewable_filename="polyhedron_attribute.vtu")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],

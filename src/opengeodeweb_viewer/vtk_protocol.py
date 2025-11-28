@@ -87,7 +87,7 @@ class VtkView(vtk_protocols.vtkWebProtocol):
 
                 return {
                     "id": data.id,
-                    "viewable_file_name": data.viewable_file_name,
+                    "viewable_filename": data.viewable_filename,
                     "viewer_object": data.viewer_object,
                 }
             except Exception as e:
@@ -97,8 +97,8 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def get_data_file_path(self, data_id: str, filename: str | None = None) -> str:
         if filename is None:
             data = self.get_data(data_id)
-            viewable_file_name = data["viewable_file_name"]
-            filename = str(viewable_file_name) if viewable_file_name is not None else ""
+            viewable_filename = data["viewable_filename"]
+            filename = str(viewable_filename) if viewable_filename is not None else ""
 
         data_folder_path = self.DATA_FOLDER_PATH
         if data_folder_path is None:

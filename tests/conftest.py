@@ -208,10 +208,10 @@ def configure_test_environment() -> Generator[None, None, None]:
 
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
-    def create_dataset(*, id: str, viewable_file_name: str) -> str:
+    def create_dataset(*, id: str, viewable_filename: str) -> str:
         session = get_session()
         viewer_object = (
-            "model" if viewable_file_name.lower().endswith(".vtm") else "mesh"
+            "model" if viewable_filename.lower().endswith(".vtm") else "mesh"
         )
 
         row = session.get(Data, id)
@@ -219,13 +219,13 @@ def dataset_factory() -> Callable[..., str]:
             session.add(
                 Data(
                     id=id,
-                    viewable_file_name=viewable_file_name,
+                    viewable_filename=viewable_filename,
                     geode_object=viewer_object,
                     viewer_object=viewer_object,
                 )
             )
         else:
-            row.viewable_file_name = viewable_file_name
+            row.viewable_filename = viewable_filename
             row.geode_object = viewer_object
             row.viewer_object = viewer_object
         session.commit()
@@ -233,8 +233,8 @@ def dataset_factory() -> Callable[..., str]:
         data_folder = Path(os.environ["DATA_FOLDER_PATH"]) / id
         data_folder.mkdir(parents=True, exist_ok=True)
 
-        src_path = Path(__file__).parent / "data" / viewable_file_name
-        dst_path = data_folder / viewable_file_name
+        src_path = Path(__file__).parent / "data" / viewable_filename
+        dst_path = data_folder / viewable_filename
         if not dst_path.exists() or dst_path.resolve() != src_path.resolve():
             shutil.copy(src_path, dst_path)
 

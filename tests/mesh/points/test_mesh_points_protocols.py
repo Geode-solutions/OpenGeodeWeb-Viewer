@@ -59,7 +59,7 @@ def test_points_with_point_set(
 ) -> None:
     mesh_id = "44556677"
 
-    dataset_factory(id=mesh_id, viewable_file_name="points.vtp")
+    dataset_factory(id=mesh_id, viewable_filename="points.vtp")
     server.call(
         VtkMeshView.mesh_prefix
         + cast(str, VtkMeshView.mesh_schemas_dict["register"]["rpc"]),
