@@ -7,7 +7,7 @@ def test_register_model(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
 
-    dataset_factory(id="123456789", viewable_filename="CrossSection.vtm")
+    dataset_factory(id="123456789", viewable_file="CrossSection.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],
@@ -19,7 +19,7 @@ def test_register_model_cube(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
 
-    dataset_factory(id="123456789", viewable_filename="cube.vtm")
+    dataset_factory(id="123456789", viewable_file="cube.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": "123456789"}],

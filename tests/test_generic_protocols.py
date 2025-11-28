@@ -7,7 +7,7 @@ def test_register_mesh(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     data_id = "123456789"
-    dataset_factory(id=data_id, viewable_filename="hat.vtp")
+    dataset_factory(id=data_id, viewable_file="hat.vtp")
 
     server.call(
         VtkGenericView.generic_prefix
@@ -21,7 +21,7 @@ def test_register_model(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     data_id = "123456789"
-    dataset_factory(id=data_id, viewable_filename="CrossSection.vtm")
+    dataset_factory(id=data_id, viewable_file="CrossSection.vtm")
 
     server.call(
         VtkGenericView.generic_prefix
