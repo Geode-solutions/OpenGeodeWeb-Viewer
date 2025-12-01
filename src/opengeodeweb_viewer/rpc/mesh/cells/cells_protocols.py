@@ -20,7 +20,7 @@ class VtkMeshCellsView(VtkMeshView):
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @exportRpc(mesh_cells_prefix + mesh_cells_schemas_dict["visibility"]["rpc"])
