@@ -210,9 +210,7 @@ def configure_test_environment() -> Generator[None, None, None]:
 def dataset_factory() -> Callable[..., str]:
     def create_dataset(*, id: str, viewable_file: str) -> str:
         session = get_session()
-        viewer_object = (
-            "model" if viewable_file.lower().endswith(".vtm") else "mesh"
-        )
+        viewer_object = "model" if viewable_file.lower().endswith(".vtm") else "mesh"
 
         row = session.get(Data, id)
         if row is None:

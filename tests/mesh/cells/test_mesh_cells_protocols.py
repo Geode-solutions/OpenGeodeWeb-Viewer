@@ -12,6 +12,7 @@ from tests.conftest import ServerMonitor
 # Local constants
 id = "regular_grid_2d"
 
+
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(id=id, viewable_file=f"{id}.vti")
@@ -21,6 +22,7 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
         [{"id": id}],
     )
     assert server.compare_image("mesh/cells/register.jpeg") == True
+
 
 def test_cells_color(
     server: ServerMonitor, dataset_factory: Callable[..., str]
@@ -49,6 +51,7 @@ def test_cells_visibility(
     )
     assert server.compare_image("mesh/cells/visibility.jpeg") == True
 
+
 def test_cells_vertex_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
@@ -61,6 +64,7 @@ def test_cells_vertex_attribute(
         [{"id": id, "name": "points"}],
     )
     assert server.compare_image("mesh/cells/vertex_attribute.jpeg") == True
+
 
 def test_cells_cell_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]

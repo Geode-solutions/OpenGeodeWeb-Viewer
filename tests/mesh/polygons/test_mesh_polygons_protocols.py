@@ -51,6 +51,7 @@ def test_polygons_vertex_attribute(
     )
     assert server.compare_image("mesh/polygons/vertex_attribute.jpeg") == True
 
+
 def test_polygons_polygon_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

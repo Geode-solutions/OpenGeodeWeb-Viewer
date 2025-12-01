@@ -44,9 +44,7 @@ class VtkMeshCellsView(VtkMeshView):
         color = params.color
         self.SetColor(params.id, color.r, color.g, color.b)
 
-    @exportRpc(
-        mesh_cells_prefix + mesh_cells_schemas_dict["vertex_attribute"]["rpc"]
-    )
+    @exportRpc(mesh_cells_prefix + mesh_cells_schemas_dict["vertex_attribute"]["rpc"])
     def setMeshCellsVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
@@ -56,9 +54,7 @@ class VtkMeshCellsView(VtkMeshView):
         params = schemas.VertexAttribute.from_dict(rpc_params)
         self.displayAttributeOnVertices(params.id, params.name)
 
-    @exportRpc(
-        mesh_cells_prefix + mesh_cells_schemas_dict["cell_attribute"]["rpc"]
-    )
+    @exportRpc(mesh_cells_prefix + mesh_cells_schemas_dict["cell_attribute"]["rpc"])
     def setMeshCellsCellAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
