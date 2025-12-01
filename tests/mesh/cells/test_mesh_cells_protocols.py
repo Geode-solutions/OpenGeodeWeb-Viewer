@@ -48,3 +48,29 @@ def test_cells_visibility(
         [{"id": id, "visibility": False}],
     )
     assert server.compare_image("mesh/cells/visibility.jpeg") == True
+
+def test_cells_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": id, "name": "points"}],
+    )
+    assert server.compare_image("mesh/cells/vertex_attribute.jpeg") == True
+
+def test_cells_cell_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_attribute"]["rpc"],
+        [{"id": id, "name": "RGB_data"}],
+    )
+    assert server.compare_image("mesh/cells/cell_attribute.jpeg") == True

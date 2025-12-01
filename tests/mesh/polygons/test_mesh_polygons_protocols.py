@@ -2,6 +2,7 @@
 from typing import Callable
 
 # Third party imports
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 
 # Local application imports
@@ -35,3 +36,36 @@ def test_polygons_visibility(
         [{"id": "123456789", "visibility": False}],
     )
     assert server.compare_image("mesh/polygons/visibility.jpeg") == True
+
+
+def test_polygons_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": "123456789", "name": "lambert2SG"}],
+    )
+    assert server.compare_image("mesh/polygons/vertex_attribute.jpeg") == True
+
+def test_polygons_polygon_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    dataset_factory(id="123456789", viewable_file="triangulated_surface2d.vtp")
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "123456789"}],
+    )
+    assert server.compare_image("mesh/polygons/register.jpeg") == True
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_attribute"]["rpc"],
+        [{"id": "123456789", "name": "triangle_vertices"}],
+    )
+    assert server.compare_image("mesh/polygons/polygon_attribute.jpeg") == True

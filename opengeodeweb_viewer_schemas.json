@@ -122,8 +122,8 @@
           "additionalProperties": false
         },
         "cell_attribute": {
-          "$id": "opengeodeweb_viewer.mesh.cells.polygon_attribute",
-          "rpc": "polygon_attribute",
+          "$id": "opengeodeweb_viewer.mesh.cells.cell_attribute",
+          "rpc": "cell_attribute",
           "type": "object",
           "properties": {
             "id": {

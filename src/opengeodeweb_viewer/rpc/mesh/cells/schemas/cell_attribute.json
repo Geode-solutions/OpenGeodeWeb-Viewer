@@ -1,5 +1,5 @@
 {
-  "rpc": "polygon_attribute",
+  "rpc": "cell_attribute",
   "type": "object",
   "properties": {
     "id": {
@@ -11,9 +11,6 @@
       "minLength": 1
     }
   },
-  "required": [
-    "id",
-    "name"
-  ],
+  "required": ["id", "name"],
   "additionalProperties": false
 }
