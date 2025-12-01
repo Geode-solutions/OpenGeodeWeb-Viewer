@@ -87,7 +87,7 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(mesh_protocols)
         self.registerVtkWebProtocol(VtkMeshPointsView())
         self.registerVtkWebProtocol(VtkMeshEdgesView())
-        self.registerVtkWebProtocol(VtkMeshCellsView())
+        self.registerVtkWebProtocol(VtkMeshCellsView()) # type: ignore
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
         self.registerVtkWebProtocol(VtkMeshPolyhedraView())
         self.registerVtkWebProtocol(model_protocols)
