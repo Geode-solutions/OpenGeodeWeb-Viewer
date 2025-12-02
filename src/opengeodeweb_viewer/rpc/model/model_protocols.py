@@ -38,7 +38,7 @@ class VtkModelView(VtkObjectView):
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            file_name = str(self.get_data(data_id)["viewable_file_name"])
+            file_name = str(self.get_data(data_id)["viewable_file"])
             reader = vtkXMLMultiBlockDataReader()
             filter = vtkGeometryFilter()
             filter.SetInputConnection(reader.GetOutputPort())

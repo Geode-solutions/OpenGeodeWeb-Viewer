@@ -39,7 +39,7 @@ def test_edges_color(
 def test_edges_with_edged_curve(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    dataset_factory(id="123456789", viewable_file_name="edged_curve.vtp")
+    dataset_factory(id="123456789", viewable_file="edged_curve.vtp")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],

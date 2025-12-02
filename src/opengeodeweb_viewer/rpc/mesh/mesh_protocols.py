@@ -38,7 +38,7 @@ class VtkMeshView(VtkObjectView):
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            file_name = str(self.get_data(data_id)["viewable_file_name"])
+            file_name = str(self.get_data(data_id)["viewable_file"])
             reader = vtkXMLGenericDataObjectReader()
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
@@ -108,7 +108,7 @@ class VtkMeshView(VtkObjectView):
             texture_data = Data.get(texture_id)
             if texture_data is None:
                 continue
-            texture_file = texture_data.viewable_file_name
+            texture_file = texture_data.viewable_file
             if not texture_file.lower().endswith(".vti"):
                 continue
             texture_file_path = self.get_data_file_path(texture_id)

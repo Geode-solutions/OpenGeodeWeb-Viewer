@@ -6,7 +6,7 @@ from tests.conftest import ServerMonitor
 def test_register_mesh(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    dataset_factory(id="123456789", viewable_file_name="hat.vtp")
+    dataset_factory(id="123456789", viewable_file="hat.vtp")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -62,9 +62,7 @@ def test_apply_textures(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_register_mesh(server, dataset_factory)
-    texture_entry = dataset_factory(
-        id="987654321", viewable_file_name="hat_lambert2SG.vti"
-    )
+    texture_entry = dataset_factory(id="987654321", viewable_file="hat_lambert2SG.vti")
 
     server.call(
         VtkMeshView.mesh_prefix
