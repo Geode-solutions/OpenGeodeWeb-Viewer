@@ -3,6 +3,9 @@ name: Deploy
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+
 jobs:
   deploy:
     uses: Geode-solutions/actions/.github/workflows/py-deploy.yml@master
