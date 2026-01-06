@@ -3,7 +3,7 @@ import math
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from wslink import register as exportRpc
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkRenderingCore import (

@@ -2,7 +2,7 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from wslink import register as exportRpc
 from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
 from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkActor, vtkTexture
 from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
@@ -119,7 +119,7 @@ class VtkMeshView(VtkObjectView):
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
             reader = self.get_object(mesh_id).reader
-            output = reader.GetOutput()  # type: ignore[attr-defined]
+            output = reader.GetOutputAsDataSet()
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
                 array = point_data.GetArray(i)
@@ -131,7 +131,7 @@ class VtkMeshView(VtkObjectView):
 
     def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
         reader = self.get_object(data_id).reader
-        points = reader.GetOutput().GetPointData()  # type: ignore[attr-defined]
+        points = reader.GetOutputAsDataSet().GetPointData()
         points.SetActiveScalars(name)
         mapper = self.get_object(data_id).mapper
         mapper.ScalarVisibilityOn()
@@ -140,7 +140,7 @@ class VtkMeshView(VtkObjectView):
 
     def displayAttributeOnCells(self, data_id: str, name: str) -> None:
         reader = self.get_object(data_id).reader
-        cells = reader.GetOutput().GetCellData()  # type: ignore[attr-defined]
+        cells = reader.GetOutputAsDataSet().GetCellData()
         cells.SetActiveScalars(name)
         mapper = self.get_object(data_id).mapper
         mapper.ScalarVisibilityOn()

@@ -28,7 +28,7 @@ from opengeodeweb_microservice.database.data import Data
 @dataclass
 class vtkData:
     reader: vtkXMLReader
-    mapper: vtkMapper | vtkCompositePolyDataMapper
+    mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
     max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
@@ -44,15 +44,15 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     # Typed wrappers for untyped parent methods
     def getView(self, view_id: str) -> vtkRenderWindow:
         """Typed wrapper for the untyped parent getView method."""
-        return cast(vtkRenderWindow, super().getView(view_id))  # type: ignore[no-untyped-call]
+        return cast(vtkRenderWindow, cast(Any, super()).getView(view_id))
 
     def registerVtkWebProtocol(self, protocol: vtk_protocols.vtkWebProtocol) -> None:
         """Typed wrapper for the untyped parent registerVtkWebProtocol method."""
-        super().registerVtkWebProtocol(protocol)
+        cast(Any, super()).registerVtkWebProtocol(protocol)
 
     def getApplication(self) -> Any:
         """Typed wrapper for the untyped parent getApplication method."""
-        return super().getApplication()  # type: ignore[no-untyped-call]
+        return cast(Any, super()).getApplication()
 
     def get_data_base(self) -> Any:
         return self.getSharedObject("db")

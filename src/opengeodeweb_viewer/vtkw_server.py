@@ -1,12 +1,12 @@
 # Standard library imports
 import argparse
 import os
-from typing import Any, cast
+from typing import Any, cast, Protocol, runtime_checkable
 
 # Third party imports
 from vtkmodules.web import wslink as vtk_wslink
 from vtkmodules.web import protocols as vtk_protocols
-from wslink import server  # type: ignore
+from wslink import server
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 from opengeodeweb_microservice.database import connection
@@ -44,6 +44,12 @@ from .rpc.generic.generic_protocols import VtkGenericView
 from .rpc.utils_protocols import VtkUtilsView
 
 
+@runtime_checkable
+class VtkApplication(Protocol):
+    def SetImageEncoding(self, encoding: int) -> None: ...
+    def GetObjectIdMap(self) -> Any: ...
+
+
 # =============================================================================
 # Server class
 # =============================================================================
@@ -68,13 +74,19 @@ class _Server(vtk_wslink.ServerProtocol):
         # Standard args
         _Server.authKey = args.authKey
 
+    def registerVtkWebProtocol(self, protocol: Any) -> None:
+        cast(Any, super()).registerVtkWebProtocol(protocol)
+
+    def getApplication(self) -> VtkApplication:
+        return cast(VtkApplication, cast(Any, super()).getApplication())
+
     def initialize(self) -> None:
         # Bring used components
-        cast(Any, self).registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
-        cast(Any, self).registerVtkWebProtocol(vtk_protocols.vtkWebViewPort())
-        publisher = vtk_protocols.vtkWebPublishImageDelivery(decode=False)  # type: ignore[no-untyped-call]
+        self.registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
+        self.registerVtkWebProtocol(vtk_protocols.vtkWebViewPort())
+        publisher = cast(Any, vtk_protocols).vtkWebPublishImageDelivery(decode=False)
         publisher.deltaStaleTimeBeforeRender = 0.1
-        cast(Any, self).registerVtkWebProtocol(publisher)
+        self.registerVtkWebProtocol(publisher)
         self.setSharedObject("db", dict())
         self.setSharedObject("publisher", publisher)
 
@@ -82,29 +94,27 @@ class _Server(vtk_wslink.ServerProtocol):
         mesh_protocols = VtkMeshView()
         model_protocols = VtkModelView()
         vtk_view = VtkView()
-        cast(Any, self).registerVtkWebProtocol(vtk_view)
-        cast(Any, self).registerVtkWebProtocol(VtkUtilsView())
-        cast(Any, self).registerVtkWebProtocol(VtkViewerView())
-        cast(Any, self).registerVtkWebProtocol(mesh_protocols)
-        cast(Any, self).registerVtkWebProtocol(VtkMeshPointsView())
-        cast(Any, self).registerVtkWebProtocol(VtkMeshEdgesView())
-        cast(Any, self).registerVtkWebProtocol(VtkMeshCellsView())
-        cast(Any, self).registerVtkWebProtocol(VtkMeshPolygonsView())
-        cast(Any, self).registerVtkWebProtocol(VtkMeshPolyhedraView())
-        cast(Any, self).registerVtkWebProtocol(model_protocols)
-        cast(Any, self).registerVtkWebProtocol(VtkModelEdgesView())
-        cast(Any, self).registerVtkWebProtocol(VtkModelPointsView())
-        cast(Any, self).registerVtkWebProtocol(VtkModelCornersView())
-        cast(Any, self).registerVtkWebProtocol(VtkModelLinesView())
-        cast(Any, self).registerVtkWebProtocol(VtkModelSurfacesView())
-        cast(Any, self).registerVtkWebProtocol(VtkModelBlocksView())
-        cast(Any, self).registerVtkWebProtocol(
-            VtkGenericView(mesh_protocols, model_protocols)
-        )
+        self.registerVtkWebProtocol(vtk_view)
+        self.registerVtkWebProtocol(VtkUtilsView())
+        self.registerVtkWebProtocol(VtkViewerView())
+        self.registerVtkWebProtocol(mesh_protocols)
+        self.registerVtkWebProtocol(VtkMeshPointsView())
+        self.registerVtkWebProtocol(VtkMeshEdgesView())
+        self.registerVtkWebProtocol(VtkMeshCellsView())
+        self.registerVtkWebProtocol(VtkMeshPolygonsView())
+        self.registerVtkWebProtocol(VtkMeshPolyhedraView())
+        self.registerVtkWebProtocol(model_protocols)
+        self.registerVtkWebProtocol(VtkModelEdgesView())
+        self.registerVtkWebProtocol(VtkModelPointsView())
+        self.registerVtkWebProtocol(VtkModelCornersView())
+        self.registerVtkWebProtocol(VtkModelLinesView())
+        self.registerVtkWebProtocol(VtkModelSurfacesView())
+        self.registerVtkWebProtocol(VtkModelBlocksView())
+        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.
-        cast(Any, self).getApplication().SetImageEncoding(0)
+        self.getApplication().SetImageEncoding(0)
 
         # Update authentication key to use
         self.updateSecret(_Server.authKey)
@@ -119,9 +129,7 @@ class _Server(vtk_wslink.ServerProtocol):
             renderWindow = vtkRenderWindow()
             renderWindow.AddRenderer(renderer)
             self.setSharedObject("renderer", renderer)
-            cast(Any, self).getApplication().GetObjectIdMap().SetActiveObject(
-                "VIEW", renderWindow
-            )
+            self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", renderWindow)
 
             renderWindow.SetOffScreenRendering(not _Server.debug)
 
