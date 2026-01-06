@@ -6,7 +6,7 @@ from typing import Any, cast
 # Third party imports
 from vtkmodules.web import wslink as vtk_wslink
 from vtkmodules.web import protocols as vtk_protocols
-from wslink import server
+from wslink import server  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 from opengeodeweb_microservice.database import connection
