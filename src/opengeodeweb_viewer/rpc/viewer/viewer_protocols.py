@@ -15,7 +15,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference
-from vtkmodules.vtkCommonDataModel import vtkBoundingBox
+from vtkmodules.vtkCommonDataModel import vtkBoundingBox, vtkDataSet
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -172,8 +172,12 @@ class VtkViewerView(VtkView):
         reader.Update()
         mapper = data.mapper
         tag = reference(0)
+        output = reader.GetOutputDataObject(0)
+        if not isinstance(output, vtkDataSet):
+            raise Exception("Output is not a vtkDataSet")
+
         scalars = vtkAbstractMapper.GetAbstractScalars(
-            reader.GetOutput(),  # type: ignore[attr-defined]
+            output,
             mapper.GetScalarMode(),
             mapper.GetArrayAccessMode(),
             mapper.GetArrayId(),

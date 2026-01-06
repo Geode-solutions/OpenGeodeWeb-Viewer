@@ -10,7 +10,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkTexture,
     vtkCompositePolyDataMapper,
 )
-from vtkmodules.vtkCommonDataModel import vtkDataObject
+from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkDataSet
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView, vtkData
@@ -37,8 +37,10 @@ class VtkObjectView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         resetCamara = True
-        for registered_actor in renderer.GetActors():  # type: ignore[attr-defined]
-            if registered_actor.visibility == True:
+        actors = renderer.GetActors()
+        actors.InitTraversal()
+        while actor := actors.GetNextItem():
+            if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
         if resetCamara:
@@ -109,22 +111,26 @@ class VtkObjectView(VtkView):
         self, data_id: str, block_ids: list[int], visibility: bool
     ) -> None:
         mapper = self.get_object(data_id).mapper
-        if isinstance(mapper, vtkCompositePolyDataMapper):
-            for block_id in block_ids:
-                mapper.SetBlockVisibility(block_id, visibility)
+        if not isinstance(mapper, vtkCompositePolyDataMapper):
+            raise Exception("Mapper is not a vtkCompositePolyDataMapper")
+        for block_id in block_ids:
+            mapper.SetBlockVisibility(block_id, visibility)
 
     def SetBlocksColor(
         self, data_id: str, block_ids: list[int], red: int, green: int, blue: int
     ) -> None:
         mapper = self.get_object(data_id).mapper
-        if isinstance(mapper, vtkCompositePolyDataMapper):
-            for block_id in block_ids:
-                mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
+        if not isinstance(mapper, vtkCompositePolyDataMapper):
+            raise Exception("Mapper is not a vtkCompositePolyDataMapper")
+        for block_id in block_ids:
+            mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
 
     def clearColors(self, data_id: str) -> None:
         db = self.get_object(data_id)
         mapper = db.mapper
         reader = db.reader
-        reader.GetOutput().GetPointData().SetActiveScalars("")  # type: ignore[attr-defined]
-        reader.GetOutput().GetCellData().SetActiveScalars("")  # type: ignore[attr-defined]
+        output = reader.GetOutputDataObject(0)
+        if isinstance(output, vtkDataSet):
+            output.GetPointData().SetActiveScalars("")
+            output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
