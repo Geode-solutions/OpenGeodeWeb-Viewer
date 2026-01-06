@@ -4,7 +4,12 @@ import os
 # Third party imports
 from vtkmodules.vtkIOXML import vtkXMLDataReader, vtkXMLImageDataReader
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
-from vtkmodules.vtkRenderingCore import vtkMapper, vtkActor, vtkTexture
+from vtkmodules.vtkRenderingCore import (
+    vtkMapper,
+    vtkActor,
+    vtkTexture,
+    vtkCompositePolyDataMapper,
+)
 from vtkmodules.vtkCommonDataModel import vtkDataObject
 
 # Local application imports
@@ -32,7 +37,7 @@ class VtkObjectView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         resetCamara = True
-        for registered_actor in renderer.GetActors():
+        for registered_actor in renderer.GetActors():  # type: ignore[attr-defined]
             if registered_actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
@@ -104,20 +109,22 @@ class VtkObjectView(VtkView):
         self, data_id: str, block_ids: list[int], visibility: bool
     ) -> None:
         mapper = self.get_object(data_id).mapper
-        for block_id in block_ids:
-            mapper.SetBlockVisibility(block_id, visibility)
+        if isinstance(mapper, vtkCompositePolyDataMapper):
+            for block_id in block_ids:
+                mapper.SetBlockVisibility(block_id, visibility)
 
     def SetBlocksColor(
         self, data_id: str, block_ids: list[int], red: int, green: int, blue: int
     ) -> None:
         mapper = self.get_object(data_id).mapper
-        for block_id in block_ids:
-            mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
+        if isinstance(mapper, vtkCompositePolyDataMapper):
+            for block_id in block_ids:
+                mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
 
     def clearColors(self, data_id: str) -> None:
         db = self.get_object(data_id)
-        mapper = db["mapper"]
-        reader = db["reader"]
-        reader.GetOutput().GetPointData().SetActiveScalars("")
-        reader.GetOutput().GetCellData().SetActiveScalars("")
+        mapper = db.mapper
+        reader = db.reader
+        reader.GetOutput().GetPointData().SetActiveScalars("")  # type: ignore[attr-defined]
+        reader.GetOutput().GetCellData().SetActiveScalars("")  # type: ignore[attr-defined]
         mapper.ScalarVisibilityOff()

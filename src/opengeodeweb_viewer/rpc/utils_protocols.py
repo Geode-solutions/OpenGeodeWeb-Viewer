@@ -3,7 +3,7 @@ import os
 from typing import cast
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from wslink import register as exportRpc
 
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict

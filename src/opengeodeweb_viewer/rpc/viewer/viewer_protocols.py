@@ -3,7 +3,7 @@ import math
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from wslink import register as exportRpc
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkRenderingCore import (
@@ -140,6 +140,7 @@ class VtkViewerView(VtkView):
         w2if.ReadFrontBufferOff()
         w2if.Update()
         output_extension = params.output_extension
+        writer: vtkPNGWriter | vtkJPEGWriter
         if output_extension == schemas.OutputExtension.PNG:
             writer = vtkPNGWriter()
         elif output_extension == schemas.OutputExtension.JPG:
@@ -167,17 +168,17 @@ class VtkViewerView(VtkView):
         )
         params = schemas.UpdateData.from_dict(rpc_params)
         data = self.get_object(params.id)
-        reader = data["reader"]
+        reader = data.reader
         reader.Update()
-        mapper = data["mapper"]
+        mapper = data.mapper
         tag = reference(0)
         scalars = vtkAbstractMapper.GetAbstractScalars(
-            reader.GetOutput(),
+            reader.GetOutput(),  # type: ignore[attr-defined]
             mapper.GetScalarMode(),
             mapper.GetArrayAccessMode(),
             mapper.GetArrayId(),
             mapper.GetArrayName(),
-            tag,
+            tag,  # type: ignore[arg-type]
         )
         mapper.SetScalarRange(scalars.GetRange())
 
@@ -203,7 +204,7 @@ class VtkViewerView(VtkView):
         renderer.SetDisplayPoint(size[0], size[1], z)
         renderer.DisplayToWorld()
         windowUpperRight = renderer.GetWorldPoint()
-        epsilon = 0
+        epsilon: float = 0.0
         for i in range(3):
             epsilon += (windowUpperRight[i] - windowLowerLeft[i]) * (
                 windowUpperRight[i] - windowLowerLeft[i]
@@ -229,7 +230,8 @@ class VtkViewerView(VtkView):
         array_ids = []
         for id in params.ids:
             bounds = self.get_object(id).actor.GetBounds()
-            if bbox.Intersects(bounds):
+            bounds_box = vtkBoundingBox(bounds)
+            if bbox.Intersects(bounds_box):
                 array_ids.append(id)
 
         return {"array_ids": array_ids}

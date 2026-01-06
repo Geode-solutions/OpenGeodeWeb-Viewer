@@ -2,7 +2,7 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from wslink import register as exportRpc
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
@@ -20,7 +20,7 @@ class VtkModelBlocksView(VtkModelView):
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @exportRpc(model_blocks_prefix + model_blocks_schemas_dict["visibility"]["rpc"])

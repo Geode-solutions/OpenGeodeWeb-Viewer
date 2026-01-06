@@ -2,21 +2,19 @@ import pytest
 from pathlib import Path
 from websocket import create_connection, WebSocketTimeoutException
 import json
-from xprocess import ProcessStarter
+from xprocess import ProcessStarter  # type: ignore[import-untyped]
 from vtkmodules.vtkIOImage import vtkImageReader2, vtkPNGReader, vtkJPEGReader
 from vtkmodules.vtkImagingCore import vtkImageDifference
 import os
 import shutil
 import xml.etree.ElementTree as ET
-from typing import Callable, Generator
+from typing import Callable, Generator, Any, cast
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
-type RpcTestParams = list[
-    dict[str, str | int | float | bool | dict[str, int] | list[str]] | int
-] | None
+type RpcTestParams = list[dict[str, Any] | int] | None
 
 
 class ServerMonitor:
@@ -80,15 +78,21 @@ class ServerMonitor:
         return vtkJPEGReader()
 
     def images_diff(self, first_image_path: str, second_image_path: str) -> float:
+        first_reader: vtkImageReader2
         if ".png" in first_image_path:
             first_reader = vtkPNGReader()
         elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
             first_reader = vtkJPEGReader()
+        else:
+            first_reader = vtkJPEGReader()
         first_reader.SetFileName(first_image_path)
 
+        second_reader: vtkImageReader2
         if ".png" in second_image_path:
             second_reader = vtkPNGReader()
         elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
+            second_reader = vtkJPEGReader()
+        else:
             second_reader = vtkJPEGReader()
         second_reader.SetFileName(second_image_path)
 
@@ -157,7 +161,7 @@ class FixtureHelper:
         self.root_path = Path(root_path)
 
     def get_xprocess_args(self) -> tuple[str, type, type]:
-        class Starter(ProcessStarter):
+        class Starter(ProcessStarter):  # type: ignore[misc]
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
             timeout = 10
@@ -178,14 +182,14 @@ HELPER = FixtureHelper(ROOT_PATH)
 def server(xprocess: object) -> Generator[ServerMonitor, None, None]:
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
-    _, log = xprocess.ensure(name, Starter)
+    _, log = cast(Any, xprocess).ensure(name, Starter)
     monitor = Monitor(log)
     yield monitor
     try:
         monitor.ws.close()
     except Exception:
         pass
-    xprocess.getinfo(name).terminate()
+    cast(Any, xprocess).getinfo(name).terminate()
     monitor.print_log()
 
 

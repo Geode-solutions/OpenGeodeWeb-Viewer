@@ -14,6 +14,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkMapper,
     vtkRenderer,
+    vtkRenderWindow,
+    vtkCompositePolyDataMapper,
 )
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
@@ -26,7 +28,7 @@ from opengeodeweb_microservice.database.data import Data
 @dataclass
 class vtkData:
     reader: vtkXMLReader
-    mapper: vtkMapper
+    mapper: vtkMapper | vtkCompositePolyDataMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
     max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
@@ -38,6 +40,19 @@ class VtkView(vtk_protocols.vtkWebProtocol):
     def __init__(self) -> None:
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH", ".")
+
+    # Typed wrappers for untyped parent methods
+    def getView(self, view_id: str) -> vtkRenderWindow:
+        """Typed wrapper for the untyped parent getView method."""
+        return cast(vtkRenderWindow, super().getView(view_id))  # type: ignore[no-untyped-call]
+
+    def registerVtkWebProtocol(self, protocol: vtk_protocols.vtkWebProtocol) -> None:
+        """Typed wrapper for the untyped parent registerVtkWebProtocol method."""
+        super().registerVtkWebProtocol(protocol)
+
+    def getApplication(self) -> Any:
+        """Typed wrapper for the untyped parent getApplication method."""
+        return super().getApplication()  # type: ignore[no-untyped-call]
 
     def get_data_base(self) -> Any:
         return self.getSharedObject("db")

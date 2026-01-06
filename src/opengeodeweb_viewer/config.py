@@ -21,8 +21,9 @@ def dev_config() -> None:
         os.environ["DATA_FOLDER_PATH"] = os.path.join(
             "C:/Users", os.getlogin(), "OpenGeodeWeb_Data"
         )
-    if not os.path.exists(os.environ.get("DATA_FOLDER_PATH")):
-        os.mkdir(os.environ.get("DATA_FOLDER_PATH"))
+    data_folder_path = os.environ.get("DATA_FOLDER_PATH")
+    if data_folder_path and not os.path.exists(data_folder_path):
+        os.mkdir(data_folder_path)
 
 
 def _copy_test_assets(
