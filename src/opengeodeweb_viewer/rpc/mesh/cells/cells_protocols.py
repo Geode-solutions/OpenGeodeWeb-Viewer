@@ -63,3 +63,25 @@ class VtkMeshCellsView(VtkMeshView):
         )
         params = schemas.CellAttribute.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)
+
+    @exportRpc(
+        mesh_cells_prefix + mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"]
+    )
+    def setMeshCellsVertexScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_cells_schemas_dict["vertex_scalar_range"],
+            self.mesh_cells_prefix,
+        )
+        params = schemas.VertexScalarRange.from_dict(rpc_params)
+        self.SetScalarRange(params.id, params.minimum, params.maximum)
+
+    @exportRpc(mesh_cells_prefix + mesh_cells_schemas_dict["cell_scalar_range"]["rpc"])
+    def setMeshCellsCellScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_cells_schemas_dict["cell_scalar_range"],
+            self.mesh_cells_prefix,
+        )
+        params = schemas.CellScalarRange.from_dict(rpc_params)
+        self.SetScalarRange(params.id, params.minimum, params.maximum)

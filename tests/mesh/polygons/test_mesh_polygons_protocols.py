@@ -70,3 +70,28 @@ def test_polygons_polygon_attribute(
         [{"id": "123456789", "name": "triangle_vertices"}],
     )
     assert server.compare_image("mesh/polygons/polygon_attribute.jpeg") == True
+
+
+def test_polygons_scalar_range(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    dataset_factory(id="123456789", viewable_file="triangulated_surface2d.vtp")
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": "123456789"}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_attribute"]["rpc"],
+        [{"id": "123456789", "name": "triangle_vertices"}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_scalar_range"]["rpc"],
+        [{"id": "123456789", "minimum": 0, "maximum": 10}],
+    )
+    assert server.compare_image("mesh/polygons/scalar_range.jpeg") == True

@@ -67,3 +67,27 @@ class VtkMeshPolygonsView(VtkMeshView):
         )
         params = schemas.PolygonAttribute.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)
+
+    @exportRpc(
+        mesh_polygons_prefix + mesh_polygons_schemas_dict["vertex_scalar_range"]["rpc"]
+    )
+    def setMeshPolygonsVertexScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polygons_schemas_dict["vertex_scalar_range"],
+            self.mesh_polygons_prefix,
+        )
+        params = schemas.VertexScalarRange.from_dict(rpc_params)
+        self.SetScalarRange(params.id, params.minimum, params.maximum)
+
+    @exportRpc(
+        mesh_polygons_prefix + mesh_polygons_schemas_dict["polygon_scalar_range"]["rpc"]
+    )
+    def setMeshPolygonsPolygonScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polygons_schemas_dict["polygon_scalar_range"],
+            self.mesh_polygons_prefix,
+        )
+        params = schemas.PolygonScalarRange.from_dict(rpc_params)
+        self.SetScalarRange(params.id, params.minimum, params.maximum)

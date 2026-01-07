@@ -4,3 +4,5 @@ from .opacity import *
 from .deregister import *
 from .color import *
 from .apply_textures import *
+from .vertex_scalar_range import *
+from .cell_scalar_range import *

@@ -146,3 +146,19 @@ class VtkMeshView(VtkObjectView):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetScalarRange(cells.GetScalars().GetRange())
+
+    @exportRpc(mesh_prefix + mesh_schemas_dict["vertex_scalar_range"]["rpc"])
+    def setMeshVertexScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.mesh_schemas_dict["vertex_scalar_range"], self.mesh_prefix
+        )
+        params = schemas.VertexScalarRange.from_dict(rpc_params)
+        self.SetScalarRange(params.id, params.minimum, params.maximum)
+
+    @exportRpc(mesh_prefix + mesh_schemas_dict["cell_scalar_range"]["rpc"])
+    def setMeshCellScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.mesh_schemas_dict["cell_scalar_range"], self.mesh_prefix
+        )
+        params = schemas.CellScalarRange.from_dict(rpc_params)
+        self.SetScalarRange(params.id, params.minimum, params.maximum)
