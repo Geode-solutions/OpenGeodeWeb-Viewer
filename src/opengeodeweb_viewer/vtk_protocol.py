@@ -9,6 +9,7 @@ from vtkmodules.web import protocols as vtk_protocols
 from vtkmodules.vtkIOXML import (
     vtkXMLReader,
 )
+from vtkmodules.vtkWebCore import vtkWebApplication
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
@@ -36,23 +37,21 @@ class vtkData:
     )
 
 
-class VtkView(vtk_protocols.vtkWebProtocol):
+class VtkTypingMixin:
+    def getView(self, view_id: str) -> vtkRenderWindow:
+        return cast(vtkRenderWindow, super().getView(view_id))  # type: ignore
+
+    def registerVtkWebProtocol(self, protocol: Any) -> None:
+        super().registerVtkWebProtocol(protocol)  # type: ignore
+
+    def getApplication(self) -> vtkWebApplication:
+        return cast(vtkWebApplication, super().getApplication())  # type: ignore
+
+
+class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def __init__(self) -> None:
         super().__init__()
         self.DATA_FOLDER_PATH = os.getenv("DATA_FOLDER_PATH", ".")
-
-    # Typed wrappers for untyped parent methods
-    def getView(self, view_id: str) -> vtkRenderWindow:
-        """Typed wrapper for the untyped parent getView method."""
-        return cast(vtkRenderWindow, cast(Any, super()).getView(view_id))
-
-    def registerVtkWebProtocol(self, protocol: vtk_protocols.vtkWebProtocol) -> None:
-        """Typed wrapper for the untyped parent registerVtkWebProtocol method."""
-        cast(Any, super()).registerVtkWebProtocol(protocol)
-
-    def getApplication(self) -> Any:
-        """Typed wrapper for the untyped parent getApplication method."""
-        return cast(Any, super()).getApplication()
 
     def get_data_base(self) -> Any:
         return self.getSharedObject("db")

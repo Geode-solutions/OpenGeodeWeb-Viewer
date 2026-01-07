@@ -2,7 +2,7 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
 from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkActor, vtkTexture
 from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes

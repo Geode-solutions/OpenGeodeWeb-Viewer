@@ -1,9 +1,10 @@
 # Standard library imports
 import math
 import os
+from typing import cast, Any
 
 # Third party imports
-from wslink import register as exportRpc
+from wslink import register as exportRpc  # type: ignore
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkRenderingCore import (
@@ -171,7 +172,7 @@ class VtkViewerView(VtkView):
         reader = data.reader
         reader.Update()
         mapper = data.mapper
-        tag = reference(0)
+        tag: Any = reference(0)
         output = reader.GetOutputDataObject(0)
         if not isinstance(output, vtkDataSet):
             raise Exception("Output is not a vtkDataSet")
@@ -182,7 +183,7 @@ class VtkViewerView(VtkView):
             mapper.GetArrayAccessMode(),
             mapper.GetArrayId(),
             mapper.GetArrayName(),
-            tag,  # type: ignore[arg-type]
+            tag,
         )
         mapper.SetScalarRange(scalars.GetRange())
 

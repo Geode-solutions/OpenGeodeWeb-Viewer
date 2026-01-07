@@ -2,7 +2,7 @@ import pytest
 from pathlib import Path
 from websocket import create_connection, WebSocketTimeoutException
 import json
-from xprocess import ProcessStarter  # type: ignore[import-untyped]
+from xprocess import ProcessStarter, XProcess
 from vtkmodules.vtkIOImage import vtkImageReader2, vtkPNGReader, vtkJPEGReader
 from vtkmodules.vtkImagingCore import vtkImageDifference
 import os
@@ -75,25 +75,13 @@ class ServerMonitor:
             return vtkPNGReader()
         if lower.endswith(".jpg") or lower.endswith(".jpeg"):
             return vtkJPEGReader()
-        return vtkJPEGReader()
+        raise ValueError(f"Unsupported image format for file: {path}")
 
     def images_diff(self, first_image_path: str, second_image_path: str) -> float:
-        first_reader: vtkImageReader2
-        if ".png" in first_image_path:
-            first_reader = vtkPNGReader()
-        elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
-            first_reader = vtkJPEGReader()
-        else:
-            first_reader = vtkJPEGReader()
+        first_reader = self._reader_for_file(first_image_path)
         first_reader.SetFileName(first_image_path)
 
-        second_reader: vtkImageReader2
-        if ".png" in second_image_path:
-            second_reader = vtkPNGReader()
-        elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
-            second_reader = vtkJPEGReader()
-        else:
-            second_reader = vtkJPEGReader()
+        second_reader = self._reader_for_file(second_image_path)
         second_reader.SetFileName(second_image_path)
 
         images_diff = vtkImageDifference()
@@ -161,7 +149,7 @@ class FixtureHelper:
         self.root_path = Path(root_path)
 
     def get_xprocess_args(self) -> tuple[str, type, type]:
-        class Starter(ProcessStarter):  # type: ignore[misc]
+        class Starter(ProcessStarter):
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
             timeout = 10
@@ -179,17 +167,17 @@ HELPER = FixtureHelper(ROOT_PATH)
 
 
 @pytest.fixture
-def server(xprocess: object) -> Generator[ServerMonitor, None, None]:
+def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
-    _, log = cast(Any, xprocess).ensure(name, Starter)
+    _, log = xprocess.ensure(name, Starter)
     monitor = Monitor(log)
     yield monitor
     try:
         monitor.ws.close()
     except Exception:
         pass
-    cast(Any, xprocess).getinfo(name).terminate()
+    xprocess.getinfo(name).terminate()
     monitor.print_log()
 
 
