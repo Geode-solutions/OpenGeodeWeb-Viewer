@@ -2,13 +2,13 @@ import pytest
 from pathlib import Path
 from websocket import create_connection, WebSocketTimeoutException
 import json
-from xprocess import ProcessStarter, XProcess
+from xprocess import ProcessStarter, XProcess  # type: ignore[import-untyped]
 from vtkmodules.vtkIOImage import vtkImageReader2, vtkPNGReader, vtkJPEGReader
 from vtkmodules.vtkImagingCore import vtkImageDifference
 import os
 import shutil
 import xml.etree.ElementTree as ET
-from typing import Callable, Generator, Any, cast
+from typing import Callable, Generator, Any
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
@@ -159,7 +159,7 @@ class FixtureHelper:
         self.root_path = Path(root_path)
 
     def get_xprocess_args(self) -> tuple[str, type, type]:
-        class Starter(ProcessStarter):
+        class Starter(ProcessStarter):  # type: ignore
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
             timeout = 10
