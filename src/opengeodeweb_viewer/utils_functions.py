@@ -1,7 +1,7 @@
 # Standard library imports
 
 # Third party imports
-import fastjsonschema
+import fastjsonschema  # type: ignore
 
 from opengeodeweb_microservice.schemas import SchemaDict
 
