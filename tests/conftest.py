@@ -68,6 +68,15 @@ class ServerMonitor:
         except Exception:
             return str(response)
 
+    @staticmethod
+    def _reader_for_file(path: str) -> vtkImageReader2:
+        lower = path.lower()
+        if lower.endswith(".png"):
+            return vtkPNGReader()
+        if lower.endswith(".jpg") or lower.endswith(".jpeg"):
+            return vtkJPEGReader()
+        return vtkJPEGReader()
+
     def images_diff(self, first_image_path: str, second_image_path: str) -> float:
         if ".png" in first_image_path:
             first_reader: vtkImageReader2 = vtkPNGReader()
