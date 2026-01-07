@@ -20,7 +20,7 @@ class VtkModelEdgesView(VtkModelView):
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @exportRpc(model_edges_prefix + model_edges_schemas_dict["visibility"]["rpc"])

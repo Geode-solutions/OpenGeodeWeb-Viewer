@@ -1,18 +1,20 @@
 # Standard library imports
 import argparse
 import os
+from typing import Any, cast, Protocol, runtime_checkable
 
 # Third party imports
-from vtkmodules.web import wslink as vtk_wslink
+from vtkmodules.web.wslink import ServerProtocol
 from vtkmodules.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
+from vtkmodules.vtkWebCore import vtkWebApplication
 from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 from opengeodeweb_microservice.database import connection
 
 # Local application imports
 from .config import *
-from .vtk_protocol import VtkView
+from .vtk_protocol import VtkView, VtkTypingMixin
 from .rpc.viewer.viewer_protocols import VtkViewerView
 from .rpc.mesh.mesh_protocols import VtkMeshView
 from .rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
@@ -48,14 +50,14 @@ from .rpc.utils_protocols import VtkUtilsView
 # =============================================================================
 
 
-class _Server(vtk_wslink.ServerProtocol):
+class _Server(VtkTypingMixin, ServerProtocol):
     # Defaults
     authKey = "wslink-secret"
     view = None
     debug = False
 
     @staticmethod
-    def add_arguments(parser):
+    def add_arguments(parser: argparse.ArgumentParser) -> None:
         parser.add_argument(
             "--data_folder_path",
             default=os.environ.get("DATA_FOLDER_PATH"),
@@ -63,15 +65,15 @@ class _Server(vtk_wslink.ServerProtocol):
         )
 
     @staticmethod
-    def configure(args):
+    def configure(args: argparse.Namespace) -> None:
         # Standard args
         _Server.authKey = args.authKey
 
-    def initialize(self):
+    def initialize(self) -> None:
         # Bring used components
         self.registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
         self.registerVtkWebProtocol(vtk_protocols.vtkWebViewPort())
-        publisher = vtk_protocols.vtkWebPublishImageDelivery(decode=False)
+        publisher = vtk_protocols.vtkWebPublishImageDelivery(decode=False)  # type: ignore
         publisher.deltaStaleTimeBeforeRender = 0.1
         self.registerVtkWebProtocol(publisher)
         self.setSharedObject("db", dict())
@@ -87,7 +89,7 @@ class _Server(vtk_wslink.ServerProtocol):
         self.registerVtkWebProtocol(mesh_protocols)
         self.registerVtkWebProtocol(VtkMeshPointsView())
         self.registerVtkWebProtocol(VtkMeshEdgesView())
-        self.registerVtkWebProtocol(VtkMeshCellsView())  # type: ignore
+        self.registerVtkWebProtocol(VtkMeshCellsView())
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
         self.registerVtkWebProtocol(VtkMeshPolyhedraView())
         self.registerVtkWebProtocol(model_protocols)
@@ -126,7 +128,7 @@ class _Server(vtk_wslink.ServerProtocol):
 # =============================================================================
 
 
-def run_server(Server=_Server):
+def run_server(Server: type[ServerProtocol] = _Server) -> None:
     PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
     if PYTHON_ENV == "prod":
         prod_config()

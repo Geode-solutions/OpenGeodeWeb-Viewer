@@ -20,7 +20,7 @@ class VtkModelCornersView(VtkModelView):
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     @exportRpc(model_corners_prefix + model_corners_schemas_dict["visibility"]["rpc"])

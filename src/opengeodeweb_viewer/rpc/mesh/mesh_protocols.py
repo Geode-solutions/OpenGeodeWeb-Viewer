@@ -109,7 +109,7 @@ class VtkMeshView(VtkObjectView):
             if texture_data is None:
                 continue
             texture_file = texture_data.viewable_file
-            if not texture_file.lower().endswith(".vti"):
+            if texture_file is None or not texture_file.lower().endswith(".vti"):
                 continue
             texture_file_path = self.get_data_file_path(texture_id)
             texture_reader = vtkXMLImageDataReader()
@@ -119,7 +119,7 @@ class VtkMeshView(VtkObjectView):
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
             reader = self.get_object(mesh_id).reader
-            output = reader.GetOutput()
+            output = reader.GetOutputAsDataSet()
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
                 array = point_data.GetArray(i)
@@ -131,7 +131,7 @@ class VtkMeshView(VtkObjectView):
 
     def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
         reader = self.get_object(data_id).reader
-        points = reader.GetOutput().GetPointData()
+        points = reader.GetOutputAsDataSet().GetPointData()
         points.SetActiveScalars(name)
         mapper = self.get_object(data_id).mapper
         mapper.ScalarVisibilityOn()
@@ -140,7 +140,7 @@ class VtkMeshView(VtkObjectView):
 
     def displayAttributeOnCells(self, data_id: str, name: str) -> None:
         reader = self.get_object(data_id).reader
-        cells = reader.GetOutput().GetCellData()
+        cells = reader.GetOutputAsDataSet().GetCellData()
         cells.SetActiveScalars(name)
         mapper = self.get_object(data_id).mapper
         mapper.ScalarVisibilityOn()

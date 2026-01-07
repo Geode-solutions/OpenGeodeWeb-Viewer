@@ -2,21 +2,19 @@ import pytest
 from pathlib import Path
 from websocket import create_connection, WebSocketTimeoutException
 import json
-from xprocess import ProcessStarter
+from xprocess import ProcessStarter, XProcess
 from vtkmodules.vtkIOImage import vtkImageReader2, vtkPNGReader, vtkJPEGReader
 from vtkmodules.vtkImagingCore import vtkImageDifference
 import os
 import shutil
 import xml.etree.ElementTree as ET
-from typing import Callable, Generator
+from typing import Callable, Generator, Any, cast
 from opengeodeweb_viewer import config
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
-type RpcTestParams = list[
-    dict[str, str | int | float | bool | dict[str, int] | list[str]] | int
-] | None
+type RpcTestParams = list[dict[str, Any] | int] | None
 
 
 class ServerMonitor:
@@ -81,15 +79,19 @@ class ServerMonitor:
 
     def images_diff(self, first_image_path: str, second_image_path: str) -> float:
         if ".png" in first_image_path:
-            first_reader = vtkPNGReader()
+            first_reader: vtkImageReader2 = vtkPNGReader()
         elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
             first_reader = vtkJPEGReader()
+        else:
+            raise Exception(f"Unsupported image format for file: {first_image_path}")
         first_reader.SetFileName(first_image_path)
 
         if ".png" in second_image_path:
-            second_reader = vtkPNGReader()
+            second_reader: vtkImageReader2 = vtkPNGReader()
         elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
             second_reader = vtkJPEGReader()
+        else:
+            raise Exception(f"Unsupported image format for file: {second_image_path}")
         second_reader.SetFileName(second_image_path)
 
         images_diff = vtkImageDifference()
@@ -175,7 +177,7 @@ HELPER = FixtureHelper(ROOT_PATH)
 
 
 @pytest.fixture
-def server(xprocess: object) -> Generator[ServerMonitor, None, None]:
+def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
     name, Starter, Monitor = HELPER.get_xprocess_args()
     os.environ["PYTHON_ENV"] = "test"
     _, log = xprocess.ensure(name, Starter)

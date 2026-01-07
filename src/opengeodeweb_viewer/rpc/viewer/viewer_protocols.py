@@ -1,6 +1,7 @@
 # Standard library imports
 import math
 import os
+from typing import cast, Any
 
 # Third party imports
 from wslink import register as exportRpc  # type: ignore
@@ -15,7 +16,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference
-from vtkmodules.vtkCommonDataModel import vtkBoundingBox
+from vtkmodules.vtkCommonDataModel import vtkBoundingBox, vtkDataSet
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -140,6 +141,7 @@ class VtkViewerView(VtkView):
         w2if.ReadFrontBufferOff()
         w2if.Update()
         output_extension = params.output_extension
+        writer: vtkPNGWriter | vtkJPEGWriter
         if output_extension == schemas.OutputExtension.PNG:
             writer = vtkPNGWriter()
         elif output_extension == schemas.OutputExtension.JPG:
@@ -167,12 +169,16 @@ class VtkViewerView(VtkView):
         )
         params = schemas.UpdateData.from_dict(rpc_params)
         data = self.get_object(params.id)
-        reader = data["reader"]
+        reader = data.reader
         reader.Update()
-        mapper = data["mapper"]
-        tag = reference(0)
+        mapper = data.mapper
+        tag: Any = reference(0)
+        output = reader.GetOutputDataObject(0)
+        if not isinstance(output, vtkDataSet):
+            raise Exception("Output is not a vtkDataSet")
+
         scalars = vtkAbstractMapper.GetAbstractScalars(
-            reader.GetOutput(),
+            output,
             mapper.GetScalarMode(),
             mapper.GetArrayAccessMode(),
             mapper.GetArrayId(),
@@ -203,7 +209,7 @@ class VtkViewerView(VtkView):
         renderer.SetDisplayPoint(size[0], size[1], z)
         renderer.DisplayToWorld()
         windowUpperRight = renderer.GetWorldPoint()
-        epsilon = 0
+        epsilon: float = 0.0
         for i in range(3):
             epsilon += (windowUpperRight[i] - windowLowerLeft[i]) * (
                 windowUpperRight[i] - windowLowerLeft[i]
@@ -229,7 +235,8 @@ class VtkViewerView(VtkView):
         array_ids = []
         for id in params.ids:
             bounds = self.get_object(id).actor.GetBounds()
-            if bbox.Intersects(bounds):
+            bounds_box = vtkBoundingBox(bounds)
+            if bbox.Intersects(bounds_box):
                 array_ids.append(id)
 
         return {"array_ids": array_ids}
