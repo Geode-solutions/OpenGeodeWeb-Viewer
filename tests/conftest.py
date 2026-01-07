@@ -68,20 +68,21 @@ class ServerMonitor:
         except Exception:
             return str(response)
 
-    @staticmethod
-    def _reader_for_file(path: str) -> vtkImageReader2:
-        lower = path.lower()
-        if lower.endswith(".png"):
-            return vtkPNGReader()
-        if lower.endswith(".jpg") or lower.endswith(".jpeg"):
-            return vtkJPEGReader()
-        raise ValueError(f"Unsupported image format for file: {path}")
-
     def images_diff(self, first_image_path: str, second_image_path: str) -> float:
-        first_reader = self._reader_for_file(first_image_path)
+        if ".png" in first_image_path:
+            first_reader: vtkImageReader2 = vtkPNGReader()
+        elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
+            first_reader = vtkJPEGReader()
+        else:
+            raise Exception(f"Unsupported image format for file: {first_image_path}")
         first_reader.SetFileName(first_image_path)
 
-        second_reader = self._reader_for_file(second_image_path)
+        if ".png" in second_image_path:
+            second_reader: vtkImageReader2 = vtkPNGReader()
+        elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
+            second_reader = vtkJPEGReader()
+        else:
+            raise Exception(f"Unsupported image format for file: {second_image_path}")
         second_reader.SetFileName(second_image_path)
 
         images_diff = vtkImageDifference()
