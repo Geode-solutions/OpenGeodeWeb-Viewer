@@ -135,6 +135,6 @@ class VtkObjectView(VtkView):
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
 
-    def SetScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
-        mapper = self.get_object(data_id).mapper
-        mapper.SetScalarRange(minimum, maximum)
+    # def SetScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
+    #     mapper = self.get_object(data_id).mapper
+    #     mapper.SetScalarRange(minimum, maximum)

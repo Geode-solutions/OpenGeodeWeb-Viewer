@@ -1,5 +1,5 @@
 {
-  "rpc": "cell_scalar_range",
+  "rpc": "vertex_scalar_range",
   "type": "object",
   "properties": {
     "id": {
