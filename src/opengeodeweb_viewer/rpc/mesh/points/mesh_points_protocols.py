@@ -71,3 +71,28 @@ class VtkMeshPointsView(VtkMeshView):
         )
         params = schemas.VertexScalarRange.from_dict(rpc_params)
         self.displayScalarRange(params.id, params.minimum, params.maximum)
+
+    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["vertex_color_map"]["rpc"])
+    def setMeshPointsVertexColorMap(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_points_schemas_dict["vertex_color_map"],
+            self.mesh_points_prefix,
+        )
+        params = schemas.VertexColorMap.from_dict(rpc_params)
+        data = self.get_object(params.id)
+
+        sorted_points = sorted(params.points, key=lambda x: x[0])
+        points_min = sorted_points[0][0]
+        points_max = sorted_points[-1][0]
+        points_range = points_max - points_min if points_max != points_min else 1.0
+
+        data.color_map_points = []
+        for point in sorted_points:
+            ratio = (point[0] - points_min) / points_range
+            data.color_map_points.append([ratio, *point[1:]])
+
+        data.mapper.InterpolateScalarsBeforeMappingOn()
+
+        minimum, maximum = data.mapper.GetScalarRange()
+        self.displayScalarRange(params.id, minimum, maximum)

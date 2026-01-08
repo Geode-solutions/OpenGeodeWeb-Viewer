@@ -10,16 +10,16 @@ from tests.mesh.test_mesh_protocols import test_register_mesh
 from tests.conftest import ServerMonitor
 
 # Local constants
-id = "regular_grid_2d"
+mesh_id = "123456789"
 
 
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
-    dataset_factory(id=id, viewable_file=f"{id}.vti")
+    dataset_factory(id=mesh_id, viewable_file="regular_grid_2d.vti")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": id}],
+        [{"id": mesh_id}],
     )
     assert server.compare_image("mesh/cells/register.jpeg") == True
 
@@ -33,7 +33,7 @@ def test_cells_color(
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["color"]["rpc"],
-        [{"id": id, "color": {"r": 255, "g": 0, "b": 0}}],
+        [{"id": mesh_id, "color": {"r": 255, "g": 0, "b": 0}}],
     )
     assert server.compare_image("mesh/cells/color.jpeg") == True
 
@@ -47,7 +47,7 @@ def test_cells_visibility(
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["visibility"]["rpc"],
-        [{"id": id, "visibility": False}],
+        [{"id": mesh_id, "visibility": False}],
     )
     assert server.compare_image("mesh/cells/visibility.jpeg") == True
 
@@ -61,14 +61,14 @@ def test_cells_vertex_attribute(
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
-        [{"id": id, "name": "points"}],
+        [{"id": mesh_id, "name": "points"}],
     )
     assert server.compare_image("mesh/cells/vertex_attribute.jpeg") == True
 
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": id, "minimum": 0, "maximum": 10}],
+        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
     )
     assert server.compare_image("mesh/cells/vertex_scalar_range.jpeg") == True
 
@@ -82,13 +82,13 @@ def test_cells_cell_attribute(
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["cell_attribute"]["rpc"],
-        [{"id": id, "name": "RGB_data"}],
+        [{"id": mesh_id, "name": "RGB_data"}],
     )
     assert server.compare_image("mesh/cells/cell_attribute.jpeg") == True
 
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
-        [{"id": id, "minimum": 0, "maximum": 10}],
+        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
     )
     assert server.compare_image("mesh/cells/cell_scalar_range.jpeg") == True
