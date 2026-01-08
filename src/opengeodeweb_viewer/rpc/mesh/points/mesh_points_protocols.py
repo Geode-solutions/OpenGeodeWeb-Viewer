@@ -70,4 +70,4 @@ class VtkMeshPointsView(VtkMeshView):
             self.mesh_points_prefix,
         )
         params = schemas.VertexScalarRange.from_dict(rpc_params)
-        self.displayScalarRangeOnVertices(params.id, params.minimum, params.maximum)
+        self.displayScalarRange(params.id, params.minimum, params.maximum)

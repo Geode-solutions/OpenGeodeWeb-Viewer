@@ -65,6 +65,13 @@ def test_cells_vertex_attribute(
     )
     assert server.compare_image("mesh/cells/vertex_attribute.jpeg") == True
 
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": id, "minimum": 0, "maximum": 10}],
+    )
+    assert server.compare_image("mesh/cells/vertex_scalar_range.jpeg") == True
+
 
 def test_cells_cell_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
@@ -78,3 +85,10 @@ def test_cells_cell_attribute(
         [{"id": id, "name": "RGB_data"}],
     )
     assert server.compare_image("mesh/cells/cell_attribute.jpeg") == True
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
+        [{"id": id, "minimum": 0, "maximum": 10}],
+    )
+    assert server.compare_image("mesh/cells/cell_scalar_range.jpeg") == True

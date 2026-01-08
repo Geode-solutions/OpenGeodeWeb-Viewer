@@ -50,6 +50,16 @@ class VtkMeshEdgesView(VtkMeshView):
         params = schemas.Width.from_dict(rpc_params)
         self.SetEdgesWidth(params.id, params.width)
 
+    @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["vertex_attribute"]["rpc"])
+    def setMeshEdgesVertexAttribute(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_edges_schemas_dict["vertex_attribute"],
+            self.mesh_edges_prefix,
+        )
+        params = schemas.VertexAttribute.from_dict(rpc_params)
+        self.displayAttributeOnVertices(params.id, params.name)
+
     @exportRpc(
         mesh_edges_prefix + mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"]
     )
@@ -60,4 +70,4 @@ class VtkMeshEdgesView(VtkMeshView):
             self.mesh_edges_prefix,
         )
         params = schemas.VertexScalarRange.from_dict(rpc_params)
-        self.displayScalarRangeOnVertices(params.id, params.minimum, params.maximum)
+        self.displayScalarRange(params.id, params.minimum, params.maximum)

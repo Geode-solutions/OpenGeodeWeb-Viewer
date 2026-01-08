@@ -60,3 +60,24 @@ def test_edges_with_edged_curve(
         [{"id": "123456789", "visibility": False}],
     )
     assert server.compare_image("mesh/edges/edged_curve_visibility.jpeg") == True
+
+
+def test_edges_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    mesh_id = "123456789"
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "lambert2SG"}],
+    )
+    assert server.compare_image("mesh/edges/vertex_attribute.jpeg") == True
+
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
+    )
+    assert server.compare_image("mesh/edges/vertex_scalar_range.jpeg") == True

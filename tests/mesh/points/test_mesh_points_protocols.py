@@ -86,3 +86,24 @@ def test_points_with_point_set(
         [{"id": mesh_id, "visibility": False}],
     )
     assert server.compare_image("mesh/points/point_set_visibility.jpeg") == True
+
+
+def test_points_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    mesh_id = "123456789"
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkMeshPointsView.mesh_points_prefix
+        + VtkMeshPointsView.mesh_points_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "lambert2SG"}],
+    )
+    assert server.compare_image("mesh/points/vertex_attribute.jpeg") == True
+
+    server.call(
+        VtkMeshPointsView.mesh_points_prefix
+        + VtkMeshPointsView.mesh_points_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
+    )
+    assert server.compare_image("mesh/points/vertex_scalar_range.jpeg") == True
