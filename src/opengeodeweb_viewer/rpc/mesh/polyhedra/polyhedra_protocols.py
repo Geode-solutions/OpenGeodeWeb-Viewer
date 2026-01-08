@@ -68,3 +68,29 @@ class VtkMeshPolyhedraView(VtkMeshView):
         )
         params = schemas.PolyhedronAttribute.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)
+
+    @exportRpc(
+        mesh_polyhedra_prefix
+        + mesh_polyhedra_schemas_dict["vertex_scalar_range"]["rpc"]
+    )
+    def setMeshPolyhedraVertexScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polyhedra_schemas_dict["vertex_scalar_range"],
+            self.mesh_polyhedra_prefix,
+        )
+        params = schemas.VertexScalarRange.from_dict(rpc_params)
+        self.displayScalarRange(params.id, params.minimum, params.maximum)
+
+    @exportRpc(
+        mesh_polyhedra_prefix
+        + mesh_polyhedra_schemas_dict["polyhedron_scalar_range"]["rpc"]
+    )
+    def setMeshPolyhedraPolyhedronScalarRange(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polyhedra_schemas_dict["polyhedron_scalar_range"],
+            self.mesh_polyhedra_prefix,
+        )
+        params = schemas.PolyhedronScalarRange.from_dict(rpc_params)
+        self.displayScalarRange(params.id, params.minimum, params.maximum)

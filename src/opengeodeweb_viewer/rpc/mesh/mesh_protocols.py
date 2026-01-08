@@ -146,3 +146,7 @@ class VtkMeshView(VtkObjectView):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetScalarRange(cells.GetScalars().GetRange())
+
+    def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
+        mapper = self.get_object(data_id).mapper
+        mapper.SetScalarRange(minimum, maximum)

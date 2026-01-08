@@ -1,0 +1,22 @@
+{
+  "rpc": "cell_scalar_range",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "minimum": {
+      "type": "number"
+    },
+    "maximum": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "id",
+    "minimum",
+    "maximum"
+  ],
+  "additionalProperties": false
+}
