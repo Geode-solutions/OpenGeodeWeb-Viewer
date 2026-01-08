@@ -8,5 +8,5 @@ class PolyhedronScalarRange(DataClassJsonMixin):
         print(self, flush=True)
 
     id: str
-    minimum: float
     maximum: float
+    minimum: float

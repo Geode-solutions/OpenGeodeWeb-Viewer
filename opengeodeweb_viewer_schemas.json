@@ -53,6 +53,29 @@
           ],
           "additionalProperties": false
         },
+        "vertex_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.cells.vertex_scalar_range",
+          "rpc": "vertex_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
         "vertex_attribute": {
           "$id": "opengeodeweb_viewer.mesh.cells.vertex_attribute",
           "rpc": "vertex_attribute",
@@ -121,6 +144,29 @@
           ],
           "additionalProperties": false
         },
+        "cell_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.cells.cell_scalar_range",
+          "rpc": "cell_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
         "cell_attribute": {
           "$id": "opengeodeweb_viewer.mesh.cells.cell_attribute",
           "rpc": "cell_attribute",
@@ -178,6 +224,29 @@
           "required": [
             "id",
             "visibility"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.edges.vertex_scalar_range",
+          "rpc": "vertex_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
           ],
           "additionalProperties": false
         },
@@ -289,6 +358,29 @@
           ],
           "additionalProperties": false
         },
+        "vertex_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.points.vertex_scalar_range",
+          "rpc": "vertex_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
         "vertex_attribute": {
           "$id": "opengeodeweb_viewer.mesh.points.vertex_attribute",
           "rpc": "vertex_attribute",
@@ -397,6 +489,29 @@
           ],
           "additionalProperties": false
         },
+        "vertex_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.vertex_scalar_range",
+          "rpc": "vertex_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
         "vertex_attribute": {
           "$id": "opengeodeweb_viewer.mesh.polygons.vertex_attribute",
           "rpc": "vertex_attribute",
@@ -414,6 +529,29 @@
           "required": [
             "id",
             "name"
+          ],
+          "additionalProperties": false
+        },
+        "polygon_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.polygon_scalar_range",
+          "rpc": "polygon_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
           ],
           "additionalProperties": false
         },
@@ -506,6 +644,29 @@
           ],
           "additionalProperties": false
         },
+        "vertex_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.vertex_scalar_range",
+          "rpc": "vertex_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
         "vertex_attribute": {
           "$id": "opengeodeweb_viewer.mesh.polyhedra.vertex_attribute",
           "rpc": "vertex_attribute",
@@ -523,6 +684,29 @@
           "required": [
             "id",
             "name"
+          ],
+          "additionalProperties": false
+        },
+        "polyhedron_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.polyhedron_scalar_range",
+          "rpc": "polyhedron_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
           ],
           "additionalProperties": false
         },

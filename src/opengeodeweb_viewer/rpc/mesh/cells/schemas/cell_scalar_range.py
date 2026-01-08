@@ -8,5 +8,5 @@ class CellScalarRange(DataClassJsonMixin):
         print(self, flush=True)
 
     id: str
-    minimum: float
     maximum: float
+    minimum: float
