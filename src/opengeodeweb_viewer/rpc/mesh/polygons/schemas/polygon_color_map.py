@@ -1,12 +1,12 @@
-# Standard library imports
+from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-
-# Third party imports
-from dataclasses_json import dataclass_json
+from typing import List
 
 
-@dataclass_json
 @dataclass
-class PolygonColorMap:
+class PolygonColorMap(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print(self, flush=True)
+
     id: str
-    points: list[list[float]]  # [value, r, g, b]
+    points: List[List[float]]
