@@ -92,3 +92,335 @@ def test_cells_cell_attribute(
         [{"id": mesh_id, "minimum": 0, "maximum": 10}],
     )
     assert server.compare_image("mesh/cells/cell_scalar_range.jpeg") == True
+
+
+def test_cells_vertex_color_map(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "points"}],
+    )
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 2, "maximum": 498}],
+    )
+
+    # Set color map: Blue to Red
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/cells/vertex_color_map.jpeg") == True
+
+
+def test_cells_vertex_color_map_range_update(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "points"}],
+    )
+
+    # Set Blue to Red Map
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/cells/vertex_color_map.jpeg") == True
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 200.0, "maximum": 300.0}],
+    )
+
+    assert server.compare_image("mesh/cells/vertex_color_map_range_update.jpeg") == True
+
+
+def test_cells_vertex_color_map_red_shift(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "points"}],
+    )
+
+    # Set Blue to Red Map
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/cells/vertex_color_map.jpeg") == True
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0.0, "maximum": 50.0}],
+    )
+
+    assert server.compare_image("mesh/cells/vertex_color_map_red_shift.jpeg") == True
+
+
+def test_cells_vertex_color_map_rainbow(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "points"}],
+    )
+
+    # Rainbow Desaturated Map
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 71, 71, 219],
+                    [0.143, 0, 0, 92],
+                    [0.285, 0, 255, 255],
+                    [0.429, 0, 128, 0],
+                    [0.571, 255, 255, 0],
+                    [0.714, 255, 97, 0],
+                    [0.857, 107, 0, 0],
+                    [1.0, 224, 77, 77],
+                ],
+            }
+        ],
+    )
+
+    assert (
+        server.compare_image("mesh/cells/vertex_color_map_rainbow_initial.jpeg") == True
+    )
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 50.0, "maximum": 200.0}],
+    )
+
+    assert server.compare_image("mesh/cells/vertex_color_map_rainbow.jpeg") == True
+
+
+def test_cells_cell_color_map(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "RGB_data"}],
+    )
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0, "maximum": 255}],
+    )
+
+    # Set color map: Blue to Red
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
+
+
+def test_cells_cell_color_map_range_update(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "RGB_data"}],
+    )
+
+    # Set Blue to Red Map
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 100.0, "maximum": 150.0}],
+    )
+
+    assert server.compare_image("mesh/cells/cell_color_map_range_update.jpeg") == True
+
+
+def test_cells_cell_color_map_red_shift(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "RGB_data"}],
+    )
+
+    # Set Blue to Red Map
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0.0, "maximum": 20.0}],
+    )
+
+    assert server.compare_image("mesh/cells/cell_color_map_red_shift.jpeg") == True
+
+
+def test_cells_cell_color_map_rainbow(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    # Set active attribute
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "RGB_data"}],
+    )
+
+    # Rainbow Desaturated Map
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 71, 71, 219],
+                    [0.143, 0, 0, 92],
+                    [0.285, 0, 255, 255],
+                    [0.429, 0, 128, 0],
+                    [0.571, 255, 255, 0],
+                    [0.714, 255, 97, 0],
+                    [0.857, 107, 0, 0],
+                    [1.0, 224, 77, 77],
+                ],
+            }
+        ],
+    )
+
+    assert (
+        server.compare_image("mesh/cells/cell_color_map_rainbow_initial.jpeg") == True
+    )
+
+    # Set scalar range
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 50.0, "maximum": 100.0}],
+    )
+
+    assert server.compare_image("mesh/cells/cell_color_map_rainbow.jpeg") == True

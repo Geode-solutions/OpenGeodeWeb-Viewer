@@ -110,7 +110,7 @@ def test_edges_vertex_color_map(
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 1}],
+        [{"id": mesh_id, "minimum": 0, "maximum": 58}],
     )
 
     # Set color map: Blue to Red
