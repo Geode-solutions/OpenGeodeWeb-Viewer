@@ -4,7 +4,12 @@ import os
 # Third party imports
 from wslink import register as exportRpc  # type: ignore
 from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
-from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkActor, vtkTexture
+from vtkmodules.vtkRenderingCore import (
+    vtkDataSetMapper,
+    vtkActor,
+    vtkTexture,
+    vtkColorTransferFunction,
+)
 from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from opengeodeweb_microservice.database.data import Data
@@ -148,5 +153,28 @@ class VtkMeshView(VtkObjectView):
         mapper.SetScalarRange(cells.GetScalars().GetRange())
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
-        mapper = self.get_object(data_id).mapper
-        mapper.SetScalarRange(minimum, maximum)
+        data = self.get_object(data_id)
+        data.mapper.SetScalarRange(minimum, maximum)
+        if hasattr(data, "color_map_points") and data.color_map_points:
+            lut = vtkColorTransferFunction()
+            for ratio, red, green, blue in data.color_map_points:
+                scalar_value = minimum + ratio * (maximum - minimum)
+                lut.AddRGBPoint(scalar_value, red / 255, green / 255, blue / 255)
+            data.mapper.SetLookupTable(lut)
+
+    def setupColorMap(self, data_id: str, points: list[list[float]]) -> None:
+        data = self.get_object(data_id)
+        sorted_points = sorted(points, key=lambda x: x[0])
+        points_min = sorted_points[0][0]
+        points_max = sorted_points[-1][0]
+        points_range = points_max - points_min if points_max != points_min else 1.0
+
+        data.color_map_points = []
+        for point in sorted_points:
+            ratio = (point[0] - points_min) / points_range
+            data.color_map_points.append([ratio, *point[1:]])
+
+        data.mapper.InterpolateScalarsBeforeMappingOn()
+
+        minimum, maximum = data.mapper.GetScalarRange()
+        self.displayScalarRange(data_id, minimum, maximum)

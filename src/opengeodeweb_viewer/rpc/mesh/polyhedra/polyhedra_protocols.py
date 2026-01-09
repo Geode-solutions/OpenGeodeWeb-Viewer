@@ -94,3 +94,28 @@ class VtkMeshPolyhedraView(VtkMeshView):
         )
         params = schemas.PolyhedronScalarRange.from_dict(rpc_params)
         self.displayScalarRange(params.id, params.minimum, params.maximum)
+
+    @exportRpc(
+        mesh_polyhedra_prefix + mesh_polyhedra_schemas_dict["vertex_color_map"]["rpc"]
+    )
+    def setMeshPolyhedraVertexColorMap(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polyhedra_schemas_dict["vertex_color_map"],
+            self.mesh_polyhedra_prefix,
+        )
+        params = schemas.VertexColorMap.from_dict(rpc_params)
+        self.setupColorMap(params.id, params.points)
+
+    @exportRpc(
+        mesh_polyhedra_prefix
+        + mesh_polyhedra_schemas_dict["polyhedra_color_map"]["rpc"]
+    )
+    def setMeshPolyhedraPolyhedraColorMap(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polyhedra_schemas_dict["polyhedra_color_map"],
+            self.mesh_polyhedra_prefix,
+        )
+        params = schemas.PolyhedraColorMap.from_dict(rpc_params)
+        self.setupColorMap(params.id, params.points)

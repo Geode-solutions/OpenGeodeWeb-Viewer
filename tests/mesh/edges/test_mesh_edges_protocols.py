@@ -86,3 +86,189 @@ def test_edges_vertex_attribute(
         [{"id": mesh_id, "minimum": 0, "maximum": 10}],
     )
     assert server.compare_image("mesh/edges/vertex_scalar_range.jpeg") == True
+
+
+def test_edges_vertex_color_map(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    mesh_id = "123456789"
+    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": mesh_id}],
+    )
+
+    # Set active attribute
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "vertex_attribute"}],
+    )
+
+    # Set scalar range
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0, "maximum": 58}],
+    )
+
+    # Set color map: Blue to Red
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/edges/vertex_color_map.jpeg") == True
+
+
+def test_edges_vertex_color_map_range_update(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    mesh_id = "123456789"
+    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": mesh_id}],
+    )
+
+    # Set active attribute
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "vertex_attribute"}],
+    )
+
+    # Set Blue to Red Map
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/edges/vertex_color_map.jpeg") == True
+
+    # Set scalar range: 50 to 58 (clamping data to the minimum color -> mostly BLUE)
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 50.0, "maximum": 58.0}],
+    )
+
+    assert server.compare_image("mesh/edges/vertex_color_map_range_update.jpeg") == True
+
+
+def test_edges_vertex_color_map_red_shift(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    mesh_id = "123456789"
+    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": mesh_id}],
+    )
+
+    # Set active attribute
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "vertex_attribute"}],
+    )
+
+    # Set Blue to Red Map on [0, 1]
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 255],
+                    [1.0, 255, 0, 0],
+                ],
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/edges/vertex_color_map.jpeg") == True
+
+    # Set scalar range: 0.0 to 1.0 (all data > 1.0 should become RED)
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0.0, "maximum": 1.0}],
+    )
+
+    assert server.compare_image("mesh/edges/vertex_color_map_red_shift.jpeg") == True
+
+
+def test_edges_vertex_color_map_rainbow(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    mesh_id = "123456789"
+    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": mesh_id}],
+    )
+
+    # Set active attribute
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_attribute"]["rpc"],
+        [{"id": mesh_id, "name": "vertex_attribute"}],
+    )
+
+    # Rainbow Desaturated Map
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 71, 71, 219],
+                    [0.143, 0, 0, 92],
+                    [0.285, 0, 255, 255],
+                    [0.429, 0, 128, 0],
+                    [0.571, 255, 255, 0],
+                    [0.714, 255, 97, 0],
+                    [0.857, 107, 0, 0],
+                    [1.0, 224, 77, 77],
+                ],
+            }
+        ],
+    )
+
+    assert (
+        server.compare_image("mesh/edges/vertex_color_map_rainbow_initial.jpeg") == True
+    )
+
+    # Set scalar range
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 10.0, "maximum": 20.0}],
+    )
+
+    assert server.compare_image("mesh/edges/vertex_color_map_rainbow.jpeg") == True

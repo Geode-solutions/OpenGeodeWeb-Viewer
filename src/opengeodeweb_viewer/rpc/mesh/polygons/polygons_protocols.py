@@ -91,3 +91,27 @@ class VtkMeshPolygonsView(VtkMeshView):
         )
         params = schemas.PolygonScalarRange.from_dict(rpc_params)
         self.displayScalarRange(params.id, params.minimum, params.maximum)
+
+    @exportRpc(
+        mesh_polygons_prefix + mesh_polygons_schemas_dict["vertex_color_map"]["rpc"]
+    )
+    def setMeshPolygonsVertexColorMap(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polygons_schemas_dict["vertex_color_map"],
+            self.mesh_polygons_prefix,
+        )
+        params = schemas.VertexColorMap.from_dict(rpc_params)
+        self.setupColorMap(params.id, params.points)
+
+    @exportRpc(
+        mesh_polygons_prefix + mesh_polygons_schemas_dict["polygon_color_map"]["rpc"]
+    )
+    def setMeshPolygonsPolygonColorMap(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.mesh_polygons_schemas_dict["polygon_color_map"],
+            self.mesh_polygons_prefix,
+        )
+        params = schemas.PolygonColorMap.from_dict(rpc_params)
+        self.setupColorMap(params.id, params.points)
