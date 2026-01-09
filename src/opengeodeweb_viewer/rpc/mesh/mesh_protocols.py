@@ -161,3 +161,20 @@ class VtkMeshView(VtkObjectView):
                 scalar_value = minimum + ratio * (maximum - minimum)
                 lut.AddRGBPoint(scalar_value, red / 255, green / 255, blue / 255)
             data.mapper.SetLookupTable(lut)
+
+    def setupColorMap(self, data_id: str, points: list[list[float]]) -> None:
+        data = self.get_object(data_id)
+        sorted_points = sorted(points, key=lambda x: x[0])
+        points_min = sorted_points[0][0]
+        points_max = sorted_points[-1][0]
+        points_range = points_max - points_min if points_max != points_min else 1.0
+
+        data.color_map_points = []
+        for point in sorted_points:
+            ratio = (point[0] - points_min) / points_range
+            data.color_map_points.append([ratio, *point[1:]])
+
+        data.mapper.InterpolateScalarsBeforeMappingOn()
+
+        minimum, maximum = data.mapper.GetScalarRange()
+        self.displayScalarRange(data_id, minimum, maximum)
