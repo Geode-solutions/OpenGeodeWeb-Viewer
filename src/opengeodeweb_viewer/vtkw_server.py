@@ -44,7 +44,6 @@ from .rpc.model.blocks.model_blocks_protocols import (
 from .rpc.generic.generic_protocols import VtkGenericView
 from .rpc.utils_protocols import VtkUtilsView
 
-
 # =============================================================================
 # Server class
 # =============================================================================

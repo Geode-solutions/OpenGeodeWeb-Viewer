@@ -376,6 +376,26 @@
           ],
           "additionalProperties": false
         },
+        "edge_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.edges.edge_attribute",
+          "rpc": "edge_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
         "color": {
           "$id": "opengeodeweb_viewer.mesh.edges.color",
           "rpc": "color",
@@ -421,26 +441,6 @@
           "required": [
             "id",
             "color"
-          ],
-          "additionalProperties": false
-        },
-        "edge_attribute": {
-          "$id": "opengeodeweb_viewer.mesh.edges.edge_attribute",
-          "rpc": "edge_attribute",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "name": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "id",
-            "name"
           ],
           "additionalProperties": false
         }
