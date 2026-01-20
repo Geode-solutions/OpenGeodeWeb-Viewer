@@ -77,7 +77,11 @@ class VtkObjectView(VtkView):
 
     def SetEdgesWidth(self, data_id: str, width: float) -> None:
         actor = self.get_object(data_id).actor
-        actor.GetProperty().SetEdgeWidth(width)
+        max_dimension = self.get_object(data_id).max_dimension
+        if max_dimension == "edges":
+            actor.GetProperty().SetLineWidth(width)
+        else:
+            actor.GetProperty().SetEdgeWidth(width)
 
     def SetEdgesColor(self, data_id: str, red: int, green: int, blue: int) -> None:
         actor = self.get_object(data_id).actor
