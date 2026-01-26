@@ -36,7 +36,7 @@ numpy>=2
     # via
     #   contourpy
     #   matplotlib
-packaging==25.0
+packaging==26.0
     # via matplotlib
 pillow>=12
     # via matplotlib
