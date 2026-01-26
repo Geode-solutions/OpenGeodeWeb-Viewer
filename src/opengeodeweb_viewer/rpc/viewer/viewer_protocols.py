@@ -13,6 +13,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindowInteractor,
     vtkAbstractMapper,
     vtkWorldPointPicker,
+    vtkPicker,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference
@@ -224,20 +225,15 @@ class VtkViewerView(VtkView):
         params = schemas.PickedIDS.from_dict(rpc_params)
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        picker = vtkWorldPointPicker()
-        picker.Pick([params.x, params.y, 0], renderer)
-        point = picker.GetPickPosition()
-        epsilon = self.computeEpsilon(renderer, point[2])
-        bbox = vtkBoundingBox()
-        bbox.AddPoint(point[0] + epsilon, point[1] + epsilon, point[2] + epsilon)
-        bbox.AddPoint(point[0] - epsilon, point[1] - epsilon, point[2] - epsilon)
-
+        picker = vtkPicker()
+        picker.Pick(params.x, params.y, 0, renderer)
+        picked_actor = picker.GetActor()
         array_ids = []
-        for id in params.ids:
-            bounds = self.get_object(id).actor.GetBounds()
-            bounds_box = vtkBoundingBox(bounds)
-            if bbox.Intersects(bounds_box):
-                array_ids.append(id)
+        if picked_actor:
+            for id in params.ids:
+                if self.get_object(id).actor == picked_actor:
+                    array_ids.append(id)
+                    break
 
         return {"array_ids": array_ids}
 

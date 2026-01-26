@@ -248,8 +248,8 @@
       },
       "edges": {
         "width": {
-          "$id": "opengeodeweb_viewer.mesh.edges.size",
-          "rpc": "size",
+          "$id": "opengeodeweb_viewer.mesh.edges.width",
+          "rpc": "width",
           "type": "object",
           "properties": {
             "id": {
@@ -357,22 +357,23 @@
           ],
           "additionalProperties": false
         },
-        "size": {
-          "$id": "opengeodeweb_viewer.mesh.edges.size",
-          "rpc": "size",
+        "edge_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.edges.edge_attribute",
+          "rpc": "edge_attribute",
           "type": "object",
           "properties": {
             "id": {
               "type": "string",
               "minLength": 1
             },
-            "size": {
-              "type": "integer"
+            "name": {
+              "type": "string",
+              "minLength": 1
             }
           },
           "required": [
             "id",
-            "size"
+            "name"
           ],
           "additionalProperties": false
         },

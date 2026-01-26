@@ -1,18 +1,19 @@
 {
-  "rpc": "size",
+  "rpc": "edge_attribute",
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
       "minLength": 1
     },
-    "size": {
-      "type": "integer"
+    "name": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "id",
-    "size"
+    "name"
   ],
   "additionalProperties": false
 }

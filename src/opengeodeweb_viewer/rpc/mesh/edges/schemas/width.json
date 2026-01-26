@@ -1,5 +1,5 @@
 {
-  "rpc": "size",
+  "rpc": "width",
   "type": "object",
   "properties": {
     "id": {
