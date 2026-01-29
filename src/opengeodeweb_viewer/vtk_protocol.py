@@ -35,7 +35,7 @@ class vtkData:
     max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
         "default"
     )
-    color_map_points: list[list[float]] = field(default_factory=list)
+    # color_map_points: list[list[float]] = field(default_factory=list)
 
 
 class VtkTypingMixin:
