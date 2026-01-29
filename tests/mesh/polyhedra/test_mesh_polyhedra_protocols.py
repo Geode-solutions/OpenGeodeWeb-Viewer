@@ -59,6 +59,13 @@ def test_vertex_attribute(
         + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_attribute"]["rpc"],
         [{"id": "123456789", "name": "toto_on_vertices"}],
     )
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_scalar_range"][
+            "rpc"
+        ],
+        [{"id": "123456789", "minimum": 1, "maximum": 11}],
+    )
     assert server.compare_image("mesh/polyhedra/vertex_attribute.jpeg") == True
 
     server.call(
@@ -82,6 +89,13 @@ def test_polyhedron_attribute(
             "rpc"
         ],
         [{"id": "123456789", "name": "toto_on_polyhedra"}],
+    )
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["polyhedron_scalar_range"][
+            "rpc"
+        ],
+        [{"id": "123456789", "minimum": 3, "maximum": 6}],
     )
     assert server.compare_image("mesh/polyhedra/polyhedron_attribute.jpeg") == True
 
@@ -124,8 +138,8 @@ def test_polyhedra_vertex_color_map(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [1.0, 0, 0, 1.0],
+                    [11.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -154,8 +168,8 @@ def test_polyhedra_vertex_color_map_range_update(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [1.0, 0, 0, 1.0],
+                    [11.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -170,6 +184,20 @@ def test_polyhedra_vertex_color_map_range_update(
             "rpc"
         ],
         [{"id": "123456789", "minimum": 10.0, "maximum": 11.0}],
+    )
+
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [10.0, 0, 0, 1.0],
+                    [11.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert (
@@ -198,8 +226,8 @@ def test_polyhedra_vertex_color_map_red_shift(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [1.0, 0, 0, 1.0],
+                    [11.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -214,6 +242,20 @@ def test_polyhedra_vertex_color_map_red_shift(
             "rpc"
         ],
         [{"id": "123456789", "minimum": 0.0, "maximum": 1.0}],
+    )
+
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [0.0, 0, 0, 1.0],
+                    [1.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert (
@@ -241,14 +283,14 @@ def test_polyhedra_vertex_color_map_rainbow(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 71, 71, 219],
-                    [0.143, 0, 0, 92],
-                    [0.285, 0, 255, 255],
-                    [0.429, 0, 128, 0],
-                    [0.571, 255, 255, 0],
-                    [0.714, 255, 97, 0],
-                    [0.857, 107, 0, 0],
-                    [1.0, 224, 77, 77],
+                    [1 + 0.0 * 10, 71 / 255, 71 / 255, 219 / 255],
+                    [1 + 0.143 * 10, 0, 0, 92 / 255],
+                    [1 + 0.285 * 10, 0, 255 / 255, 255 / 255],
+                    [1 + 0.429 * 10, 0, 128 / 255, 0],
+                    [1 + 0.571 * 10, 255 / 255, 255 / 255, 0],
+                    [1 + 0.714 * 10, 255 / 255, 97 / 255, 0],
+                    [1 + 0.857 * 10, 107 / 255, 0, 0],
+                    [1 + 1.0 * 10, 224 / 255, 77 / 255, 77 / 255],
                 ],
             }
         ],
@@ -266,6 +308,26 @@ def test_polyhedra_vertex_color_map_rainbow(
             "rpc"
         ],
         [{"id": "123456789", "minimum": 2.0, "maximum": 8.0}],
+    )
+
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [2 + 0.0 * 6, 71 / 255, 71 / 255, 219 / 255],
+                    [2 + 0.143 * 6, 0, 0, 92 / 255],
+                    [2 + 0.285 * 6, 0, 255 / 255, 255 / 255],
+                    [2 + 0.429 * 6, 0, 128 / 255, 0],
+                    [2 + 0.571 * 6, 255 / 255, 255 / 255, 0],
+                    [2 + 0.714 * 6, 255 / 255, 97 / 255, 0],
+                    [2 + 0.857 * 6, 107 / 255, 0, 0],
+                    [2 + 1.0 * 6, 224 / 255, 77 / 255, 77 / 255],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/polyhedra/vertex_color_map_rainbow.jpeg") == True
@@ -304,8 +366,8 @@ def test_polyhedra_polyhedron_color_map(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [3.0, 0, 0, 1.0],
+                    [6.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -338,8 +400,8 @@ def test_polyhedra_polyhedron_color_map_range_update(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [3.0, 0, 0, 1.0],
+                    [6.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -354,6 +416,22 @@ def test_polyhedra_polyhedron_color_map_range_update(
             "rpc"
         ],
         [{"id": "123456789", "minimum": 5.0, "maximum": 6.0}],
+    )
+
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["polyhedra_color_map"][
+            "rpc"
+        ],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [5.0, 0, 0, 1.0],
+                    [6.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert (
@@ -386,8 +464,8 @@ def test_polyhedra_polyhedron_color_map_red_shift(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [3.0, 0, 0, 1.0],
+                    [6.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -402,6 +480,22 @@ def test_polyhedra_polyhedron_color_map_red_shift(
             "rpc"
         ],
         [{"id": "123456789", "minimum": 0.0, "maximum": 1.0}],
+    )
+
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["polyhedra_color_map"][
+            "rpc"
+        ],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [0.0, 0, 0, 1.0],
+                    [1.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert (
@@ -434,14 +528,14 @@ def test_polyhedra_polyhedron_color_map_rainbow(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 71, 71, 219],
-                    [0.143, 0, 0, 92],
-                    [0.285, 0, 255, 255],
-                    [0.429, 0, 128, 0],
-                    [0.571, 255, 255, 0],
-                    [0.714, 255, 97, 0],
-                    [0.857, 107, 0, 0],
-                    [1.0, 224, 77, 77],
+                    [3 + 0.0 * 3, 71 / 255, 71 / 255, 219 / 255],
+                    [3 + 0.143 * 3, 0, 0, 92 / 255],
+                    [3 + 0.285 * 3, 0, 255 / 255, 255 / 255],
+                    [3 + 0.429 * 3, 0, 128 / 255, 0],
+                    [3 + 0.571 * 3, 255 / 255, 255 / 255, 0],
+                    [3 + 0.714 * 3, 255 / 255, 97 / 255, 0],
+                    [3 + 0.857 * 3, 107 / 255, 0, 0],
+                    [3 + 1.0 * 3, 224 / 255, 77 / 255, 77 / 255],
                 ],
             }
         ],
@@ -459,6 +553,28 @@ def test_polyhedra_polyhedron_color_map_rainbow(
             "rpc"
         ],
         [{"id": "123456789", "minimum": 3.5, "maximum": 5.5}],
+    )
+
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["polyhedra_color_map"][
+            "rpc"
+        ],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [3.5 + 0.0 * 2.0, 71 / 255, 71 / 255, 219 / 255],
+                    [3.5 + 0.143 * 2.0, 0, 0, 92 / 255],
+                    [3.5 + 0.285 * 2.0, 0, 255 / 255, 255 / 255],
+                    [3.5 + 0.429 * 2.0, 0, 128 / 255, 0],
+                    [3.5 + 0.571 * 2.0, 255 / 255, 255 / 255, 0],
+                    [3.5 + 0.714 * 2.0, 255 / 255, 97 / 255, 0],
+                    [3.5 + 0.857 * 2.0, 107 / 255, 0, 0],
+                    [3.5 + 1.0 * 2.0, 224 / 255, 77 / 255, 77 / 255],
+                ],
+            }
+        ],
     )
 
     assert (

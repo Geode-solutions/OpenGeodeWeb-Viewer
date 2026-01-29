@@ -49,6 +49,11 @@ def test_polygons_vertex_attribute(
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_attribute"]["rpc"],
         [{"id": "123456789", "name": "lambert2SG"}],
     )
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": "123456789", "minimum": 0, "maximum": 1}],
+    )
     assert server.compare_image("mesh/polygons/vertex_attribute.jpeg") == True
 
     server.call(
@@ -75,6 +80,11 @@ def test_polygons_polygon_attribute(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_attribute"]["rpc"],
         [{"id": "123456789", "name": "triangle_vertices"}],
+    )
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_scalar_range"]["rpc"],
+        [{"id": "123456789", "minimum": 3, "maximum": 45}],
     )
     assert server.compare_image("mesh/polygons/polygon_attribute.jpeg") == True
 
@@ -113,8 +123,8 @@ def test_polygons_vertex_color_map(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [1.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -143,8 +153,8 @@ def test_polygons_vertex_color_map_range_update(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [1.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -157,6 +167,20 @@ def test_polygons_vertex_color_map_range_update(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": "123456789", "minimum": 0.8, "maximum": 1.0}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [0.8, 0, 0, 1.0],
+                    [1.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert (
@@ -184,8 +208,8 @@ def test_polygons_vertex_color_map_red_shift(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [1.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -198,6 +222,20 @@ def test_polygons_vertex_color_map_red_shift(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": "123456789", "minimum": 0.0, "maximum": 0.1}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [0.0, 0, 0, 1.0],
+                    [0.1, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/polygons/vertex_color_map_red_shift.jpeg") == True
@@ -223,14 +261,14 @@ def test_polygons_vertex_color_map_rainbow(
             {
                 "id": "123456789",
                 "points": [
-                    [0.0, 71, 71, 219],
-                    [0.143, 0, 0, 92],
-                    [0.285, 0, 255, 255],
-                    [0.429, 0, 128, 0],
-                    [0.571, 255, 255, 0],
-                    [0.714, 255, 97, 0],
-                    [0.857, 107, 0, 0],
-                    [1.0, 224, 77, 77],
+                    [0.0, 71 / 255, 71 / 255, 219 / 255],
+                    [0.143, 0, 0, 92 / 255],
+                    [0.285, 0, 255 / 255, 255 / 255],
+                    [0.429, 0, 128 / 255, 0],
+                    [0.571, 255 / 255, 255 / 255, 0],
+                    [0.714, 255 / 255, 97 / 255, 0],
+                    [0.857, 107 / 255, 0, 0],
+                    [1.0, 224 / 255, 77 / 255, 77 / 255],
                 ],
             }
         ],
@@ -246,6 +284,26 @@ def test_polygons_vertex_color_map_rainbow(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": "123456789", "minimum": 0.1, "maximum": 0.4}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": "123456789",
+                "points": [
+                    [0.1 + 0.0 * 0.3, 71 / 255, 71 / 255, 219 / 255],
+                    [0.1 + 0.143 * 0.3, 0, 0, 92 / 255],
+                    [0.1 + 0.285 * 0.3, 0, 255 / 255, 255 / 255],
+                    [0.1 + 0.429 * 0.3, 0, 128 / 255, 0],
+                    [0.1 + 0.571 * 0.3, 255 / 255, 255 / 255, 0],
+                    [0.1 + 0.714 * 0.3, 255 / 255, 97 / 255, 0],
+                    [0.1 + 0.857 * 0.3, 107 / 255, 0, 0],
+                    [0.1 + 1.0 * 0.3, 224 / 255, 77 / 255, 77 / 255],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/polygons/vertex_color_map_rainbow.jpeg") == True
@@ -284,8 +342,8 @@ def test_polygons_polygon_color_map(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [50.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -320,8 +378,8 @@ def test_polygons_polygon_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [50.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -334,6 +392,20 @@ def test_polygons_polygon_color_map_range_update(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 40.0, "maximum": 45.0}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [40.0, 0, 0, 1.0],
+                    [45.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert (
@@ -368,8 +440,8 @@ def test_polygons_polygon_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [50.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -382,6 +454,20 @@ def test_polygons_polygon_color_map_red_shift(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 3.0, "maximum": 4.0}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [3.0, 0, 0, 1.0],
+                    [4.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert (
@@ -415,14 +501,14 @@ def test_polygons_polygon_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 71, 71, 219],
-                    [0.143, 0, 0, 92],
-                    [0.285, 0, 255, 255],
-                    [0.429, 0, 128, 0],
-                    [0.571, 255, 255, 0],
-                    [0.714, 255, 97, 0],
-                    [0.857, 107, 0, 0],
-                    [1.0, 224, 77, 77],
+                    [0.0 * 50, 71 / 255, 71 / 255, 219 / 255],
+                    [0.143 * 50, 0, 0, 92 / 255],
+                    [0.285 * 50, 0, 255 / 255, 255 / 255],
+                    [0.429 * 50, 0, 128 / 255, 0],
+                    [0.571 * 50, 255 / 255, 255 / 255, 0],
+                    [0.714 * 50, 255 / 255, 97 / 255, 0],
+                    [0.857 * 50, 107 / 255, 0, 0],
+                    [1.0 * 50, 224 / 255, 77 / 255, 77 / 255],
                 ],
             }
         ],
@@ -438,6 +524,26 @@ def test_polygons_polygon_color_map_rainbow(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 5.0, "maximum": 15.0}],
+    )
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [5 + 0.0 * 10, 71 / 255, 71 / 255, 219 / 255],
+                    [5 + 0.143 * 10, 0, 0, 92 / 255],
+                    [5 + 0.285 * 10, 0, 255 / 255, 255 / 255],
+                    [5 + 0.429 * 10, 0, 128 / 255, 0],
+                    [5 + 0.571 * 10, 255 / 255, 255 / 255, 0],
+                    [5 + 0.714 * 10, 255 / 255, 97 / 255, 0],
+                    [5 + 0.857 * 10, 107 / 255, 0, 0],
+                    [5 + 1.0 * 10, 224 / 255, 77 / 255, 77 / 255],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/polygons/polygon_color_map_rainbow.jpeg") == True

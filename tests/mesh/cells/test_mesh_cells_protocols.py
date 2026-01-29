@@ -63,6 +63,11 @@ def test_cells_vertex_attribute(
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
         [{"id": mesh_id, "name": "points"}],
     )
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 2, "maximum": 498}],
+    )
     assert server.compare_image("mesh/cells/vertex_attribute.jpeg") == True
 
     server.call(
@@ -83,6 +88,11 @@ def test_cells_cell_attribute(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["cell_attribute"]["rpc"],
         [{"id": mesh_id, "name": "RGB_data"}],
+    )
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0, "maximum": 255}],
     )
     assert server.compare_image("mesh/cells/cell_attribute.jpeg") == True
 
@@ -122,8 +132,8 @@ def test_cells_vertex_color_map(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [2.0, 0, 0, 1.0],
+                    [498.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -153,8 +163,8 @@ def test_cells_vertex_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [2.0, 0, 0, 1.0],
+                    [498.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -167,6 +177,20 @@ def test_cells_vertex_color_map_range_update(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 200.0, "maximum": 300.0}],
+    )
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [200.0, 0, 0, 1.0],
+                    [300.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/cells/vertex_color_map_range_update.jpeg") == True
@@ -193,8 +217,8 @@ def test_cells_vertex_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [2.0, 0, 0, 1.0],
+                    [498.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -207,6 +231,20 @@ def test_cells_vertex_color_map_red_shift(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 0.0, "maximum": 50.0}],
+    )
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 1.0],
+                    [50.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/cells/vertex_color_map_red_shift.jpeg") == True
@@ -233,14 +271,14 @@ def test_cells_vertex_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 71, 71, 219],
-                    [0.143, 0, 0, 92],
-                    [0.285, 0, 255, 255],
-                    [0.429, 0, 128, 0],
-                    [0.571, 255, 255, 0],
-                    [0.714, 255, 97, 0],
-                    [0.857, 107, 0, 0],
-                    [1.0, 224, 77, 77],
+                    [2 + 0.0 * 496, 71 / 255, 71 / 255, 219 / 255],
+                    [2 + 0.143 * 496, 0, 0, 92 / 255],
+                    [2 + 0.285 * 496, 0, 255 / 255, 255 / 255],
+                    [2 + 0.429 * 496, 0, 128 / 255, 0],
+                    [2 + 0.571 * 496, 255 / 255, 255 / 255, 0],
+                    [2 + 0.714 * 496, 255 / 255, 97 / 255, 0],
+                    [2 + 0.857 * 496, 107 / 255, 0, 0],
+                    [2 + 1.0 * 496, 224 / 255, 77 / 255, 77 / 255],
                 ],
             }
         ],
@@ -255,6 +293,26 @@ def test_cells_vertex_color_map_rainbow(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 50.0, "maximum": 200.0}],
+    )
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [50 + 0.0 * 150, 71 / 255, 71 / 255, 219 / 255],
+                    [50 + 0.143 * 150, 0, 0, 92 / 255],
+                    [50 + 0.285 * 150, 0, 255 / 255, 255 / 255],
+                    [50 + 0.429 * 150, 0, 128 / 255, 0],
+                    [50 + 0.571 * 150, 255 / 255, 255 / 255, 0],
+                    [50 + 0.714 * 150, 255 / 255, 97 / 255, 0],
+                    [50 + 0.857 * 150, 107 / 255, 0, 0],
+                    [50 + 1.0 * 150, 224 / 255, 77 / 255, 77 / 255],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/cells/vertex_color_map_rainbow.jpeg") == True
@@ -288,8 +346,8 @@ def test_cells_cell_color_map(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [255.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -319,8 +377,8 @@ def test_cells_cell_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [255.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -333,6 +391,20 @@ def test_cells_cell_color_map_range_update(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 100.0, "maximum": 150.0}],
+    )
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [100.0, 0, 0, 1.0],
+                    [150.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/cells/cell_color_map_range_update.jpeg") == True
@@ -359,8 +431,8 @@ def test_cells_cell_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [255.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -373,6 +445,20 @@ def test_cells_cell_color_map_red_shift(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 0.0, "maximum": 20.0}],
+    )
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 1.0],
+                    [20.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/cells/cell_color_map_red_shift.jpeg") == True
@@ -399,14 +485,14 @@ def test_cells_cell_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 71, 71, 219],
-                    [0.143, 0, 0, 92],
-                    [0.285, 0, 255, 255],
-                    [0.429, 0, 128, 0],
-                    [0.571, 255, 255, 0],
-                    [0.714, 255, 97, 0],
-                    [0.857, 107, 0, 0],
-                    [1.0, 224, 77, 77],
+                    [0.0 * 255, 71 / 255, 71 / 255, 219 / 255],
+                    [0.143 * 255, 0, 0, 92 / 255],
+                    [0.285 * 255, 0, 255 / 255, 255 / 255],
+                    [0.429 * 255, 0, 128 / 255, 0],
+                    [0.571 * 255, 255 / 255, 255 / 255, 0],
+                    [0.714 * 255, 255 / 255, 97 / 255, 0],
+                    [0.857 * 255, 107 / 255, 0, 0],
+                    [1.0 * 255, 224 / 255, 77 / 255, 77 / 255],
                 ],
             }
         ],
@@ -421,6 +507,26 @@ def test_cells_cell_color_map_rainbow(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["cell_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 50.0, "maximum": 100.0}],
+    )
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["cell_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [50 + 0.0 * 50, 71 / 255, 71 / 255, 219 / 255],
+                    [50 + 0.143 * 50, 0, 0, 92 / 255],
+                    [50 + 0.285 * 50, 0, 255 / 255, 255 / 255],
+                    [50 + 0.429 * 50, 0, 128 / 255, 0],
+                    [50 + 0.571 * 50, 255 / 255, 255 / 255, 0],
+                    [50 + 0.714 * 50, 255 / 255, 97 / 255, 0],
+                    [50 + 0.857 * 50, 107 / 255, 0, 0],
+                    [50 + 1.0 * 50, 224 / 255, 77 / 255, 77 / 255],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/cells/cell_color_map_rainbow.jpeg") == True

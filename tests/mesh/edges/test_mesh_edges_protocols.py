@@ -78,6 +78,11 @@ def test_edges_vertex_attribute(
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_attribute"]["rpc"],
         [{"id": mesh_id, "name": "vertex_attribute"}],
     )
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
+        [{"id": mesh_id, "minimum": 0, "maximum": 58}],
+    )
     assert server.compare_image("mesh/edges/vertex_attribute.jpeg") == True
 
     server.call(
@@ -121,8 +126,8 @@ def test_edges_vertex_color_map(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [58.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -157,8 +162,8 @@ def test_edges_vertex_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [58.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -171,6 +176,20 @@ def test_edges_vertex_color_map_range_update(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 50.0, "maximum": 58.0}],
+    )
+
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [50.0, 0, 0, 1.0],
+                    [58.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/edges/vertex_color_map_range_update.jpeg") == True
@@ -202,8 +221,8 @@ def test_edges_vertex_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 255],
-                    [1.0, 255, 0, 0],
+                    [0.0, 0, 0, 1.0],
+                    [58.0, 1.0, 0, 0],
                 ],
             }
         ],
@@ -216,6 +235,20 @@ def test_edges_vertex_color_map_red_shift(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 0.0, "maximum": 1.0}],
+    )
+
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [0.0, 0, 0, 1.0],
+                    [1.0, 1.0, 0, 0],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/edges/vertex_color_map_red_shift.jpeg") == True
@@ -247,14 +280,14 @@ def test_edges_vertex_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 71, 71, 219],
-                    [0.143, 0, 0, 92],
-                    [0.285, 0, 255, 255],
-                    [0.429, 0, 128, 0],
-                    [0.571, 255, 255, 0],
-                    [0.714, 255, 97, 0],
-                    [0.857, 107, 0, 0],
-                    [1.0, 224, 77, 77],
+                    [0.0 * 58.0, 71 / 255, 71 / 255, 219 / 255],
+                    [0.143 * 58.0, 0, 0, 92 / 255],
+                    [0.285 * 58.0, 0, 255 / 255, 255 / 255],
+                    [0.429 * 58.0, 0, 128 / 255, 0],
+                    [0.571 * 58.0, 255 / 255, 255 / 255, 0],
+                    [0.714 * 58.0, 255 / 255, 97 / 255, 0],
+                    [0.857 * 58.0, 107 / 255, 0, 0],
+                    [1.0 * 58.0, 224 / 255, 77 / 255, 77 / 255],
                 ],
             }
         ],
@@ -269,6 +302,26 @@ def test_edges_vertex_color_map_rainbow(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 10.0, "maximum": 20.0}],
+    )
+
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "points": [
+                    [10 + 0.0 * 10, 71 / 255, 71 / 255, 219 / 255],
+                    [10 + 0.143 * 10, 0, 0, 92 / 255],
+                    [10 + 0.285 * 10, 0, 255 / 255, 255 / 255],
+                    [10 + 0.429 * 10, 0, 128 / 255, 0],
+                    [10 + 0.571 * 10, 255 / 255, 255 / 255, 0],
+                    [10 + 0.714 * 10, 255 / 255, 97 / 255, 0],
+                    [10 + 0.857 * 10, 107 / 255, 0, 0],
+                    [10 + 1.0 * 10, 224 / 255, 77 / 255, 77 / 255],
+                ],
+            }
+        ],
     )
 
     assert server.compare_image("mesh/edges/vertex_color_map_rainbow.jpeg") == True
