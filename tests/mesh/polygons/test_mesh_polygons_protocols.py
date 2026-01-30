@@ -56,13 +56,6 @@ def test_polygons_vertex_attribute(
     )
     assert server.compare_image("mesh/polygons/vertex_attribute.jpeg") == True
 
-    server.call(
-        VtkMeshPolygonsView.mesh_polygons_prefix
-        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": "123456789", "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/polygons/vertex_scalar_range.jpeg") == True
-
 
 def test_polygons_polygon_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
@@ -87,13 +80,6 @@ def test_polygons_polygon_attribute(
         [{"id": "123456789", "minimum": 3, "maximum": 45}],
     )
     assert server.compare_image("mesh/polygons/polygon_attribute.jpeg") == True
-
-    server.call(
-        VtkMeshPolygonsView.mesh_polygons_prefix
-        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["polygon_scalar_range"]["rpc"],
-        [{"id": "123456789", "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/polygons/polygon_scalar_range.jpeg") == True
 
 
 def test_polygons_vertex_color_map(

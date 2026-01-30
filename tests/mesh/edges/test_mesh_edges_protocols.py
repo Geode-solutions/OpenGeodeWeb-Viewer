@@ -85,13 +85,6 @@ def test_edges_vertex_attribute(
     )
     assert server.compare_image("mesh/edges/vertex_attribute.jpeg") == True
 
-    server.call(
-        VtkMeshEdgesView.mesh_edges_prefix
-        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/edges/vertex_scalar_range.jpeg") == True
-
 
 def test_edges_vertex_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]

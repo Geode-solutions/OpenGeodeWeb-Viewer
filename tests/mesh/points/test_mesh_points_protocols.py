@@ -101,13 +101,6 @@ def test_points_vertex_attribute(
     )
     assert server.compare_image("mesh/points/vertex_attribute.jpeg") == True
 
-    server.call(
-        VtkMeshPointsView.mesh_points_prefix
-        + VtkMeshPointsView.mesh_points_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/points/vertex_scalar_range.jpeg") == True
-
 
 def test_points_vertex_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]

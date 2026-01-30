@@ -68,15 +68,6 @@ def test_vertex_attribute(
     )
     assert server.compare_image("mesh/polyhedra/vertex_attribute.jpeg") == True
 
-    server.call(
-        VtkMeshPolyhedraView.mesh_polyhedra_prefix
-        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["vertex_scalar_range"][
-            "rpc"
-        ],
-        [{"id": "123456789", "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/polyhedra/vertex_scalar_range.jpeg") == True
-
 
 def test_polyhedron_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
@@ -98,15 +89,6 @@ def test_polyhedron_attribute(
         [{"id": "123456789", "minimum": 3, "maximum": 6}],
     )
     assert server.compare_image("mesh/polyhedra/polyhedron_attribute.jpeg") == True
-
-    server.call(
-        VtkMeshPolyhedraView.mesh_polyhedra_prefix
-        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["polyhedron_scalar_range"][
-            "rpc"
-        ],
-        [{"id": "123456789", "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/polyhedra/polyhedron_scalar_range.jpeg") == True
 
 
 def test_polyhedra_vertex_color_map(

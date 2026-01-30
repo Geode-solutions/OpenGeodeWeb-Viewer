@@ -31,7 +31,6 @@ class vtkData:
     reader: vtkXMLReader
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
-    color_map_points: list[list[float]] = field(default_factory=list)
     actor: vtkActor = field(default_factory=vtkActor)
     max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
         "default"
