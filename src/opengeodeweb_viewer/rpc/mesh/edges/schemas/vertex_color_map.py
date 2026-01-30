@@ -1,6 +1,6 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass
@@ -9,8 +9,7 @@ class VertexColorMap(DataClassJsonMixin):
         print(self, flush=True)
 
     id: str
+    maximum: float
+    minimum: float
     points: List[float]
     """Flat array of [value, r, g, b, ...]"""
-
-    maximum: Optional[float] = None
-    minimum: Optional[float] = None
