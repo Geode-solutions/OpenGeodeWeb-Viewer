@@ -92,11 +92,19 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
             "id",
-            "points"
+            "points",
+            "minimum",
+            "maximum"
           ],
           "additionalProperties": false
         },
@@ -207,11 +215,19 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
             "id",
-            "points"
+            "points",
+            "minimum",
+            "maximum"
           ],
           "additionalProperties": false
         },
@@ -314,6 +330,12 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
@@ -470,6 +492,12 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
@@ -625,6 +653,12 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
@@ -692,6 +726,12 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
@@ -828,6 +868,12 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
@@ -915,6 +961,12 @@
                 "type": "number"
               },
               "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
             }
           },
           "required": [
