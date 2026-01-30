@@ -111,13 +111,6 @@ def test_edges_vertex_color_map(
         [{"id": mesh_id, "name": "vertex_attribute"}],
     )
 
-    # Set scalar range
-    server.call(
-        VtkMeshEdgesView.mesh_edges_prefix
-        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 58}],
-    )
-
     # Set color map: Blue to Red
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
@@ -126,8 +119,14 @@ def test_edges_vertex_color_map(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [58.0, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    58.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -162,8 +161,14 @@ def test_edges_vertex_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [58.0, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    58.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -171,13 +176,7 @@ def test_edges_vertex_color_map_range_update(
 
     assert server.compare_image("mesh/edges/vertex_color_map.jpeg") == True
 
-    # Set scalar range: 50 to 58 (clamping data to the minimum color -> mostly BLUE)
-    server.call(
-        VtkMeshEdgesView.mesh_edges_prefix
-        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 50.0, "maximum": 58.0}],
-    )
-
+    # Update range via color map
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
@@ -185,8 +184,14 @@ def test_edges_vertex_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [50.0, 0, 0, 1.0],
-                    [58.0, 1.0, 0, 0],
+                    50.0,
+                    0,
+                    0,
+                    1.0,
+                    58.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -213,7 +218,7 @@ def test_edges_vertex_color_map_red_shift(
         [{"id": mesh_id, "name": "vertex_attribute"}],
     )
 
-    # Set Blue to Red Map on [0, 1]
+    # Set Blue to Red Map on [0, 58]
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
@@ -221,8 +226,14 @@ def test_edges_vertex_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [58.0, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    58.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -230,13 +241,7 @@ def test_edges_vertex_color_map_red_shift(
 
     assert server.compare_image("mesh/edges/vertex_color_map.jpeg") == True
 
-    # Set scalar range: 0.0 to 1.0 (all data > 1.0 should become RED)
-    server.call(
-        VtkMeshEdgesView.mesh_edges_prefix
-        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0.0, "maximum": 1.0}],
-    )
-
+    # Update range via color map
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
@@ -244,8 +249,14 @@ def test_edges_vertex_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [1.0, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -280,14 +291,38 @@ def test_edges_vertex_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0 * 58.0, 71 / 255, 71 / 255, 219 / 255],
-                    [0.143 * 58.0, 0, 0, 92 / 255],
-                    [0.285 * 58.0, 0, 255 / 255, 255 / 255],
-                    [0.429 * 58.0, 0, 128 / 255, 0],
-                    [0.571 * 58.0, 255 / 255, 255 / 255, 0],
-                    [0.714 * 58.0, 255 / 255, 97 / 255, 0],
-                    [0.857 * 58.0, 107 / 255, 0, 0],
-                    [1.0 * 58.0, 224 / 255, 77 / 255, 77 / 255],
+                    0.0,
+                    71 / 255,
+                    71 / 255,
+                    219 / 255,
+                    0.143 * 58,
+                    0,
+                    0,
+                    92 / 255,
+                    0.285 * 58,
+                    0,
+                    255 / 255,
+                    255 / 255,
+                    0.429 * 58,
+                    0,
+                    128 / 255,
+                    0,
+                    0.571 * 58,
+                    255 / 255,
+                    255 / 255,
+                    0,
+                    0.714 * 58,
+                    255 / 255,
+                    97 / 255,
+                    0,
+                    0.857 * 58,
+                    107 / 255,
+                    0,
+                    0,
+                    58.0,
+                    224 / 255,
+                    77 / 255,
+                    77 / 255,
                 ],
             }
         ],
@@ -297,13 +332,7 @@ def test_edges_vertex_color_map_rainbow(
         server.compare_image("mesh/edges/vertex_color_map_rainbow_initial.jpeg") == True
     )
 
-    # Set scalar range
-    server.call(
-        VtkMeshEdgesView.mesh_edges_prefix
-        + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 10.0, "maximum": 20.0}],
-    )
-
+    # Update rainbow range via color map
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["vertex_color_map"]["rpc"],
@@ -311,14 +340,38 @@ def test_edges_vertex_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [10 + 0.0 * 10, 71 / 255, 71 / 255, 219 / 255],
-                    [10 + 0.143 * 10, 0, 0, 92 / 255],
-                    [10 + 0.285 * 10, 0, 255 / 255, 255 / 255],
-                    [10 + 0.429 * 10, 0, 128 / 255, 0],
-                    [10 + 0.571 * 10, 255 / 255, 255 / 255, 0],
-                    [10 + 0.714 * 10, 255 / 255, 97 / 255, 0],
-                    [10 + 0.857 * 10, 107 / 255, 0, 0],
-                    [10 + 1.0 * 10, 224 / 255, 77 / 255, 77 / 255],
+                    10.0,
+                    71 / 255,
+                    71 / 255,
+                    219 / 255,
+                    10.0 + 0.143 * 10,
+                    0,
+                    0,
+                    92 / 255,
+                    10.0 + 0.285 * 10,
+                    0,
+                    255 / 255,
+                    255 / 255,
+                    10.0 + 0.429 * 10,
+                    0,
+                    128 / 255,
+                    0,
+                    10.0 + 0.571 * 10,
+                    255 / 255,
+                    255 / 255,
+                    0,
+                    10.0 + 0.714 * 10,
+                    255 / 255,
+                    97 / 255,
+                    0,
+                    10.0 + 0.857 * 10,
+                    107 / 255,
+                    0,
+                    0,
+                    20.0,
+                    224 / 255,
+                    77 / 255,
+                    77 / 255,
                 ],
             }
         ],

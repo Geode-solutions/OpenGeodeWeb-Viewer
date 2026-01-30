@@ -9,4 +9,4 @@ class PolygonColorMap(DataClassJsonMixin):
         print(self, flush=True)
 
     id: str
-    points: List[List[float]]
+    points: List[float]

@@ -122,13 +122,6 @@ def test_points_vertex_color_map(
         [{"id": mesh_id, "name": "lambert2SG"}],
     )
 
-    # Set scalar range
-    server.call(
-        VtkMeshPointsView.mesh_points_prefix
-        + VtkMeshPointsView.mesh_points_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 1}],
-    )
-
     # Set color map: Blue to Red
     server.call(
         VtkMeshPointsView.mesh_points_prefix
@@ -137,8 +130,14 @@ def test_points_vertex_color_map(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [1.0, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -168,8 +167,14 @@ def test_points_vertex_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [1.0, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -177,14 +182,7 @@ def test_points_vertex_color_map_range_update(
 
     assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
 
-    # Set scalar range: 0.8 to 1 (clamping data to the minimum color -> mostly BLUE)
-    server.call(
-        VtkMeshPointsView.mesh_points_prefix
-        + VtkMeshPointsView.mesh_points_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0.8, "maximum": 1.0}],
-    )
-
-    # Coordinated update for stretching
+    # Update range via color map
     server.call(
         VtkMeshPointsView.mesh_points_prefix
         + VtkMeshPointsView.mesh_points_schemas_dict["vertex_color_map"]["rpc"],
@@ -192,8 +190,14 @@ def test_points_vertex_color_map_range_update(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.8, 0, 0, 1.0],
-                    [1.0, 1.0, 0, 0],
+                    0.8,
+                    0,
+                    0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -225,8 +229,14 @@ def test_points_vertex_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [1.0, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -234,14 +244,7 @@ def test_points_vertex_color_map_red_shift(
 
     assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
 
-    # Set scalar range: 0.0 to 0.1 (all data > 0.1 should become RED)
-    server.call(
-        VtkMeshPointsView.mesh_points_prefix
-        + VtkMeshPointsView.mesh_points_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0.0, "maximum": 0.1}],
-    )
-
-    # Coordinated update for red shift
+    # Update range via color map
     server.call(
         VtkMeshPointsView.mesh_points_prefix
         + VtkMeshPointsView.mesh_points_schemas_dict["vertex_color_map"]["rpc"],
@@ -249,8 +252,14 @@ def test_points_vertex_color_map_red_shift(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 0, 0, 1.0],
-                    [0.1, 1.0, 0, 0],
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    0.1,
+                    1.0,
+                    0,
+                    0,
                 ],
             }
         ],
@@ -280,14 +289,38 @@ def test_points_vertex_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.0, 71 / 255, 71 / 255, 219 / 255],
-                    [0.143, 0, 0, 92 / 255],
-                    [0.285, 0, 255 / 255, 255 / 255],
-                    [0.429, 0, 128 / 255, 0],
-                    [0.571, 255 / 255, 255 / 255, 0],
-                    [0.714, 255 / 255, 97 / 255, 0],
-                    [0.857, 107 / 255, 0, 0],
-                    [1.0, 224 / 255, 77 / 255, 77 / 255],
+                    0.0,
+                    71 / 255,
+                    71 / 255,
+                    219 / 255,
+                    0.143,
+                    0,
+                    0,
+                    92 / 255,
+                    0.285,
+                    0,
+                    255 / 255,
+                    255 / 255,
+                    0.429,
+                    0,
+                    128 / 255,
+                    0,
+                    0.571,
+                    255 / 255,
+                    255 / 255,
+                    0,
+                    0.714,
+                    255 / 255,
+                    97 / 255,
+                    0,
+                    0.857,
+                    107 / 255,
+                    0,
+                    0,
+                    1.0,
+                    224 / 255,
+                    77 / 255,
+                    77 / 255,
                 ],
             }
         ],
@@ -298,14 +331,7 @@ def test_points_vertex_color_map_rainbow(
         == True
     )
 
-    # Set scalar range: 0.1 to 0.4
-    server.call(
-        VtkMeshPointsView.mesh_points_prefix
-        + VtkMeshPointsView.mesh_points_schemas_dict["vertex_scalar_range"]["rpc"],
-        [{"id": mesh_id, "minimum": 0.1, "maximum": 0.4}],
-    )
-
-    # Coordinated update for rainbow stretching
+    # Update rainbow range via color map
     server.call(
         VtkMeshPointsView.mesh_points_prefix
         + VtkMeshPointsView.mesh_points_schemas_dict["vertex_color_map"]["rpc"],
@@ -313,14 +339,38 @@ def test_points_vertex_color_map_rainbow(
             {
                 "id": mesh_id,
                 "points": [
-                    [0.1 + 0.0 * 0.3, 71 / 255, 71 / 255, 219 / 255],
-                    [0.1 + 0.143 * 0.3, 0, 0, 92 / 255],
-                    [0.1 + 0.285 * 0.3, 0, 255 / 255, 255 / 255],
-                    [0.1 + 0.429 * 0.3, 0, 128 / 255, 0],
-                    [0.1 + 0.571 * 0.3, 255 / 255, 255 / 255, 0],
-                    [0.1 + 0.714 * 0.3, 255 / 255, 97 / 255, 0],
-                    [0.1 + 0.857 * 0.3, 107 / 255, 0, 0],
-                    [0.1 + 1.0 * 0.3, 224 / 255, 77 / 255, 77 / 255],
+                    0.1,
+                    71 / 255,
+                    71 / 255,
+                    219 / 255,
+                    0.1 + 0.143 * 0.3,
+                    0,
+                    0,
+                    92 / 255,
+                    0.1 + 0.285 * 0.3,
+                    0,
+                    255 / 255,
+                    255 / 255,
+                    0.1 + 0.429 * 0.3,
+                    0,
+                    128 / 255,
+                    0,
+                    0.1 + 0.571 * 0.3,
+                    255 / 255,
+                    255 / 255,
+                    0,
+                    0.1 + 0.714 * 0.3,
+                    255 / 255,
+                    97 / 255,
+                    0,
+                    0.1 + 0.857 * 0.3,
+                    107 / 255,
+                    0,
+                    0,
+                    0.4,
+                    224 / 255,
+                    77 / 255,
+                    77 / 255,
                 ],
             }
         ],
