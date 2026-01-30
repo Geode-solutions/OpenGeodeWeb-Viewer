@@ -10,3 +10,4 @@ class CellColorMap(DataClassJsonMixin):
 
     id: str
     points: List[float]
+    """Flat array of [value, r, g, b, ...]"""

@@ -87,16 +87,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
@@ -207,16 +202,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
@@ -319,16 +309,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
@@ -480,16 +465,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
@@ -640,16 +620,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
@@ -712,16 +687,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
@@ -853,16 +823,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
@@ -945,16 +910,11 @@
             },
             "points": {
               "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
               "items": {
-                "type": "array",
-                "description": "[value, r, g, b]",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 4,
-                "maxItems": 4
+                "type": "number"
               },
-              "minLength": 2
+              "minItems": 8
             }
           },
           "required": [
