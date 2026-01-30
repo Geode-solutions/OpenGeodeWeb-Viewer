@@ -1,6 +1,6 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -11,5 +11,6 @@ class PolyhedraColorMap(DataClassJsonMixin):
     id: str
     points: List[float]
     """Flat array of [value, r, g, b, ...]"""
-    minimum: float
-    maximum: float
+
+    maximum: Optional[float] = None
+    minimum: Optional[float] = None

@@ -9,7 +9,7 @@ class CellColorMap(DataClassJsonMixin):
         print(self, flush=True)
 
     id: str
+    maximum: float
+    minimum: float
     points: List[float]
     """Flat array of [value, r, g, b, ...]"""
-    minimum: float
-    maximum: float
