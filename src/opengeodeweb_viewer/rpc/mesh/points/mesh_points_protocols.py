@@ -80,4 +80,4 @@ class VtkMeshPointsView(VtkMeshView):
             self.mesh_points_prefix,
         )
         params = schemas.VertexColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)

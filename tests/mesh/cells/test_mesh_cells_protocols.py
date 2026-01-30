@@ -134,6 +134,8 @@ def test_cells_vertex_color_map(
                     0,
                     0,
                 ],
+                "minimum": 2.0,
+                "maximum": 498.0,
             }
         ],
     )
@@ -171,6 +173,8 @@ def test_cells_vertex_color_map_range_update(
                     0,
                     0,
                 ],
+                "minimum": 2.0,
+                "maximum": 498.0,
             }
         ],
     )
@@ -194,6 +198,8 @@ def test_cells_vertex_color_map_range_update(
                     0,
                     0,
                 ],
+                "minimum": 200.0,
+                "maximum": 300.0,
             }
         ],
     )
@@ -231,6 +237,8 @@ def test_cells_vertex_color_map_red_shift(
                     0,
                     0,
                 ],
+                "minimum": 2.0,
+                "maximum": 498.0,
             }
         ],
     )
@@ -254,6 +262,8 @@ def test_cells_vertex_color_map_red_shift(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 50.0,
             }
         ],
     )
@@ -315,6 +325,8 @@ def test_cells_vertex_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
+                "minimum": 2.0,
+                "maximum": 498.0,
             }
         ],
     )
@@ -364,6 +376,8 @@ def test_cells_vertex_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
+                "minimum": 50.0,
+                "maximum": 200.0,
             }
         ],
     )
@@ -401,6 +415,8 @@ def test_cells_cell_color_map(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 255.0,
             }
         ],
     )
@@ -438,6 +454,8 @@ def test_cells_cell_color_map_range_update(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 255.0,
             }
         ],
     )
@@ -461,6 +479,8 @@ def test_cells_cell_color_map_range_update(
                     0,
                     0,
                 ],
+                "minimum": 100.0,
+                "maximum": 150.0,
             }
         ],
     )
@@ -498,6 +518,8 @@ def test_cells_cell_color_map_red_shift(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 255.0,
             }
         ],
     )
@@ -521,6 +543,8 @@ def test_cells_cell_color_map_red_shift(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 20.0,
             }
         ],
     )
@@ -582,6 +606,8 @@ def test_cells_cell_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
+                "minimum": 0.0,
+                "maximum": 255.0,
             }
         ],
     )
@@ -631,6 +657,8 @@ def test_cells_cell_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
+                "minimum": 50.0,
+                "maximum": 100.0,
             }
         ],
     )

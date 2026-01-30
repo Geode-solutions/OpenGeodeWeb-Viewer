@@ -102,7 +102,7 @@ class VtkMeshPolygonsView(VtkMeshView):
             self.mesh_polygons_prefix,
         )
         params = schemas.VertexColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)
 
     @exportRpc(
         mesh_polygons_prefix + mesh_polygons_schemas_dict["polygon_color_map"]["rpc"]
@@ -114,4 +114,4 @@ class VtkMeshPolygonsView(VtkMeshView):
             self.mesh_polygons_prefix,
         )
         params = schemas.PolygonColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)

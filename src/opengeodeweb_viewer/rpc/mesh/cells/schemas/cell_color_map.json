@@ -13,8 +13,14 @@
         "type": "number"
       },
       "minItems": 8
+    },
+    "minimum": {
+      "type": "number"
+    },
+    "maximum": {
+      "type": "number"
     }
   },
-  "required": ["id", "points"],
+  "required": ["id", "points", "minimum", "maximum"],
   "additionalProperties": false
 }

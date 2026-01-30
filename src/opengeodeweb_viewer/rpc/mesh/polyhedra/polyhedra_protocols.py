@@ -105,7 +105,7 @@ class VtkMeshPolyhedraView(VtkMeshView):
             self.mesh_polyhedra_prefix,
         )
         params = schemas.VertexColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)
 
     @exportRpc(
         mesh_polyhedra_prefix
@@ -118,4 +118,4 @@ class VtkMeshPolyhedraView(VtkMeshView):
             self.mesh_polyhedra_prefix,
         )
         params = schemas.PolyhedraColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)

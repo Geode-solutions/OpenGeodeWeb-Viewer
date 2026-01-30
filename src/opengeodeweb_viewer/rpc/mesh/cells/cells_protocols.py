@@ -94,7 +94,7 @@ class VtkMeshCellsView(VtkMeshView):
             self.mesh_cells_prefix,
         )
         params = schemas.VertexColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)
 
     @exportRpc(mesh_cells_prefix + mesh_cells_schemas_dict["cell_color_map"]["rpc"])
     def setMeshCellsCellColorMap(self, rpc_params: RpcParams) -> None:
@@ -104,4 +104,4 @@ class VtkMeshCellsView(VtkMeshView):
             self.mesh_cells_prefix,
         )
         params = schemas.CellColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)

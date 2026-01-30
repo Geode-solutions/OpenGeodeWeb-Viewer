@@ -121,6 +121,8 @@ def test_edges_vertex_color_map(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 58.0,
             }
         ],
     )
@@ -163,6 +165,8 @@ def test_edges_vertex_color_map_range_update(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 58.0,
             }
         ],
     )
@@ -186,6 +190,8 @@ def test_edges_vertex_color_map_range_update(
                     0,
                     0,
                 ],
+                "minimum": 50.0,
+                "maximum": 58.0,
             }
         ],
     )
@@ -228,6 +234,8 @@ def test_edges_vertex_color_map_red_shift(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 58.0,
             }
         ],
     )
@@ -251,6 +259,8 @@ def test_edges_vertex_color_map_red_shift(
                     0,
                     0,
                 ],
+                "minimum": 0.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -317,6 +327,8 @@ def test_edges_vertex_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
+                "minimum": 0.0,
+                "maximum": 58.0,
             }
         ],
     )
@@ -366,6 +378,8 @@ def test_edges_vertex_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
+                "minimum": 10.0,
+                "maximum": 20.0,
             }
         ],
     )

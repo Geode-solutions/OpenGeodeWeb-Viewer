@@ -80,7 +80,7 @@ class VtkMeshEdgesView(VtkMeshView):
             self.mesh_edges_prefix,
         )
         params = schemas.VertexColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points)
+        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)
 
     @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["edge_attribute"]["rpc"])
     def setMeshEdgesEdgeAttribute(self, rpc_params: RpcParams) -> None:

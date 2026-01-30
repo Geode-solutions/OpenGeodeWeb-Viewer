@@ -156,18 +156,18 @@ class VtkMeshView(VtkObjectView):
         data.mapper.GetLookupTable().SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
 
-    def setupColorMap(self, data_id: str, points: list[float]) -> None:
+    def setupColorMap(
+        self, data_id: str, points: list[float], minimum: float, maximum: float
+    ) -> None:
         data = self.get_object(data_id)
-        lut = data.mapper.GetLookupTable()
-        if not isinstance(lut, vtkColorTransferFunction):
-            lut = vtkColorTransferFunction()
-            data.mapper.SetLookupTable(lut)
+        lut = vtkColorTransferFunction()
+        data.mapper.SetLookupTable(lut)
 
         lut.RemoveAllPoints()
         for x, r, g, b in zip(*[iter(points)] * 4):
             lut.AddRGBPoint(x, r, g, b)
 
-        minimum, maximum = points[0], points[-4]
         data.mapper.SetScalarRange(minimum, maximum)
+        lut.SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
         data.mapper.InterpolateScalarsBeforeMappingOn()
