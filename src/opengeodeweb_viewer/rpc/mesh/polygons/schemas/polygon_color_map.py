@@ -9,8 +9,7 @@ class PolygonColorMap(DataClassJsonMixin):
         print(self, flush=True)
 
     id: str
-    points: List[float]
-    """Flat array of [value, r, g, b, ...]"""
-
     maximum: float
     minimum: float
+    points: List[float]
+    """Flat array of [value, r, g, b, ...]"""
