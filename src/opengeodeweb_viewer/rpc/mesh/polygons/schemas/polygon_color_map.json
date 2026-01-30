@@ -21,6 +21,6 @@
       "type": "number"
     }
   },
-  "required": ["id", "points"],
+  "required": ["id", "points", "minimum", "maximum"],
   "additionalProperties": false
 }

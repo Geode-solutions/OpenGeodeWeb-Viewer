@@ -1,6 +1,6 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass
@@ -12,5 +12,5 @@ class PolygonColorMap(DataClassJsonMixin):
     points: List[float]
     """Flat array of [value, r, g, b, ...]"""
 
-    maximum: Optional[float] = None
-    minimum: Optional[float] = None
+    maximum: float
+    minimum: float
