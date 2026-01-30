@@ -47,7 +47,7 @@ def test_mesh_scalar_range_coordinated_lut(
     )
     save_image(server, "coord_lut_1_register.jpeg")
 
-    # 2. Set active attribute "points"
+    # 2. Set active attribute "points", should be blue
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
@@ -63,7 +63,7 @@ def test_mesh_scalar_range_coordinated_lut(
     )
     save_image(server, "coord_lut_3_range_0_1.jpeg")
 
-    # 4. Set LUT on [0, 1] (Blue to Red)
+    # 4. Set LUT on [0, 1] (Blue to Red), should be red
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
@@ -98,5 +98,4 @@ def test_mesh_scalar_range_coordinated_lut(
             }
         ],
     )
-    # The image should be a nice gradient because LUT matches Data Range
     save_image(server, "coord_lut_5_coordinated_update.jpeg")

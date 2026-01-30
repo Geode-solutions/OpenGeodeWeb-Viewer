@@ -47,7 +47,7 @@ def test_mesh_scalar_range_fixed_lut(
     )
     save_image(server, "fixed_lut_1_register.jpeg")
 
-    # 2. Set active attribute "points"
+    # 2. Set active attribute "points", should be blue
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_attribute"]["rpc"],
@@ -63,8 +63,7 @@ def test_mesh_scalar_range_fixed_lut(
     )
     save_image(server, "fixed_lut_3_range_0_1.jpeg")
 
-    # 4. Set LUT on [0, 1] (Blue to Red)
-    # Since range is [0, 1] and values are [2, 498], all should be Red (saturated)
+    # 4. Set LUT on [0, 1] (Blue to Red), should be red
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_color_map"]["rpc"],
@@ -86,5 +85,4 @@ def test_mesh_scalar_range_fixed_lut(
         + VtkMeshCellsView.mesh_cells_schemas_dict["vertex_scalar_range"]["rpc"],
         [{"id": mesh_id, "minimum": 0.0, "maximum": 500.0}],
     )
-    # The image should still be saturated Red because the LUT points are stuck at 0 and 1.
     save_image(server, "fixed_lut_5_range_500_lut_fixed.jpeg")
