@@ -742,7 +742,9 @@
           },
           "required": [
             "id",
-            "points"
+            "points",
+            "minimum",
+            "maximum"
           ],
           "additionalProperties": false
         },
