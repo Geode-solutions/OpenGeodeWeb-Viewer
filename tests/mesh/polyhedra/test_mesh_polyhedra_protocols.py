@@ -120,8 +120,8 @@ def test_polyhedra_vertex_color_map(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 1.0,
+                "maximum": 11.0,
             }
         ],
     )
@@ -158,8 +158,8 @@ def test_polyhedra_vertex_color_map_range_update(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 1.0,
+                "maximum": 11.0,
             }
         ],
     )
@@ -183,8 +183,8 @@ def test_polyhedra_vertex_color_map_range_update(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 10.0,
+                "maximum": 11.0,
             }
         ],
     )
@@ -224,8 +224,8 @@ def test_polyhedra_vertex_color_map_red_shift(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 1.0,
+                "maximum": 11.0,
             }
         ],
     )
@@ -250,7 +250,7 @@ def test_polyhedra_vertex_color_map_red_shift(
                     0,
                 ],
                 "minimum": 0.0,
-                "maximum": 58.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -313,8 +313,8 @@ def test_polyhedra_vertex_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 1.0,
+                "maximum": 11.0,
             }
         ],
     )
@@ -365,8 +365,8 @@ def test_polyhedra_vertex_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 2.0,
+                "maximum": 8.0,
             }
         ],
     )
@@ -407,8 +407,8 @@ def test_polyhedra_polyhedron_color_map(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 3.0,
+                "maximum": 6.0,
             }
         ],
     )
@@ -449,8 +449,8 @@ def test_polyhedra_polyhedron_color_map_range_update(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 3.0,
+                "maximum": 6.0,
             }
         ],
     )
@@ -476,8 +476,8 @@ def test_polyhedra_polyhedron_color_map_range_update(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 5.0,
+                "maximum": 6.0,
             }
         ],
     )
@@ -521,8 +521,8 @@ def test_polyhedra_polyhedron_color_map_red_shift(
                     0,
                     0,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 3.0,
+                "maximum": 6.0,
             }
         ],
     )
@@ -549,7 +549,7 @@ def test_polyhedra_polyhedron_color_map_red_shift(
                     0,
                 ],
                 "minimum": 0.0,
-                "maximum": 58.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -617,8 +617,8 @@ def test_polyhedra_polyhedron_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 3.0,
+                "maximum": 6.0,
             }
         ],
     )
@@ -671,8 +671,8 @@ def test_polyhedra_polyhedron_color_map_rainbow(
                     77 / 255,
                     77 / 255,
                 ],
-                "minimum": 0.0,
-                "maximum": 58.0,
+                "minimum": 3.5,
+                "maximum": 5.5,
             }
         ],
     )

@@ -133,7 +133,7 @@ def test_points_vertex_color_map(
                     0,
                 ],
                 "minimum": 0.0,
-                "maximum": 58.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -172,7 +172,7 @@ def test_points_vertex_color_map_range_update(
                     0,
                 ],
                 "minimum": 0.0,
-                "maximum": 58.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -238,7 +238,7 @@ def test_points_vertex_color_map_red_shift(
                     0,
                 ],
                 "minimum": 0.0,
-                "maximum": 58.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -263,7 +263,7 @@ def test_points_vertex_color_map_red_shift(
                     0,
                 ],
                 "minimum": 0.0,
-                "maximum": 58.0,
+                "maximum": 0.1,
             }
         ],
     )
@@ -326,7 +326,7 @@ def test_points_vertex_color_map_rainbow(
                     77 / 255,
                 ],
                 "minimum": 0.0,
-                "maximum": 58.0,
+                "maximum": 1.0,
             }
         ],
     )
