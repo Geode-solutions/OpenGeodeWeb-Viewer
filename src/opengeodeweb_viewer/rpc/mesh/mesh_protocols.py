@@ -22,7 +22,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParams,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import vtkData
+from opengeodeweb_viewer.vtk_protocol import VtkPipeline
 from . import schemas
 
 
@@ -44,11 +44,11 @@ class VtkMeshView(VtkObjectView):
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            file_name = str(self.get_data(data_id)["viewable_file"])
+            file_name = self.get_viewer_data(data_id).viewable_file
             reader = vtkXMLGenericDataObjectReader()
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            data = vtkData(reader, mapper)
+            data = VtkPipeline(reader, mapper)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
@@ -105,7 +105,7 @@ class VtkMeshView(VtkObjectView):
             texture = vtkTexture()
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
-            reader = self.get_object(mesh_id).reader
+            reader = self.get_vtk_pipeline(mesh_id).reader
             output = reader.GetOutputAsDataSet()
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
@@ -113,29 +113,29 @@ class VtkMeshView(VtkObjectView):
                 if array.GetName() == tex_info.texture_name:
                     point_data.SetTCoords(array)
                     break
-            actor = self.get_object(mesh_id).actor
+            actor = self.get_vtk_pipeline(mesh_id).actor
             actor.SetTexture(texture)
 
     def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
-        reader = self.get_object(data_id).reader
+        reader = self.get_vtk_pipeline(data_id).reader
         points = reader.GetOutputAsDataSet().GetPointData()
         points.SetActiveScalars(name)
-        mapper = self.get_object(data_id).mapper
+        mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetScalarRange(points.GetScalars().GetRange())
 
     def displayAttributeOnCells(self, data_id: str, name: str) -> None:
-        reader = self.get_object(data_id).reader
+        reader = self.get_vtk_pipeline(data_id).reader
         cells = reader.GetOutputAsDataSet().GetCellData()
         cells.SetActiveScalars(name)
-        mapper = self.get_object(data_id).mapper
+        mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetScalarRange(cells.GetScalars().GetRange())
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
-        data = self.get_object(data_id)
+        data = self.get_vtk_pipeline(data_id)
         data.mapper.SetScalarRange(minimum, maximum)
         if hasattr(data, "color_map_points") and data.color_map_points:
             lut = vtkColorTransferFunction()
@@ -145,7 +145,7 @@ class VtkMeshView(VtkObjectView):
             data.mapper.SetLookupTable(lut)
 
     def setupColorMap(self, data_id: str, points: list[list[float]]) -> None:
-        data = self.get_object(data_id)
+        data = self.get_vtk_pipeline(data_id)
         sorted_points = sorted(points, key=lambda x: x[0])
         points_min = sorted_points[0][0]
         points_max = sorted_points[-1][0]

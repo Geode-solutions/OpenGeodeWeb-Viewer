@@ -13,7 +13,7 @@ from vtkmodules.vtkRenderingCore import (
 from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkDataSet
 
 # Local application imports
-from opengeodeweb_viewer.vtk_protocol import VtkView, vtkData
+from opengeodeweb_viewer.vtk_protocol import VtkView, VtkPipeline
 
 
 class VtkObjectView(VtkView):
@@ -24,7 +24,7 @@ class VtkObjectView(VtkView):
         self,
         id: str,
         file_name: str,
-        data: vtkData,
+        data: VtkPipeline,
     ) -> None:
         self.register_object(id, data)
         data.reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, id, file_name))
@@ -47,74 +47,69 @@ class VtkObjectView(VtkView):
             renderer.ResetCamera()
 
     def deregisterObject(self, data_id: str) -> None:
-        actor = self.get_object(data_id).actor
+        actor = self.get_vtk_pipeline(data_id).actor
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(actor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
-        actor = self.get_object(data_id).actor
+        actor = self.get_vtk_pipeline(data_id).actor
         actor.SetVisibility(visibility)
 
     def SetOpacity(self, data_id: str, opacity: float) -> None:
-        actor = self.get_object(data_id).actor
+        actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetOpacity(opacity)
 
     def SetColor(self, data_id: str, red: int, green: int, blue: int) -> None:
-        mapper = self.get_object(data_id).mapper
+        mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOff()
-        actor = self.get_object(data_id).actor
+        actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetColor([red / 255, green / 255, blue / 255])
 
     def SetEdgesVisibility(self, data_id: str, visibility: bool) -> None:
-        actor = self.get_object(data_id).actor
-        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
-        if viewer_elements_type == "edges":
+        if self.get_viewer_data(data_id).viewer_elements_type == "edges":
             self.SetVisibility(data_id, visibility)
         else:
+            actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetEdgeVisibility(visibility)
 
     def SetEdgesWidth(self, data_id: str, width: float) -> None:
-        actor = self.get_object(data_id).actor
-        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
-        if viewer_elements_type == "edges":
+        actor = self.get_vtk_pipeline(data_id).actor
+        if self.get_viewer_data(data_id).viewer_elements_type == "edges":
             actor.GetProperty().SetLineWidth(width)
         else:
             actor.GetProperty().SetEdgeWidth(width)
 
     def SetEdgesColor(self, data_id: str, red: int, green: int, blue: int) -> None:
-        actor = self.get_object(data_id).actor
-        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
-        if viewer_elements_type == "edges":
+        if self.get_viewer_data(data_id).viewer_elements_type == "edges":
             self.SetColor(data_id, red, green, blue)
         else:
+            actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
 
     def SetPointsVisibility(self, data_id: str, visibility: bool) -> None:
-        actor = self.get_object(data_id).actor
-        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
-        if viewer_elements_type == "points":
+        if self.get_viewer_data(data_id).viewer_elements_type == "points":
             self.SetVisibility(data_id, visibility)
         else:
+            actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetVertexVisibility(visibility)
 
     def SetPointsSize(self, data_id: str, size: float) -> None:
-        actor = self.get_object(data_id).actor
+        actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetPointSize(size)
 
     def SetPointsColor(self, data_id: str, red: int, green: int, blue: int) -> None:
-        actor = self.get_object(data_id).actor
-        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
-        if viewer_elements_type == "points":
+        if self.get_viewer_data(data_id).viewer_elements_type == "points":
             self.SetColor(data_id, red, green, blue)
         else:
+            actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
 
     def SetBlocksVisibility(
         self, data_id: str, block_ids: list[int], visibility: bool
     ) -> None:
-        mapper = self.get_object(data_id).mapper
+        mapper = self.get_vtk_pipeline(data_id).mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             raise Exception("Mapper is not a vtkCompositePolyDataMapper")
         for block_id in block_ids:
@@ -123,14 +118,14 @@ class VtkObjectView(VtkView):
     def SetBlocksColor(
         self, data_id: str, block_ids: list[int], red: int, green: int, blue: int
     ) -> None:
-        mapper = self.get_object(data_id).mapper
+        mapper = self.get_vtk_pipeline(data_id).mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             raise Exception("Mapper is not a vtkCompositePolyDataMapper")
         for block_id in block_ids:
             mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
 
     def clearColors(self, data_id: str) -> None:
-        db = self.get_object(data_id)
+        db = self.get_vtk_pipeline(data_id)
         mapper = db.mapper
         reader = db.reader
         output = reader.GetOutputDataObject(0)
