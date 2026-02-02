@@ -130,8 +130,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.getSharedObject("publisher").imagePush({"view": view})
 
     def register_object(self, id: str, data: VtkPipeline) -> None:
-        self.get_viewer_data(id) = data
+        self.get_viewer_data()[id] = data
 
     def deregister_object(self, id: str) -> None:
         if id in self.get_viewer_data():
-            del self.get_viewer_data(id)
+            del self.get_viewer_data()[id]
