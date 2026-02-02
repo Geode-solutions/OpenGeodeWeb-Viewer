@@ -69,32 +69,32 @@ class VtkObjectView(VtkView):
 
     def SetEdgesVisibility(self, data_id: str, visibility: bool) -> None:
         actor = self.get_object(data_id).actor
-        max_dimension = self.get_object(data_id).max_dimension
-        if max_dimension == "edges":
+        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
+        if viewer_elements_type == "edges":
             self.SetVisibility(data_id, visibility)
         else:
             actor.GetProperty().SetEdgeVisibility(visibility)
 
     def SetEdgesWidth(self, data_id: str, width: float) -> None:
         actor = self.get_object(data_id).actor
-        max_dimension = self.get_object(data_id).max_dimension
-        if max_dimension == "edges":
+        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
+        if viewer_elements_type == "edges":
             actor.GetProperty().SetLineWidth(width)
         else:
             actor.GetProperty().SetEdgeWidth(width)
 
     def SetEdgesColor(self, data_id: str, red: int, green: int, blue: int) -> None:
         actor = self.get_object(data_id).actor
-        max_dimension = self.get_object(data_id).max_dimension
-        if max_dimension == "edges":
+        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
+        if viewer_elements_type == "edges":
             self.SetColor(data_id, red, green, blue)
         else:
             actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
 
     def SetPointsVisibility(self, data_id: str, visibility: bool) -> None:
         actor = self.get_object(data_id).actor
-        max_dimension = self.get_object(data_id).max_dimension
-        if max_dimension == "points":
+        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
+        if viewer_elements_type == "points":
             self.SetVisibility(data_id, visibility)
         else:
             actor.GetProperty().SetVertexVisibility(visibility)
@@ -105,8 +105,8 @@ class VtkObjectView(VtkView):
 
     def SetPointsColor(self, data_id: str, red: int, green: int, blue: int) -> None:
         actor = self.get_object(data_id).actor
-        max_dimension = self.get_object(data_id).max_dimension
-        if max_dimension == "points":
+        viewer_elements_type = self.get_data(data_id)["viewer_elements_type"]
+        if viewer_elements_type == "points":
             self.SetColor(data_id, red, green, blue)
         else:
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])

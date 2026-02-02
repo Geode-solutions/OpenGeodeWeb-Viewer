@@ -12,6 +12,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
+from vtkmodules.vtkCommonDataModel import vtkPolyData
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
@@ -49,25 +50,6 @@ class VtkMeshView(VtkObjectView):
             mapper.SetInputConnection(reader.GetOutputPort())
             data = vtkData(reader, mapper)
             self.registerObject(data_id, file_name, data)
-            data_object = reader.GetOutput()
-            data_set = vtkDataSet.SafeDownCast(data_object)
-            cell_types = vtkCellTypes()
-            data_set.GetCellTypes(cell_types)
-            cell_data = cell_types.GetCellTypesArray()
-            max_id = -1
-            for t in range(cell_data.GetSize()):
-                t_id = cell_data.GetValue(t)
-                max_id = max(max_id, t_id)
-            print(f"{max_id=}", flush=True)
-            if max_id < 3:
-                data.max_dimension = "points"
-            elif max_id < 5:
-                data.max_dimension = "edges"
-            elif max_id < 7:
-                data.max_dimension = "polygons"
-            elif max_id >= 7:
-                data.max_dimension = "polyhedra"
-
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
             raise

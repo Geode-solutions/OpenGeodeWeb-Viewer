@@ -32,9 +32,6 @@ class vtkData:
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
-    max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
-        "default"
-    )
     color_map_points: list[list[float]] = field(default_factory=list)
 
 
@@ -104,6 +101,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     "id": data.id,
                     "viewable_file": data.viewable_file,
                     "viewer_object": data.viewer_object,
+                    "viewer_elements_type": data.viewer_elements_type,
                 }
             except Exception as e:
                 print(f"Error fetching data {data_id}: {e}")
