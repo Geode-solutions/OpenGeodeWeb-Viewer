@@ -33,6 +33,7 @@ class ViewerData:
     viewer_object: str
     viewer_elements_type: str
 
+
 @dataclass
 class VtkPipeline:
     reader: vtkXMLReader
@@ -96,10 +97,10 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     raise Exception(f"Data with id {data_id} not found in database")
 
                 return ViewerData(
-                    id= data.id,
-                    viewable_file= data.viewable_file,
-                    viewer_object= data.viewer_object,
-                    viewer_elements_type= data.viewer_elements_type,
+                    id=data.id,
+                    viewable_file=data.viewable_file,
+                    viewer_object=data.viewer_object,
+                    viewer_elements_type=data.viewer_elements_type,
                 )
             except Exception as e:
                 print(f"Error fetching data {data_id}: {e}")
