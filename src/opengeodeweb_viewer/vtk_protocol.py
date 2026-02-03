@@ -95,7 +95,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 data = session.get(Data, data_id)
                 if not data:
                     raise Exception(f"Data with id {data_id} not found in database")
-
                 return ViewerData(
                     id=data.id,
                     viewable_file=data.viewable_file,
@@ -130,8 +129,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.getSharedObject("publisher").imagePush({"view": view})
 
     def register_object(self, id: str, data: VtkPipeline) -> None:
-        self.get_viewer_data()[id] = data
+        self.get_data_base()[id] = data
 
     def deregister_object(self, id: str) -> None:
-        if id in self.get_viewer_data():
-            del self.get_viewer_data()[id]
+        if id in self.get_data_base():
+            del self.get_data_base()[id]

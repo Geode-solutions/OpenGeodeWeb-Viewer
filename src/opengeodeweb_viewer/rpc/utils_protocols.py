@@ -52,7 +52,7 @@ class VtkUtilsView(VtkView):
         self.coreServer.setSharedObject("grid_scale", None)
         self.coreServer.setSharedObject("axes", None)
 
-        self.get_viewer_data().clear()
+        self.get_data_base().clear()
 
         self._release_database()
 
