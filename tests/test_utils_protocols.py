@@ -25,7 +25,9 @@ def test_reset_project_after_import(
         session.commit()
 
     post_id = "987654321"
-    dataset_factory(id=post_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
+    dataset_factory(
+        id=post_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+    )
 
     server.call(
         VtkUtilsView.utils_prefix

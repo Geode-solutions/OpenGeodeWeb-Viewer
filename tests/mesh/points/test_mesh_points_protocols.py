@@ -59,7 +59,9 @@ def test_points_with_point_set(
 ) -> None:
     mesh_id = "44556677"
 
-    dataset_factory(id=mesh_id, viewable_file="points.vtp", viewer_elements_type="points")
+    dataset_factory(
+        id=mesh_id, viewable_file="points.vtp", viewer_elements_type="points"
+    )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": mesh_id}],
