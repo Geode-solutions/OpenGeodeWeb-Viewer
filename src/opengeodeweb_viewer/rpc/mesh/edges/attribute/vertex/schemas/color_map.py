@@ -4,7 +4,7 @@ from typing import List
 
 
 @dataclass
-class VertexColorMap(DataClassJsonMixin):
+class ColorMap(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 

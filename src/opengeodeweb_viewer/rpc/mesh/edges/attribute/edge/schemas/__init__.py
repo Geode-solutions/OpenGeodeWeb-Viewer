@@ -1,1 +1,1 @@
-from .attribute import *
+from .name import *
