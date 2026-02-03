@@ -1,19 +1,22 @@
 {
-  "rpc": "edge_attribute",
+  "rpc": "scalar_range",
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
       "minLength": 1
     },
-    "name": {
-      "type": "string",
-      "minLength": 1
+    "minimum": {
+      "type": "number"
+    },
+    "maximum": {
+      "type": "number"
     }
   },
   "required": [
     "id",
-    "name"
+    "minimum",
+    "maximum"
   ],
   "additionalProperties": false
 }

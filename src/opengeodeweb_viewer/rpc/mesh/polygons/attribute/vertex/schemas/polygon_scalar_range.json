@@ -1,5 +1,5 @@
 {
-  "rpc": "vertex_scalar_range",
+  "rpc": "polygon_scalar_range",
   "type": "object",
   "properties": {
     "id": {

@@ -17,9 +17,21 @@ from .config import *
 from .vtk_protocol import VtkView, VtkTypingMixin
 from .rpc.viewer.viewer_protocols import VtkViewerView
 from .rpc.mesh.mesh_protocols import VtkMeshView
-from .rpc.mesh.points.mesh_points_protocols import VtkMeshPointsView
-from .rpc.mesh.edges.mesh_edges_protocols import VtkMeshEdgesView
+from .rpc.mesh.points.points_protocols import VtkMeshPointsView
+from .rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
 from .rpc.mesh.cells.cells_protocols import VtkMeshCellsView
+from .rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
+    VtkMeshCellsAttributeVertexView,
+)
+from .rpc.mesh.cells.attribute.cell.cells_attribute_cell_protocols import (
+    VtkMeshCellsAttributeCellView,
+)
+from .rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
+    VtkMeshEdgesAttributeVertexView,
+)
+from .rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
+    VtkMeshEdgesAttributeEdgeView,
+)
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 from .rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
 from .rpc.model.model_protocols import VtkModelView
@@ -89,6 +101,10 @@ class _Server(VtkTypingMixin, ServerProtocol):
         self.registerVtkWebProtocol(VtkMeshPointsView())
         self.registerVtkWebProtocol(VtkMeshEdgesView())
         self.registerVtkWebProtocol(VtkMeshCellsView())
+        self.registerVtkWebProtocol(VtkMeshCellsAttributeVertexView())
+        self.registerVtkWebProtocol(VtkMeshCellsAttributeCellView())
+        self.registerVtkWebProtocol(VtkMeshEdgesAttributeVertexView())
+        self.registerVtkWebProtocol(VtkMeshEdgesAttributeEdgeView())
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
         self.registerVtkWebProtocol(VtkMeshPolyhedraView())
         self.registerVtkWebProtocol(model_protocols)

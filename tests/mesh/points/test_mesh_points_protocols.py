@@ -3,7 +3,7 @@ from typing import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.mesh.points.mesh_points_protocols import (
+from opengeodeweb_viewer.rpc.mesh.points.points_protocols import (
     VtkMeshPointsView,
 )
 

@@ -1,0 +1,26 @@
+{
+  "rpc": "color_map",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "points": {
+      "type": "array",
+      "description": "Flat array of [value, r, g, b, ...]",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 8
+    },
+    "minimum": {
+      "type": "number"
+    },
+    "maximum": {
+      "type": "number"
+    }
+  },
+  "required": ["id", "points", "minimum", "maximum"],
+  "additionalProperties": false
+}

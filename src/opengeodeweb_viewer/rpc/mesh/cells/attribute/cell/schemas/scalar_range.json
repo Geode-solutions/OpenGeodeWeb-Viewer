@@ -1,5 +1,5 @@
 {
-  "rpc": "cell_scalar_range",
+  "rpc": "scalar_range",
   "type": "object",
   "properties": {
     "id": {
