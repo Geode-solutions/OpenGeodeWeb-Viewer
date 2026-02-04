@@ -27,14 +27,20 @@ from opengeodeweb_microservice.database.data import Data
 
 
 @dataclass
-class vtkData:
+class ViewerData:
+    id: str
+    viewable_file: str | None
+    viewer_object: str
+    viewer_elements_type: str
+
+
+@dataclass
+class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
-    max_dimension: Literal["points", "edges", "polygons", "polyhedra", "default"] = (
-        "default"
-    )
+    color_map_points: list[list[float]] = field(default_factory=list)
 
 
 class VtkTypingMixin:
@@ -56,8 +62,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def get_data_base(self) -> Any:
         return self.getSharedObject("db")
 
-    def get_object(self, id: str) -> vtkData:
-        return cast(vtkData, self.get_data_base()[id])
+    def get_vtk_pipeline(self, id: str) -> VtkPipeline:
+        return cast(VtkPipeline, self.get_data_base()[id])
 
     def get_grid_scale(self) -> vtkCubeAxesActor | None:
         return cast(vtkCubeAxesActor | None, self.getSharedObject("grid_scale"))
@@ -77,16 +83,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def set_widget(self, widget: vtkOrientationMarkerWidget) -> None:
         self.coreServer.setSharedObject("widget", widget)
 
-    def get_viewer_object_type(self, data_id: str) -> str:
-        data = self.get_data(data_id)
-        object_type = data.get("object_type")
-        if object_type == "mesh":
-            return "mesh"
-        elif object_type == "model":
-            return "model"
-        raise Exception(f"Unknown object_type type: {object_type}")
-
-    def get_data(self, data_id: str) -> dict[str, str | list[str] | None]:
+    def get_viewer_data(self, data_id: str) -> ViewerData:
         if Data is None:
             raise Exception("Data model not available")
 
@@ -98,20 +95,20 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 data = session.get(Data, data_id)
                 if not data:
                     raise Exception(f"Data with id {data_id} not found in database")
-
-                return {
-                    "id": data.id,
-                    "viewable_file": data.viewable_file,
-                    "viewer_object": data.viewer_object,
-                }
+                return ViewerData(
+                    id=data.id,
+                    viewable_file=data.viewable_file,
+                    viewer_object=data.viewer_object,
+                    viewer_elements_type=data.viewer_elements_type,
+                )
             except Exception as e:
                 print(f"Error fetching data {data_id}: {e}")
                 raise
 
     def get_data_file_path(self, data_id: str, filename: str | None = None) -> str:
         if filename is None:
-            data = self.get_data(data_id)
-            viewable_file = data["viewable_file"]
+            data = self.get_viewer_data(data_id)
+            viewable_file = data.viewable_file
             filename = str(viewable_file) if viewable_file is not None else ""
 
         data_folder_path = self.DATA_FOLDER_PATH
@@ -131,7 +128,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             grid_scale.SetBounds(renderer_bounds)
         self.getSharedObject("publisher").imagePush({"view": view})
 
-    def register_object(self, id: str, data: vtkData) -> None:
+    def register_object(self, id: str, data: VtkPipeline) -> None:
         self.get_data_base()[id] = data
 
     def deregister_object(self, id: str) -> None:

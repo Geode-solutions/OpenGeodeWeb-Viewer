@@ -169,7 +169,7 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["update_data"], self.viewer_prefix
         )
         params = schemas.UpdateData.from_dict(rpc_params)
-        data = self.get_object(params.id)
+        data = self.get_vtk_pipeline(params.id)
         reader = data.reader
         reader.Update()
         mapper = data.mapper
@@ -231,7 +231,7 @@ class VtkViewerView(VtkView):
         array_ids = []
         if picked_actor:
             for id in params.ids:
-                if self.get_object(id).actor == picked_actor:
+                if self.get_vtk_pipeline(id).actor == picked_actor:
                     array_ids.append(id)
                     break
 
