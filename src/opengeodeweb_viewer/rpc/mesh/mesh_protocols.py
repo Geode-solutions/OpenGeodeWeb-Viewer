@@ -141,7 +141,7 @@ class VtkMeshView(VtkObjectView):
     def setupColorMap(
         self, data_id: str, points: list[float], minimum: float, maximum: float
     ) -> None:
-        data = self.get_object(data_id)
+        data = self.get_vtk_pipeline(data_id)
         lut = vtkColorTransferFunction()
         data.mapper.SetLookupTable(lut)
 
