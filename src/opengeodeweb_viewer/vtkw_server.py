@@ -18,7 +18,16 @@ from .vtk_protocol import VtkView, VtkTypingMixin
 from .rpc.viewer.viewer_protocols import VtkViewerView
 from .rpc.mesh.mesh_protocols import VtkMeshView
 from .rpc.mesh.points.points_protocols import VtkMeshPointsView
+from .rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
+    VtkMeshPointsAttributeVertexView,
+)
 from .rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
+from .rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
+    VtkMeshEdgesAttributeVertexView,
+)
+from .rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
+    VtkMeshEdgesAttributeEdgeView,
+)
 from .rpc.mesh.cells.cells_protocols import VtkMeshCellsView
 from .rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
     VtkMeshCellsAttributeVertexView,
@@ -26,14 +35,20 @@ from .rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
 from .rpc.mesh.cells.attribute.cell.cells_attribute_cell_protocols import (
     VtkMeshCellsAttributeCellView,
 )
-from .rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
-    VtkMeshEdgesAttributeVertexView,
-)
-from .rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
-    VtkMeshEdgesAttributeEdgeView,
-)
 from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
+from .rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
+    VtkMeshPolygonsAttributeVertexView,
+)
+from .rpc.mesh.polygons.attribute.polygon.polygons_attribute_polygon_protocols import (
+    VtkMeshPolygonsAttributePolygonView,
+)
 from .rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
+from .rpc.mesh.polyhedra.attribute.vertex.polyhedra_attribute_vertex_protocols import (
+    VtkMeshPolyhedraAttributeVertexView,
+)
+from .rpc.mesh.polyhedra.attribute.polyhedron.polyhedra_attribute_polyhedron_protocols import (
+    VtkMeshPolyhedraAttributePolyhedronView,
+)
 from .rpc.model.model_protocols import VtkModelView
 from .rpc.model.edges.model_edges_protocols import (
     VtkModelEdgesView,
@@ -99,14 +114,19 @@ class _Server(VtkTypingMixin, ServerProtocol):
         self.registerVtkWebProtocol(VtkViewerView())
         self.registerVtkWebProtocol(mesh_protocols)
         self.registerVtkWebProtocol(VtkMeshPointsView())
+        self.registerVtkWebProtocol(VtkMeshPointsAttributeVertexView())
         self.registerVtkWebProtocol(VtkMeshEdgesView())
+        self.registerVtkWebProtocol(VtkMeshEdgesAttributeVertexView())
+        self.registerVtkWebProtocol(VtkMeshEdgesAttributeEdgeView())
         self.registerVtkWebProtocol(VtkMeshCellsView())
         self.registerVtkWebProtocol(VtkMeshCellsAttributeVertexView())
         self.registerVtkWebProtocol(VtkMeshCellsAttributeCellView())
-        self.registerVtkWebProtocol(VtkMeshEdgesAttributeVertexView())
-        self.registerVtkWebProtocol(VtkMeshEdgesAttributeEdgeView())
         self.registerVtkWebProtocol(VtkMeshPolygonsView())
+        self.registerVtkWebProtocol(VtkMeshPolygonsAttributeVertexView())
+        self.registerVtkWebProtocol(VtkMeshPolygonsAttributePolygonView())
         self.registerVtkWebProtocol(VtkMeshPolyhedraView())
+        self.registerVtkWebProtocol(VtkMeshPolyhedraAttributeVertexView())
+        self.registerVtkWebProtocol(VtkMeshPolyhedraAttributePolyhedronView())
         self.registerVtkWebProtocol(model_protocols)
         self.registerVtkWebProtocol(VtkModelEdgesView())
         self.registerVtkWebProtocol(VtkModelPointsView())

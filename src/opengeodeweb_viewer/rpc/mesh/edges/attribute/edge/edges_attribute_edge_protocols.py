@@ -15,20 +15,23 @@ from . import schemas
 
 
 class VtkMeshEdgesAttributeEdgeView(VtkMeshView):
-    mesh_edges_prefix = "opengeodeweb_viewer.mesh.edges."
-    mesh_edges_schemas_dict = get_schemas_dict(
+    mesh_edges_attribute_edge_prefix = "opengeodeweb_viewer.mesh.edges.attribute.edge."
+    mesh_edges_attribute_edge_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["attribute"]["rpc"])
-    def setMeshEdgesEdgeAttribute(self, rpc_params: RpcParams) -> None:
+    @exportRpc(
+        mesh_edges_attribute_edge_prefix
+        + mesh_edges_attribute_edge_schemas_dict["name"]["rpc"]
+    )
+    def setMeshEdgesEdgeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.mesh_edges_schemas_dict["attribute"],
-            self.mesh_edges_prefix,
+            self.mesh_edges_attribute_edge_schemas_dict["name"],
+            self.mesh_edges_attribute_edge_prefix,
         )
-        params = schemas.Attribute.from_dict(rpc_params)
+        params = schemas.Name.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)

@@ -14,41 +14,52 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from . import schemas
 
 
-class VtkMeshPointsView(VtkMeshView):
-    mesh_points_prefix = "opengeodeweb_viewer.mesh.points."
-    mesh_points_schemas_dict = get_schemas_dict(
+class VtkMeshPointsAttributeVertexView(VtkMeshView):
+    mesh_points_attribute_vertex_prefix = (
+        "opengeodeweb_viewer.mesh.points.attribute.vertex."
+    )
+    mesh_points_attribute_vertex_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
 
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["name"]["rpc"])
-    def setMeshPointsVertexAttribute(self, rpc_params: RpcParams) -> None:
+    @exportRpc(
+        mesh_points_attribute_vertex_prefix
+        + mesh_points_attribute_vertex_schemas_dict["name"]["rpc"]
+    )
+    def setMeshPointsVertexName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.mesh_points_schemas_dict["name"],
-            self.mesh_points_prefix,
+            self.mesh_points_attribute_vertex_schemas_dict["name"],
+            self.mesh_points_attribute_vertex_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
         self.displayAttributeOnVertices(params.id, params.name)
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["scalar_range"]["rpc"])
+    @exportRpc(
+        mesh_points_attribute_vertex_prefix
+        + mesh_points_attribute_vertex_schemas_dict["scalar_range"]["rpc"]
+    )
     def setMeshPointsVertexScalarRange(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.mesh_points_schemas_dict["scalar_range"],
-            self.mesh_points_prefix,
+            self.mesh_points_attribute_vertex_schemas_dict["scalar_range"],
+            self.mesh_points_attribute_vertex_prefix,
         )
         params = schemas.ScalarRange.from_dict(rpc_params)
         self.displayScalarRange(params.id, params.minimum, params.maximum)
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color_map"]["rpc"])
+    @exportRpc(
+        mesh_points_attribute_vertex_prefix
+        + mesh_points_attribute_vertex_schemas_dict["color_map"]["rpc"]
+    )
     def setMeshPointsVertexColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.mesh_points_schemas_dict["color_map"],
-            self.mesh_points_prefix,
+            self.mesh_points_attribute_vertex_schemas_dict["color_map"],
+            self.mesh_points_attribute_vertex_prefix,
         )
         params = schemas.ColorMap.from_dict(rpc_params)
         self.setupColorMap(params.id, params.points, params.minimum, params.maximum)

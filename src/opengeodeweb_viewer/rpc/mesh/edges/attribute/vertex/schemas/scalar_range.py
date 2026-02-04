@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class VertexScalarRange(DataClassJsonMixin):
+class ScalarRange(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 

@@ -1,5 +1,5 @@
 {
-  "rpc": "vertex_attribute",
+  "rpc": "name",
   "type": "object",
   "properties": {
     "id": {

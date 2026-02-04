@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class PolygonName(DataClassJsonMixin):
+class Name(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 
