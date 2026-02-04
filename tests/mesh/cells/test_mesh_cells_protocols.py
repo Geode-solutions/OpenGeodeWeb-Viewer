@@ -15,7 +15,9 @@ mesh_id = "123456789"
 
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
-    dataset_factory(id=mesh_id, viewable_file="regular_grid_2d.vti")
+    dataset_factory(
+        id=mesh_id, viewable_file="regular_grid_2d.vti", viewer_elements_type="polygons"
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],

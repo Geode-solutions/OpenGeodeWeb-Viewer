@@ -39,7 +39,9 @@ def test_edges_color(
 def test_edges_with_edged_curve(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    dataset_factory(id="123456789", viewable_file="edged_curve.vtp")
+    dataset_factory(
+        id="123456789", viewable_file="edged_curve.vtp", viewer_elements_type="edges"
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -66,7 +68,11 @@ def test_edges_vertex_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="attributed_edged_curve.vtp",
+        viewer_elements_type="edges",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -92,7 +98,11 @@ def test_edges_vertex_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="attributed_edged_curve.vtp",
+        viewer_elements_type="edges",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -135,7 +145,11 @@ def test_edges_vertex_color_map_range_update(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="attributed_edged_curve.vtp",
+        viewer_elements_type="edges",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -180,7 +194,11 @@ def test_edges_vertex_color_map_red_shift(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="attributed_edged_curve.vtp",
+        viewer_elements_type="edges",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -225,7 +243,11 @@ def test_edges_vertex_color_map_rainbow(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="attributed_edged_curve.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="attributed_edged_curve.vtp",
+        viewer_elements_type="edges",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],

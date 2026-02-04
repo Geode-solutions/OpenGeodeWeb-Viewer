@@ -63,7 +63,11 @@ def test_polygons_polygon_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
 
-    dataset_factory(id="123456789", viewable_file="triangulated_surface2d.vtp")
+    dataset_factory(
+        id="123456789",
+        viewable_file="triangulated_surface2d.vtp",
+        viewer_elements_type="polygons",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -255,7 +259,11 @@ def test_polygons_polygon_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="triangulated_surface2d.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="triangulated_surface2d.vtp",
+        viewer_elements_type="polygons",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -298,7 +306,11 @@ def test_polygons_polygon_color_map_range_update(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="triangulated_surface2d.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="triangulated_surface2d.vtp",
+        viewer_elements_type="polygons",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -346,7 +358,11 @@ def test_polygons_polygon_color_map_red_shift(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="triangulated_surface2d.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="triangulated_surface2d.vtp",
+        viewer_elements_type="polygons",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -393,7 +409,11 @@ def test_polygons_polygon_color_map_rainbow(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     mesh_id = "123456789"
-    dataset_factory(id=mesh_id, viewable_file="triangulated_surface2d.vtp")
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="triangulated_surface2d.vtp",
+        viewer_elements_type="polygons",
+    )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],

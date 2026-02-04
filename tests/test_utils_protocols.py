@@ -12,7 +12,7 @@ def test_reset_project_after_import(
 ) -> None:
     # Mock
     pre_id = "123456789"
-    dataset_factory(id=pre_id, viewable_file="hat.vtp")
+    dataset_factory(id=pre_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": pre_id}],
@@ -25,7 +25,9 @@ def test_reset_project_after_import(
         session.commit()
 
     post_id = "987654321"
-    dataset_factory(id=post_id, viewable_file="hat.vtp")
+    dataset_factory(
+        id=post_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+    )
 
     server.call(
         VtkUtilsView.utils_prefix
