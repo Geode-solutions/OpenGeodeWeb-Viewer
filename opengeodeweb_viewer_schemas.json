@@ -137,8 +137,8 @@
               "additionalProperties": false
             },
             "name": {
-              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.attribute",
-              "rpc": "attribute",
+              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.name",
+              "rpc": "name",
               "type": "object",
               "properties": {
                 "id": {
@@ -307,8 +307,8 @@
               "additionalProperties": false
             },
             "name": {
-              "$id": "opengeodeweb_viewer.mesh.edges.attribute.vertex.vertex_attribute",
-              "rpc": "vertex_attribute",
+              "$id": "opengeodeweb_viewer.mesh.edges.attribute.vertex.name",
+              "rpc": "name",
               "type": "object",
               "properties": {
                 "id": {
@@ -473,6 +473,26 @@
               ],
               "additionalProperties": false
             },
+            "name": {
+              "$id": "opengeodeweb_viewer.mesh.points.attribute.vertex.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            },
             "color_map": {
               "$id": "opengeodeweb_viewer.mesh.points.attribute.vertex.color_map",
               "rpc": "color_map",
@@ -502,26 +522,6 @@
                 "points",
                 "minimum",
                 "maximum"
-              ],
-              "additionalProperties": false
-            },
-            "attribute": {
-              "$id": "opengeodeweb_viewer.mesh.points.attribute.vertex.attribute",
-              "rpc": "attribute",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
               ],
               "additionalProperties": false
             }
@@ -769,28 +769,9 @@
             }
           },
           "vertex": {
-            "visibility": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.visibility",
-              "rpc": "visibility",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "visibility": {
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "id",
-                "visibility"
-              ],
-              "additionalProperties": false
-            },
-            "vertex_scalar_range": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.vertex_scalar_range",
-              "rpc": "vertex_scalar_range",
+            "scalar_range": {
+              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.scalar_range",
+              "rpc": "scalar_range",
               "type": "object",
               "properties": {
                 "id": {
@@ -811,7 +792,27 @@
               ],
               "additionalProperties": false
             },
-            "vertex_color_map": {
+            "name": {
+              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
               "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.color_map",
               "rpc": "color_map",
               "type": "object",
@@ -840,149 +841,6 @@
                 "points",
                 "minimum",
                 "maximum"
-              ],
-              "additionalProperties": false
-            },
-            "vertex_attribute": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.vertex_attribute",
-              "rpc": "vertex_attribute",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "polygon_scalar_range": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.polygon_scalar_range",
-              "rpc": "polygon_scalar_range",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "minimum": {
-                  "type": "number"
-                },
-                "maximum": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "id",
-                "minimum",
-                "maximum"
-              ],
-              "additionalProperties": false
-            },
-            "polygon_color_map": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "points": {
-                  "type": "array",
-                  "description": "Flat array of [value, r, g, b, ...]",
-                  "items": {
-                    "type": "number"
-                  },
-                  "minItems": 8
-                },
-                "minimum": {
-                  "type": "number"
-                },
-                "maximum": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
-              "additionalProperties": false
-            },
-            "polygon_attribute": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.polygon_attribute",
-              "rpc": "polygon_attribute",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.color",
-              "rpc": "color",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "color": {
-                  "type": "object",
-                  "properties": {
-                    "r": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 255
-                    },
-                    "g": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 255
-                    },
-                    "b": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 255
-                    },
-                    "a": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1,
-                      "default": 1
-                    }
-                  },
-                  "required": [
-                    "r",
-                    "g",
-                    "b"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "id",
-                "color"
               ],
               "additionalProperties": false
             }
@@ -1004,156 +862,6 @@
           "required": [
             "id",
             "visibility"
-          ],
-          "additionalProperties": false
-        },
-        "vertex_scalar_range": {
-          "$id": "opengeodeweb_viewer.mesh.polygons.vertex_scalar_range",
-          "rpc": "vertex_scalar_range",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "minimum",
-            "maximum"
-          ],
-          "additionalProperties": false
-        },
-        "vertex_color_map": {
-          "$id": "opengeodeweb_viewer.mesh.polygons.color_map",
-          "rpc": "color_map",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "points": {
-              "type": "array",
-              "description": "Flat array of [value, r, g, b, ...]",
-              "items": {
-                "type": "number"
-              },
-              "minItems": 8
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "points",
-            "minimum",
-            "maximum"
-          ],
-          "additionalProperties": false
-        },
-        "vertex_attribute": {
-          "$id": "opengeodeweb_viewer.mesh.polygons.vertex_attribute",
-          "rpc": "vertex_attribute",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "name": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "id",
-            "name"
-          ],
-          "additionalProperties": false
-        },
-        "polygon_scalar_range": {
-          "$id": "opengeodeweb_viewer.mesh.polygons.polygon_scalar_range",
-          "rpc": "polygon_scalar_range",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "minimum",
-            "maximum"
-          ],
-          "additionalProperties": false
-        },
-        "polygon_color_map": {
-          "$id": "opengeodeweb_viewer.mesh.polygons.color_map",
-          "rpc": "color_map",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "points": {
-              "type": "array",
-              "description": "Flat array of [value, r, g, b, ...]",
-              "items": {
-                "type": "number"
-              },
-              "minItems": 8
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "points",
-            "minimum",
-            "maximum"
-          ],
-          "additionalProperties": false
-        },
-        "polygon_attribute": {
-          "$id": "opengeodeweb_viewer.mesh.polygons.polygon_attribute",
-          "rpc": "polygon_attribute",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "name": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "id",
-            "name"
           ],
           "additionalProperties": false
         },
@@ -1207,6 +915,162 @@
         }
       },
       "polyhedra": {
+        "attribute": {
+          "polyhedron": {
+            "scalar_range": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.polyhedron.scalar_range",
+              "rpc": "scalar_range",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            },
+            "name": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.polyhedron.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.polyhedron.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "vertex": {
+            "scalar_range": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex.scalar_range",
+              "rpc": "scalar_range",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            },
+            "name": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
         "visibility": {
           "$id": "opengeodeweb_viewer.mesh.polyhedra.visibility",
           "rpc": "visibility",
@@ -1223,156 +1087,6 @@
           "required": [
             "id",
             "visibility"
-          ],
-          "additionalProperties": false
-        },
-        "vertex_scalar_range": {
-          "$id": "opengeodeweb_viewer.mesh.polyhedra.vertex_scalar_range",
-          "rpc": "vertex_scalar_range",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "minimum",
-            "maximum"
-          ],
-          "additionalProperties": false
-        },
-        "vertex_color_map": {
-          "$id": "opengeodeweb_viewer.mesh.polyhedra.color_map",
-          "rpc": "color_map",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "points": {
-              "type": "array",
-              "description": "Flat array of [value, r, g, b, ...]",
-              "items": {
-                "type": "number"
-              },
-              "minItems": 8
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "points",
-            "minimum",
-            "maximum"
-          ],
-          "additionalProperties": false
-        },
-        "vertex_attribute": {
-          "$id": "opengeodeweb_viewer.mesh.polyhedra.vertex_attribute",
-          "rpc": "vertex_attribute",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "name": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "id",
-            "name"
-          ],
-          "additionalProperties": false
-        },
-        "polyhedron_scalar_range": {
-          "$id": "opengeodeweb_viewer.mesh.polyhedra.polyhedron_scalar_range",
-          "rpc": "polyhedron_scalar_range",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "minimum",
-            "maximum"
-          ],
-          "additionalProperties": false
-        },
-        "polyhedron_attribute": {
-          "$id": "opengeodeweb_viewer.mesh.polyhedra.polyhedron_attribute",
-          "rpc": "polyhedron_attribute",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "name": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "id",
-            "name"
-          ],
-          "additionalProperties": false
-        },
-        "polyhedra_color_map": {
-          "$id": "opengeodeweb_viewer.mesh.polyhedra.color_map",
-          "rpc": "color_map",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 1
-            },
-            "points": {
-              "type": "array",
-              "description": "Flat array of [value, r, g, b, ...]",
-              "items": {
-                "type": "number"
-              },
-              "minItems": 8
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "id",
-            "points",
-            "minimum",
-            "maximum"
           ],
           "additionalProperties": false
         },
