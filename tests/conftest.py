@@ -193,8 +193,8 @@ def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
 
 @pytest.fixture(scope="session", autouse=True)
 def configure_test_environment() -> Generator[None, None, None]:
-    project_root = Path(__file__).parent.parent.parent.absolute()
-    os.environ["DATA_FOLDER_PATH"] = str(project_root / "tests" / "data")
+    project_root = Path(__file__).parent.absolute()
+    os.environ["DATA_FOLDER_PATH"] = str(project_root / "data")
 
     config.test_config()
     db_path = Path(os.environ["DATA_FOLDER_PATH"]) / "project.db"
