@@ -42,6 +42,7 @@ class VtkPipeline:
     actor: vtkActor = field(default_factory=vtkActor)
     color_map_points: list[list[float]] = field(default_factory=list)
 
+
 class VtkTypingMixin:
     def getView(self, view_id: str) -> vtkRenderWindow:
         return cast(vtkRenderWindow, super().getView(view_id))  # type: ignore
