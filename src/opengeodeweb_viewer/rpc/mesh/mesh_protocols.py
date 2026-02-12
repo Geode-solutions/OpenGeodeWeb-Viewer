@@ -12,6 +12,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
+from vtkmodules.vtkCommonDataModel import vtkPolyData
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
@@ -21,7 +22,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParams,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import vtkData
+from opengeodeweb_viewer.vtk_protocol import VtkPipeline
 from . import schemas
 
 
@@ -43,31 +44,12 @@ class VtkMeshView(VtkObjectView):
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            file_name = str(self.get_data(data_id)["viewable_file"])
+            file_name = str(self.get_viewer_data(data_id).viewable_file)
             reader = vtkXMLGenericDataObjectReader()
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            data = vtkData(reader, mapper)
+            data = VtkPipeline(reader, mapper)
             self.registerObject(data_id, file_name, data)
-            data_object = reader.GetOutput()
-            data_set = vtkDataSet.SafeDownCast(data_object)
-            cell_types = vtkCellTypes()
-            data_set.GetCellTypes(cell_types)
-            cell_data = cell_types.GetCellTypesArray()
-            max_id = -1
-            for t in range(cell_data.GetSize()):
-                t_id = cell_data.GetValue(t)
-                max_id = max(max_id, t_id)
-            print(f"{max_id=}", flush=True)
-            if max_id < 3:
-                data.max_dimension = "points"
-            elif max_id < 5:
-                data.max_dimension = "edges"
-            elif max_id < 7:
-                data.max_dimension = "polygons"
-            elif max_id >= 7:
-                data.max_dimension = "polyhedra"
-
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
             raise
@@ -123,7 +105,7 @@ class VtkMeshView(VtkObjectView):
             texture = vtkTexture()
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
-            reader = self.get_object(mesh_id).reader
+            reader = self.get_vtk_pipeline(mesh_id).reader
             output = reader.GetOutputAsDataSet()
             point_data = output.GetPointData()
             for i in range(point_data.GetNumberOfArrays()):
@@ -131,37 +113,37 @@ class VtkMeshView(VtkObjectView):
                 if array.GetName() == tex_info.texture_name:
                     point_data.SetTCoords(array)
                     break
-            actor = self.get_object(mesh_id).actor
+            actor = self.get_vtk_pipeline(mesh_id).actor
             actor.SetTexture(texture)
 
     def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
-        reader = self.get_object(data_id).reader
+        reader = self.get_vtk_pipeline(data_id).reader
         points = reader.GetOutputAsDataSet().GetPointData()
         points.SetActiveScalars(name)
-        mapper = self.get_object(data_id).mapper
+        mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
 
     def displayAttributeOnCells(self, data_id: str, name: str) -> None:
-        reader = self.get_object(data_id).reader
+        reader = self.get_vtk_pipeline(data_id).reader
         cells = reader.GetOutputAsDataSet().GetCellData()
         cells.SetActiveScalars(name)
-        mapper = self.get_object(data_id).mapper
+        mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
-        data = self.get_object(data_id)
+        data = self.get_vtk_pipeline(data_id)
         data.mapper.SetScalarRange(minimum, maximum)
         data.mapper.GetLookupTable().SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
 
-    def setupColorMap(
-        self, data_id: str, points: list[float], minimum: float, maximum: float
-    ) -> None:
-        data = self.get_object(data_id)
-        lut = vtkColorTransferFunction()
-        data.mapper.SetLookupTable(lut)
+    def setupColorMap(self, data_id: str, points: list[list[float]]) -> None:
+        data = self.get_vtk_pipeline(data_id)
+        sorted_points = sorted(points, key=lambda x: x[0])
+        points_min = sorted_points[0][0]
+        points_max = sorted_points[-1][0]
+        points_range = points_max - points_min if points_max != points_min else 1.0
 
         x_values = points[::4]
         x_min = min(x_values)

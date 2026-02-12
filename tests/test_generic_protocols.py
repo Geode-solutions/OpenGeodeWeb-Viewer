@@ -7,7 +7,9 @@ def test_register_mesh(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     data_id = "123456789"
-    dataset_factory(id=data_id, viewable_file="hat.vtp")
+    dataset_factory(
+        id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+    )
 
     server.call(
         VtkGenericView.generic_prefix

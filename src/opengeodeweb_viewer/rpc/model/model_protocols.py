@@ -17,7 +17,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParams,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import vtkData
+from opengeodeweb_viewer.vtk_protocol import VtkPipeline
 from . import schemas
 
 
@@ -38,7 +38,7 @@ class VtkModelView(VtkObjectView):
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            file_name = str(self.get_data(data_id)["viewable_file"])
+            file_name = str(self.get_viewer_data(data_id).viewable_file)
             reader = vtkXMLMultiBlockDataReader()
             filter = vtkGeometryFilter()
             filter.SetInputConnection(reader.GetOutputPort())
@@ -46,7 +46,7 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputConnection(filter.GetOutputPort())
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            data = vtkData(reader, mapper, filter)
+            data = VtkPipeline(reader, mapper, filter)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)
