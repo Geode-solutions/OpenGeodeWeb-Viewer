@@ -123,7 +123,6 @@ class VtkMeshView(VtkObjectView):
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
-        mapper.SetScalarRange(points.GetScalars().GetRange())
 
     def displayAttributeOnCells(self, data_id: str, name: str) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
@@ -132,31 +131,38 @@ class VtkMeshView(VtkObjectView):
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
-        mapper.SetScalarRange(cells.GetScalars().GetRange())
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
+        print(
+            f"Setting scalar range for {data_id} to ({minimum}, {maximum})", flush=True
+        )
         data = self.get_vtk_pipeline(data_id)
         data.mapper.SetScalarRange(minimum, maximum)
-        if hasattr(data, "color_map_points") and data.color_map_points:
-            lut = vtkColorTransferFunction()
-            for ratio, red, green, blue in data.color_map_points:
-                scalar_value = minimum + ratio * (maximum - minimum)
-                lut.AddRGBPoint(scalar_value, red / 255, green / 255, blue / 255)
-            data.mapper.SetLookupTable(lut)
+        data.mapper.GetLookupTable().SetRange(minimum, maximum)
+        data.mapper.SetUseLookupTableScalarRange(False)
 
-    def setupColorMap(self, data_id: str, points: list[list[float]]) -> None:
+    def setupColorMap(
+        self, data_id: str, points: list[float], minimum: float, maximum: float
+    ) -> None:
         data = self.get_vtk_pipeline(data_id)
-        sorted_points = sorted(points, key=lambda x: x[0])
-        points_min = sorted_points[0][0]
-        points_max = sorted_points[-1][0]
-        points_range = points_max - points_min if points_max != points_min else 1.0
+        lut = vtkColorTransferFunction()
+        data.mapper.SetLookupTable(lut)
 
-        data.color_map_points = []
-        for point in sorted_points:
-            ratio = (point[0] - points_min) / points_range
-            data.color_map_points.append([ratio, *point[1:]])
+        x_values = points[::4]
+        x_min = min(x_values)
+        x_max = max(x_values)
+        x_range = x_max - x_min
+        target_range = maximum - minimum
 
+        for x, r, g, b in zip(*[iter(points)] * 4):
+            new_x = (
+                minimum + (x - x_min) / x_range * target_range
+                if x_range != 0
+                else minimum
+            )
+            lut.AddRGBPoint(new_x, r, g, b)
+
+        data.mapper.SetScalarRange(minimum, maximum)
+        lut.SetRange(minimum, maximum)
+        data.mapper.SetUseLookupTableScalarRange(False)
         data.mapper.InterpolateScalarsBeforeMappingOn()
-
-        minimum, maximum = data.mapper.GetScalarRange()
-        self.displayScalarRange(data_id, minimum, maximum)
