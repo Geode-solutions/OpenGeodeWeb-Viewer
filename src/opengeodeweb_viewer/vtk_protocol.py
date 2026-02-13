@@ -41,6 +41,7 @@ class VtkPipeline:
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
 
+
 class VtkTypingMixin:
     def getView(self, view_id: str) -> vtkRenderWindow:
         return cast(vtkRenderWindow, super().getView(view_id))  # type: ignore
