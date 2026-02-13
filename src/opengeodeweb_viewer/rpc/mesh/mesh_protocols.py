@@ -133,17 +133,18 @@ class VtkMeshView(VtkObjectView):
         mapper.SetScalarModeToUseCellData()
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
+        print(
+            f"Setting scalar range for {data_id} to ({minimum}, {maximum})", flush=True
+        )
         data = self.get_vtk_pipeline(data_id)
         data.mapper.SetScalarRange(minimum, maximum)
         data.mapper.GetLookupTable().SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
 
-    def setupColorMap(self, data_id: str, points: list[list[float]]) -> None:
+    def setupColorMap(self, data_id: str, points: list[list[float]], minimum: float, maximum: float) -> None:
         data = self.get_vtk_pipeline(data_id)
-        sorted_points = sorted(points, key=lambda x: x[0])
-        points_min = sorted_points[0][0]
-        points_max = sorted_points[-1][0]
-        points_range = points_max - points_min if points_max != points_min else 1.0
+        lut = vtkColorTransferFunction()
+        data.mapper.SetLookupTable(lut)
 
         x_values = points[::4]
         x_min = min(x_values)
