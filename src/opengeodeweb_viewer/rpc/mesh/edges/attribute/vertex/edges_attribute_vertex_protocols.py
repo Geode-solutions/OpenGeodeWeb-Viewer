@@ -38,18 +38,6 @@ class VtkMeshEdgesAttributeVertexView(VtkMeshView):
         params = schemas.Name.from_dict(rpc_params)
         self.displayAttributeOnVertices(params.id, params.name)
 
-    @exportRpc(
-        mesh_edges_attribute_vertex_prefix
-        + mesh_edges_attribute_vertex_schemas_dict["scalar_range"]["rpc"]
-    )
-    def setMeshEdgesVertexScalarRange(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_edges_attribute_vertex_schemas_dict["scalar_range"],
-            self.mesh_edges_attribute_vertex_prefix,
-        )
-        params = schemas.ScalarRange.from_dict(rpc_params)
-        self.displayScalarRange(params.id, params.minimum, params.maximum)
 
     @exportRpc(
         mesh_edges_attribute_vertex_prefix
