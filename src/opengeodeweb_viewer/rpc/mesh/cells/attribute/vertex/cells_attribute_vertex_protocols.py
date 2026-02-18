@@ -38,7 +38,6 @@ class VtkMeshCellsAttributeVertexView(VtkMeshView):
         params = schemas.Name.from_dict(rpc_params)
         self.displayAttributeOnVertices(params.id, params.name)
 
-
     @exportRpc(
         mesh_cells_attribute_vertex_prefix
         + mesh_cells_attribute_vertex_schemas_dict["color_map"]["rpc"]

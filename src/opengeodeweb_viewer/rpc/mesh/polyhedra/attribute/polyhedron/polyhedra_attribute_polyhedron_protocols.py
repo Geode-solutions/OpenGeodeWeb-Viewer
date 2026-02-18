@@ -38,7 +38,6 @@ class VtkMeshPolyhedraAttributePolyhedronView(VtkMeshView):
         params = schemas.Name.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)
 
-
     @exportRpc(
         mesh_polyhedra_attribute_polyhedron_prefix
         + mesh_polyhedra_attribute_polyhedron_schemas_dict["color_map"]["rpc"]

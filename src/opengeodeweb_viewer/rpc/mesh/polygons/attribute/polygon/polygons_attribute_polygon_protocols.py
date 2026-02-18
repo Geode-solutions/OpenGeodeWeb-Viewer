@@ -38,7 +38,6 @@ class VtkMeshPolygonsAttributePolygonView(VtkMeshView):
         params = schemas.Name.from_dict(rpc_params)
         self.displayAttributeOnCells(params.id, params.name)
 
-
     @exportRpc(
         mesh_polygons_attribute_polygon_prefix
         + mesh_polygons_attribute_polygon_schemas_dict["color_map"]["rpc"]

@@ -454,6 +454,81 @@
           ],
           "additionalProperties": false
         },
+        "vertex_scalar_range": {
+          "$id": "opengeodeweb_viewer.mesh.points.vertex_scalar_range",
+          "rpc": "vertex_scalar_range",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_color_map": {
+          "$id": "opengeodeweb_viewer.mesh.points.color_map",
+          "rpc": "color_map",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "points": {
+              "type": "array",
+              "description": "Flat array of [value, r, g, b, ...]",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 8
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "points",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
+        "vertex_attribute": {
+          "$id": "opengeodeweb_viewer.mesh.points.vertex_attribute",
+          "rpc": "vertex_attribute",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "name"
+          ],
+          "additionalProperties": false
+        },
         "size": {
           "$id": "opengeodeweb_viewer.mesh.points.size",
           "rpc": "size",
