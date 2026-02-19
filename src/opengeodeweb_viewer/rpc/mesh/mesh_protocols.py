@@ -148,19 +148,22 @@ class VtkMeshView(VtkObjectView):
         lut = vtkColorTransferFunction()
         data.mapper.SetLookupTable(lut)
 
-        x_values = points[::4]
-        x_min = min(x_values)
-        x_max = max(x_values)
-        x_range = x_max - x_min
-        target_range = maximum - minimum
+        if not points:
+            lut.AddRGBPoint(minimum, 0, 0, 0)
+            lut.AddRGBPoint(maximum, 1, 1, 1)
+        else:
+            x_values = points[::4]
+            x_min = min(x_values)
+            x_max = max(x_values)
+            x_range = x_max - x_min
+            target_range = maximum - minimum
 
-        for x, r, g, b in zip(*[iter(points)] * 4):
-            new_x = (
-                minimum + (x - x_min) / x_range * target_range
-                if x_range != 0
-                else minimum
-            )
-            lut.AddRGBPoint(new_x, r, g, b)
+            for x, r, g, b in zip(*[iter(points)] * 4):
+                if x_range != 0:
+                    new_x = minimum + (x - x_min) / x_range * target_range
+                else:
+                    new_x = minimum
+                lut.AddRGBPoint(new_x, r, g, b)
 
         data.mapper.SetScalarRange(minimum, maximum)
         lut.SetRange(minimum, maximum)

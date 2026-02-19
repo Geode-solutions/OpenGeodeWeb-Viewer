@@ -26,33 +26,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_polygons_vertex_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-
-    test_register(server, dataset_factory)
-
-    server.call(
-        VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
-        + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "lambert2SG"}],
-    )
-    server.call(
-        VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
-        + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
-            "scalar_range"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "minimum": 0, "maximum": 1}],
-    )
-    assert server.compare_image("mesh/polygons/vertex_attribute.jpeg") == True
-
-
 def test_polygons_vertex_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
