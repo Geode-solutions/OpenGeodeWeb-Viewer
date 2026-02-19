@@ -26,7 +26,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-
 def test_cells_vertex_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

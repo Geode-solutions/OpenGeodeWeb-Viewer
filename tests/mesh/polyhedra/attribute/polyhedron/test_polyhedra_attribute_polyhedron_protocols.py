@@ -28,7 +28,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-
 def test_polyhedra_polyhedron_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
