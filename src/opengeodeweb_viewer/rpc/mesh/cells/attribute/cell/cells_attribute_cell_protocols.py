@@ -38,19 +38,6 @@ class VtkMeshCellsAttributeCellView(VtkMeshView):
 
     @exportRpc(
         mesh_cells_attribute_cell_prefix
-        + mesh_cells_attribute_cell_schemas_dict["scalar_range"]["rpc"]
-    )
-    def setMeshCellsCellScalarRange(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_cells_attribute_cell_schemas_dict["scalar_range"],
-            self.mesh_cells_attribute_cell_prefix,
-        )
-        params = schemas.ScalarRange.from_dict(rpc_params)
-        self.displayScalarRange(params.id, params.minimum, params.maximum)
-
-    @exportRpc(
-        mesh_cells_attribute_cell_prefix
         + mesh_cells_attribute_cell_schemas_dict["color_map"]["rpc"]
     )
     def setMeshCellsCellColorMap(self, rpc_params: RpcParams) -> None:

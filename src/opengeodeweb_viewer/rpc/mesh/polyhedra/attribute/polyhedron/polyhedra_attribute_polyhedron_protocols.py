@@ -40,19 +40,6 @@ class VtkMeshPolyhedraAttributePolyhedronView(VtkMeshView):
 
     @exportRpc(
         mesh_polyhedra_attribute_polyhedron_prefix
-        + mesh_polyhedra_attribute_polyhedron_schemas_dict["scalar_range"]["rpc"]
-    )
-    def setMeshPolyhedraPolyhedronScalarRange(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_polyhedra_attribute_polyhedron_schemas_dict["scalar_range"],
-            self.mesh_polyhedra_attribute_polyhedron_prefix,
-        )
-        params = schemas.ScalarRange.from_dict(rpc_params)
-        self.displayScalarRange(params.id, params.minimum, params.maximum)
-
-    @exportRpc(
-        mesh_polyhedra_attribute_polyhedron_prefix
         + mesh_polyhedra_attribute_polyhedron_schemas_dict["color_map"]["rpc"]
     )
     def setMeshPolyhedraPolyhedronColorMap(self, rpc_params: RpcParams) -> None:

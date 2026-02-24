@@ -28,33 +28,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_polyhedra_polyhedron_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-
-    test_register(server, dataset_factory)
-
-    server.call(
-        VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
-        + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "toto_on_polyhedra"}],
-    )
-    server.call(
-        VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
-        + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
-            "scalar_range"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "minimum": 3, "maximum": 6}],
-    )
-    assert server.compare_image("mesh/polyhedra/polyhedron_attribute.jpeg") == True
-
-
 def test_polyhedra_polyhedron_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

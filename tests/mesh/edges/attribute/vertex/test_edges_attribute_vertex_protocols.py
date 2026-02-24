@@ -28,29 +28,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_edges_vertex_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-
-    test_register(server, dataset_factory)
-
-    server.call(
-        VtkMeshEdgesAttributeVertexView.mesh_edges_attribute_vertex_prefix
-        + VtkMeshEdgesAttributeVertexView.mesh_edges_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "vertex_attribute"}],
-    )
-    server.call(
-        VtkMeshEdgesAttributeVertexView.mesh_edges_attribute_vertex_prefix
-        + VtkMeshEdgesAttributeVertexView.mesh_edges_attribute_vertex_schemas_dict[
-            "scalar_range"
-        ]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 58}],
-    )
-    assert server.compare_image("mesh/edges/vertex_attribute.jpeg") == True
-
-
 def test_edges_vertex_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

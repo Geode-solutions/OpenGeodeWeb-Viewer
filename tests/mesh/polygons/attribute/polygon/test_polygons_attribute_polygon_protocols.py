@@ -28,33 +28,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_polygons_polygon_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-
-    test_register(server, dataset_factory)
-
-    server.call(
-        VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
-        + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "triangle_vertices"}],
-    )
-    server.call(
-        VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
-        + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
-            "scalar_range"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "minimum": 3, "maximum": 45}],
-    )
-    assert server.compare_image("mesh/polygons/polygon_attribute.jpeg") == True
-
-
 def test_polygons_polygon_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

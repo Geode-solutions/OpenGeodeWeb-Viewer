@@ -26,38 +26,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_cells_cell_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-
-    test_register(server, dataset_factory)
-
-    server.call(
-        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "RGB_data"}],
-    )
-    server.call(
-        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "scalar_range"
-        ]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 255}],
-    )
-    assert server.compare_image("mesh/cells/cell_attribute.jpeg") == True
-
-    server.call(
-        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "scalar_range"
-        ]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/cells/cell_scalar_range.jpeg") == True
-
-
 def test_cells_cell_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

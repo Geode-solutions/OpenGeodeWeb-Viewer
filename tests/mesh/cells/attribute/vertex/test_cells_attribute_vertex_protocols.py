@@ -26,38 +26,6 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_cells_vertex_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-
-    test_register(server, dataset_factory)
-
-    server.call(
-        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "points"}],
-    )
-    server.call(
-        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "scalar_range"
-        ]["rpc"],
-        [{"id": mesh_id, "minimum": 2, "maximum": 498}],
-    )
-    assert server.compare_image("mesh/cells/vertex_attribute.jpeg") == True
-
-    server.call(
-        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "scalar_range"
-        ]["rpc"],
-        [{"id": mesh_id, "minimum": 0, "maximum": 10}],
-    )
-    assert server.compare_image("mesh/cells/vertex_scalar_range.jpeg") == True
-
-
 def test_cells_vertex_color_map(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
