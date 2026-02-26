@@ -46,6 +46,8 @@ class VtkMeshView(VtkObjectView):
         try:
             file_name = str(self.get_viewer_data(data_id).viewable_file)
             reader = vtkXMLGenericDataObjectReader()
+            reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
+            reader.Update()
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
             data = VtkPipeline(reader, mapper)

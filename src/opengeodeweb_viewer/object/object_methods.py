@@ -27,7 +27,6 @@ class VtkObjectView(VtkView):
         data: VtkPipeline,
     ) -> None:
         self.register_object(id, data)
-        data.reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, id, file_name))
         data.actor.SetMapper(data.mapper)
         data.mapper.SetColorModeToMapScalars()
         data.mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
