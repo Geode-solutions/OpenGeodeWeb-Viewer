@@ -70,6 +70,9 @@ class VtkViewerView(VtkView):
         grid_scale.GetYAxesGridlinesProperty().SetColor(0, 0, 0)
         grid_scale.GetZAxesGridlinesProperty().SetColor(0, 0, 0)
         grid_scale.SetFlyModeToOuterEdges()
+        grid_scale.SetXTitle("X")
+        grid_scale.SetYTitle("Y")
+        grid_scale.SetZTitle("Z")
 
         grid_scale.SetVisibility(False)
         self.set_grid_scale(grid_scale)
