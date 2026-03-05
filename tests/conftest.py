@@ -169,7 +169,7 @@ class FixtureHelper:
                 "opengeodeweb-viewer",
             ]
 
-        return "vtkw_server", Starter, ServerMonitor
+        return "app", Starter, ServerMonitor
 
 
 ROOT_PATH = Path(__file__).parent.parent.absolute()
