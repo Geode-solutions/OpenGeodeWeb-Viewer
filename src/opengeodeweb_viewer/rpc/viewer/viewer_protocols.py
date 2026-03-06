@@ -233,13 +233,13 @@ class VtkViewerView(VtkView):
         picked_actor = picker.GetActor()
         array_ids = []
         if picked_actor:
+            db = self.get_data_base()
             for id in params.ids:
-                if self.get_vtk_pipeline(id).actor == picked_actor:
+                if id in db and self.get_vtk_pipeline(id).actor == picked_actor:
                     array_ids.append(id)
                     break
 
         return {"array_ids": array_ids}
-
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
     def toggleGridScale(self, rpc_params: RpcParams) -> None:
         validate_schema(
