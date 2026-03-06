@@ -108,20 +108,28 @@ class VtkObjectView(VtkView):
     def SetBlocksVisibility(
         self, data_id: str, block_ids: list[int], visibility: bool
     ) -> None:
-        mapper = self.get_vtk_pipeline(data_id).mapper
+        pipeline = self.get_vtk_pipeline(data_id)
+        mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             raise Exception("Mapper is not a vtkCompositePolyDataMapper")
+        blocks = pipeline.blockDataSets
+        attributes = mapper.GetCompositeDataDisplayAttributes()
         for block_id in block_ids:
-            mapper.SetBlockVisibility(block_id, visibility)
+            attributes.SetBlockVisibility(blocks[block_id], visibility)
 
     def SetBlocksColor(
         self, data_id: str, block_ids: list[int], red: int, green: int, blue: int
     ) -> None:
-        mapper = self.get_vtk_pipeline(data_id).mapper
+        pipeline = self.get_vtk_pipeline(data_id)
+        mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             raise Exception("Mapper is not a vtkCompositePolyDataMapper")
+        blocks = pipeline.blockDataSets
+        attributes = mapper.GetCompositeDataDisplayAttributes()
         for block_id in block_ids:
-            mapper.SetBlockColor(block_id, [red / 255, green / 255, blue / 255])
+            attributes.SetBlockColor(
+                blocks[block_id], [red / 255, green / 255, blue / 255]
+            )
 
     def clearColors(self, data_id: str) -> None:
         db = self.get_vtk_pipeline(data_id)
