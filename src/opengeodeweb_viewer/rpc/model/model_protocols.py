@@ -51,6 +51,16 @@ class VtkModelView(VtkObjectView):
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
             data = VtkPipeline(reader, mapper, filter)
+            iterator = geometry_output.NewTreeIterator()
+            iterator.InitTraversal()
+            while not iterator.IsDoneWithTraversal():
+                block = iterator.GetCurrentDataObject()
+                if block:
+                    flat_index = iterator.GetCurrentFlatIndex()
+                    while flat_index > len(data.blockDataSets):
+                        data.blockDataSets.append(None)
+                    data.blockDataSets.append(block)
+                iterator.GoToNextItem()
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)

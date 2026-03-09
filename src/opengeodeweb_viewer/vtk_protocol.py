@@ -18,6 +18,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkCompositePolyDataMapper,
 )
+from vtkmodules.vtkCommonDataModel import vtkDataObject
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
@@ -41,6 +42,7 @@ class VtkPipeline:
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
+    blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
 
 
 class VtkTypingMixin:
