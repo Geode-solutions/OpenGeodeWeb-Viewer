@@ -25,14 +25,15 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 # Local application imports
 from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
+from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
 
 
 @dataclass
 class ViewerData:
     id: str
     viewable_file: str | None
-    viewer_object: str
-    viewer_elements_type: str
+    viewer_object: ViewerType
+    viewer_elements_type: ViewerElementsType
 
 
 @dataclass
