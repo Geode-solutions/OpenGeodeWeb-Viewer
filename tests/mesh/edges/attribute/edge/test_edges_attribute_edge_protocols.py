@@ -37,7 +37,9 @@ def test_edges_edge_color_map(
     # Set active attribute (cycle_id)
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"][
+            "rpc"
+        ],
         [{"id": mesh_id, "name": "cycle_id"}],
     )
 
@@ -78,7 +80,9 @@ def test_edges_edge_color_map_range_update(
     # Set active attribute
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"][
+            "rpc"
+        ],
         [{"id": mesh_id, "name": "cycle_id"}],
     )
 
@@ -146,7 +150,9 @@ def test_edges_edge_color_map_rainbow(
     # Set active attribute
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"][
+            "rpc"
+        ],
         [{"id": mesh_id, "name": "cycle_id"}],
     )
 
