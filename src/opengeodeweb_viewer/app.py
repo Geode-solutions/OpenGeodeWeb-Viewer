@@ -42,7 +42,9 @@ from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex.polygons_attribute_v
 from opengeodeweb_viewer.rpc.mesh.polygons.attribute.polygon.polygons_attribute_polygon_protocols import (
     VtkMeshPolygonsAttributePolygonView,
 )
-from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import VtkMeshPolyhedraView
+from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
+    VtkMeshPolyhedraView,
+)
 from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.vertex.polyhedra_attribute_vertex_protocols import (
     VtkMeshPolyhedraAttributeVertexView,
 )
