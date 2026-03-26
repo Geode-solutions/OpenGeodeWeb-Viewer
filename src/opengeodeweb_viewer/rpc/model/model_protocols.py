@@ -31,6 +31,7 @@ class VtkModelView(VtkObjectView):
         super().__init__()
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
+    @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params, self.model_schemas_dict["register"], self.model_prefix
@@ -61,6 +62,27 @@ class VtkModelView(VtkObjectView):
                         data.blockDataSets.append(None)
                     data.blockDataSets.append(block)
                 iterator.GoToNextItem()
+
+            multiblock_output = reader.GetOutput()
+            category_iterator = multiblock_output.NewIterator()
+            category_iterator.InitTraversal()
+            while not category_iterator.IsDoneWithTraversal():
+                category_block = category_iterator.GetCurrentDataObject()
+                category_name = multiblock_output.GetMetaData(
+                    category_iterator.GetCurrentIndex()
+                ).Get(category_block.NAME())
+                if category_block is not None:
+                    category_filter = vtkGeometryFilter()
+                    category_filter.SetInputDataObject(category_block)
+                    category_filter.Update()
+                    category_mapper = vtkCompositePolyDataMapper()
+                    category_mapper.SetInputDataObject(
+                        category_filter.GetOutputDataObject(0)
+                    )
+                    category_actor = vtkActor()
+                    category_actor.SetMapper(category_mapper)
+                    data.category_actors[category_name] = category_actor
+                category_iterator.GoToNextItem()
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)

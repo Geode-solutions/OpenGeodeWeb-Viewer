@@ -42,15 +42,30 @@ class VtkObjectView(VtkView):
             if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
+        for category_actor in data.category_actors.values():
+            renderer.AddActor(category_actor)
         if resetCamara:
             renderer.ResetCamera()
 
     def deregisterObject(self, data_id: str) -> None:
-        actor = self.get_vtk_pipeline(data_id).actor
+        pipeline = self.get_vtk_pipeline(data_id)
+        actor = pipeline.actor
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(actor)
+        for category_actor in pipeline.category_actors.values():
+            renderer.RemoveActor(category_actor)
         self.deregister_object(data_id)
+
+    def SetCategoryEdgesVisibility(self, data_id: str, category: str, visibility: bool) -> None:
+        actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
+        if actor is not None:
+            actor.GetProperty().SetEdgeVisibility(visibility)
+
+    def SetCategoryPointsVisibility(self, data_id: str, category: str, visibility: bool) -> None:
+        actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
+        if actor is not None:
+            actor.GetProperty().SetVertexVisibility(visibility)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
@@ -140,13 +155,3 @@ class VtkObjectView(VtkView):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
-
-    def SetCategoryEdgesVisibility(self, data_id: str, category: str, visibility: bool) -> None:
-        actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
-        if actor:
-            actor.GetProperty().SetEdgeVisibility(visibility)
-
-    def SetCategoryPointsVisibility(self, data_id: str, category: str, visibility: bool) -> None:
-        actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
-        if actor:
-            actor.GetProperty().SetVertexVisibility(visibility)
