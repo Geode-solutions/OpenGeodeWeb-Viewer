@@ -1,0 +1,8 @@
+{
+  "rpc": "edges_visibility",
+  "properties": {
+    "id": { "type": "string" },
+    "visibility": { "type": "boolean" }
+  },
+  "required": ["id", "visibility"]
+}

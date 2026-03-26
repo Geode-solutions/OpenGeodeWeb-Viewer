@@ -140,3 +140,13 @@ class VtkObjectView(VtkView):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
+
+    def SetCategoryEdgesVisibility(self, data_id: str, category: str, visibility: bool) -> None:
+        actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
+        if actor:
+            actor.GetProperty().SetEdgeVisibility(visibility)
+
+    def SetCategoryPointsVisibility(self, data_id: str, category: str, visibility: bool) -> None:
+        actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
+        if actor:
+            actor.GetProperty().SetVertexVisibility(visibility)
