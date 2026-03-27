@@ -32,10 +32,8 @@ class VtkModelSurfacesView(VtkModelView):
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetCategoryEdgesVisibility(params.id, "surfaces", params.visibility)
 
-    @exportRpc(
-        model_surfaces_prefix + model_surfaces_schemas_dict["points_visibility"]["rpc"]
-    )
-    def setModelSurfacesPointsVisibility(self, rpc_params: RpcParams) -> None:
+    @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["color"]["rpc"])
+    def setModelSurfacesPolygonsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_surfaces_schemas_dict["points_visibility"],
