@@ -18,14 +18,18 @@ def test_surfaces_edges_visibility(
 
     server.call(
         VtkModelSurfacesEdgesView.model_surfaces_edges_prefix
-        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": True}],
     )
     assert server.compare_image("model/surfaces/edges/visibility_true.jpeg") == True
 
     server.call(
         VtkModelSurfacesEdgesView.model_surfaces_edges_prefix
-        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": False}],
     )
     assert server.compare_image("model/surfaces/edges/visibility_false.jpeg") == True
@@ -39,7 +43,9 @@ def test_surfaces_edges_color(
     # Activer les edges d'abord
     server.call(
         VtkModelSurfacesEdgesView.model_surfaces_edges_prefix
-        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": True}],
     )
     # Puis changer la couleur
@@ -58,7 +64,9 @@ def test_surfaces_edges_width(
 
     server.call(
         VtkModelSurfacesEdgesView.model_surfaces_edges_prefix
-        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesEdgesView.model_surfaces_edges_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": True}],
     )
 

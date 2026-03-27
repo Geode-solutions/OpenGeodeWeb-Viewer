@@ -20,20 +20,38 @@ class VtkModelBlocksEdgesView(VtkModelView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(model_blocks_edges_prefix + model_blocks_edges_schemas_dict["visibility"]["rpc"])
+    @exportRpc(
+        model_blocks_edges_prefix + model_blocks_edges_schemas_dict["visibility"]["rpc"]
+    )
     def setModelBlocksEdgesVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(rpc_params, self.model_blocks_edges_schemas_dict["visibility"], self.model_blocks_edges_prefix)
+        validate_schema(
+            rpc_params,
+            self.model_blocks_edges_schemas_dict["visibility"],
+            self.model_blocks_edges_prefix,
+        )
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetEdgesVisibility(params.id, params.visibility)
 
-    @exportRpc(model_blocks_edges_prefix + model_blocks_edges_schemas_dict["color"]["rpc"])
+    @exportRpc(
+        model_blocks_edges_prefix + model_blocks_edges_schemas_dict["color"]["rpc"]
+    )
     def setModelBlocksEdgesColor(self, rpc_params: RpcParams) -> None:
-        validate_schema(rpc_params, self.model_blocks_edges_schemas_dict["color"], self.model_blocks_edges_prefix)
+        validate_schema(
+            rpc_params,
+            self.model_blocks_edges_schemas_dict["color"],
+            self.model_blocks_edges_prefix,
+        )
         params = schemas.Color.from_dict(rpc_params)
         self.SetEdgesColor(params.id, params.color.r, params.color.g, params.color.b)
 
-    @exportRpc(model_blocks_edges_prefix + model_blocks_edges_schemas_dict["width"]["rpc"])
+    @exportRpc(
+        model_blocks_edges_prefix + model_blocks_edges_schemas_dict["width"]["rpc"]
+    )
     def setModelBlocksEdgesWidth(self, rpc_params: RpcParams) -> None:
-        validate_schema(rpc_params, self.model_blocks_edges_schemas_dict["width"], self.model_blocks_edges_prefix)
+        validate_schema(
+            rpc_params,
+            self.model_blocks_edges_schemas_dict["width"],
+            self.model_blocks_edges_prefix,
+        )
         params = schemas.Width.from_dict(rpc_params)
         self.SetEdgesWidth(params.id, params.width)

@@ -18,14 +18,18 @@ def test_surfaces_points_visibility(
 
     server.call(
         VtkModelSurfacesPointsView.model_surfaces_points_prefix
-        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": True}],
     )
     assert server.compare_image("model/surfaces/points/visibility_true.jpeg") == True
 
     server.call(
         VtkModelSurfacesPointsView.model_surfaces_points_prefix
-        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": False}],
     )
     assert server.compare_image("model/surfaces/points/visibility_false.jpeg") == True
@@ -38,7 +42,9 @@ def test_surfaces_points_color(
 
     server.call(
         VtkModelSurfacesPointsView.model_surfaces_points_prefix
-        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": True}],
     )
 
@@ -57,7 +63,9 @@ def test_surfaces_points_size(
 
     server.call(
         VtkModelSurfacesPointsView.model_surfaces_points_prefix
-        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"]["rpc"],
+        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["visibility"][
+            "rpc"
+        ],
         [{"id": "123456789", "visibility": True}],
     )
 

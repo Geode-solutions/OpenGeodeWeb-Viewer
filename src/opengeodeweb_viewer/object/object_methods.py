@@ -57,12 +57,16 @@ class VtkObjectView(VtkView):
             renderer.RemoveActor(category_actor)
         self.deregister_object(data_id)
 
-    def SetCategoryEdgesVisibility(self, data_id: str, category: str, visibility: bool) -> None:
+    def SetCategoryEdgesVisibility(
+        self, data_id: str, category: str, visibility: bool
+    ) -> None:
         actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
         if actor is not None:
             actor.GetProperty().SetEdgeVisibility(visibility)
 
-    def SetCategoryPointsVisibility(self, data_id: str, category: str, visibility: bool) -> None:
+    def SetCategoryPointsVisibility(
+        self, data_id: str, category: str, visibility: bool
+    ) -> None:
         actor = self.get_vtk_pipeline(data_id).category_actors.get(category)
         if actor is not None:
             actor.GetProperty().SetVertexVisibility(visibility)

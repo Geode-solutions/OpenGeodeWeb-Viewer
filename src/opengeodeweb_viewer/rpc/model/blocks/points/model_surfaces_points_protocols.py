@@ -15,20 +15,39 @@ class VtkModelBlocksPointsView(VtkModelView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(model_blocks_points_prefix + model_blocks_points_schemas_dict["visibility"]["rpc"])
+    @exportRpc(
+        model_blocks_points_prefix
+        + model_blocks_points_schemas_dict["visibility"]["rpc"]
+    )
     def setModelBlocksPointsVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(rpc_params, self.model_blocks_points_schemas_dict["visibility"], self.model_blocks_points_prefix)
+        validate_schema(
+            rpc_params,
+            self.model_blocks_points_schemas_dict["visibility"],
+            self.model_blocks_points_prefix,
+        )
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetPointsVisibility(params.id, params.visibility)
 
-    @exportRpc(model_blocks_points_prefix + model_blocks_points_schemas_dict["size"]["rpc"])
+    @exportRpc(
+        model_blocks_points_prefix + model_blocks_points_schemas_dict["size"]["rpc"]
+    )
     def setModelBlocksPointsSize(self, rpc_params: RpcParams) -> None:
-        validate_schema(rpc_params, self.model_blocks_points_schemas_dict["size"], self.model_blocks_points_prefix)
+        validate_schema(
+            rpc_params,
+            self.model_blocks_points_schemas_dict["size"],
+            self.model_blocks_points_prefix,
+        )
         params = schemas.Size.from_dict(rpc_params)
         self.SetPointsSize(params.id, params.size)
 
-    @exportRpc(model_blocks_points_prefix + model_blocks_points_schemas_dict["color"]["rpc"])
+    @exportRpc(
+        model_blocks_points_prefix + model_blocks_points_schemas_dict["color"]["rpc"]
+    )
     def setModelBlocksPointsColor(self, rpc_params: RpcParams) -> None:
-        validate_schema(rpc_params, self.model_blocks_points_schemas_dict["color"], self.model_blocks_points_prefix)
+        validate_schema(
+            rpc_params,
+            self.model_blocks_points_schemas_dict["color"],
+            self.model_blocks_points_prefix,
+        )
         params = schemas.Color.from_dict(rpc_params)
         self.SetPointsColor(params.id, params.color.r, params.color.g, params.color.b)

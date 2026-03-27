@@ -20,7 +20,9 @@ class VtkModelSurfacesView(VtkModelView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["edges_visibility"]["rpc"])
+    @exportRpc(
+        model_surfaces_prefix + model_surfaces_schemas_dict["edges_visibility"]["rpc"]
+    )
     def setModelSurfacesEdgesVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
@@ -30,7 +32,9 @@ class VtkModelSurfacesView(VtkModelView):
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetCategoryEdgesVisibility(params.id, "surfaces", params.visibility)
 
-    @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["points_visibility"]["rpc"])
+    @exportRpc(
+        model_surfaces_prefix + model_surfaces_schemas_dict["points_visibility"]["rpc"]
+    )
     def setModelSurfacesPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,

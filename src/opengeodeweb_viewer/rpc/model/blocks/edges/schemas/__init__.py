@@ -1,3 +1,3 @@
-from .color import Color
-from .visibility import Visibility
-from .width import Width
+from .width import *
+from .visibility import *
+from .color import *
