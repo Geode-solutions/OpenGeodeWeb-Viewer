@@ -4,7 +4,10 @@ from typing import Optional, List
 
 
 @dataclass
-class ColorClass(DataClassJsonMixin):
+class Color(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print(self, flush=True)
+
     b: int
     g: int
     r: int
@@ -13,6 +16,9 @@ class ColorClass(DataClassJsonMixin):
 
 @dataclass
 class ComponentsColor(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print(self, flush=True)
+
     block_ids: List[int]
-    color: ColorClass
+    color: Color
     id: str
