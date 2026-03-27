@@ -34,7 +34,7 @@ class VtkModelSurfacesView(VtkModelView):
         self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
 
     @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["color"]["rpc"])
-    def setModelSurfacesPolygonsCOlor(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesPolygonsColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_surfaces_schemas_dict["color"],
