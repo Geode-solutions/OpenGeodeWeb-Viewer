@@ -1,17 +1,24 @@
+from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from opengeodeweb_microservice.schemas import Color
+from typing import Optional, List
 
 
 @dataclass
-class ComponentsColor:
-    id: str
-    block_ids: list[int]
-    color: Color
+class Color(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print(self, flush=True)
 
-    @classmethod
-    def from_dict(cls, data: dict) -> "ComponentsColor":
-        return cls(
-            id=data["id"],
-            block_ids=data["block_ids"],
-            color=Color(**data["color"]),
-        )
+    b: int
+    g: int
+    r: int
+    a: Optional[float] = None
+
+
+@dataclass
+class ComponentsColor(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print(self, flush=True)
+
+    block_ids: List[int]
+    color: Color
+    id: str
