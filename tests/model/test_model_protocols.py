@@ -53,3 +53,34 @@ def test_deregister_model(
         [{"id": "123456789"}],
     )
     assert server.compare_image("model/deregister.jpeg") == True
+
+
+def test_components_color_model(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_model_cube(server, dataset_factory)
+
+    server.call(
+        VtkModelView.model_prefix
+        + VtkModelView.model_schemas_dict["components_color"]["rpc"],
+        [{"id": "123456789", "block_ids": [48, 49], "color": {"r": 255, "g": 0, "b": 0}}],
+    )
+    assert server.compare_image("model/components_color.jpeg") == True
+
+
+def test_components_visibility_color_model(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_model_cube(server, dataset_factory)
+
+    server.call(
+        VtkModelView.model_prefix + "components_visibility",
+        [{"id": "123456789", "block_ids": [48, 49], "visibility": False}],
+    )
+    
+    server.call(
+        VtkModelView.model_prefix + "components_color",
+        [{"id": "123456789", "block_ids": list(range(36, 47)), "color": {"r": 0, "g": 255, "b": 0}}],
+    )
+    assert server.compare_image("model/components_visibility_color.jpeg") == True

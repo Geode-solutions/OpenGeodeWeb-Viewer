@@ -90,3 +90,13 @@ class VtkModelView(VtkObjectView):
         params = schemas.ComponentsColor.from_dict(rpc_params)
         color = params.color
         self.SetBlocksColor(params.id, params.block_ids, color.r, color.g, color.b)
+
+    @exportRpc(model_prefix + model_schemas_dict["components_visibility"]["rpc"])
+    def setModelComponentsVisibility(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params,
+            self.model_schemas_dict["components_visibility"],
+            self.model_prefix,
+        )
+        params = schemas.ComponentsVisibility.from_dict(rpc_params)
+        self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
