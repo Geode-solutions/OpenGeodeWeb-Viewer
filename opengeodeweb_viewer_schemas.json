@@ -1465,7 +1465,13 @@
                 "maxItems": 2
               }
             },
-            "required": ["focal_point", "view_up", "position", "view_angle", "clipping_range"]
+            "required": [
+              "focal_point",
+              "view_up",
+              "position",
+              "view_angle",
+              "clipping_range"
+            ]
           }
         },
         "required": ["camera_options"]
