@@ -1504,33 +1504,6 @@
         ],
         "additionalProperties": false
       },
-      "components_visibility": {
-        "$id": "opengeodeweb_viewer.model.components_visibility",
-        "rpc": "components_visibility",
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "minLength": 1
-          },
-          "block_ids": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            },
-            "minItems": 1
-          },
-          "visibility": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "id",
-          "block_ids",
-          "visibility"
-        ],
-        "additionalProperties": false
-      },
       "components_color": {
         "$id": "opengeodeweb_viewer.model.components_color",
         "rpc": "components_color",
