@@ -11,9 +11,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "additionalProperties": false
       },
       "deregister": {
@@ -26,9 +24,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "additionalProperties": false
       }
     },
@@ -50,10 +46,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -80,12 +73,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           },
@@ -104,10 +92,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -134,12 +119,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           }
@@ -157,10 +137,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "visibility"
-          ],
+          "required": ["id", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -197,18 +174,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "color"
-          ],
+          "required": ["id", "color"],
           "additionalProperties": false
         }
       },
@@ -229,10 +199,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -259,12 +226,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           },
@@ -283,10 +245,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -313,12 +272,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           }
@@ -336,10 +290,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "id",
-            "width"
-          ],
+          "required": ["id", "width"],
           "additionalProperties": false
         },
         "visibility": {
@@ -355,10 +306,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "visibility"
-          ],
+          "required": ["id", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -395,18 +343,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "color"
-          ],
+          "required": ["id", "color"],
           "additionalProperties": false
         }
       },
@@ -427,10 +368,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -457,12 +395,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           }
@@ -480,10 +413,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "visibility"
-          ],
+          "required": ["id", "visibility"],
           "additionalProperties": false
         },
         "vertex_scalar_range": {
@@ -502,11 +432,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "id",
-            "minimum",
-            "maximum"
-          ],
+          "required": ["id", "minimum", "maximum"],
           "additionalProperties": false
         },
         "vertex_color_map": {
@@ -533,12 +459,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "id",
-            "points",
-            "minimum",
-            "maximum"
-          ],
+          "required": ["id", "points", "minimum", "maximum"],
           "additionalProperties": false
         },
         "vertex_attribute": {
@@ -555,10 +476,7 @@
               "minLength": 1
             }
           },
-          "required": [
-            "id",
-            "name"
-          ],
+          "required": ["id", "name"],
           "additionalProperties": false
         },
         "size": {
@@ -574,10 +492,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "id",
-            "size"
-          ],
+          "required": ["id", "size"],
           "additionalProperties": false
         },
         "color": {
@@ -614,18 +529,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "color"
-          ],
+          "required": ["id", "color"],
           "additionalProperties": false
         }
       },
@@ -646,10 +554,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -676,12 +581,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           },
@@ -700,10 +600,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -730,12 +627,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           }
@@ -753,10 +645,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "visibility"
-          ],
+          "required": ["id", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -793,18 +682,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "color"
-          ],
+          "required": ["id", "color"],
           "additionalProperties": false
         }
       },
@@ -825,10 +707,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -855,12 +734,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           },
@@ -879,10 +753,7 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "id",
-                "name"
-              ],
+              "required": ["id", "name"],
               "additionalProperties": false
             },
             "color_map": {
@@ -909,12 +780,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "id",
-                "points",
-                "minimum",
-                "maximum"
-              ],
+              "required": ["id", "points", "minimum", "maximum"],
               "additionalProperties": false
             }
           }
@@ -932,10 +798,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "visibility"
-          ],
+          "required": ["id", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -972,18 +835,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "color"
-          ],
+          "required": ["id", "color"],
           "additionalProperties": false
         }
       },
@@ -1000,10 +856,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "id",
-          "visibility"
-        ],
+        "required": ["id", "visibility"],
         "additionalProperties": false
       },
       "register": {
@@ -1016,9 +869,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "additionalProperties": false
       },
       "opacity": {
@@ -1036,10 +887,7 @@
             "max": 1
           }
         },
-        "required": [
-          "id",
-          "opacity"
-        ],
+        "required": ["id", "opacity"],
         "additionalProperties": false
       },
       "deregister": {
@@ -1052,9 +900,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "additionalProperties": false
       },
       "color": {
@@ -1085,18 +931,11 @@
                 "maximum": 255
               }
             },
-            "required": [
-              "r",
-              "g",
-              "b"
-            ],
+            "required": ["r", "g", "b"],
             "additionalProperties": false
           }
         },
-        "required": [
-          "id",
-          "color"
-        ],
+        "required": ["id", "color"],
         "additionalProperties": false
       },
       "apply_textures": {
@@ -1122,19 +961,13 @@
                   "minLength": 1
                 }
               },
-              "required": [
-                "texture_name",
-                "id"
-              ],
+              "required": ["texture_name", "id"],
               "additionalProperties": false
             },
             "minItems": 1
           }
         },
-        "required": [
-          "id",
-          "textures"
-        ],
+        "required": ["id", "textures"],
         "additionalProperties": false
       }
     },
@@ -1160,11 +993,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "visibility"
-          ],
+          "required": ["id", "block_ids", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -1208,19 +1037,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "color"
-          ],
+          "required": ["id", "block_ids", "color"],
           "additionalProperties": false
         }
       },
@@ -1245,11 +1066,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "visibility"
-          ],
+          "required": ["id", "block_ids", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -1293,19 +1110,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "color"
-          ],
+          "required": ["id", "block_ids", "color"],
           "additionalProperties": false
         }
       },
@@ -1323,10 +1132,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "visibility"
-          ],
+          "required": ["id", "visibility"],
           "additionalProperties": false
         }
       },
@@ -1351,11 +1157,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "visibility"
-          ],
+          "required": ["id", "block_ids", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -1399,19 +1201,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "color"
-          ],
+          "required": ["id", "block_ids", "color"],
           "additionalProperties": false
         }
       },
@@ -1429,10 +1223,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "visibility"
-          ],
+          "required": ["id", "visibility"],
           "additionalProperties": false
         },
         "size": {
@@ -1448,10 +1239,7 @@
               "type": "number"
             }
           },
-          "required": [
-            "id",
-            "size"
-          ],
+          "required": ["id", "size"],
           "additionalProperties": false
         }
       },
@@ -1468,10 +1256,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "id",
-          "visibility"
-        ],
+        "required": ["id", "visibility"],
         "additionalProperties": false
       },
       "register": {
@@ -1484,9 +1269,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "additionalProperties": false
       },
       "deregister": {
@@ -1499,36 +1282,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "id"
-        ],
-        "additionalProperties": false
-      },
-      "components_visibility": {
-        "$id": "opengeodeweb_viewer.model.components_visibility",
-        "rpc": "components_visibility",
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "minLength": 1
-          },
-          "block_ids": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            },
-            "minItems": 1
-          },
-          "visibility": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "id",
-          "block_ids",
-          "visibility"
-        ],
+        "required": ["id"],
         "additionalProperties": false
       },
       "components_color": {
@@ -1572,19 +1326,11 @@
                 "default": 1
               }
             },
-            "required": [
-              "r",
-              "g",
-              "b"
-            ],
+            "required": ["r", "g", "b"],
             "additionalProperties": false
           }
         },
-        "required": [
-          "id",
-          "block_ids",
-          "color"
-        ],
+        "required": ["id", "block_ids", "color"],
         "additionalProperties": false
       },
       "surfaces": {
@@ -1608,11 +1354,7 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "visibility"
-          ],
+          "required": ["id", "block_ids", "visibility"],
           "additionalProperties": false
         },
         "color": {
@@ -1656,19 +1398,11 @@
                   "default": 1
                 }
               },
-              "required": [
-                "r",
-                "g",
-                "b"
-              ],
+              "required": ["r", "g", "b"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "id",
-            "block_ids",
-            "color"
-          ],
+          "required": ["id", "block_ids", "color"],
           "additionalProperties": false
         },
         "apply_textures": {
@@ -1694,19 +1428,13 @@
                     "minLength": 1
                   }
                 },
-                "required": [
-                  "texture_name",
-                  "texture_file_name"
-                ],
+                "required": ["texture_name", "texture_file_name"],
                 "additionalProperties": false
               },
               "minItems": 1
             }
           },
-          "required": [
-            "id",
-            "textures"
-          ],
+          "required": ["id", "textures"],
           "additionalProperties": false
         }
       }
@@ -1738,9 +1466,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "additionalProperties": false
       },
       "update_camera": {
@@ -1787,18 +1513,10 @@
                 "maxItems": 2
               }
             },
-            "required": [
-              "focal_point",
-              "view_up",
-              "position",
-              "view_angle",
-              "clipping_range"
-            ]
+            "required": ["focal_point", "view_up", "position", "view_angle", "clipping_range"]
           }
         },
-        "required": [
-          "camera_options"
-        ]
+        "required": ["camera_options"]
       },
       "take_screenshot": {
         "$id": "opengeodeweb_viewer.viewer.take_screenshot",
@@ -1812,20 +1530,13 @@
           "output_extension": {
             "type": "string",
             "minLength": 1,
-            "enum": [
-              "png",
-              "jpg"
-            ]
+            "enum": ["png", "jpg"]
           },
           "include_background": {
             "type": "boolean"
           }
         },
-        "required": [
-          "filename",
-          "output_extension",
-          "include_background"
-        ],
+        "required": ["filename", "output_extension", "include_background"],
         "additionalProperties": false
       },
       "set_z_scaling": {
@@ -1838,9 +1549,7 @@
             "minimum": 1
           }
         },
-        "required": [
-          "z_scale"
-        ],
+        "required": ["z_scale"],
         "additionalProperties": false
       },
       "set_background_color": {
@@ -1867,17 +1576,11 @@
                 "maximum": 255
               }
             },
-            "required": [
-              "r",
-              "g",
-              "b"
-            ],
+            "required": ["r", "g", "b"],
             "additionalProperties": false
           }
         },
-        "required": [
-          "color"
-        ],
+        "required": ["color"],
         "additionalProperties": false
       },
       "reset_visualization": {
@@ -1923,11 +1626,7 @@
             }
           }
         },
-        "required": [
-          "x",
-          "y",
-          "ids"
-        ],
+        "required": ["x", "y", "ids"],
         "additionalProperties": false
       },
       "grid_scale": {
@@ -1939,9 +1638,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "visibility"
-        ],
+        "required": ["visibility"],
         "additionalProperties": false
       },
       "get_point_position": {
@@ -1956,10 +1653,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "x",
-          "y"
-        ],
+        "required": ["x", "y"],
         "additionalProperties": false
       },
       "axes": {
@@ -1971,9 +1665,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "visibility"
-        ],
+        "required": ["visibility"],
         "additionalProperties": false
       }
     }
