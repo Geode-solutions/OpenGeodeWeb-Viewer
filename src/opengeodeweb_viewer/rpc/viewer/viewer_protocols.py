@@ -234,7 +234,7 @@ class VtkViewerView(VtkView):
         array_ids = []
         if picked_actor:
             for id in params.ids:
-                if id in self.get_data_base() and self.get_vtk_pipeline(id).actor == picked_actor:
+                if self.get_vtk_pipeline(id).actor == picked_actor:
                     array_ids.append(id)
                     break
 
