@@ -236,9 +236,7 @@ class VtkViewerView(VtkView):
             return {"array_ids": [], "viewer_id": None}
         viewer_id = picker.GetFlatBlockIndex()
         array_ids = [
-            id
-            for id in params.ids
-            if self.get_vtk_pipeline(id).actor == picked_actor
+            id for id in params.ids if self.get_vtk_pipeline(id).actor == picked_actor
         ]
         return {"array_ids": array_ids, "viewer_id": viewer_id}
 
