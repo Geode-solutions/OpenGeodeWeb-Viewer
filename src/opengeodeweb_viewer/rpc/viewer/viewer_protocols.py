@@ -232,15 +232,14 @@ class VtkViewerView(VtkView):
         picker = vtkCellPicker()
         picker.Pick(params.x, params.y, 0, renderer)
         picked_actor = picker.GetActor()
-        array_ids = []
-        viewer_id = None
-        if picked_actor:
-            viewer_id = picker.GetFlatBlockIndex()
-            for id in params.ids:
-                if self.get_vtk_pipeline(id).actor == picked_actor:
-                    array_ids.append(id)
-                    break
-
+        if not picked_actor:
+            return {"array_ids": [], "viewer_id": None}
+        viewer_id = picker.GetFlatBlockIndex()
+        array_ids = [
+            id
+            for id in params.ids
+            if self.get_vtk_pipeline(id).actor == picked_actor
+        ]
         return {"array_ids": array_ids, "viewer_id": viewer_id}
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
