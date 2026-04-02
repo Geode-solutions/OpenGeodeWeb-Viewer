@@ -224,7 +224,9 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
     def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str] | int | None]:
-        validate_schema(rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix)
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
+        )
         params = schemas.PickedIDS.from_dict(rpc_params)
         renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
         picker = vtkCellPicker()
