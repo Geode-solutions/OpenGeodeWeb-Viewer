@@ -237,7 +237,7 @@ class VtkViewerView(VtkView):
         ]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
-        viewer_id: int | None = picker.GetFlatBlockIndex()
+        viewer_id: int = picker.GetFlatBlockIndex()
         if viewer_id == -1:
             return {"array_ids": array_ids, "viewer_id": None}
         pipeline = self.get_vtk_pipeline(array_ids[0])
