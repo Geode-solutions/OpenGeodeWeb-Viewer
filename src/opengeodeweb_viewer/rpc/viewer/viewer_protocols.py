@@ -232,7 +232,9 @@ class VtkViewerView(VtkView):
         actor = picker.GetActor()
         if not actor:
             return {"array_ids": [], "viewer_id": None}
-        array_ids = [id for id in params.ids if self.get_vtk_pipeline(id).actor == actor]
+        array_ids = [
+            id for id in params.ids if self.get_vtk_pipeline(id).actor == actor
+        ]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
         viewer_id: int | None = picker.GetFlatBlockIndex()
@@ -242,7 +244,9 @@ class VtkViewerView(VtkView):
             pipeline = self.get_vtk_pipeline(array_ids[0])
             if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
                 attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
-                if attr and not attr.GetBlockVisibility(pipeline.blockDataSets[viewer_id]):
+                if attr and not attr.GetBlockVisibility(
+                    pipeline.blockDataSets[viewer_id]
+                ):
                     return {"array_ids": [], "viewer_id": None}
         return {"array_ids": array_ids, "viewer_id": viewer_id}
 
