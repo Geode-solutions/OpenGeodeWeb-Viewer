@@ -15,6 +15,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkWorldPointPicker,
     vtkPicker,
     vtkCellPicker,
+    vtkCompositePolyDataMapper,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference
@@ -222,24 +223,27 @@ class VtkViewerView(VtkView):
         return math.sqrt(epsilon) * 0.0125
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
-    def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str] | int | None]:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
-        )
+    def pickedIds(self, rpc_params: RpcParams) -> dict:
+        validate_schema(rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix)
         params = schemas.PickedIDS.from_dict(rpc_params)
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
         picker = vtkCellPicker()
         picker.Pick(params.x, params.y, 0, renderer)
-        picked_actor = picker.GetActor()
-        if not picked_actor:
+        actor = picker.GetActor()
+        if not actor:
+            return {"array_ids": [], "viewer_id": None}
+        array_ids = [id for id in params.ids if self.get_vtk_pipeline(id).actor == actor]
+        if not array_ids:
             return {"array_ids": [], "viewer_id": None}
         viewer_id = picker.GetFlatBlockIndex()
-        array_ids = [
-            id
-            for id in params.ids
-            if self.get_vtk_pipeline(id).actor == picked_actor
-        ]
+        if viewer_id == -1:
+            viewer_id = None
+        if viewer_id is not None:
+            pipeline = self.get_vtk_pipeline(array_ids[0])
+            if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+                attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
+                if attr and not attr.GetBlockVisibility(pipeline.blockDataSets[viewer_id]):
+                    return {"array_ids": [], "viewer_id": None}
         return {"array_ids": array_ids, "viewer_id": viewer_id}
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
