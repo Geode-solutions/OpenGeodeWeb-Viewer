@@ -232,20 +232,19 @@ class VtkViewerView(VtkView):
         picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, renderer)
         actor = picker.GetActor()
-        array_ids = [
-            id for id in params.ids if self.get_vtk_pipeline(id).actor == actor
-        ]
+        viewer_id = picker.GetFlatBlockIndex()
+        array_ids = [id for id in params.ids if self.get_vtk_pipeline(id).actor == actor]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
-        viewer_id: int = picker.GetFlatBlockIndex()
-        if viewer_id == -1:
-            return {"array_ids": array_ids, "viewer_id": None}
-        pipeline = self.get_vtk_pipeline(array_ids[0])
-        if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
-            attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
-            if attr and not attr.GetBlockVisibility(pipeline.blockDataSets[viewer_id]):
-                return {"array_ids": [], "viewer_id": None}
-        return {"array_ids": array_ids, "viewer_id": viewer_id}
+        if array_ids and viewer_id != -1:
+            pipeline = self.get_vtk_pipeline(array_ids[0])
+            mapper = pipeline.mapper
+            if isinstance(mapper, vtkCompositePolyDataMapper):
+                attr = mapper.GetCompositeDataDisplayAttributes()
+                if attr and not attr.GetBlockVisibility(pipeline.blockDataSets[viewer_id]):
+                    array_ids, viewer_id = [], -1
+        return {"array_ids": array_ids, "viewer_id": viewer_id if viewer_id != -1 else None}
+
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
     def toggleGridScale(self, rpc_params: RpcParams) -> None:
