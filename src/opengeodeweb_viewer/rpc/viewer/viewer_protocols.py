@@ -223,7 +223,7 @@ class VtkViewerView(VtkView):
         return math.sqrt(epsilon) * 0.0125
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
-    def pickedIds(self, rpc_params: RpcParams) -> dict:
+    def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str] | int | None]:
         validate_schema(rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix)
         params = schemas.PickedIDS.from_dict(rpc_params)
         renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
@@ -235,7 +235,7 @@ class VtkViewerView(VtkView):
         array_ids = [id for id in params.ids if self.get_vtk_pipeline(id).actor == actor]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
-        viewer_id = picker.GetFlatBlockIndex()
+        viewer_id: int | None = picker.GetFlatBlockIndex()
         if viewer_id == -1:
             viewer_id = None
         if viewer_id is not None:
