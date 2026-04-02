@@ -227,7 +227,7 @@ class VtkViewerView(VtkView):
         validate_schema(rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix)
         params = schemas.PickedIDS.from_dict(rpc_params)
         renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
-        picker = vtkCellPicker()
+        picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, renderer)
         actor = picker.GetActor()
         if not actor:
