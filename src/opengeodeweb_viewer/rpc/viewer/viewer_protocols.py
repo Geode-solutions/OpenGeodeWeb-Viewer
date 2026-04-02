@@ -233,7 +233,9 @@ class VtkViewerView(VtkView):
         picker.Pick(params.x, params.y, 0, renderer)
         actor = picker.GetActor()
         viewer_id = picker.GetFlatBlockIndex()
-        array_ids = [id for id in params.ids if self.get_vtk_pipeline(id).actor == actor]
+        array_ids = [
+            id for id in params.ids if self.get_vtk_pipeline(id).actor == actor
+        ]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
         if array_ids and viewer_id != -1:
@@ -241,10 +243,14 @@ class VtkViewerView(VtkView):
             mapper = pipeline.mapper
             if isinstance(mapper, vtkCompositePolyDataMapper):
                 attr = mapper.GetCompositeDataDisplayAttributes()
-                if attr and not attr.GetBlockVisibility(pipeline.blockDataSets[viewer_id]):
+                if attr and not attr.GetBlockVisibility(
+                    pipeline.blockDataSets[viewer_id]
+                ):
                     array_ids, viewer_id = [], -1
-        return {"array_ids": array_ids, "viewer_id": viewer_id if viewer_id != -1 else None}
-
+        return {
+            "array_ids": array_ids,
+            "viewer_id": viewer_id if viewer_id != -1 else None,
+        }
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
     def toggleGridScale(self, rpc_params: RpcParams) -> None:
