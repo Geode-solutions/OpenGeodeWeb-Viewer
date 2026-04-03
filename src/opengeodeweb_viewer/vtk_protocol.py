@@ -128,6 +128,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             renderer = self.get_renderer()
             renderer_bounds = renderer.ComputeVisiblePropBounds()
             grid_scale.SetBounds(renderer_bounds)
+        self.get_renderer().ResetCameraClippingRange()
         self.getSharedObject("publisher").imagePush({"view": view})
 
     def register_object(self, id: str, data: VtkPipeline) -> None:

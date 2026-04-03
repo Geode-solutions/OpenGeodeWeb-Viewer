@@ -75,6 +75,7 @@ class VtkViewerView(VtkView):
         grid_scale.SetZTitle("Z")
 
         grid_scale.SetVisibility(False)
+        grid_scale.SetUseBounds(False)
         self.set_grid_scale(grid_scale)
 
         renderer.AddActor(grid_scale)
@@ -276,6 +277,7 @@ class VtkViewerView(VtkView):
         camera.SetPosition(camera_options.position)
         camera.SetViewAngle(camera_options.view_angle)
         camera.SetClippingRange(camera_options.clipping_range)
+        renderWindow.GetRenderers().GetFirstRenderer().ResetCameraClippingRange()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render"]["rpc"])
     def renderNow(self, rpc_params: RpcParams) -> None:
