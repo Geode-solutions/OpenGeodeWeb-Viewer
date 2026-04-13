@@ -77,7 +77,6 @@ class VtkViewerView(VtkView):
         grid_scale.SetZTitle("Z")
 
         grid_scale.SetVisibility(False)
-        grid_scale.SetUseBounds(False)
         self.set_grid_scale(grid_scale)
 
         renderer.AddActor(grid_scale)
