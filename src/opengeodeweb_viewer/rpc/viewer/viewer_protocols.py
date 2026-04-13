@@ -14,6 +14,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkAbstractMapper,
     vtkWorldPointPicker,
     vtkPicker,
+    vtkCellPicker,
+    vtkCompositePolyDataMapper,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference
@@ -222,24 +224,34 @@ class VtkViewerView(VtkView):
         return math.sqrt(epsilon) * 0.0125
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
-    def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str]]:
+    def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str] | int | None]:
         validate_schema(
             rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
         )
         params = schemas.PickedIDS.from_dict(rpc_params)
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        picker = vtkPicker()
+        renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
+        picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, renderer)
-        picked_actor = picker.GetActor()
-        array_ids = []
-        if picked_actor:
-            for id in params.ids:
-                if self.get_vtk_pipeline(id).actor == picked_actor:
-                    array_ids.append(id)
-                    break
-
-        return {"array_ids": array_ids}
+        actor = picker.GetActor()
+        viewer_id = picker.GetFlatBlockIndex()
+        array_ids = [
+            id for id in params.ids if self.get_vtk_pipeline(id).actor == actor
+        ]
+        if not array_ids:
+            return {"array_ids": [], "viewer_id": None}
+        if array_ids and viewer_id != -1:
+            pipeline = self.get_vtk_pipeline(array_ids[0])
+            mapper = pipeline.mapper
+            if isinstance(mapper, vtkCompositePolyDataMapper):
+                attr = mapper.GetCompositeDataDisplayAttributes()
+                if attr and not attr.GetBlockVisibility(
+                    pipeline.blockDataSets[viewer_id]
+                ):
+                    array_ids, viewer_id = [], -1
+        return {
+            "array_ids": array_ids,
+            "viewer_id": viewer_id if viewer_id != -1 else None,
+        }
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
     def toggleGridScale(self, rpc_params: RpcParams) -> None:
