@@ -2,6 +2,9 @@
 import os
 
 # Third party imports
+from vtkmodules.vtkCommonDataModel import (
+    vtkCompositeDataSet,
+)
 from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
@@ -59,7 +62,13 @@ class VtkModelView(VtkObjectView):
                     flat_index = iterator.GetCurrentFlatIndex()
                     while flat_index > len(data.blockDataSets):
                         data.blockDataSets.append(None)
+                        data.blockGeodeIds.append(None)
                     data.blockDataSets.append(block)
+                    meta = iterator.GetCurrentMetaData()
+                    name = None
+                    if meta and meta.Has(vtkCompositeDataSet.NAME()):
+                        name = meta.Get(vtkCompositeDataSet.NAME())
+                    data.blockGeodeIds.append(name)
                 iterator.GoToNextItem()
             self.registerObject(data_id, file_name, data)
         except Exception as e:

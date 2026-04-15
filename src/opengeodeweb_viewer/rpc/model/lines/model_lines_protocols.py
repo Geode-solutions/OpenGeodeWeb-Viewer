@@ -4,11 +4,13 @@ import os
 # Third party imports
 from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
+from vtkmodules.vtkRenderingCore import vtkCompositePolyDataMapper
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import (
     validate_schema,
     RpcParams,
+    deterministic_color,
 )
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from . import schemas
@@ -34,12 +36,29 @@ class VtkModelLinesView(VtkModelView):
         self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
 
     @exportRpc(model_lines_prefix + model_lines_schemas_dict["color"]["rpc"])
-    def setModelLinesEdgesColor(self, rpc_params: RpcParams) -> None:
+    def setModelLinesColor(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_lines_schemas_dict["color"],
             self.model_lines_prefix,
         )
         params = schemas.Color.from_dict(rpc_params)
-        color = params.color
-        self.SetBlocksColor(params.id, params.block_ids, color.r, color.g, color.b)
+        pipeline = self.get_vtk_pipeline(params.id)
+        mapper = pipeline.mapper
+        if not isinstance(mapper, vtkCompositePolyDataMapper):
+            return
+        attr = mapper.GetCompositeDataDisplayAttributes()
+        for block_id in params.block_ids:
+            block_ds = pipeline.blockDataSets[block_id]
+            if params.color_mode == schemas.ColorMode.RANDOM:
+                geode_id = pipeline.blockGeodeIds[block_id]
+                r, g, b = deterministic_color(geode_id)
+                attr.SetBlockColor(block_ds, [r, g, b])
+            elif params.color is not None:
+                r, g, b = (
+                    params.color.r / 255,
+                    params.color.g / 255,
+                    params.color.b / 255,
+                )
+                attr.SetBlockColor(block_ds, [r, g, b])
+        mapper.Modified()

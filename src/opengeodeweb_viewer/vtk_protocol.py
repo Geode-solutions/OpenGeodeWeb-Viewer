@@ -43,6 +43,7 @@ class VtkPipeline:
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
+    blockGeodeIds: list[str | None] = field(default_factory=list)
 
 
 class VtkTypingMixin:

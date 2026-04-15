@@ -1183,6 +1183,13 @@
               },
               "minItems": 1
             },
+            "color_mode": {
+              "type": "string",
+              "enum": [
+                "constant",
+                "random"
+              ]
+            },
             "color": {
               "type": "object",
               "properties": {
@@ -1219,7 +1226,7 @@
           "required": [
             "id",
             "block_ids",
-            "color"
+            "color_mode"
           ],
           "additionalProperties": false
         }
@@ -1268,6 +1275,13 @@
               },
               "minItems": 1
             },
+            "color_mode": {
+              "type": "string",
+              "enum": [
+                "constant",
+                "random"
+              ]
+            },
             "color": {
               "type": "object",
               "properties": {
@@ -1304,7 +1318,7 @@
           "required": [
             "id",
             "block_ids",
-            "color"
+            "color_mode"
           ],
           "additionalProperties": false
         }
@@ -1374,6 +1388,13 @@
               },
               "minItems": 1
             },
+            "color_mode": {
+              "type": "string",
+              "enum": [
+                "constant",
+                "random"
+              ]
+            },
             "color": {
               "type": "object",
               "properties": {
@@ -1410,7 +1431,7 @@
           "required": [
             "id",
             "block_ids",
-            "color"
+            "color_mode"
           ],
           "additionalProperties": false
         }
@@ -1548,6 +1569,13 @@
               },
               "minItems": 1
             },
+            "color_mode": {
+              "type": "string",
+              "enum": [
+                "constant",
+                "random"
+              ]
+            },
             "color": {
               "type": "object",
               "properties": {
@@ -1584,7 +1612,7 @@
           "required": [
             "id",
             "block_ids",
-            "color"
+            "color_mode"
           ],
           "additionalProperties": false
         },
