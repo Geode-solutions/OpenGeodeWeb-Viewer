@@ -18,7 +18,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkCompositePolyDataMapper,
 )
-from vtkmodules.vtkCommonDataModel import vtkDataObject
+from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkBoundingBox
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
@@ -122,12 +122,36 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def get_renderer(self) -> vtkRenderer:
         return cast(vtkRenderer, self.getSharedObject("renderer"))
 
-    def render(self, view: int = -1) -> None:
+    def reset_camera_clipping_range(self) -> None:
+        renderer = self.get_renderer()
+        grid_scale = self.get_grid_scale()
+        if grid_scale is not None and grid_scale.GetVisibility():
+            grid_scale.SetUseBounds(True)
+            renderer.ResetCameraClippingRange()
+            grid_scale.SetUseBounds(False)
+        else:
+            renderer.ResetCameraClippingRange()
+
+    def update_grid_scale_and_clipping_range(self) -> None:
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
             renderer = self.get_renderer()
-            renderer_bounds = renderer.ComputeVisiblePropBounds()
-            grid_scale.SetBounds(renderer_bounds)
+            bounds = vtkBoundingBox()
+            props = renderer.GetViewProps()
+            props.InitTraversal()
+            prop = props.GetNextProp()
+            while prop:
+                if prop.GetUseBounds() and prop != grid_scale:
+                    bounds.AddBounds(prop.GetBounds())
+                prop = props.GetNextProp()
+            if bounds.IsValid():
+                final_bounds = [0.0] * 6
+                bounds.GetBounds(final_bounds)
+                grid_scale.SetBounds(final_bounds)
+        self.reset_camera_clipping_range()
+
+    def render(self, view: int = -1) -> None:
+        self.update_grid_scale_and_clipping_range()
         self.getSharedObject("publisher").imagePush({"view": view})
 
     def register_object(self, id: str, data: VtkPipeline) -> None:
