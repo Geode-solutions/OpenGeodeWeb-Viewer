@@ -7,7 +7,7 @@ from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import validate_schema, RpcParams
-from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView, ColorResult
 from . import schemas
 
 
@@ -31,7 +31,7 @@ class VtkModelCornersView(VtkModelView):
         self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
 
     @exportRpc(model_corners_prefix + model_corners_schemas_dict["color"]["rpc"])
-    def setModelCornersColor(self, rpc_params: RpcParams) -> list[dict]:
+    def setModelCornersColor(self, rpc_params: RpcParams) -> list[ColorResult]:
         validate_schema(
             rpc_params,
             self.model_corners_schemas_dict["color"],

@@ -22,7 +22,9 @@ from opengeodeweb_viewer.utils_functions import (
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.vtk_protocol import VtkPipeline
+from typing import Optional
 from . import schemas
+from .schemas.color import ColorClass, ColorResult
 
 
 class VtkModelView(VtkObjectView):
@@ -39,13 +41,13 @@ class VtkModelView(VtkObjectView):
         pipeline: VtkPipeline,
         block_ids: list[int],
         color_mode: str,
-        color=None,
-    ) -> list[dict]:
+        color: Optional[ColorClass] = None,
+    ) -> list[ColorResult]:
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             return []
         attr = mapper.GetCompositeDataDisplayAttributes()
-        colors: list[dict] = []
+        colors: list[ColorResult] = []
         for block_id in block_ids:
             block_ds = pipeline.blockDataSets[block_id]
             if color_mode == "random":
