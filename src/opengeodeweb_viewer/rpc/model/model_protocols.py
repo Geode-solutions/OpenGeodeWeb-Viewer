@@ -25,6 +25,7 @@ from opengeodeweb_viewer.vtk_protocol import VtkPipeline
 from typing import Optional, List, TypedDict, Protocol
 from . import schemas
 
+
 class ColorProtocol(Protocol):
     r: int
     g: int
