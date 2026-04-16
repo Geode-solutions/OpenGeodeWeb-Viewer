@@ -24,7 +24,10 @@ from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.vtk_protocol import VtkPipeline
 from typing import Optional
 from . import schemas
-from .schemas.color import ColorClass, ColorResult
+from opengeodeweb_viewer.rpc.model.schemas.color import (
+    ColorClass as ColorClass,
+    ColorResult as ColorResult,
+)
 
 
 class VtkModelView(VtkObjectView):
