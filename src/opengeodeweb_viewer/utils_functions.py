@@ -27,6 +27,7 @@ def validate_schema(
             }
         )
 
+
 def deterministic_color(identifier: str) -> tuple[float, float, float]:
     CIRCLE_DEGREES = 360
     HASH_PRIME = 31
@@ -48,7 +49,9 @@ def deterministic_color(identifier: str) -> tuple[float, float, float]:
 
     def component(phase: int) -> float:
         step = (phase + hue / DEGREES_PER_STEP) % STEPS_COUNT
-        intensity = BASE_LIGHTNESS - VIBRANCY_RANGE * max(min(step - 3, MIRROR_MAX - step, 1), -1)
+        intensity = BASE_LIGHTNESS - VIBRANCY_RANGE * max(
+            min(step - 3, MIRROR_MAX - step, 1), -1
+        )
         return round(255 * intensity) / 255
 
     return (component(0), component(PHASE_GREEN), component(4))
