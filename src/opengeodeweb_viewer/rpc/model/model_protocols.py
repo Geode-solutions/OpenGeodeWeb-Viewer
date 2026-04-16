@@ -22,12 +22,25 @@ from opengeodeweb_viewer.utils_functions import (
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.vtk_protocol import VtkPipeline
-from typing import Optional
+from typing import Optional, List, TypedDict, Protocol
 from . import schemas
-from opengeodeweb_viewer.rpc.model.schemas.color import (
-    ColorClass as ColorClass,
-    ColorResult as ColorResult,
-)
+
+class ColorProtocol(Protocol):
+    r: int
+    g: int
+    b: int
+
+
+class ColorRGB(TypedDict):
+    r: int
+    g: int
+    b: int
+
+
+class ColorResult(TypedDict):
+    viewer_id: int
+    geode_id: str
+    color: ColorRGB
 
 
 class VtkModelView(VtkObjectView):
@@ -44,7 +57,7 @@ class VtkModelView(VtkObjectView):
         pipeline: VtkPipeline,
         block_ids: list[int],
         color_mode: str,
-        color: Optional[ColorClass] = None,
+        color: Optional[ColorProtocol] = None,
     ) -> list[ColorResult]:
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
