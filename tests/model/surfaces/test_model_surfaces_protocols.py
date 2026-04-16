@@ -58,8 +58,23 @@ def test_surfaces_polygons_color(
             {
                 "id": "123456789",
                 "block_ids": list(range(36, 49)),
+                "color_mode": "constant",
                 "color": {"r": 255, "g": 0, "b": 0},
             }
         ],
     )
     assert server.compare_image("model/surfaces/color.jpeg") == True
+
+
+def test_surfaces_polygons_random_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_surfaces_polygons_visibility(server, dataset_factory)
+
+    server.call(
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"],
+        [{"id": "123456789", "block_ids": list(range(36, 49)), "color_mode": "random"}],
+    )
+    assert server.compare_image("model/surfaces/random_color.jpeg") == True
