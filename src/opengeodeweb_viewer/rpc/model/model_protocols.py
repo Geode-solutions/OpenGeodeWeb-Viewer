@@ -18,6 +18,7 @@ from opengeodeweb_microservice.schemas import get_schemas_dict
 from opengeodeweb_viewer.utils_functions import (
     validate_schema,
     RpcParams,
+    deterministic_color,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.vtk_protocol import VtkPipeline
@@ -32,6 +33,45 @@ class VtkModelView(VtkObjectView):
 
     def __init__(self) -> None:
         super().__init__()
+
+    def apply_color(
+        self,
+        pipeline: VtkPipeline,
+        block_ids: list[int],
+        color_mode: str,
+        color=None,
+    ) -> list[dict]:
+        mapper = pipeline.mapper
+        if not isinstance(mapper, vtkCompositePolyDataMapper):
+            return []
+        attr = mapper.GetCompositeDataDisplayAttributes()
+        colors: list[dict] = []
+        for block_id in block_ids:
+            block_ds = pipeline.blockDataSets[block_id]
+            if color_mode == "random":
+                geode_id = pipeline.blockGeodeIds[block_id]
+                r, g, b = deterministic_color(str(geode_id))
+                attr.SetBlockColor(block_ds, [r, g, b])
+                colors.append(
+                    {
+                        "viewer_id": block_id,
+                        "geode_id": str(geode_id),
+                        "color": {
+                            "r": round(r * 255),
+                            "g": round(g * 255),
+                            "b": round(b * 255),
+                        },
+                    }
+                )
+            elif color is not None:
+                r, g, b = (
+                    color.r / 255,
+                    color.g / 255,
+                    color.b / 255,
+                )
+                attr.SetBlockColor(block_ds, [r, g, b])
+        mapper.Modified()
+        return colors
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
@@ -62,12 +102,10 @@ class VtkModelView(VtkObjectView):
                     flat_index = iterator.GetCurrentFlatIndex()
                     while flat_index > len(data.blockDataSets):
                         data.blockDataSets.append(None)
-                        data.blockGeodeIds.append(None)
+                        data.blockGeodeIds.append("")
                     data.blockDataSets.append(block)
                     meta = iterator.GetCurrentMetaData()
-                    name = None
-                    if meta and meta.Has(vtkCompositeDataSet.NAME()):
-                        name = meta.Get(vtkCompositeDataSet.NAME())
+                    name = meta.Get(vtkCompositeDataSet.NAME())
                     data.blockGeodeIds.append(name)
                 iterator.GoToNextItem()
             self.registerObject(data_id, file_name, data)
