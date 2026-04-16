@@ -89,6 +89,18 @@ class VtkModelView(VtkObjectView):
                     color.b / 255,
                 )
                 attr.SetBlockColor(block_ds, [r, g, b])
+                geode_id = pipeline.blockGeodeIds[block_id]
+                colors.append(
+                    {
+                        "viewer_id": block_id,
+                        "geode_id": str(geode_id),
+                        "color": {
+                            "r": color.r,
+                            "g": color.g,
+                            "b": color.b,
+                        },
+                    }
+                )
         mapper.Modified()
         return colors
 
