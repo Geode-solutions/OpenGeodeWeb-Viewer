@@ -52,7 +52,7 @@ def test_edges_with_edged_curve(
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["color"]["rpc"],
-        [{"id": "123456789", "color": {"r": 255, "g": 0, "b": 0}}],
+        [{"id": "123456789", "color": {"r": 255, "g": 0, "b": 0, "a": 1}}],
     )
     assert server.compare_image("mesh/edges/edged_curve_color.jpeg") == True
 
