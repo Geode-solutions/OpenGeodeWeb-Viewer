@@ -398,7 +398,8 @@
               "required": [
                 "r",
                 "g",
-                "b"
+                "b",
+                "a"
               ],
               "additionalProperties": false
             }
@@ -1196,8 +1197,7 @@
                 "a": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
@@ -1289,8 +1289,7 @@
                 "a": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
@@ -1403,8 +1402,7 @@
                 "a": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
@@ -1585,8 +1583,7 @@
                 "a": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
