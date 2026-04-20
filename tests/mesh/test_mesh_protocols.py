@@ -45,7 +45,12 @@ def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"],
-        [{"id": "123456789", "color": {"red": 50, "green": 2, "blue": 250, "alpha": 1.0}}],
+        [
+            {
+                "id": "123456789",
+                "color": {"red": 50, "green": 2, "blue": 250, "alpha": 1.0},
+            }
+        ],
     )
     assert server.compare_image("mesh/color.jpeg") == True
 
