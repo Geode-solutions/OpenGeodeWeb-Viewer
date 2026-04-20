@@ -72,7 +72,6 @@ class VtkMeshView(VtkObjectView):
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, params.visibility)
 
-
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
     def setMeshColor(self, rpc_params: RpcParams) -> None:
         validate_schema(rpc_params, self.mesh_schemas_dict["color"], self.mesh_prefix)
