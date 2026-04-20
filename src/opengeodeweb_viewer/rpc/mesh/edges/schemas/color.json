@@ -31,7 +31,7 @@
           "default": 1
         }
       },
-      "required": ["r", "g", "b"],
+      "required": ["r", "g", "b", "a"],
       "additionalProperties": false
     }
   },

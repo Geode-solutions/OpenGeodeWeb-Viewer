@@ -35,7 +35,7 @@ def test_cells_color(
     server.call(
         VtkMeshCellsView.mesh_cells_prefix
         + VtkMeshCellsView.mesh_cells_schemas_dict["color"]["rpc"],
-        [{"id": mesh_id, "color": {"r": 255, "g": 0, "b": 0, "a": 1.0}}],
+        [{"id": mesh_id, "color": {"r": 255, "g": 0, "b": 0, "a": 0.5}}],
     )
     assert server.compare_image("mesh/cells/color.jpeg") == True
 
