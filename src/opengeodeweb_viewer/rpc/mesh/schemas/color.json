@@ -23,19 +23,17 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 255
+        },
+        "a": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         }
       },
-      "required": [
-        "r",
-        "g",
-        "b"
-      ],
+      "required": ["r", "g", "b", "a"],
       "additionalProperties": false
     }
   },
-  "required": [
-    "id",
-    "color"
-  ],
+  "required": ["id", "color"],
   "additionalProperties": false
 }

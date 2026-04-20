@@ -11,7 +11,7 @@ class ColorClass(DataClassJsonMixin):
     b: int
     g: int
     r: int
-    a: Optional[float] = None
+    a: float
 
 
 @dataclass

@@ -31,17 +31,10 @@
           "default": 1
         }
       },
-      "required": [
-        "r",
-        "g",
-        "b"
-      ],
+      "required": ["r", "g", "b"],
       "additionalProperties": false
     }
   },
-  "required": [
-    "id",
-    "color"
-  ],
+  "required": ["id", "color"],
   "additionalProperties": false
 }

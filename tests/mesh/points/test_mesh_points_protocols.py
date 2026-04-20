@@ -78,7 +78,7 @@ def test_points_with_point_set(
     server.call(
         VtkMeshPointsView.mesh_points_prefix
         + VtkMeshPointsView.mesh_points_schemas_dict["color"]["rpc"],
-        [{"id": mesh_id, "color": {"r": 255, "g": 0, "b": 0}}],
+        [{"id": mesh_id, "color": {"r": 255, "g": 0, "b": 0, "a": 1.0}}],
     )
     assert server.compare_image("mesh/points/point_set_color.jpeg") == True
 

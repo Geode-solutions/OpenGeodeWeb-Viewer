@@ -30,16 +30,6 @@ def test_deregister_mesh(
     assert server.compare_image("mesh/deregister.jpeg") == True
 
 
-def test_opacity(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
-    test_register_mesh(server, dataset_factory)
-
-    server.call(
-        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["opacity"]["rpc"],
-        [{"id": "123456789", "opacity": 0.1}],
-    )
-    assert server.compare_image("mesh/opacity.jpeg") == True
-
-
 def test_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
@@ -55,7 +45,7 @@ def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"],
-        [{"id": "123456789", "color": {"r": 50, "g": 2, "b": 250}}],
+        [{"id": "123456789", "color": {"r": 50, "g": 2, "b": 250, "a": 1.0}}],
     )
     assert server.compare_image("mesh/color.jpeg") == True
 

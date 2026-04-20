@@ -30,18 +30,20 @@ class ColorProtocol(Protocol):
     r: int
     g: int
     b: int
+    a: float
 
 
-class ColorRGB(TypedDict):
+class ColorRGBA(TypedDict):
     r: int
     g: int
     b: int
+    a: float
 
 
 class ColorResult(TypedDict):
     viewer_id: int
     geode_id: str
-    color: ColorRGB
+    color: ColorRGBA
 
 
 class VtkModelView(VtkObjectView):
@@ -66,11 +68,12 @@ class VtkModelView(VtkObjectView):
         attr = mapper.GetCompositeDataDisplayAttributes()
         colors: list[ColorResult] = []
         for block_id in block_ids:
-            block_ds = pipeline.blockDataSets[block_id]
+            block_dataset = pipeline.blockDataSets[block_id]
             if color_mode == "random":
                 geode_id = pipeline.blockGeodeIds[block_id]
                 r, g, b = deterministic_color(str(geode_id))
-                attr.SetBlockColor(block_ds, [r, g, b])
+                attr.SetBlockColor(block_dataset, [r, g, b])
+                attr.SetBlockOpacity(block_dataset, 1.0)
                 colors.append(
                     {
                         "viewer_id": block_id,
@@ -79,16 +82,19 @@ class VtkModelView(VtkObjectView):
                             "r": round(r * 255),
                             "g": round(g * 255),
                             "b": round(b * 255),
+                            "a": 1.0,
                         },
                     }
                 )
             elif color is not None:
-                r, g, b = (
+                r, g, b, a = (
                     color.r / 255,
                     color.g / 255,
                     color.b / 255,
+                    color.a,
                 )
-                attr.SetBlockColor(block_ds, [r, g, b])
+                attr.SetBlockColor(block_dataset, [r, g, b])
+                attr.SetBlockOpacity(block_dataset, a)
         mapper.Modified()
         return colors
 

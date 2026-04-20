@@ -42,4 +42,4 @@ class VtkMeshPolygonsView(VtkMeshView):
         )
         params = schemas.Color.from_dict(rpc_params)
         color = params.color
-        self.SetColor(params.id, color.r, color.g, color.b)
+        self.SetColor(params.id, color.r, color.g, color.b, color.a)
