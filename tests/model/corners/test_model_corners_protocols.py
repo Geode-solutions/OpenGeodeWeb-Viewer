@@ -58,7 +58,7 @@ def test_corners_points_color(
                 "id": "123456789",
                 "block_ids": list(range(1, 13)),
                 "color_mode": "constant",
-                "color": {"r": 255, "g": 0, "b": 0, "a": 1.0},
+                "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1.0},
             }
         ],
     )

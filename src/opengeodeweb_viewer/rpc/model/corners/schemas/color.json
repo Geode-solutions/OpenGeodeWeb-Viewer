@@ -18,12 +18,12 @@
     "color": {
       "type": "object",
       "properties": {
-        "r": { "type": "integer", "minimum": 0, "maximum": 255 },
-        "g": { "type": "integer", "minimum": 0, "maximum": 255 },
-        "b": { "type": "integer", "minimum": 0, "maximum": 255 },
-        "a": { "type": "number", "minimum": 0, "maximum": 1 }
+        "red": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "green": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "blue": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "alpha": { "type": "number", "minimum": 0, "maximum": 1 }
       },
-      "required": ["r", "g", "b", "a"],
+      "required": ["red", "green", "blue", "alpha"],
       "additionalProperties": false
     }
   },

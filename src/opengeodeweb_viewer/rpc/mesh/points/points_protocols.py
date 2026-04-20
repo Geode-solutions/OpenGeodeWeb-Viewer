@@ -40,7 +40,7 @@ class VtkMeshPointsView(VtkMeshView):
         )
         params = schemas.Color.from_dict(rpc_params)
         color = params.color
-        self.SetPointsColor(params.id, color.r, color.g, color.b, color.a)
+        self.SetPointsColor(params.id, color.red, color.green, color.blue, color.alpha)
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
     def setMeshPointsSize(self, rpc_params: RpcParams) -> None:

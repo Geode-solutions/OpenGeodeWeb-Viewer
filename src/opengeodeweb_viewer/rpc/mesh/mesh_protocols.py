@@ -77,7 +77,7 @@ class VtkMeshView(VtkObjectView):
         validate_schema(rpc_params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         params = schemas.Color.from_dict(rpc_params)
         color = params.color
-        self.SetColor(params.id, color.r, color.g, color.b, color.a)
+        self.SetColor(params.id, color.red, color.green, color.blue, color.alpha)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
     def meshApplyTextures(self, rpc_params: RpcParams) -> None:

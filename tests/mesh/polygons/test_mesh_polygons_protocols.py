@@ -19,7 +19,7 @@ def test_polygons_color(
     server.call(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["color"]["rpc"],
-        [{"id": "123456789", "color": {"r": 255, "g": 0, "b": 0, "a": 1.0}}],
+        [{"id": "123456789", "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1.0}}],
     )
     assert server.compare_image("mesh/polygons/color.jpeg") == True
 
