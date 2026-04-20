@@ -57,8 +57,23 @@ def test_corners_points_color(
             {
                 "id": "123456789",
                 "block_ids": list(range(1, 13)),
+                "color_mode": "constant",
                 "color": {"r": 255, "g": 0, "b": 0},
             }
         ],
     )
     assert server.compare_image("model/corners/color.jpeg") == True
+
+
+def test_corners_points_random_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_corners_points_visibility(server, dataset_factory)
+
+    server.call(
+        VtkModelCornersView.model_corners_prefix
+        + VtkModelCornersView.model_corners_schemas_dict["color"]["rpc"],
+        [{"id": "123456789", "block_ids": list(range(1, 13)), "color_mode": "random"}],
+    )
+    assert server.compare_image("model/corners/random_color.jpeg") == True

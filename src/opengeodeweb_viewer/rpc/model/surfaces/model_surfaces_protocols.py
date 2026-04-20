@@ -6,11 +6,8 @@ from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
-from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.utils_functions import validate_schema, RpcParams
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView, ColorResult
 from . import schemas
 
 
@@ -34,12 +31,14 @@ class VtkModelSurfacesView(VtkModelView):
         self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
 
     @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["color"]["rpc"])
-    def setModelSurfacesPolygonsCOlor(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesColor(self, rpc_params: RpcParams) -> list[ColorResult]:
         validate_schema(
             rpc_params,
             self.model_surfaces_schemas_dict["color"],
             self.model_surfaces_prefix,
         )
         params = schemas.Color.from_dict(rpc_params)
-        color = params.color
-        self.SetBlocksColor(params.id, params.block_ids, color.r, color.g, color.b)
+        pipeline = self.get_vtk_pipeline(params.id)
+        return self.apply_color(
+            pipeline, params.block_ids, params.color_mode.value, params.color
+        )

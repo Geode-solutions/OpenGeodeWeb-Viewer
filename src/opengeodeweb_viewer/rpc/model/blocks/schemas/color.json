@@ -8,48 +8,25 @@
     },
     "block_ids": {
       "type": "array",
-      "items": {
-        "type": "integer"
-      },
+      "items": { "type": "integer" },
       "minItems": 1
+    },
+    "color_mode": {
+      "type": "string",
+      "enum": ["constant", "random"]
     },
     "color": {
       "type": "object",
       "properties": {
-        "r": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "g": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "b": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "a": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1,
-          "default": 1
-        }
+        "r": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "g": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "b": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "a": { "type": "number", "minimum": 0, "maximum": 1, "default": 1 }
       },
-      "required": [
-        "r",
-        "g",
-        "b"
-      ],
+      "required": ["r", "g", "b"],
       "additionalProperties": false
     }
   },
-  "required": [
-    "id",
-    "block_ids",
-    "color"
-  ],
+  "required": ["id", "block_ids", "color_mode"],
   "additionalProperties": false
 }
