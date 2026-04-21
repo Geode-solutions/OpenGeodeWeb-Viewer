@@ -44,6 +44,7 @@ class VtkPipeline:
     actor: vtkActor = field(default_factory=vtkActor)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
+    highlightActor: vtkActor | None = None
 
 
 class VtkTypingMixin:

@@ -70,6 +70,9 @@ from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
+from opengeodeweb_viewer.rpc.model.highlight.model_highlight_protocols import (
+    VtkModelHighlightView,
+)
 from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
 from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
 
@@ -136,6 +139,7 @@ class _Server(VtkTypingMixin, ServerProtocol):
         self.registerVtkWebProtocol(VtkModelLinesView())
         self.registerVtkWebProtocol(VtkModelSurfacesView())
         self.registerVtkWebProtocol(VtkModelBlocksView())
+        self.registerVtkWebProtocol(VtkModelHighlightView())
         self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.

@@ -1344,6 +1344,30 @@
           "additionalProperties": false
         }
       },
+      "highlight": {
+        "highlight": {
+          "$id": "opengeodeweb_viewer.model.highlight.highlight",
+          "rpc": "highlight",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "block_ids"
+          ],
+          "additionalProperties": false
+        }
+      },
       "lines": {
         "visibility": {
           "$id": "opengeodeweb_viewer.model.lines.visibility",
