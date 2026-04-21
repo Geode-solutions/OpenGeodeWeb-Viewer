@@ -72,18 +72,12 @@ class VtkMeshView(VtkObjectView):
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, params.visibility)
 
-    @exportRpc(mesh_prefix + mesh_schemas_dict["opacity"]["rpc"])
-    def setMeshOpacity(self, rpc_params: RpcParams) -> None:
-        validate_schema(rpc_params, self.mesh_schemas_dict["opacity"], self.mesh_prefix)
-        params = schemas.Opacity.from_dict(rpc_params)
-        self.SetOpacity(params.id, params.opacity)
-
     @exportRpc(mesh_prefix + mesh_schemas_dict["color"]["rpc"])
     def setMeshColor(self, rpc_params: RpcParams) -> None:
         validate_schema(rpc_params, self.mesh_schemas_dict["color"], self.mesh_prefix)
         params = schemas.Color.from_dict(rpc_params)
         color = params.color
-        self.SetColor(params.id, color.r, color.g, color.b)
+        self.SetColor(params.id, color.red, color.green, color.blue, color.alpha)
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["apply_textures"]["rpc"])
     def meshApplyTextures(self, rpc_params: RpcParams) -> None:

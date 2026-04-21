@@ -1,7 +1,7 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from typing import Optional, List
 from enum import Enum
+from typing import List, Optional
 
 
 @dataclass
@@ -9,10 +9,10 @@ class ColorClass(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 
-    b: int
-    g: int
-    r: int
-    a: Optional[float] = None
+    alpha: float
+    blue: int
+    green: int
+    red: int
 
 
 class ColorMode(Enum):

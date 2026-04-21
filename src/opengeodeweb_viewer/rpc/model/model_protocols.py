@@ -27,21 +27,23 @@ from . import schemas
 
 
 class ColorProtocol(Protocol):
-    r: int
-    g: int
-    b: int
+    red: int
+    green: int
+    blue: int
+    alpha: float
 
 
-class ColorRGB(TypedDict):
-    r: int
-    g: int
-    b: int
+class ColorRGBA(TypedDict):
+    red: int
+    green: int
+    blue: int
+    alpha: float
 
 
 class ColorResult(TypedDict):
     viewer_id: int
     geode_id: str
-    color: ColorRGB
+    color: ColorRGBA
 
 
 class VtkModelView(VtkObjectView):
@@ -66,29 +68,33 @@ class VtkModelView(VtkObjectView):
         attr = mapper.GetCompositeDataDisplayAttributes()
         colors: list[ColorResult] = []
         for block_id in block_ids:
-            block_ds = pipeline.blockDataSets[block_id]
+            block_dataset = pipeline.blockDataSets[block_id]
             if color_mode == "random":
                 geode_id = pipeline.blockGeodeIds[block_id]
-                r, g, b = deterministic_color(str(geode_id))
-                attr.SetBlockColor(block_ds, [r, g, b])
+                red, green, blue = deterministic_color(str(geode_id))
+                attr.SetBlockColor(block_dataset, [red, green, blue])
+                attr.SetBlockOpacity(block_dataset, 1.0)
                 colors.append(
                     {
                         "viewer_id": block_id,
                         "geode_id": str(geode_id),
                         "color": {
-                            "r": round(r * 255),
-                            "g": round(g * 255),
-                            "b": round(b * 255),
+                            "red": round(red * 255),
+                            "green": round(green * 255),
+                            "blue": round(blue * 255),
+                            "alpha": 1.0,
                         },
                     }
                 )
             elif color is not None:
-                r, g, b = (
-                    color.r / 255,
-                    color.g / 255,
-                    color.b / 255,
+                red, green, blue, alpha = (
+                    color.red / 255,
+                    color.green / 255,
+                    color.blue / 255,
+                    color.alpha,
                 )
-                attr.SetBlockColor(block_ds, [r, g, b])
+                attr.SetBlockColor(block_dataset, [red, green, blue])
+                attr.SetBlockOpacity(block_dataset, alpha)
         mapper.Modified()
         return colors
 

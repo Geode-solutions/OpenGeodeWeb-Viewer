@@ -60,11 +60,14 @@ class VtkObjectView(VtkView):
         actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetOpacity(opacity)
 
-    def SetColor(self, data_id: str, red: int, green: int, blue: int) -> None:
+    def SetColor(
+        self, data_id: str, red: int, green: int, blue: int, alpha: float
+    ) -> None:
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOff()
         actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetColor([red / 255, green / 255, blue / 255])
+        actor.GetProperty().SetOpacity(alpha)
 
     def SetEdgesVisibility(self, data_id: str, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
@@ -80,9 +83,11 @@ class VtkObjectView(VtkView):
         else:
             actor.GetProperty().SetEdgeWidth(width)
 
-    def SetEdgesColor(self, data_id: str, red: int, green: int, blue: int) -> None:
+    def SetEdgesColor(
+        self, data_id: str, red: int, green: int, blue: int, alpha: float
+    ) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
-            self.SetColor(data_id, red, green, blue)
+            self.SetColor(data_id, red, green, blue, alpha)
         else:
             actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
@@ -98,9 +103,11 @@ class VtkObjectView(VtkView):
         actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetPointSize(size)
 
-    def SetPointsColor(self, data_id: str, red: int, green: int, blue: int) -> None:
+    def SetPointsColor(
+        self, data_id: str, red: int, green: int, blue: int, alpha: float
+    ) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
-            self.SetColor(data_id, red, green, blue)
+            self.SetColor(data_id, red, green, blue, alpha)
         else:
             actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
@@ -118,7 +125,13 @@ class VtkObjectView(VtkView):
             attributes.SetBlockVisibility(blocks[block_id], visibility)
 
     def SetBlocksColor(
-        self, data_id: str, block_ids: list[int], red: int, green: int, blue: int
+        self,
+        data_id: str,
+        block_ids: list[int],
+        red: int,
+        green: int,
+        blue: int,
+        alpha: float,
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         mapper = pipeline.mapper
@@ -130,6 +143,7 @@ class VtkObjectView(VtkView):
             attributes.SetBlockColor(
                 blocks[block_id], [red / 255, green / 255, blue / 255]
             )
+            attributes.SetBlockOpacity(blocks[block_id], alpha)
 
     def clearColors(self, data_id: str) -> None:
         db = self.get_vtk_pipeline(data_id)
