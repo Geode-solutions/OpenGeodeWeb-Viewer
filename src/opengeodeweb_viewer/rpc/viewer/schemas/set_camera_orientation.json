@@ -1,0 +1,11 @@
+{
+    "rpc": "set_camera_orientation",
+    "type": "object",
+    "properties": {
+        "direction": {
+            "type": "string",
+            "enum": ["top", "bottom", "north", "south", "east", "west"]
+        }
+    },
+    "required": ["direction"]
+}

@@ -2,6 +2,7 @@ from .update_data import *
 from .update_camera import *
 from .take_screenshot import *
 from .set_z_scaling import *
+from .set_camera_orientation import *
 from .set_background_color import *
 from .reset_visualization import *
 from .reset_camera import *

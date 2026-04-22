@@ -115,13 +115,62 @@ class VtkViewerView(VtkView):
 
         renderer.SetBackground([color.r / 255, color.g / 255, color.b / 255])
 
+    def getCameraParameters(self) -> dict[str, Any]:
+        renderWindow = self.getView("-1")
+        camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
+        return {
+            "focal_point": list(camera.GetFocalPoint()),
+            "view_up": list(camera.GetViewUp()),
+            "position": list(camera.GetPosition()),
+            "view_angle": camera.GetViewAngle(),
+            "clipping_range": list(camera.GetClippingRange()),
+        }
+
     @exportRpc(viewer_prefix + viewer_schemas_dict["reset_camera"]["rpc"])
-    def resetCamera(self, rpc_params: RpcParams) -> None:
+    def resetCamera(self, rpc_params: RpcParams) -> dict[str, Any]:
         validate_schema(
             rpc_params, self.viewer_schemas_dict["reset_camera"], self.viewer_prefix
         )
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
+        return self.getCameraParameters()
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["set_camera_orientation"]["rpc"])
+    def setCameraOrientation(self, rpc_params: RpcParams) -> dict[str, Any]:
+        validate_schema(
+            rpc_params,
+            self.viewer_schemas_dict["set_camera_orientation"],
+            self.viewer_prefix,
+        )
+        params = schemas.SetCameraOrientation.from_dict(rpc_params)
+        direction = params.direction
+
+        renderWindow = self.getView("-1")
+        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        camera = renderer.GetActiveCamera()
+
+        if direction == schemas.Direction.TOP:
+            camera.SetPosition(0, 0, 1)
+            camera.SetViewUp(0, 1, 0)
+        elif direction == schemas.Direction.BOTTOM:
+            camera.SetPosition(0, 0, -1)
+            camera.SetViewUp(0, 1, 0)
+        elif direction == schemas.Direction.NORTH:
+            camera.SetPosition(0, 1, 0)
+            camera.SetViewUp(0, 0, 1)
+        elif direction == schemas.Direction.SOUTH:
+            camera.SetPosition(0, -1, 0)
+            camera.SetViewUp(0, 0, 1)
+        elif direction == schemas.Direction.EAST:
+            camera.SetPosition(1, 0, 0)
+            camera.SetViewUp(0, 0, 1)
+        elif direction == schemas.Direction.WEST:
+            camera.SetPosition(-1, 0, 0)
+            camera.SetViewUp(0, 0, 1)
+
+        camera.SetFocalPoint(0, 0, 0)
+        renderer.ResetCamera()
+        return self.getCameraParameters()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["take_screenshot"]["rpc"])
     def takeScreenshot(self, rpc_params: RpcParams) -> dict[str, str | bytes]:

@@ -1773,6 +1773,27 @@
         ],
         "additionalProperties": false
       },
+      "set_camera_orientation": {
+        "$id": "opengeodeweb_viewer.viewer.set_camera_orientation",
+        "rpc": "set_camera_orientation",
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "top",
+              "bottom",
+              "north",
+              "south",
+              "east",
+              "west"
+            ]
+          }
+        },
+        "required": [
+          "direction"
+        ]
+      },
       "set_background_color": {
         "$id": "opengeodeweb_viewer.viewer.set_background_color",
         "rpc": "set_background_color",
