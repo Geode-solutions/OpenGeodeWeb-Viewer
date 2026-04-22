@@ -172,7 +172,9 @@ class VtkObjectView(VtkView):
         is_composite = isinstance(input_dataset, vtkCompositeDataSet)
         if not pipeline.highlightActor:
             pipeline.highlightActor = vtkActor()
-            mapper = vtkCompositePolyDataMapper() if is_composite else vtkDataSetMapper()
+            mapper = (
+                vtkCompositePolyDataMapper() if is_composite else vtkDataSetMapper()
+            )
             mapper.SetInputDataObject(input_dataset)
             mapper.ScalarVisibilityOff()
             prop = pipeline.highlightActor.GetProperty()
