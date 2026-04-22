@@ -54,7 +54,10 @@ class VtkMeshView(VtkObjectView):
                 reader.GetOutputDataObject(0)
             )
             data = VtkPipeline(
-                reader, mapper, highlightActor=highlight_actor, highlightMapper=highlight_mapper
+                reader,
+                mapper,
+                highlightActor=highlight_actor,
+                highlightMapper=highlight_mapper,
             )
             self.registerObject(data_id, file_name, data)
         except Exception as e:
