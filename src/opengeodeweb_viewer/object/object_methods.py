@@ -178,7 +178,7 @@ class VtkObjectView(VtkView):
             vtkMapper.SetResolveCoincidentTopologyToPolygonOffset()
             mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -10)
             prop = pipeline.highlightActor.GetProperty()
-            prop.SetColor(1, 0, 1)
+            prop.SetColor(0.235, 0.6, 0.514)
             prop.SetLineWidth(6)
             prop.SetPointSize(15)
             prop.SetRenderPointsAsSpheres(True)
