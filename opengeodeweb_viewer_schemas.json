@@ -175,32 +175,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -373,32 +373,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -592,32 +592,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -771,32 +771,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -950,32 +950,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -1021,27 +1021,6 @@
         ],
         "additionalProperties": false
       },
-      "opacity": {
-        "$id": "opengeodeweb_viewer.mesh.opacity",
-        "rpc": "opacity",
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "minLength": 1
-          },
-          "opacity": {
-            "type": "number",
-            "min": 0,
-            "max": 1
-          }
-        },
-        "required": [
-          "id",
-          "opacity"
-        ],
-        "additionalProperties": false
-      },
       "deregister": {
         "$id": "opengeodeweb_viewer.mesh.deregister",
         "rpc": "deregister",
@@ -1069,26 +1048,32 @@
           "color": {
             "type": "object",
             "properties": {
-              "r": {
+              "red": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               },
-              "g": {
+              "green": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               },
-              "b": {
+              "blue": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
+              },
+              "alpha": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
               }
             },
             "required": [
-              "r",
-              "g",
-              "b"
+              "red",
+              "green",
+              "blue",
+              "alpha"
             ],
             "additionalProperties": false
           }
@@ -1193,32 +1178,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -1285,32 +1270,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -1422,32 +1407,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }
@@ -1603,32 +1588,32 @@
             "color": {
               "type": "object",
               "properties": {
-                "r": {
+                "red": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "g": {
+                "green": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "b": {
+                "blue": {
                   "type": "integer",
                   "minimum": 0,
                   "maximum": 255
                 },
-                "a": {
+                "alpha": {
                   "type": "number",
                   "minimum": 0,
-                  "maximum": 1,
-                  "default": 1
+                  "maximum": 1
                 }
               },
               "required": [
-                "r",
-                "g",
-                "b"
+                "red",
+                "green",
+                "blue",
+                "alpha"
               ],
               "additionalProperties": false
             }

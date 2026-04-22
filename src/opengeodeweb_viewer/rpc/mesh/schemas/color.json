@@ -9,33 +9,31 @@
     "color": {
       "type": "object",
       "properties": {
-        "r": {
+        "red": {
           "type": "integer",
           "minimum": 0,
           "maximum": 255
         },
-        "g": {
+        "green": {
           "type": "integer",
           "minimum": 0,
           "maximum": 255
         },
-        "b": {
+        "blue": {
           "type": "integer",
           "minimum": 0,
           "maximum": 255
+        },
+        "alpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         }
       },
-      "required": [
-        "r",
-        "g",
-        "b"
-      ],
+      "required": ["red", "green", "blue", "alpha"],
       "additionalProperties": false
     }
   },
-  "required": [
-    "id",
-    "color"
-  ],
+  "required": ["id", "color"],
   "additionalProperties": false
 }

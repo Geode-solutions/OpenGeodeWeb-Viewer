@@ -58,7 +58,7 @@ def test_lines_edges_color(
                 "id": "123456789",
                 "block_ids": list(range(14, 35)),
                 "color_mode": "constant",
-                "color": {"r": 255, "g": 0, "b": 0},
+                "color": {"red": 255, "green": 0, "blue": 0, "alpha": 0.5},
             }
         ],
     )
