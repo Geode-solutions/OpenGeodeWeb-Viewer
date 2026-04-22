@@ -180,23 +180,23 @@ class VtkObjectView(VtkView):
             prop = pipeline.highlightActor.GetProperty()
             prop.SetColor(0.235, 0.6, 0.514)
             prop.SetLineWidth(5)
-            prop.SetPointSize(12)
+            prop.SetPointSize(14)
             prop.SetRenderPointsAsSpheres(True)
             prop.SetLighting(False)
             pipeline.highlightActor.SetMapper(mapper)
             self.get_renderer().AddActor(pipeline.highlightActor)
         if is_composite:
-            mapper = pipeline.highlightActor.GetMapper()
-            if isinstance(mapper, vtkCompositePolyDataMapper):
-                attributes = (
-                    mapper.GetCompositeDataDisplayAttributes()
-                    or vtkCompositeDataDisplayAttributes()
-                )
-                mapper.SetCompositeDataDisplayAttributes(attributes)
-                attributes.SetBlockVisibility(input_dataset, False)
-                for block_id in block_ids:
-                    if block_id < len(pipeline.blockDataSets) and (
-                        block_dataset := pipeline.blockDataSets[block_id]
-                    ):
-                        attributes.SetBlockVisibility(block_dataset, True)
-                mapper.Modified()
+            highlight_mapper = pipeline.highlightActor.GetMapper()
+            assert isinstance(highlight_mapper, vtkCompositePolyDataMapper)
+            attributes = (
+                highlight_mapper.GetCompositeDataDisplayAttributes()
+                or vtkCompositeDataDisplayAttributes()
+            )
+            highlight_mapper.SetCompositeDataDisplayAttributes(attributes)
+            attributes.SetBlockVisibility(input_dataset, False)
+            for block_id in block_ids:
+                if block_id < len(pipeline.blockDataSets) and (
+                    block_dataset := pipeline.blockDataSets[block_id]
+                ):
+                    attributes.SetBlockVisibility(block_dataset, True)
+            highlight_mapper.Modified()

@@ -97,9 +97,6 @@ class _Server(VtkTypingMixin, ServerProtocol):
         # Standard args
         _Server.authKey = args.authKey
 
-        # Global VTK settings
-        vtkMapper.SetResolveCoincidentTopologyToPolygonOffset()
-
     def initialize(self) -> None:
         # Bring used components
         self.registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
