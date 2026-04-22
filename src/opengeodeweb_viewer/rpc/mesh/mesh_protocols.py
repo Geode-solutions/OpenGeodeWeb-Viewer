@@ -173,4 +173,4 @@ class VtkMeshView(VtkObjectView):
         )
         params = schemas.highlight.from_dict(rpc_params)
         self.highlight(params.id, params.block_ids)
-        self.render("-1")
+        self.render(-1)

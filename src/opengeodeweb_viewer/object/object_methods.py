@@ -187,15 +187,16 @@ class VtkObjectView(VtkView):
             self.get_renderer().AddActor(pipeline.highlightActor)
         if is_composite:
             mapper = pipeline.highlightActor.GetMapper()
-            attributes = (
-                mapper.GetCompositeDataDisplayAttributes()
-                or vtkCompositeDataDisplayAttributes()
-            )
-            mapper.SetCompositeDataDisplayAttributes(attributes)
-            attributes.SetBlockVisibility(input_dataset, False)
-            for block_id in block_ids:
-                if block_id < len(pipeline.blockDataSets) and (
-                    block_dataset := pipeline.blockDataSets[block_id]
-                ):
-                    attributes.SetBlockVisibility(block_dataset, True)
-            mapper.Modified()
+            if isinstance(mapper, vtkCompositePolyDataMapper):
+                attributes = (
+                    mapper.GetCompositeDataDisplayAttributes()
+                    or vtkCompositeDataDisplayAttributes()
+                )
+                mapper.SetCompositeDataDisplayAttributes(attributes)
+                attributes.SetBlockVisibility(input_dataset, False)
+                for block_id in block_ids:
+                    if block_id < len(pipeline.blockDataSets) and (
+                        block_dataset := pipeline.blockDataSets[block_id]
+                    ):
+                        attributes.SetBlockVisibility(block_dataset, True)
+                mapper.Modified()
