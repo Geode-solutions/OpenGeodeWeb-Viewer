@@ -171,6 +171,6 @@ class VtkMeshView(VtkObjectView):
         validate_schema(
             rpc_params, self.mesh_schemas_dict["highlight"], self.mesh_prefix
         )
-        params = schemas.highlight.from_dict(rpc_params)
+        params = schemas.Highlight.from_dict(rpc_params)
         self.highlight(params.id, params.block_ids)
         self.render(-1)

@@ -159,6 +159,6 @@ class VtkModelView(VtkObjectView):
         validate_schema(
             rpc_params, self.model_schemas_dict["highlight"], self.model_prefix
         )
-        params = schemas.highlight.from_dict(rpc_params)
+        params = schemas.Highlight.from_dict(rpc_params)
         self.highlight(params.id, params.block_ids)
         self.render(-1)
