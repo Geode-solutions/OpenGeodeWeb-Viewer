@@ -6,11 +6,10 @@
       "type": "string",
       "minLength": 1
     },
-    "block_ids": {
-      "type": "array",
-      "items": { "type": "integer" }
+    "visibility": {
+      "type": "boolean"
     }
   },
-  "required": ["id", "block_ids"],
+  "required": ["id", "visibility"],
   "additionalProperties": false
 }

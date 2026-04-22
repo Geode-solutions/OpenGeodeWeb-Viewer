@@ -8,7 +8,7 @@ from vtkmodules.web.wslink import ServerProtocol
 from vtkmodules.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
 from vtkmodules.vtkWebCore import vtkWebApplication
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow, vtkMapper
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
 from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 from opengeodeweb_microservice.database import connection
 

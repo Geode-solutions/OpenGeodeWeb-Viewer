@@ -50,7 +50,12 @@ class VtkMeshView(VtkObjectView):
             reader.Update()
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            data = VtkPipeline(reader, mapper)
+            highlight_actor, highlight_mapper = self.highlight(
+                reader.GetOutputDataObject(0)
+            )
+            data = VtkPipeline(
+                reader, mapper, highlightActor=highlight_actor, highlightMapper=highlight_mapper
+            )
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
@@ -172,5 +177,6 @@ class VtkMeshView(VtkObjectView):
             rpc_params, self.mesh_schemas_dict["highlight"], self.mesh_prefix
         )
         params = schemas.Highlight.from_dict(rpc_params)
-        self.highlight(params.id, params.block_ids)
+        pipeline = self.get_vtk_pipeline(params.id)
+        pipeline.highlightActor.SetVisibility(params.visibility)
         self.render(-1)

@@ -118,7 +118,14 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputDataObject(geometry_output)
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            data = VtkPipeline(reader, mapper, filter)
+            highlight_actor, highlight_mapper = self.highlight(geometry_output)
+            data = VtkPipeline(
+                reader,
+                mapper,
+                filter,
+                highlightActor=highlight_actor,
+                highlightMapper=highlight_mapper,
+            )
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()
             while not iterator.IsDoneWithTraversal():
@@ -160,5 +167,16 @@ class VtkModelView(VtkObjectView):
             rpc_params, self.model_schemas_dict["highlight"], self.model_prefix
         )
         params = schemas.Highlight.from_dict(rpc_params)
-        self.highlight(params.id, params.block_ids)
+        pipeline = self.get_vtk_pipeline(params.id)
+        if not params.visibility or not params.block_ids:
+            pipeline.highlightActor.VisibilityOff()
+        else:
+            pipeline.highlightActor.VisibilityOn()
+            mapper = pipeline.highlightMapper
+            attributes = mapper.GetCompositeDataDisplayAttributes()
+            requested_ids = set(params.block_ids)
+            for i, block in enumerate(pipeline.blockDataSets):
+                if block:
+                    attributes.SetBlockVisibility(block, i in requested_ids)
+            mapper.Modified()
         self.render(-1)

@@ -10,3 +10,4 @@ class Highlight(DataClassJsonMixin):
 
     block_ids: List[int]
     id: str
+    visibility: bool

@@ -9,8 +9,11 @@
     "block_ids": {
       "type": "array",
       "items": { "type": "integer" }
+    },
+    "visibility": {
+      "type": "boolean"
     }
   },
-  "required": ["id", "block_ids"],
+  "required": ["id", "block_ids", "visibility"],
   "additionalProperties": false
 }
