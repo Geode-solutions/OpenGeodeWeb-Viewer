@@ -165,3 +165,12 @@ class VtkMeshView(VtkObjectView):
         lut.SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
         data.mapper.InterpolateScalarsBeforeMappingOn()
+
+    @exportRpc(mesh_prefix + mesh_schemas_dict["highlight"]["rpc"])
+    def setMeshhighlight(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.mesh_schemas_dict["highlight"], self.mesh_prefix
+        )
+        params = schemas.highlight.from_dict(rpc_params)
+        self.highlight(params.id, params.block_ids)
+        self.render("-1")

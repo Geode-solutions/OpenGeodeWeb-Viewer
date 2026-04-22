@@ -9,8 +9,14 @@ from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkTexture,
     vtkCompositePolyDataMapper,
+    vtkCompositeDataDisplayAttributes,
+    vtkDataSetMapper,
 )
-from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkDataSet
+from vtkmodules.vtkCommonDataModel import (
+    vtkDataObject,
+    vtkDataSet,
+    vtkCompositeDataSet,
+)
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView, VtkPipeline
@@ -154,3 +160,42 @@ class VtkObjectView(VtkView):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
+
+    def highlight(self, data_id: str, block_ids: list[int]) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
+        if not block_ids:
+            if pipeline.highlightActor:
+                self.get_renderer().RemoveActor(pipeline.highlightActor)
+                pipeline.highlightActor = None
+            return
+        input_dataset = (pipeline.filter or pipeline.reader).GetOutputDataObject(0)
+        is_composite = isinstance(input_dataset, vtkCompositeDataSet)
+        if not pipeline.highlightActor:
+            pipeline.highlightActor = vtkActor()
+            mapper = vtkCompositePolyDataMapper() if is_composite else vtkDataSetMapper()
+            mapper.SetInputDataObject(input_dataset)
+            mapper.ScalarVisibilityOff()
+            vtkMapper.SetResolveCoincidentTopologyToPolygonOffset()
+            mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -10)
+            prop = pipeline.highlightActor.GetProperty()
+            prop.SetColor(1, 0, 1)
+            prop.SetLineWidth(6)
+            prop.SetPointSize(15)
+            prop.SetRenderPointsAsSpheres(True)
+            prop.SetLighting(False)
+            pipeline.highlightActor.SetMapper(mapper)
+            self.get_renderer().AddActor(pipeline.highlightActor)
+        if is_composite:
+            mapper = pipeline.highlightActor.GetMapper()
+            attributes = (
+                mapper.GetCompositeDataDisplayAttributes()
+                or vtkCompositeDataDisplayAttributes()
+            )
+            mapper.SetCompositeDataDisplayAttributes(attributes)
+            attributes.SetBlockVisibility(input_dataset, False)
+            for block_id in block_ids:
+                if block_id < len(pipeline.blockDataSets) and (
+                    block_ds := pipeline.blockDataSets[block_id]
+                ):
+                    attributes.SetBlockVisibility(block_ds, True)
+            mapper.Modified()
