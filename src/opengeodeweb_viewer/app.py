@@ -8,7 +8,7 @@ from vtkmodules.web.wslink import ServerProtocol
 from vtkmodules.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
 from vtkmodules.vtkWebCore import vtkWebApplication
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow, vtkMapper
 from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
 from opengeodeweb_microservice.database import connection
 
@@ -96,6 +96,9 @@ class _Server(VtkTypingMixin, ServerProtocol):
     def configure(args: argparse.Namespace) -> None:
         # Standard args
         _Server.authKey = args.authKey
+
+        # Global VTK settings
+        vtkMapper.SetResolveCoincidentTopologyToPolygonOffset()
 
     def initialize(self) -> None:
         # Bring used components

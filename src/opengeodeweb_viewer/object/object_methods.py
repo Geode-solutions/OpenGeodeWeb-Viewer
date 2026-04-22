@@ -175,12 +175,10 @@ class VtkObjectView(VtkView):
             mapper = vtkCompositePolyDataMapper() if is_composite else vtkDataSetMapper()
             mapper.SetInputDataObject(input_dataset)
             mapper.ScalarVisibilityOff()
-            vtkMapper.SetResolveCoincidentTopologyToPolygonOffset()
-            mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -10)
             prop = pipeline.highlightActor.GetProperty()
             prop.SetColor(0.235, 0.6, 0.514)
-            prop.SetLineWidth(6)
-            prop.SetPointSize(15)
+            prop.SetLineWidth(5)
+            prop.SetPointSize(12)
             prop.SetRenderPointsAsSpheres(True)
             prop.SetLighting(False)
             pipeline.highlightActor.SetMapper(mapper)
@@ -195,7 +193,7 @@ class VtkObjectView(VtkView):
             attributes.SetBlockVisibility(input_dataset, False)
             for block_id in block_ids:
                 if block_id < len(pipeline.blockDataSets) and (
-                    block_ds := pipeline.blockDataSets[block_id]
+                    block_dataset := pipeline.blockDataSets[block_id]
                 ):
-                    attributes.SetBlockVisibility(block_ds, True)
+                    attributes.SetBlockVisibility(block_dataset, True)
             mapper.Modified()
