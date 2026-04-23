@@ -118,7 +118,12 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputDataObject(geometry_output)
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            data = VtkPipeline(reader, mapper, filter)
+            highlight_mapper = vtkCompositePolyDataMapper()
+            highlight_mapper.SetCompositeDataDisplayAttributes(
+                vtkCompositeDataDisplayAttributes()
+            )
+            data = VtkPipeline(reader, highlight_mapper, mapper, filter)
+            self.highlight(data.highlightActor, data.highlightMapper, geometry_output)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()
             while not iterator.IsDoneWithTraversal():
@@ -129,6 +134,9 @@ class VtkModelView(VtkObjectView):
                         data.blockDataSets.append(None)
                         data.blockGeodeIds.append("")
                     data.blockDataSets.append(block)
+                    highlight_mapper.GetCompositeDataDisplayAttributes().SetBlockVisibility(
+                        block, False
+                    )
                     meta = iterator.GetCurrentMetaData()
                     name = meta.Get(vtkCompositeDataSet.NAME())
                     data.blockGeodeIds.append(name)
@@ -153,3 +161,29 @@ class VtkModelView(VtkObjectView):
         )
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetVisibility(params.id, params.visibility)
+
+    @exportRpc(model_prefix + model_schemas_dict["highlight"]["rpc"])
+    def setModelhighlight(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.model_schemas_dict["highlight"], self.model_prefix
+        )
+        params = schemas.Highlight.from_dict(rpc_params)
+        pipeline = self.get_vtk_pipeline(params.id)
+        pipeline.highlightActor.SetVisibility(params.visibility)
+        mapper = pipeline.highlightMapper
+        assert isinstance(mapper, vtkCompositePolyDataMapper)
+        attributes = mapper.GetCompositeDataDisplayAttributes()
+
+        for i in pipeline.activeHighlightIds:
+            attributes.SetBlockVisibility(pipeline.blockDataSets[i], False)
+
+        pipeline.activeHighlightIds = []
+        if params.visibility:
+            pipeline.activeHighlightIds = [
+                i for i in params.block_ids if pipeline.blockDataSets[i]
+            ]
+            for i in pipeline.activeHighlightIds:
+                attributes.SetBlockVisibility(pipeline.blockDataSets[i], True)
+
+        mapper.Modified()
+        self.render(-1)

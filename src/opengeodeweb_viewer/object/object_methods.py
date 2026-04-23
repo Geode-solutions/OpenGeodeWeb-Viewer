@@ -9,8 +9,13 @@ from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkTexture,
     vtkCompositePolyDataMapper,
+    vtkCompositeDataDisplayAttributes,
+    vtkDataSetMapper,
 )
-from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkDataSet
+from vtkmodules.vtkCommonDataModel import (
+    vtkDataObject,
+    vtkDataSet,
+)
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView, VtkPipeline
@@ -42,14 +47,16 @@ class VtkObjectView(VtkView):
             if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
+        renderer.AddActor(data.highlightActor)
         if resetCamara:
             renderer.ResetCamera()
 
     def deregisterObject(self, data_id: str) -> None:
-        actor = self.get_vtk_pipeline(data_id).actor
+        pipeline = self.get_vtk_pipeline(data_id)
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        renderer.RemoveActor(actor)
+        renderer.RemoveActor(pipeline.actor)
+        renderer.RemoveActor(pipeline.highlightActor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
@@ -154,3 +161,17 @@ class VtkObjectView(VtkView):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
+
+    def highlight(
+        self, actor: vtkActor, mapper: vtkMapper, input_dataset: vtkDataObject
+    ) -> None:
+        mapper.SetInputDataObject(input_dataset)
+        mapper.ScalarVisibilityOff()
+        prop = actor.GetProperty()
+        prop.SetColor(0.235, 0.6, 0.514)
+        prop.SetLineWidth(5)
+        prop.SetPointSize(14)
+        prop.SetRenderPointsAsSpheres(True)
+        prop.SetLighting(False)
+        actor.SetMapper(mapper)
+        actor.VisibilityOff()
