@@ -134,6 +134,9 @@ class VtkModelView(VtkObjectView):
                         data.blockDataSets.append(None)
                         data.blockGeodeIds.append("")
                     data.blockDataSets.append(block)
+                    highlight_mapper.GetCompositeDataDisplayAttributes().SetBlockVisibility(
+                        block, False
+                    )
                     meta = iterator.GetCurrentMetaData()
                     name = meta.Get(vtkCompositeDataSet.NAME())
                     data.blockGeodeIds.append(name)
@@ -167,13 +170,20 @@ class VtkModelView(VtkObjectView):
         params = schemas.Highlight.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
         pipeline.highlightActor.SetVisibility(params.visibility)
+        mapper = pipeline.highlightMapper
+        assert isinstance(mapper, vtkCompositePolyDataMapper)
+        attributes = mapper.GetCompositeDataDisplayAttributes()
+
+        for i in pipeline.activeHighlightIds:
+            attributes.SetBlockVisibility(pipeline.blockDataSets[i], False)
+
+        pipeline.activeHighlightIds = []
         if params.visibility:
-            mapper = pipeline.highlightMapper
-            assert isinstance(mapper, vtkCompositePolyDataMapper)
-            attributes = mapper.GetCompositeDataDisplayAttributes()
-            requested_ids = set(params.block_ids)
-            for i, block in enumerate(pipeline.blockDataSets):
-                if block:
-                    attributes.SetBlockVisibility(block, i in requested_ids)
-            mapper.Modified()
+            pipeline.activeHighlightIds = [
+                i for i in params.block_ids if pipeline.blockDataSets[i]
+            ]
+            for i in pipeline.activeHighlightIds:
+                attributes.SetBlockVisibility(pipeline.blockDataSets[i], True)
+
+        mapper.Modified()
         self.render(-1)
