@@ -122,12 +122,7 @@ class VtkModelView(VtkObjectView):
             highlight_mapper.SetCompositeDataDisplayAttributes(
                 vtkCompositeDataDisplayAttributes()
             )
-            data = VtkPipeline(
-                reader=reader,
-                highlightMapper=highlight_mapper,
-                mapper=mapper,
-                filter=filter,
-            )
+            data = VtkPipeline(reader, highlight_mapper, mapper, filter)
             self.highlight(data.highlightActor, data.highlightMapper, geometry_output)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()

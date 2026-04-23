@@ -51,11 +51,7 @@ class VtkMeshView(VtkObjectView):
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
             highlight_mapper = vtkDataSetMapper()
-            data = VtkPipeline(
-                reader=reader,
-                highlightMapper=highlight_mapper,
-                mapper=mapper,
-            )
+            data = VtkPipeline(reader, highlight_mapper, mapper)
             self.highlight(
                 data.highlightActor, data.highlightMapper, reader.GetOutputDataObject(0)
             )
