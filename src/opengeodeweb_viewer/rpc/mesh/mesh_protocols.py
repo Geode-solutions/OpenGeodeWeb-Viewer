@@ -181,6 +181,5 @@ class VtkMeshView(VtkObjectView):
         )
         params = schemas.Highlight.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        if pipeline.highlightActor:
-            pipeline.highlightActor.SetVisibility(params.visibility)
+        pipeline.highlightActor.SetVisibility(params.visibility)
         self.render(-1)

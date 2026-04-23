@@ -15,7 +15,6 @@ from vtkmodules.vtkRenderingCore import (
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
     vtkDataSet,
-    vtkCompositeDataSet,
 )
 
 # Local application imports
@@ -48,8 +47,7 @@ class VtkObjectView(VtkView):
             if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
-        if data.highlightActor:
-            renderer.AddActor(data.highlightActor)
+        renderer.AddActor(data.highlightActor)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -58,8 +56,7 @@ class VtkObjectView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
-        if pipeline.highlightActor:
-            renderer.RemoveActor(pipeline.highlightActor)
+        renderer.RemoveActor(pipeline.highlightActor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
