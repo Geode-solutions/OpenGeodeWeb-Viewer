@@ -171,16 +171,14 @@ class VtkModelView(VtkObjectView):
         )
         params = schemas.Highlight.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        if not params.visibility or not params.block_ids:
-            pipeline.highlightActor.VisibilityOff()
-        else:
-            pipeline.highlightActor.VisibilityOn()
+        pipeline.highlightActor.SetVisibility(params.visibility)
+        if params.visibility:
             mapper = pipeline.highlightMapper
-            if isinstance(mapper, vtkCompositePolyDataMapper):
-                attributes = mapper.GetCompositeDataDisplayAttributes()
-                requested_ids = set(params.block_ids)
-                for i, block in enumerate(pipeline.blockDataSets):
-                    if block:
-                        attributes.SetBlockVisibility(block, i in requested_ids)
-                mapper.Modified()
+            assert isinstance(mapper, vtkCompositePolyDataMapper)
+            attributes = mapper.GetCompositeDataDisplayAttributes()
+            requested_ids = set(params.block_ids)
+            for i, block in enumerate(pipeline.blockDataSets):
+                if block:
+                    attributes.SetBlockVisibility(block, i in requested_ids)
+            mapper.Modified()
         self.render(-1)
