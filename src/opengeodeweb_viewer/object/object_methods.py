@@ -170,11 +170,14 @@ class VtkObjectView(VtkView):
     ) -> tuple[vtkActor, vtkMapper]:
         is_composite = isinstance(input_dataset, vtkCompositeDataSet)
         highlight_actor = vtkActor()
-        mapper = vtkCompositePolyDataMapper() if is_composite else vtkDataSetMapper()
         if is_composite:
-            mapper.SetCompositeDataDisplayAttributes(
+            composite_mapper = vtkCompositePolyDataMapper()
+            composite_mapper.SetCompositeDataDisplayAttributes(
                 vtkCompositeDataDisplayAttributes()
             )
+            mapper: vtkMapper = composite_mapper
+        else:
+            mapper = vtkDataSetMapper()
         mapper.SetInputDataObject(input_dataset)
         mapper.ScalarVisibilityOff()
 
