@@ -165,27 +165,16 @@ class VtkObjectView(VtkView):
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
 
-    def highlight(self, input_dataset: vtkDataObject) -> tuple[vtkActor, vtkMapper]:
-        is_composite = isinstance(input_dataset, vtkCompositeDataSet)
-        highlight_actor = vtkActor()
-        if is_composite:
-            composite_mapper = vtkCompositePolyDataMapper()
-            composite_mapper.SetCompositeDataDisplayAttributes(
-                vtkCompositeDataDisplayAttributes()
-            )
-            mapper: vtkMapper = composite_mapper
-        else:
-            mapper = vtkDataSetMapper()
+    def highlight(
+        self, actor: vtkActor, mapper: vtkMapper, input_dataset: vtkDataObject
+    ) -> None:
         mapper.SetInputDataObject(input_dataset)
         mapper.ScalarVisibilityOff()
-
-        prop = highlight_actor.GetProperty()
+        prop = actor.GetProperty()
         prop.SetColor(0.235, 0.6, 0.514)
         prop.SetLineWidth(5)
         prop.SetPointSize(14)
         prop.SetRenderPointsAsSpheres(True)
         prop.SetLighting(False)
-
-        highlight_actor.SetMapper(mapper)
-        highlight_actor.VisibilityOff()
-        return highlight_actor, mapper
+        actor.SetMapper(mapper)
+        actor.VisibilityOff()
