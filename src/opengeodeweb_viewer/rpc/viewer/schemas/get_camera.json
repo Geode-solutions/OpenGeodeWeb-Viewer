@@ -1,0 +1,6 @@
+{
+    "rpc": "get_camera",
+    "type": "object",
+    "properties": {},
+    "required": []
+}

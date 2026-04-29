@@ -1950,6 +1950,14 @@
           "visibility"
         ],
         "additionalProperties": false
+      },
+      "get_camera": {
+        "$id": "opengeodeweb_viewer.viewer.get_camera",
+        "rpc": "get_camera",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
       }
     }
   }

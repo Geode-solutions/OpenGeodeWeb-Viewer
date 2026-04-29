@@ -288,6 +288,24 @@ class VtkViewerView(VtkView):
         camera.SetPosition(camera_options.position)
         camera.SetViewAngle(camera_options.view_angle)
         camera.SetClippingRange(camera_options.clipping_range)
+        self.render()
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["get_camera"]["rpc"])
+    def getCamera(self, rpc_params: RpcParams) -> dict:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["get_camera"], self.viewer_prefix
+        )
+        renderWindow = self.getView("-1")
+        camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
+        return {
+            "camera_options": {
+                "focal_point": list(camera.GetFocalPoint()),
+                "view_up": list(camera.GetViewUp()),
+                "position": list(camera.GetPosition()),
+                "view_angle": camera.GetViewAngle(),
+                "clipping_range": list(camera.GetClippingRange()),
+            }
+        }
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render"]["rpc"])
     def renderNow(self, rpc_params: RpcParams) -> None:
