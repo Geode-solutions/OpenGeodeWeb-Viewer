@@ -1,4 +1,5 @@
 # Standard library imports
+import math
 import os
 from typing import cast, Any, Literal
 from dataclasses import dataclass, field
@@ -19,6 +20,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkCompositePolyDataMapper,
 )
 from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkBoundingBox
+from vtkmodules.vtkCommonCore import vtkStringArray
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
@@ -152,6 +154,55 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 final_bounds = [0.0] * 6
                 bounds.GetBounds(final_bounds)
                 grid_scale.SetBounds(final_bounds)
+
+                def get_dist(axis):
+                    p1 = [final_bounds[0], final_bounds[2], final_bounds[4]]
+                    p2 = list(p1)
+                    p2[axis] = final_bounds[axis * 2 + 1]
+                    renderer.SetWorldPoint(p1[0], p1[1], p1[2], 1.0)
+                    renderer.WorldToDisplay()
+                    d1 = list(renderer.GetDisplayPoint())
+                    renderer.SetWorldPoint(p2[0], p2[1], p2[2], 1.0)
+                    renderer.WorldToDisplay()
+                    d2 = list(renderer.GetDisplayPoint())
+                    return math.sqrt((d1[0] - d2[0]) ** 2 + (d1[1] - d2[1]) ** 2)
+
+                visibility_setters = [
+                    grid_scale.SetXAxisLabelVisibility,
+                    grid_scale.SetYAxisLabelVisibility,
+                    grid_scale.SetZAxisLabelVisibility,
+                ]
+
+                for axis in range(3):
+                    dist = get_dist(axis)
+                    visibility_setter = visibility_setters[axis]
+
+                    v1 = f"{final_bounds[axis * 2]:g}"
+                    v2 = f"{final_bounds[axis * 2 + 1]:g}"
+                    v_mid = f"{(final_bounds[axis * 2] + final_bounds[axis * 2 + 1]) / 2:g}"
+
+                    len1 = len(v1) * 10
+                    len2 = len(v2) * 10
+                    len_mid = len(v_mid) * 10
+
+                    if dist < max(len1, len2) + 40:
+                        visibility_setter(False)
+                    elif dist < (len1 + len2) * 2.0 + 80:
+                        visibility_setter(True)
+                        labels = vtkStringArray()
+                        labels.InsertNextValue(v1)
+                        labels.InsertNextValue(v2)
+                        grid_scale.SetAxisLabels(axis, labels)
+                    elif dist < (len1 + len2 + len_mid) * 2.2 + 120:
+                        visibility_setter(True)
+                        labels = vtkStringArray()
+                        labels.InsertNextValue(v1)
+                        labels.InsertNextValue(v_mid)
+                        labels.InsertNextValue(v2)
+                        grid_scale.SetAxisLabels(axis, labels)
+                    else:
+                        visibility_setter(True)
+                        grid_scale.SetAxisLabels(axis, None)
         self.reset_camera_clipping_range()
 
     def render(self, view: int = -1) -> None:
