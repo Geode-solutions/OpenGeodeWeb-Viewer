@@ -155,7 +155,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 bounds.GetBounds(final_bounds)
                 grid_scale.SetBounds(final_bounds)
 
-                def get_dist(axis):
+                def get_dist(axis: int) -> float:
                     p1 = [final_bounds[0], final_bounds[2], final_bounds[4]]
                     p2 = list(p1)
                     p2[axis] = final_bounds[axis * 2 + 1]
