@@ -179,7 +179,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
                     v1 = f"{final_bounds[axis * 2]:g}"
                     v2 = f"{final_bounds[axis * 2 + 1]:g}"
-                    v_mid = f"{(final_bounds[axis * 2] + final_bounds[axis * 2 + 1]) / 2:g}"
+                    v_mid = (
+                        f"{(final_bounds[axis * 2] + final_bounds[axis * 2 + 1]) / 2:g}"
+                    )
 
                     char_width = 8
                     len1 = len(v1) * char_width
