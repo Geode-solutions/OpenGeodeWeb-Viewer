@@ -181,19 +181,24 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     v2 = f"{final_bounds[axis * 2 + 1]:g}"
                     v_mid = f"{(final_bounds[axis * 2] + final_bounds[axis * 2 + 1]) / 2:g}"
 
-                    len1 = len(v1) * 10
-                    len2 = len(v2) * 10
-                    len_mid = len(v_mid) * 10
+                    char_width = 8
+                    len1 = len(v1) * char_width
+                    len2 = len(v2) * char_width
+                    len_mid = len(v_mid) * char_width
 
-                    if dist < max(len1, len2) + 40:
+                    hide_threshold = max(len1, len2) + 15
+                    two_labels_threshold = (len1 + len2) * 1.1 + 30
+                    three_labels_threshold = (len1 + len2 + len_mid) * 1.2 + 45
+
+                    if dist < hide_threshold:
                         visibility_setter(False)
-                    elif dist < (len1 + len2) * 2.0 + 80:
+                    elif dist < two_labels_threshold:
                         visibility_setter(True)
                         labels = vtkStringArray()
                         labels.InsertNextValue(v1)
                         labels.InsertNextValue(v2)
                         grid_scale.SetAxisLabels(axis, labels)
-                    elif dist < (len1 + len2 + len_mid) * 2.2 + 120:
+                    elif dist < three_labels_threshold:
                         visibility_setter(True)
                         labels = vtkStringArray()
                         labels.InsertNextValue(v1)
