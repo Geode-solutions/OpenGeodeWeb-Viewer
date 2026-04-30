@@ -183,7 +183,9 @@ class VtkModelView(VtkObjectView):
                 i for i in params.block_ids if pipeline.blockDataSets[i]
             ]
             for i in pipeline.activeHighlightIds:
-                attributes.SetBlockVisibility(pipeline.blockDataSets[i], True)
+                block = pipeline.blockDataSets[i]
+                print(f"[HL] id={i} polys={block.GetNumberOfPolys()} bounds={block.GetBounds()}", flush=True)
+                attributes.SetBlockVisibility(block, True)
 
         mapper.Modified()
         self.render(-1)
