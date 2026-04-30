@@ -1937,6 +1937,13 @@
         ],
         "additionalProperties": false
       },
+      "get_camera": {
+        "$id": "opengeodeweb_viewer.viewer.get_camera",
+        "rpc": "get_camera",
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
       "axes": {
         "$id": "opengeodeweb_viewer.viewer.axes",
         "rpc": "axes",
@@ -1949,14 +1956,6 @@
         "required": [
           "visibility"
         ],
-        "additionalProperties": false
-      },
-      "get_camera": {
-        "$id": "opengeodeweb_viewer.viewer.get_camera",
-        "rpc": "get_camera",
-        "type": "object",
-        "properties": {},
-        "required": [],
         "additionalProperties": false
       }
     }
