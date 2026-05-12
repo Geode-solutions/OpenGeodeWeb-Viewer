@@ -202,9 +202,16 @@ class VtkViewerView(VtkView):
             self.viewer_prefix,
         )
         params = schemas.GetPointPosition.from_dict(rpc_params)
-        picker = vtkPropPicker()
-        picker.Pick(params.x, params.y, 0.0, self.get_renderer())
-        ppos = picker.GetPickPosition()
+        renderer = self.get_renderer()
+        # If clicking on an object
+        prop_picker = vtkPropPicker()
+        if prop_picker.Pick(params.x, params.y, 0.0, renderer):
+            ppos = prop_picker.GetPickPosition()
+            return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
+        # WorldPicker if notclicking on an object
+        world_picker = vtkWorldPointPicker()
+        world_picker.Pick([params.x, params.y, 0.0], renderer)
+        ppos = world_picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
     def computeEpsilon(self, renderer: vtkRenderer, z: float) -> float:
