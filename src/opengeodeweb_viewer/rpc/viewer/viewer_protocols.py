@@ -15,6 +15,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkWorldPointPicker,
     vtkPicker,
     vtkCellPicker,
+    vtkPropPicker,
     vtkCompositePolyDataMapper,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
@@ -201,9 +202,8 @@ class VtkViewerView(VtkView):
             self.viewer_prefix,
         )
         params = schemas.GetPointPosition.from_dict(rpc_params)
-        xyz = [params.x, params.y, 0.0]
-        picker = vtkWorldPointPicker()
-        picker.Pick(xyz, self.get_renderer())
+        picker = vtkPropPicker()
+        picker.Pick(params.x, params.y, 0.0, self.get_renderer())
         ppos = picker.GetPickPosition()
         return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
 
