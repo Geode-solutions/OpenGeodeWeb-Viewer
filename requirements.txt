@@ -23,7 +23,6 @@ frozenlist>=1
     #   aiohttp
     #   aiosignal
 idna==3.14
-idna==3.14
     # via yarl
 kiwisolver>=1
     # via matplotlib
@@ -62,4 +61,3 @@ wslink==1.12.4
 yarl>=1
     # via aiohttp
 
-opengeodeweb-microservice==1.*,>=1.1.3
