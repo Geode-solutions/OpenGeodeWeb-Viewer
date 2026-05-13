@@ -199,8 +199,7 @@ class VtkModelView(VtkObjectView):
         pipeline = self.get_vtk_pipeline(params.id)
         bbox = vtkBoundingBox()
         for i in params.block_ids:
-            block = pipeline.blockDataSets[i]
-            if isinstance(block, vtkDataSet):
+            if isinstance(block := pipeline.blockDataSets[i], vtkDataSet):
                 bbox.AddBounds(block.GetBounds())
 
         bounds = [0.0] * 6
