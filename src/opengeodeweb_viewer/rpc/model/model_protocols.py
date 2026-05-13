@@ -198,8 +198,8 @@ class VtkModelView(VtkObjectView):
         params = schemas.GetBlocksBounds.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
         bbox = vtkBoundingBox()
-        for i in params.block_ids:
-            if isinstance(block := pipeline.blockDataSets[i], vtkDataSet):
+        for block_id in params.block_ids:
+            if isinstance(block := pipeline.blockDataSets[block_id], vtkDataSet):
                 bbox.AddBounds(block.GetBounds())
 
         bounds = [0.0] * 6
