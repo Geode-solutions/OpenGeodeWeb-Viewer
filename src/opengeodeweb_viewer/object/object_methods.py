@@ -48,6 +48,7 @@ class VtkObjectView(VtkView):
                 resetCamara = False
         renderer.AddActor(data.actor)
         renderer.AddActor(data.highlightActor)
+        renderer.AddActor(data.hoverHighlightActor)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -57,6 +58,7 @@ class VtkObjectView(VtkView):
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
         renderer.RemoveActor(pipeline.highlightActor)
+        renderer.RemoveActor(pipeline.hoverHighlightActor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
@@ -176,5 +178,21 @@ class VtkObjectView(VtkView):
         prop.SetLighting(True)
         prop.SetEdgeVisibility(True)
         prop.SetEdgeColor(0.12, 0.35, 0.30)
+        actor.SetMapper(mapper)
+        actor.VisibilityOff()
+
+    def HoverHighlight(
+        self, actor: vtkActor, mapper: vtkDataSetMapper, input_dataset: vtkDataObject
+    ) -> None:
+        mapper.ScalarVisibilityOff()
+        mapper.SetResolveCoincidentTopologyToPolygonOffset()
+        prop = actor.GetProperty()
+        prop.SetColor(1, 0.5, 0)
+        prop.SetLineWidth(5)
+        prop.SetPointSize(16)
+        prop.SetRenderPointsAsSpheres(True)
+        prop.SetLighting(False)
+        prop.SetEdgeVisibility(True)
+        prop.SetEdgeColor(1, 0.5, 0)
         actor.SetMapper(mapper)
         actor.VisibilityOff()

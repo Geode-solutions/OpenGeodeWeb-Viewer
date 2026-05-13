@@ -1905,6 +1905,39 @@
         ],
         "additionalProperties": false
       },
+      "hover_highlight": {
+        "$id": "opengeodeweb_viewer.viewer.hover_highlight",
+        "rpc": "hover_highlight",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "field_type": {
+            "enum": [
+              "CELL",
+              "POINT"
+            ]
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "field_type",
+          "ids"
+        ],
+        "additionalProperties": false
+      },
       "grid_scale": {
         "$id": "opengeodeweb_viewer.viewer.grid_scale",
         "rpc": "grid_scale",

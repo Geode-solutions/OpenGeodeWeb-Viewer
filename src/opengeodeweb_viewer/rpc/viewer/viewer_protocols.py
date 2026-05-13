@@ -19,8 +19,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkCompositePolyDataMapper,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
-from vtkmodules.vtkCommonCore import reference
-from vtkmodules.vtkCommonDataModel import vtkBoundingBox, vtkDataSet
+from vtkmodules.vtkCommonCore import reference, vtkIdTypeArray
+from vtkmodules.vtkCommonDataModel import vtkBoundingBox, vtkDataSet, vtkSelectionNode
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -302,6 +302,65 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["render"], self.viewer_prefix
         )
         self.render()
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["hover_highlight"]["rpc"])
+    def setHoverHighlight(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["hover_highlight"], self.viewer_prefix
+        )
+        params = schemas.HoverHighlight.from_dict(rpc_params)
+        renderer = self.get_renderer()
+        picker = vtkCellPicker(tolerance=0.005)
+        picker.Pick(params.x, params.y, 0, renderer)
+        actor = picker.GetActor()
+        for data_id in params.ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            pipeline.hoverHighlightActor.VisibilityOff()
+        if actor:
+            for data_id in params.ids:
+                pipeline = self.get_vtk_pipeline(data_id)
+                if pipeline.actor == actor:
+                    cell_id = picker.GetCellId()
+                    point_id = picker.GetPointId()
+
+                    id_to_select = (
+                        cell_id
+                        if params.field_type == schemas.FieldType.CELL
+                        else point_id
+                    )
+                    if id_to_select != -1:
+                        node = pipeline.selectionNode
+                        node.SetContentType(vtkSelectionNode.INDICES)
+                        if params.field_type == schemas.FieldType.CELL:
+                            node.SetFieldType(vtkSelectionNode.CELL)
+                        else:
+                            node.SetFieldType(vtkSelectionNode.POINT)
+
+                        selection_list = vtkIdTypeArray()
+                        selection_list.SetNumberOfComponents(1)
+                        selection_list.InsertNextValue(id_to_select)
+                        node.SetSelectionList(selection_list)
+
+                        selection = pipeline.selection
+                        if selection.GetNumberOfNodes() == 0:
+                            selection.AddNode(node)
+
+                        extract = pipeline.extractSelection
+                        input_port = (
+                            pipeline.filter.GetOutputPort()
+                            if pipeline.filter
+                            else pipeline.reader.GetOutputPort()
+                        )
+                        extract.SetInputConnection(0, input_port)
+                        extract.SetInputData(1, selection)
+                        extract.Update()
+
+                        pipeline.hoverHighlightMapper.SetInputConnection(
+                            extract.GetOutputPort()
+                        )
+                        pipeline.hoverHighlightActor.VisibilityOn()
+                        break
+        self.render(-1)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:

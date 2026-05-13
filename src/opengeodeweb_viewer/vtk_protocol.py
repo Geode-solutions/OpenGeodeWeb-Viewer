@@ -18,8 +18,15 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkRenderWindow,
     vtkCompositePolyDataMapper,
+    vtkDataSetMapper,
 )
-from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkBoundingBox
+from vtkmodules.vtkCommonDataModel import (
+    vtkDataObject,
+    vtkBoundingBox,
+    vtkSelection,
+    vtkSelectionNode,
+)
+from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 from vtkmodules.vtkCommonCore import vtkStringArray
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
@@ -46,6 +53,11 @@ class VtkPipeline:
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
     highlightActor: vtkActor = field(default_factory=vtkActor)
+    hoverHighlightActor: vtkActor = field(default_factory=vtkActor)
+    hoverHighlightMapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
+    selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
+    selection: vtkSelection = field(default_factory=vtkSelection)
+    extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
     activeHighlightIds: list[int] = field(default_factory=list)
