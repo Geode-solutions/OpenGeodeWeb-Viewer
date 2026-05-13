@@ -5,6 +5,7 @@ import os
 from vtkmodules.vtkCommonDataModel import (
     vtkCompositeDataSet,
     vtkBoundingBox,
+    vtkDataSet,
 )
 from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
@@ -198,8 +199,9 @@ class VtkModelView(VtkObjectView):
         pipeline = self.get_vtk_pipeline(params.id)
         bbox = vtkBoundingBox()
         for i in params.block_ids:
-            if i < len(pipeline.blockDataSets) and pipeline.blockDataSets[i]:
-                bbox.AddBounds(pipeline.blockDataSets[i].GetBounds())
+            block = pipeline.blockDataSets[i]
+            if isinstance(block, vtkDataSet):
+                bbox.AddBounds(block.GetBounds())
 
         bounds = [0.0] * 6
         bbox.GetBounds(bounds)
