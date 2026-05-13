@@ -4,6 +4,7 @@ import os
 # Third party imports
 from vtkmodules.vtkIOXML import vtkXMLDataReader, vtkXMLImageDataReader
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
+from vtkmodules.vtkCommonCore import vtkIdTypeArray
 from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkActor,
@@ -15,6 +16,7 @@ from vtkmodules.vtkRenderingCore import (
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
     vtkDataSet,
+    vtkSelectionNode,
 )
 
 # Local application imports
@@ -181,7 +183,7 @@ class VtkObjectView(VtkView):
         actor.SetMapper(mapper)
         actor.VisibilityOff()
 
-    def HoverHighlight(
+    def setupHoverHighlight(
         self, actor: vtkActor, mapper: vtkDataSetMapper, input_dataset: vtkDataObject
     ) -> None:
         mapper.ScalarVisibilityOff()

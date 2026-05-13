@@ -27,7 +27,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkSelectionNode,
 )
 from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
-from vtkmodules.vtkCommonCore import vtkStringArray
+from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
@@ -149,6 +149,43 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             grid_scale.SetUseBounds(False)
         else:
             renderer.ResetCameraClippingRange()
+
+    def updateHoverHighlight(
+        self, pipeline: VtkPipeline, id_to_select: int, field_type: str
+    ) -> None:
+        node = pipeline.selectionNode
+        node.SetContentType(vtkSelectionNode.INDICES)
+        if field_type == "CELL":
+            node.SetFieldType(vtkSelectionNode.CELL)
+        else:
+            node.SetFieldType(vtkSelectionNode.POINT)
+
+        selection_list = vtkIdTypeArray()
+        selection_list.SetNumberOfComponents(1)
+        selection_list.InsertNextValue(id_to_select)
+        node.SetSelectionList(selection_list)
+
+        selection = pipeline.selection
+        if selection.GetNumberOfNodes() == 0:
+            selection.AddNode(node)
+
+        extract = pipeline.extractSelection
+        input_port = (
+            pipeline.filter.GetOutputPort()
+            if pipeline.filter
+            else pipeline.reader.GetOutputPort()
+        )
+        extract.SetInputConnection(0, input_port)
+        extract.SetInputData(1, selection)
+        extract.Update()
+
+        pipeline.hoverHighlightMapper.SetInputConnection(extract.GetOutputPort())
+        pipeline.hoverHighlightActor.VisibilityOn()
+
+    def clearHoverHighlights(self, ids: list[str]) -> None:
+        for data_id in ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            pipeline.hoverHighlightActor.VisibilityOff()
 
     def update_grid_scale_and_clipping_range(self) -> None:
         grid_scale = self.get_grid_scale()

@@ -313,9 +313,7 @@ class VtkViewerView(VtkView):
         picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, renderer)
         actor = picker.GetActor()
-        for data_id in params.ids:
-            pipeline = self.get_vtk_pipeline(data_id)
-            pipeline.hoverHighlightActor.VisibilityOff()
+        self.clearHoverHighlights(params.ids)
         if actor:
             for data_id in params.ids:
                 pipeline = self.get_vtk_pipeline(data_id)
@@ -329,36 +327,9 @@ class VtkViewerView(VtkView):
                         else point_id
                     )
                     if id_to_select != -1:
-                        node = pipeline.selectionNode
-                        node.SetContentType(vtkSelectionNode.INDICES)
-                        if params.field_type == schemas.FieldType.CELL:
-                            node.SetFieldType(vtkSelectionNode.CELL)
-                        else:
-                            node.SetFieldType(vtkSelectionNode.POINT)
-
-                        selection_list = vtkIdTypeArray()
-                        selection_list.SetNumberOfComponents(1)
-                        selection_list.InsertNextValue(id_to_select)
-                        node.SetSelectionList(selection_list)
-
-                        selection = pipeline.selection
-                        if selection.GetNumberOfNodes() == 0:
-                            selection.AddNode(node)
-
-                        extract = pipeline.extractSelection
-                        input_port = (
-                            pipeline.filter.GetOutputPort()
-                            if pipeline.filter
-                            else pipeline.reader.GetOutputPort()
+                        self.updateHoverHighlight(
+                            pipeline, id_to_select, params.field_type.value
                         )
-                        extract.SetInputConnection(0, input_port)
-                        extract.SetInputData(1, selection)
-                        extract.Update()
-
-                        pipeline.hoverHighlightMapper.SetInputConnection(
-                            extract.GetOutputPort()
-                        )
-                        pipeline.hoverHighlightActor.VisibilityOn()
                         break
         self.render(-1)
 
