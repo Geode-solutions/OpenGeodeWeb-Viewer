@@ -55,11 +55,7 @@ class VtkMeshView(VtkObjectView):
             self.highlight(
                 data.highlightActor, data.highlightMapper, reader.GetOutputDataObject(0)
             )
-            self.HoverHighlight(
-                data.hoverHighlightActor,
-                data.hoverHighlightMapper,
-                reader.GetOutputDataObject(0),
-            )
+            self.setupHoverHighlight(data)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)

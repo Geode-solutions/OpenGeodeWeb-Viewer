@@ -124,9 +124,7 @@ class VtkModelView(VtkObjectView):
             )
             data = VtkPipeline(reader, highlight_mapper, mapper, filter)
             self.highlight(data.highlightActor, data.highlightMapper, geometry_output)
-            self.HoverHighlight(
-                data.hoverHighlightActor, data.hoverHighlightMapper, geometry_output
-            )
+            self.setupHoverHighlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()
             while not iterator.IsDoneWithTraversal():

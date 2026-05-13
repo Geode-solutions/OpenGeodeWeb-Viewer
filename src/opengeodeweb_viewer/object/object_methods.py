@@ -183,9 +183,9 @@ class VtkObjectView(VtkView):
         actor.SetMapper(mapper)
         actor.VisibilityOff()
 
-    def setupHoverHighlight(
-        self, actor: vtkActor, mapper: vtkDataSetMapper, input_dataset: vtkDataObject
-    ) -> None:
+    def setupHoverHighlight(self, pipeline: VtkPipeline) -> None:
+        actor = pipeline.hoverHighlightActor
+        mapper = pipeline.hoverHighlightMapper
         mapper.ScalarVisibilityOff()
         mapper.SetResolveCoincidentTopologyToPolygonOffset()
         prop = actor.GetProperty()
@@ -198,3 +198,12 @@ class VtkObjectView(VtkView):
         prop.SetEdgeColor(1, 0.5, 0)
         actor.SetMapper(mapper)
         actor.VisibilityOff()
+        input_port = (
+            pipeline.filter.GetOutputPort()
+            if pipeline.filter
+            else pipeline.reader.GetOutputPort()
+        )
+        pipeline.selection.AddNode(pipeline.selectionNode)
+        pipeline.extractSelection.SetInputConnection(0, input_port)
+        pipeline.extractSelection.SetInputData(1, pipeline.selection)
+        mapper.SetInputConnection(pipeline.extractSelection.GetOutputPort())

@@ -155,31 +155,16 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     ) -> None:
         node = pipeline.selectionNode
         node.SetContentType(vtkSelectionNode.INDICES)
-        if field_type == "CELL":
-            node.SetFieldType(vtkSelectionNode.CELL)
-        else:
-            node.SetFieldType(vtkSelectionNode.POINT)
-
+        node.SetFieldType(
+            vtkSelectionNode.CELL if field_type == "CELL" else vtkSelectionNode.POINT
+        )
         selection_list = vtkIdTypeArray()
         selection_list.SetNumberOfComponents(1)
         selection_list.InsertNextValue(id_to_select)
         node.SetSelectionList(selection_list)
 
-        selection = pipeline.selection
-        if selection.GetNumberOfNodes() == 0:
-            selection.AddNode(node)
-
-        extract = pipeline.extractSelection
-        input_port = (
-            pipeline.filter.GetOutputPort()
-            if pipeline.filter
-            else pipeline.reader.GetOutputPort()
-        )
-        extract.SetInputConnection(0, input_port)
-        extract.SetInputData(1, selection)
-        extract.Update()
-
-        pipeline.hoverHighlightMapper.SetInputConnection(extract.GetOutputPort())
+        pipeline.extractSelection.Modified()
+        pipeline.extractSelection.Update()
         pipeline.hoverHighlightActor.VisibilityOn()
 
     def clearHoverHighlights(self, ids: list[str]) -> None:
