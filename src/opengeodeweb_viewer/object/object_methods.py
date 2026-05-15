@@ -8,6 +8,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkActor,
     vtkTexture,
+    vtkCompositePolyDataMapper,
+    vtkCompositeDataDisplayAttributes,
     vtkDataSetMapper,
 )
 from vtkmodules.vtkCommonDataModel import (
