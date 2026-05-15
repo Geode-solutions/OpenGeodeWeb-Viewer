@@ -177,12 +177,12 @@ class VtkModelView(VtkObjectView):
                 if isinstance(block, vtkDataSet):
                     append.AddInputData(block)
             append.Update()
-            pipeline.hoverHighlightMapper.SetInputDataObject(append.GetOutput())
+            pipeline.hoverHighlight.mapper.SetInputDataObject(append.GetOutput())
         else:
-            pipeline.hoverHighlightMapper.SetInputConnection(
-                pipeline.extractSelection.GetOutputPort()
+            pipeline.hoverHighlight.mapper.SetInputConnection(
+                pipeline.hoverHighlight.extractSelection.GetOutputPort()
             )
-        pipeline.hoverHighlightActor.SetVisibility(params.visibility)
+        pipeline.hoverHighlight.actor.SetVisibility(params.visibility)
         self.render(-1)
 
     @exportRpc(model_prefix + model_schemas_dict["get_blocks_bounds"]["rpc"])

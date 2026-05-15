@@ -45,7 +45,7 @@ class VtkObjectView(VtkView):
             if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
-        renderer.AddActor(data.hoverHighlightActor)
+        renderer.AddActor(data.hoverHighlight.actor)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -54,7 +54,7 @@ class VtkObjectView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
-        renderer.RemoveActor(pipeline.hoverHighlightActor)
+        renderer.RemoveActor(pipeline.hoverHighlight.actor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
@@ -172,25 +172,18 @@ class VtkObjectView(VtkView):
         prop.SetLighting(False)
         prop.SetEdgeVisibility(True)
         prop.SetEdgeColor(0.12, 0.35, 0.30)
-        selection.AddNode(selection_node)
-        extract_selection.SetInputConnection(0, input_port)
-        extract_selection.SetInputData(1, selection)
-        mapper.SetInputConnection(extract_selection.GetOutputPort())
         actor.SetMapper(mapper)
         actor.VisibilityOff()
 
     def highlight(self, pipeline: VtkPipeline) -> None:
-        self._apply_highlight_style(
-            pipeline.hoverHighlightActor, pipeline.hoverHighlightMapper
-        )
+        hl = pipeline.hoverHighlight
+        self._apply_highlight_style(hl.actor, hl.mapper)
         input_port = (
             pipeline.filter.GetOutputPort()
             if pipeline.filter
             else pipeline.reader.GetOutputPort()
         )
-        pipeline.selection.AddNode(pipeline.selectionNode)
-        pipeline.extractSelection.SetInputConnection(0, input_port)
-        pipeline.extractSelection.SetInputData(1, pipeline.selection)
-        pipeline.hoverHighlightMapper.SetInputConnection(
-            pipeline.extractSelection.GetOutputPort()
-        )
+        hl.selection.AddNode(hl.selectionNode)
+        hl.extractSelection.SetInputConnection(0, input_port)
+        hl.extractSelection.SetInputData(1, hl.selection)
+        hl.mapper.SetInputConnection(hl.extractSelection.GetOutputPort())

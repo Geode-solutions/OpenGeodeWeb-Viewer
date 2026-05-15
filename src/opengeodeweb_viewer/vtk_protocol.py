@@ -60,11 +60,7 @@ class VtkPipeline:
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
-    hoverHighlightActor: vtkActor = field(default_factory=vtkActor)
-    hoverHighlightMapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
-    selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
-    selection: vtkSelection = field(default_factory=vtkSelection)
-    extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
+    hoverHighlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
 

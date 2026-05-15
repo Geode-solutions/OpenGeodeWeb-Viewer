@@ -176,10 +176,10 @@ class VtkMeshView(VtkObjectView):
         pipeline = self.get_vtk_pipeline(params.id)
         if params.visibility:
             dataset = pipeline.reader.GetOutputDataObject(0)
-            pipeline.hoverHighlightMapper.SetInputDataObject(dataset)
+            pipeline.hoverHighlight.mapper.SetInputDataObject(dataset)
         else:
-            pipeline.hoverHighlightMapper.SetInputConnection(
-                pipeline.extractSelection.GetOutputPort()
+            pipeline.hoverHighlight.mapper.SetInputConnection(
+                pipeline.hoverHighlight.extractSelection.GetOutputPort()
             )
-        pipeline.hoverHighlightActor.SetVisibility(params.visibility)
+        pipeline.hoverHighlight.actor.SetVisibility(params.visibility)
         self.render(-1)
