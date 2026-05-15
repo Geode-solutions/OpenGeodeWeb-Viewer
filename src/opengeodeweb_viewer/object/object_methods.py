@@ -172,6 +172,7 @@ class VtkObjectView(VtkView):
         mapper.SetInputDataObject(input_dataset)
         mapper.ScalarVisibilityOff()
         mapper.SetResolveCoincidentTopologyToPolygonOffset()
+        mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -2)
         prop = actor.GetProperty()
         prop.SetColor(0.235, 0.6, 0.514)
         prop.SetLineWidth(3)
@@ -188,6 +189,7 @@ class VtkObjectView(VtkView):
         mapper = pipeline.hoverHighlightMapper
         mapper.ScalarVisibilityOff()
         mapper.SetResolveCoincidentTopologyToPolygonOffset()
+        mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -2)
         prop = actor.GetProperty()
         prop.SetColor(0.235, 0.6, 0.514)
         prop.SetLineWidth(5)
