@@ -322,9 +322,7 @@ class VtkViewerView(VtkView):
                 cell_id = picker.GetCellId()
                 point_id = picker.GetPointId()
                 id_to_select = (
-                    cell_id
-                    if params.field_type == schemas.FieldType.CELL
-                    else point_id
+                    cell_id if params.field_type == schemas.FieldType.CELL else point_id
                 )
                 if id_to_select == -1:
                     break
