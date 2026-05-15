@@ -50,11 +50,8 @@ class VtkMeshView(VtkObjectView):
             reader.Update()
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            highlight_mapper = vtkDataSetMapper()
-            data = VtkPipeline(reader, highlight_mapper, mapper)
-            self.highlight(
-                data.highlightActor, data.highlightMapper, reader.GetOutputDataObject(0)
-            )
+            data = VtkPipeline(reader, mapper)
+            self.setupHighlight(data)
             self.setupHoverHighlight(data)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
@@ -178,5 +175,5 @@ class VtkMeshView(VtkObjectView):
         )
         params = schemas.Highlight.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        pipeline.highlightActor.SetVisibility(params.visibility)
+        pipeline.highlight.actor.SetVisibility(params.visibility)
         self.render(-1)

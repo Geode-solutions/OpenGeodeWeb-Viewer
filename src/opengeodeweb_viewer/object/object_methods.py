@@ -4,20 +4,18 @@ import os
 # Third party imports
 from vtkmodules.vtkIOXML import vtkXMLDataReader, vtkXMLImageDataReader
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
-from vtkmodules.vtkCommonCore import vtkIdTypeArray
 from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkActor,
     vtkTexture,
-    vtkCompositePolyDataMapper,
-    vtkCompositeDataDisplayAttributes,
     vtkDataSetMapper,
 )
 from vtkmodules.vtkCommonDataModel import (
-    vtkDataObject,
     vtkDataSet,
     vtkSelectionNode,
+    vtkSelection,
 )
+from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView, VtkPipeline
@@ -49,8 +47,8 @@ class VtkObjectView(VtkView):
             if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
-        renderer.AddActor(data.highlightActor)
-        renderer.AddActor(data.hoverHighlightActor)
+        renderer.AddActor(data.highlight.actor)
+        renderer.AddActor(data.hoverHighlight.actor)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -59,8 +57,8 @@ class VtkObjectView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
-        renderer.RemoveActor(pipeline.highlightActor)
-        renderer.RemoveActor(pipeline.hoverHighlightActor)
+        renderer.RemoveActor(pipeline.highlight.actor)
+        renderer.RemoveActor(pipeline.hoverHighlight.actor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
@@ -166,27 +164,15 @@ class VtkObjectView(VtkView):
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
 
-    def highlight(
-        self, actor: vtkActor, mapper: vtkMapper, input_dataset: vtkDataObject
+    def _setupHighlightPipeline(
+        self,
+        actor: vtkActor,
+        mapper: vtkMapper,
+        selection_node: vtkSelectionNode,
+        selection: vtkSelection,
+        extract_selection: vtkExtractSelection,
+        input_port: vtkAlgorithm,
     ) -> None:
-        mapper.SetInputDataObject(input_dataset)
-        mapper.ScalarVisibilityOff()
-        mapper.SetResolveCoincidentTopologyToPolygonOffset()
-        mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -2)
-        prop = actor.GetProperty()
-        prop.SetColor(0.235, 0.6, 0.514)
-        prop.SetLineWidth(3)
-        prop.SetPointSize(14)
-        prop.SetRenderPointsAsSpheres(True)
-        prop.SetLighting(True)
-        prop.SetEdgeVisibility(True)
-        prop.SetEdgeColor(0.12, 0.35, 0.30)
-        actor.SetMapper(mapper)
-        actor.VisibilityOff()
-
-    def setupHoverHighlight(self, pipeline: VtkPipeline) -> None:
-        actor = pipeline.hoverHighlightActor
-        mapper = pipeline.hoverHighlightMapper
         mapper.ScalarVisibilityOff()
         mapper.SetResolveCoincidentTopologyToPolygonOffset()
         mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -2)
@@ -198,14 +184,39 @@ class VtkObjectView(VtkView):
         prop.SetLighting(False)
         prop.SetEdgeVisibility(True)
         prop.SetEdgeColor(0.12, 0.35, 0.30)
+        selection.AddNode(selection_node)
+        extract_selection.SetInputConnection(0, input_port)
+        extract_selection.SetInputData(1, selection)
+        mapper.SetInputConnection(extract_selection.GetOutputPort())
         actor.SetMapper(mapper)
         actor.VisibilityOff()
+
+    def setupHighlight(self, pipeline: VtkPipeline) -> None:
         input_port = (
             pipeline.filter.GetOutputPort()
             if pipeline.filter
             else pipeline.reader.GetOutputPort()
         )
-        pipeline.selection.AddNode(pipeline.selectionNode)
-        pipeline.extractSelection.SetInputConnection(0, input_port)
-        pipeline.extractSelection.SetInputData(1, pipeline.selection)
-        mapper.SetInputConnection(pipeline.extractSelection.GetOutputPort())
+        self._setupHighlightPipeline(
+            pipeline.highlight.actor,
+            pipeline.highlight.mapper,
+            pipeline.highlight.selectionNode,
+            pipeline.highlight.selection,
+            pipeline.highlight.extractSelection,
+            input_port,
+        )
+
+    def setupHoverHighlight(self, pipeline: VtkPipeline) -> None:
+        input_port = (
+            pipeline.filter.GetOutputPort()
+            if pipeline.filter
+            else pipeline.reader.GetOutputPort()
+        )
+        self._setupHighlightPipeline(
+            pipeline.hoverHighlight.actor,
+            pipeline.hoverHighlight.mapper,
+            pipeline.hoverHighlight.selectionNode,
+            pipeline.hoverHighlight.selection,
+            pipeline.hoverHighlight.extractSelection,
+            input_port,
+        )

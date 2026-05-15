@@ -47,21 +47,24 @@ class ViewerData:
 
 
 @dataclass
-class VtkPipeline:
-    reader: vtkXMLReader
-    highlightMapper: vtkMapper
-    mapper: vtkMapper
-    filter: vtkAlgorithm | None = None
+class HighlightPipeline:
     actor: vtkActor = field(default_factory=vtkActor)
-    highlightActor: vtkActor = field(default_factory=vtkActor)
-    hoverHighlightActor: vtkActor = field(default_factory=vtkActor)
-    hoverHighlightMapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
+    mapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
     selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
     selection: vtkSelection = field(default_factory=vtkSelection)
     extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
+
+
+@dataclass
+class VtkPipeline:
+    reader: vtkXMLReader
+    mapper: vtkMapper
+    filter: vtkAlgorithm | None = None
+    actor: vtkActor = field(default_factory=vtkActor)
+    highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
+    hoverHighlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
-    activeHighlightIds: list[int] = field(default_factory=list)
 
 
 class VtkTypingMixin:
@@ -158,7 +161,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         field_type: str,
         dataset: vtkDataSet | None = None,
     ) -> None:
-        node = pipeline.selectionNode
+        node = pipeline.hoverHighlight.selectionNode
         node.SetContentType(vtkSelectionNode.INDICES)
         node.SetFieldType(
             vtkSelectionNode.CELL if field_type == "CELL" else vtkSelectionNode.POINT
@@ -168,15 +171,15 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         selection_list.InsertNextValue(id_to_select)
         node.SetSelectionList(selection_list)
         if dataset is not None:
-            pipeline.extractSelection.SetInputData(0, dataset)
-        pipeline.extractSelection.Modified()
-        pipeline.extractSelection.Update()
-        pipeline.hoverHighlightActor.VisibilityOn()
+            pipeline.hoverHighlight.extractSelection.SetInputData(0, dataset)
+        pipeline.hoverHighlight.extractSelection.Modified()
+        pipeline.hoverHighlight.extractSelection.Update()
+        pipeline.hoverHighlight.actor.VisibilityOn()
 
     def clearHoverHighlights(self, ids: list[str]) -> None:
         for data_id in ids:
             pipeline = self.get_vtk_pipeline(data_id)
-            pipeline.hoverHighlightActor.VisibilityOff()
+            pipeline.hoverHighlight.actor.VisibilityOff()
 
     def update_grid_scale_and_clipping_range(self) -> None:
         grid_scale = self.get_grid_scale()
