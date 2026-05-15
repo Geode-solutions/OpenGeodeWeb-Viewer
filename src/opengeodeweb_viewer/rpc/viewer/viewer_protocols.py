@@ -309,36 +309,27 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["hover_highlight"], self.viewer_prefix
         )
         params = schemas.HoverHighlight.from_dict(rpc_params)
-        renderer = self.get_renderer()
         picker = vtkCellPicker(tolerance=0.005)
-        picker.Pick(params.x, params.y, 0, renderer)
-        actor = picker.GetActor()
+        picker.Pick(params.x, params.y, 0, self.get_renderer())
         self.clearHoverHighlights(params.ids)
-        if actor:
-            for data_id in params.ids:
-                pipeline = self.get_vtk_pipeline(data_id)
-                if pipeline.actor != actor:
-                    continue
-                cell_id = picker.GetCellId()
-                point_id = picker.GetPointId()
-                id_to_select = (
-                    cell_id
-                    if params.field_type == schemas.FieldType.CELL
-                    else point_id
-                )
-                if id_to_select == -1:
-                    break
+        actor = picker.GetActor()
+        pipeline = next(
+            (self.get_vtk_pipeline(id) for id in params.ids if self.get_vtk_pipeline(id).actor == actor),
+            None,
+        )
+        if pipeline:
+            id_to_select = (
+                picker.GetCellId()
+                if params.field_type == schemas.FieldType.CELL
+                else picker.GetPointId()
+            )
+            if id_to_select != -1:
                 dataset = None
                 if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
                     flat_index = picker.GetFlatBlockIndex()
-                    if 0 <= flat_index < len(pipeline.blockDataSets):
-                        block = pipeline.blockDataSets[flat_index]
-                        if isinstance(block, vtkDataSet):
-                            dataset = block
-                self.updateHoverHighlight(
-                    pipeline, id_to_select, params.field_type.value, dataset
-                )
-                break
+                    block = pipeline.blockDataSets[flat_index] if 0 <= flat_index < len(pipeline.blockDataSets) else None
+                    dataset = block if isinstance(block, vtkDataSet) else None
+                self.updateHoverHighlight(pipeline, id_to_select, params.field_type.value, dataset)
         self.render(-1)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
