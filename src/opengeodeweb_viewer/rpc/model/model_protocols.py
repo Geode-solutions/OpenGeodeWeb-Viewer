@@ -123,7 +123,7 @@ class VtkModelView(VtkObjectView):
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
             data = VtkPipeline(reader, mapper, filter)
-            self.setupHighlight(data)
+            self.highlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()
             while not iterator.IsDoneWithTraversal():

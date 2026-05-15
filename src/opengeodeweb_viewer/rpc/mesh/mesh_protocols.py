@@ -51,7 +51,7 @@ class VtkMeshView(VtkObjectView):
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
             data = VtkPipeline(reader, mapper)
-            self.setupHighlight(data)
+            self.highlight(data)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)

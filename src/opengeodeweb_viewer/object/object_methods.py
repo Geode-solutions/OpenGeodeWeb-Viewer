@@ -181,7 +181,7 @@ class VtkObjectView(VtkView):
         actor.SetMapper(mapper)
         actor.VisibilityOff()
 
-    def setupHighlight(self, pipeline: VtkPipeline) -> None:
+    def highlight(self, pipeline: VtkPipeline) -> None:
         self._apply_highlight_style(
             pipeline.hoverHighlightActor, pipeline.hoverHighlightMapper
         )
