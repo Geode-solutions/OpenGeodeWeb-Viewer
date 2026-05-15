@@ -160,9 +160,7 @@ class VtkObjectView(VtkView):
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
 
-    def _apply_highlight_style(
-        self, actor: vtkActor, mapper: vtkDataSetMapper
-    ) -> None:
+    def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:
         mapper.ScalarVisibilityOff()
         mapper.SetResolveCoincidentTopologyToPolygonOffset()
         mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -2)
