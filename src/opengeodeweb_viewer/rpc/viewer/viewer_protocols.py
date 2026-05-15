@@ -314,7 +314,11 @@ class VtkViewerView(VtkView):
         self.clearHoverHighlights(params.ids)
         actor = picker.GetActor()
         pipeline = next(
-            (self.get_vtk_pipeline(id) for id in params.ids if self.get_vtk_pipeline(id).actor == actor),
+            (
+                self.get_vtk_pipeline(id)
+                for id in params.ids
+                if self.get_vtk_pipeline(id).actor == actor
+            ),
             None,
         )
         if pipeline:
@@ -327,9 +331,15 @@ class VtkViewerView(VtkView):
                 dataset = None
                 if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
                     flat_index = picker.GetFlatBlockIndex()
-                    block = pipeline.blockDataSets[flat_index] if 0 <= flat_index < len(pipeline.blockDataSets) else None
+                    block = (
+                        pipeline.blockDataSets[flat_index]
+                        if 0 <= flat_index < len(pipeline.blockDataSets)
+                        else None
+                    )
                     dataset = block if isinstance(block, vtkDataSet) else None
-                self.updateHoverHighlight(pipeline, id_to_select, params.field_type.value, dataset)
+                self.updateHoverHighlight(
+                    pipeline, id_to_select, params.field_type.value, dataset
+                )
         self.render(-1)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
