@@ -53,3 +53,19 @@ def test_deregister_model(
         [{"id": "123456789"}],
     )
     assert server.compare_image("model/deregister.jpeg") == True
+
+
+def test_get_blocks_bounds(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_model(server, dataset_factory)
+
+    rpc = VtkModelView.model_prefix + "get_blocks_bounds"
+    server.call(rpc, [{"id": "123456789", "block_ids": [2]}])
+
+    response = server.get_response()
+    while isinstance(response, bytes) or response.get("id") != f"rpc:{rpc}":
+        response = server.get_response()
+
+    assert response.get("result") == [4.9, 4.9, 3.1, 3.1, 0.0, 0.0]
