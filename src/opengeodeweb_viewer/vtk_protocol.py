@@ -17,7 +17,6 @@ from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkRenderer,
     vtkRenderWindow,
-    vtkCompositePolyDataMapper,
     vtkDataSetMapper,
 )
 from vtkmodules.vtkCommonDataModel import (
@@ -49,11 +48,9 @@ class ViewerData:
 @dataclass
 class VtkPipeline:
     reader: vtkXMLReader
-    highlightMapper: vtkMapper
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
-    highlightActor: vtkActor = field(default_factory=vtkActor)
     hoverHighlightActor: vtkActor = field(default_factory=vtkActor)
     hoverHighlightMapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
     selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
@@ -61,7 +58,6 @@ class VtkPipeline:
     extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
-    activeHighlightIds: list[int] = field(default_factory=list)
 
 
 class VtkTypingMixin:

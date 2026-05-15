@@ -50,12 +50,8 @@ class VtkMeshView(VtkObjectView):
             reader.Update()
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
-            highlight_mapper = vtkDataSetMapper()
-            data = VtkPipeline(reader, highlight_mapper, mapper)
-            self.highlight(
-                data.highlightActor, data.highlightMapper, reader.GetOutputDataObject(0)
-            )
-            self.setupHoverHighlight(data)
+            data = VtkPipeline(reader, mapper)
+            self.setupHighlight(data)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
             print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
@@ -178,5 +174,12 @@ class VtkMeshView(VtkObjectView):
         )
         params = schemas.Highlight.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        pipeline.highlightActor.SetVisibility(params.visibility)
+        if params.visibility:
+            dataset = pipeline.reader.GetOutputDataObject(0)
+            pipeline.hoverHighlightMapper.SetInputDataObject(dataset)
+        else:
+            pipeline.hoverHighlightMapper.SetInputConnection(
+                pipeline.extractSelection.GetOutputPort()
+            )
+        pipeline.hoverHighlightActor.SetVisibility(params.visibility)
         self.render(-1)

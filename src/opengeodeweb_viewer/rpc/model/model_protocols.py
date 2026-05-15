@@ -11,6 +11,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
 )
+from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from wslink import register as exportRpc  # type: ignore
@@ -120,13 +121,8 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputDataObject(geometry_output)
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            highlight_mapper = vtkCompositePolyDataMapper()
-            highlight_mapper.SetCompositeDataDisplayAttributes(
-                vtkCompositeDataDisplayAttributes()
-            )
-            data = VtkPipeline(reader, highlight_mapper, mapper, filter)
-            self.highlight(data.highlightActor, data.highlightMapper, geometry_output)
-            self.setupHoverHighlight(data)
+            data = VtkPipeline(reader, mapper, filter)
+            self.setupHighlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()
             while not iterator.IsDoneWithTraversal():
@@ -137,9 +133,6 @@ class VtkModelView(VtkObjectView):
                         data.blockDataSets.append(None)
                         data.blockGeodeIds.append("")
                     data.blockDataSets.append(block)
-                    highlight_mapper.GetCompositeDataDisplayAttributes().SetBlockVisibility(
-                        block, False
-                    )
                     meta = iterator.GetCurrentMetaData()
                     name = meta.Get(vtkCompositeDataSet.NAME())
                     data.blockGeodeIds.append(name)
@@ -172,23 +165,23 @@ class VtkModelView(VtkObjectView):
         )
         params = schemas.Highlight.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        pipeline.highlightActor.SetVisibility(params.visibility)
-        mapper = pipeline.highlightMapper
-        assert isinstance(mapper, vtkCompositePolyDataMapper)
-        attributes = mapper.GetCompositeDataDisplayAttributes()
-
-        for i in pipeline.activeHighlightIds:
-            attributes.SetBlockVisibility(pipeline.blockDataSets[i], False)
-
-        pipeline.activeHighlightIds = []
-        if params.visibility:
-            pipeline.activeHighlightIds = [
-                i for i in params.block_ids if pipeline.blockDataSets[i]
-            ]
-            for i in pipeline.activeHighlightIds:
-                attributes.SetBlockVisibility(pipeline.blockDataSets[i], True)
-
-        mapper.Modified()
+        if params.visibility and params.block_ids:
+            append = vtkAppendDataSets()
+            for i in params.block_ids:
+                block = (
+                    pipeline.blockDataSets[i]
+                    if i < len(pipeline.blockDataSets)
+                    else None
+                )
+                if isinstance(block, vtkDataSet):
+                    append.AddInputData(block)
+            append.Update()
+            pipeline.hoverHighlightMapper.SetInputDataObject(append.GetOutput())
+        else:
+            pipeline.hoverHighlightMapper.SetInputConnection(
+                pipeline.extractSelection.GetOutputPort()
+            )
+        pipeline.hoverHighlightActor.SetVisibility(params.visibility)
         self.render(-1)
 
     @exportRpc(model_prefix + model_schemas_dict["get_blocks_bounds"]["rpc"])
