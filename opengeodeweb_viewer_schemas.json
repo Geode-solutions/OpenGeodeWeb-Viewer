@@ -1540,6 +1540,28 @@
         ],
         "additionalProperties": false
       },
+      "get_blocks_bounds": {
+        "$id": "opengeodeweb_viewer.model.get_blocks_bounds",
+        "rpc": "get_blocks_bounds",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "block_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "block_ids"
+        ],
+        "additionalProperties": false
+      },
       "deregister": {
         "$id": "opengeodeweb_viewer.model.deregister",
         "rpc": "deregister",

@@ -4,6 +4,8 @@ import os
 # Third party imports
 from vtkmodules.vtkCommonDataModel import (
     vtkCompositeDataSet,
+    vtkBoundingBox,
+    vtkDataSet,
 )
 from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
@@ -188,3 +190,19 @@ class VtkModelView(VtkObjectView):
 
         mapper.Modified()
         self.render(-1)
+
+    @exportRpc(model_prefix + model_schemas_dict["get_blocks_bounds"]["rpc"])
+    def getBlocksBounds(self, rpc_params: RpcParams) -> list[float]:
+        validate_schema(
+            rpc_params, self.model_schemas_dict["get_blocks_bounds"], self.model_prefix
+        )
+        params = schemas.GetBlocksBounds.from_dict(rpc_params)
+        pipeline = self.get_vtk_pipeline(params.id)
+        bbox = vtkBoundingBox()
+        for block_id in params.block_ids:
+            if isinstance(block := pipeline.blockDataSets[block_id], vtkDataSet):
+                bbox.AddBounds(block.GetBounds())
+
+        bounds = [0.0] * 6
+        bbox.GetBounds(bounds)
+        return bounds
