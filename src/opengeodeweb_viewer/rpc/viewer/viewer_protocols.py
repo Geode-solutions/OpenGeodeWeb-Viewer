@@ -317,20 +317,28 @@ class VtkViewerView(VtkView):
         if actor:
             for data_id in params.ids:
                 pipeline = self.get_vtk_pipeline(data_id)
-                if pipeline.actor == actor:
-                    cell_id = picker.GetCellId()
-                    point_id = picker.GetPointId()
-
-                    id_to_select = (
-                        cell_id
-                        if params.field_type == schemas.FieldType.CELL
-                        else point_id
-                    )
-                    if id_to_select != -1:
-                        self.updateHoverHighlight(
-                            pipeline, id_to_select, params.field_type.value
-                        )
-                        break
+                if pipeline.actor != actor:
+                    continue
+                cell_id = picker.GetCellId()
+                point_id = picker.GetPointId()
+                id_to_select = (
+                    cell_id
+                    if params.field_type == schemas.FieldType.CELL
+                    else point_id
+                )
+                if id_to_select == -1:
+                    break
+                dataset = None
+                if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+                    flat_index = picker.GetFlatBlockIndex()
+                    if 0 <= flat_index < len(pipeline.blockDataSets):
+                        block = pipeline.blockDataSets[flat_index]
+                        if isinstance(block, vtkDataSet):
+                            dataset = block
+                self.updateHoverHighlight(
+                    pipeline, id_to_select, params.field_type.value, dataset
+                )
+                break
         self.render(-1)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])

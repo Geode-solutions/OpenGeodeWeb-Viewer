@@ -22,6 +22,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
+    vtkDataSet,
     vtkBoundingBox,
     vtkSelection,
     vtkSelectionNode,
@@ -151,7 +152,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             renderer.ResetCameraClippingRange()
 
     def updateHoverHighlight(
-        self, pipeline: VtkPipeline, id_to_select: int, field_type: str
+        self,
+        pipeline: VtkPipeline,
+        id_to_select: int,
+        field_type: str,
+        dataset: vtkDataSet | None = None,
     ) -> None:
         node = pipeline.selectionNode
         node.SetContentType(vtkSelectionNode.INDICES)
@@ -162,7 +167,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         selection_list.SetNumberOfComponents(1)
         selection_list.InsertNextValue(id_to_select)
         node.SetSelectionList(selection_list)
-
+        if dataset is not None:
+            pipeline.extractSelection.SetInputData(0, dataset)
         pipeline.extractSelection.Modified()
         pipeline.extractSelection.Update()
         pipeline.hoverHighlightActor.VisibilityOn()
