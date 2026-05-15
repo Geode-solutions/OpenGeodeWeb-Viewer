@@ -4,18 +4,16 @@ import os
 # Third party imports
 from vtkmodules.vtkIOXML import vtkXMLDataReader, vtkXMLImageDataReader
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
-from vtkmodules.vtkCommonCore import vtkIdTypeArray
 from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkActor,
     vtkTexture,
-    vtkCompositePolyDataMapper,
-    vtkCompositeDataDisplayAttributes,
     vtkDataSetMapper,
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
 )
+from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView, VtkPipeline
@@ -176,6 +174,10 @@ class VtkObjectView(VtkView):
         prop.SetLighting(False)
         prop.SetEdgeVisibility(True)
         prop.SetEdgeColor(0.12, 0.35, 0.30)
+        selection.AddNode(selection_node)
+        extract_selection.SetInputConnection(0, input_port)
+        extract_selection.SetInputData(1, selection)
+        mapper.SetInputConnection(extract_selection.GetOutputPort())
         actor.SetMapper(mapper)
         actor.VisibilityOff()
 

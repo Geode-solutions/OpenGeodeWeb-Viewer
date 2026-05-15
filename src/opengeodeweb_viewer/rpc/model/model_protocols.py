@@ -6,10 +6,11 @@ from vtkmodules.vtkCommonDataModel import (
     vtkCompositeDataSet,
     vtkBoundingBox,
     vtkDataSet,
+    vtkSelectionNode,
 )
 from vtkmodules.vtkRenderingCore import (
-    vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
+    vtkCompositeDataDisplayAttributes,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader

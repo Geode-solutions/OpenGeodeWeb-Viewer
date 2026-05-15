@@ -46,6 +46,15 @@ class ViewerData:
 
 
 @dataclass
+class HighlightPipeline:
+    actor: vtkActor = field(default_factory=vtkActor)
+    mapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
+    selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
+    selection: vtkSelection = field(default_factory=vtkSelection)
+    extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
+
+
+@dataclass
 class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
@@ -154,7 +163,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         field_type: str,
         dataset: vtkDataSet | None = None,
     ) -> None:
-        node = pipeline.selectionNode
+        node = pipeline.hoverHighlight.selectionNode
         node.SetContentType(vtkSelectionNode.INDICES)
         node.SetFieldType(
             vtkSelectionNode.CELL if field_type == "CELL" else vtkSelectionNode.POINT
@@ -164,15 +173,15 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         selection_list.InsertNextValue(id_to_select)
         node.SetSelectionList(selection_list)
         if dataset is not None:
-            pipeline.extractSelection.SetInputData(0, dataset)
-        pipeline.extractSelection.Modified()
-        pipeline.extractSelection.Update()
-        pipeline.hoverHighlightActor.VisibilityOn()
+            pipeline.hoverHighlight.extractSelection.SetInputData(0, dataset)
+        pipeline.hoverHighlight.extractSelection.Modified()
+        pipeline.hoverHighlight.extractSelection.Update()
+        pipeline.hoverHighlight.actor.VisibilityOn()
 
     def clearHoverHighlights(self, ids: list[str]) -> None:
         for data_id in ids:
             pipeline = self.get_vtk_pipeline(data_id)
-            pipeline.hoverHighlightActor.VisibilityOff()
+            pipeline.hoverHighlight.actor.VisibilityOff()
 
     def update_grid_scale_and_clipping_range(self) -> None:
         grid_scale = self.get_grid_scale()
