@@ -17,10 +17,17 @@ from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkRenderer,
     vtkRenderWindow,
-    vtkCompositePolyDataMapper,
+    vtkDataSetMapper,
 )
-from vtkmodules.vtkCommonDataModel import vtkDataObject, vtkBoundingBox
-from vtkmodules.vtkCommonCore import vtkStringArray
+from vtkmodules.vtkCommonDataModel import (
+    vtkDataObject,
+    vtkDataSet,
+    vtkBoundingBox,
+    vtkSelection,
+    vtkSelectionNode,
+)
+from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
+from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
@@ -39,16 +46,23 @@ class ViewerData:
 
 
 @dataclass
+class HighlightPipeline:
+    actor: vtkActor = field(default_factory=vtkActor)
+    mapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
+    selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
+    selection: vtkSelection = field(default_factory=vtkSelection)
+    extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
+
+
+@dataclass
 class VtkPipeline:
     reader: vtkXMLReader
-    highlightMapper: vtkMapper
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
-    highlightActor: vtkActor = field(default_factory=vtkActor)
+    hoverHighlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
-    activeHighlightIds: list[int] = field(default_factory=list)
 
 
 class VtkTypingMixin:
@@ -137,6 +151,33 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             grid_scale.SetUseBounds(False)
         else:
             renderer.ResetCameraClippingRange()
+
+    def updateHoverHighlight(
+        self,
+        pipeline: VtkPipeline,
+        id_to_select: int,
+        field_type: str,
+        dataset: vtkDataSet | None = None,
+    ) -> None:
+        node = pipeline.hoverHighlight.selectionNode
+        node.SetContentType(vtkSelectionNode.INDICES)
+        node.SetFieldType(
+            vtkSelectionNode.CELL if field_type == "CELL" else vtkSelectionNode.POINT
+        )
+        selection_list = vtkIdTypeArray()
+        selection_list.SetNumberOfComponents(1)
+        selection_list.InsertNextValue(id_to_select)
+        node.SetSelectionList(selection_list)
+        if dataset is not None:
+            pipeline.hoverHighlight.extractSelection.SetInputData(0, dataset)
+        pipeline.hoverHighlight.extractSelection.Modified()
+        pipeline.hoverHighlight.extractSelection.Update()
+        pipeline.hoverHighlight.actor.VisibilityOn()
+
+    def clearHoverHighlights(self, ids: list[str]) -> None:
+        for data_id in ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            pipeline.hoverHighlight.actor.VisibilityOff()
 
     def update_grid_scale_and_clipping_range(self) -> None:
         grid_scale = self.get_grid_scale()

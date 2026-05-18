@@ -19,8 +19,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkCompositePolyDataMapper,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
-from vtkmodules.vtkCommonCore import reference
-from vtkmodules.vtkCommonDataModel import vtkBoundingBox, vtkDataSet
+from vtkmodules.vtkCommonCore import reference, vtkIdTypeArray
+from vtkmodules.vtkCommonDataModel import vtkBoundingBox, vtkDataSet, vtkSelectionNode
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -302,6 +302,45 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["render"], self.viewer_prefix
         )
         self.render()
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["hover_highlight"]["rpc"])
+    def setHoverHighlight(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["hover_highlight"], self.viewer_prefix
+        )
+        params = schemas.HoverHighlight.from_dict(rpc_params)
+        picker = vtkCellPicker(tolerance=0.005)
+        picker.Pick(params.x, params.y, 0, self.get_renderer())
+        self.clearHoverHighlights(params.ids)
+        actor = picker.GetActor()
+        pipeline = next(
+            (
+                self.get_vtk_pipeline(id)
+                for id in params.ids
+                if self.get_vtk_pipeline(id).actor == actor
+            ),
+            None,
+        )
+        if pipeline:
+            id_to_select = (
+                picker.GetCellId()
+                if params.field_type == schemas.FieldType.CELL
+                else picker.GetPointId()
+            )
+            if id_to_select != -1:
+                dataset = None
+                if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+                    flat_index = picker.GetFlatBlockIndex()
+                    block = (
+                        pipeline.blockDataSets[flat_index]
+                        if 0 <= flat_index < len(pipeline.blockDataSets)
+                        else None
+                    )
+                    dataset = block if isinstance(block, vtkDataSet) else None
+                self.updateHoverHighlight(
+                    pipeline, id_to_select, params.field_type.value, dataset
+                )
+        self.render(-1)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:

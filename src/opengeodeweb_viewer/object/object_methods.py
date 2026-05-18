@@ -13,9 +13,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkDataSetMapper,
 )
 from vtkmodules.vtkCommonDataModel import (
-    vtkDataObject,
     vtkDataSet,
 )
+from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView, VtkPipeline
@@ -47,7 +47,7 @@ class VtkObjectView(VtkView):
             if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
-        renderer.AddActor(data.highlightActor)
+        renderer.AddActor(data.hoverHighlight.actor)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -56,7 +56,7 @@ class VtkObjectView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
-        renderer.RemoveActor(pipeline.highlightActor)
+        renderer.RemoveActor(pipeline.hoverHighlight.actor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
@@ -162,19 +162,31 @@ class VtkObjectView(VtkView):
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
 
-    def highlight(
-        self, actor: vtkActor, mapper: vtkMapper, input_dataset: vtkDataObject
-    ) -> None:
-        mapper.SetInputDataObject(input_dataset)
+    def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:
         mapper.ScalarVisibilityOff()
         mapper.SetResolveCoincidentTopologyToPolygonOffset()
+        mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(-2, -2)
         prop = actor.GetProperty()
         prop.SetColor(0.235, 0.6, 0.514)
-        prop.SetLineWidth(3)
-        prop.SetPointSize(14)
+        prop.SetLineWidth(4)
+        prop.SetPointSize(15)
         prop.SetRenderPointsAsSpheres(True)
-        prop.SetLighting(True)
+        prop.SetLighting(False)
         prop.SetEdgeVisibility(True)
         prop.SetEdgeColor(0.12, 0.35, 0.30)
         actor.SetMapper(mapper)
         actor.VisibilityOff()
+        actor.SetUseBounds(False)
+
+    def highlight(self, pipeline: VtkPipeline) -> None:
+        highlight = pipeline.hoverHighlight
+        self._apply_highlight_style(highlight.actor, highlight.mapper)
+        input_port = (
+            pipeline.filter.GetOutputPort()
+            if pipeline.filter
+            else pipeline.reader.GetOutputPort()
+        )
+        highlight.selection.AddNode(highlight.selectionNode)
+        highlight.extractSelection.SetInputConnection(0, input_port)
+        highlight.extractSelection.SetInputData(1, highlight.selection)
+        highlight.mapper.SetInputConnection(highlight.extractSelection.GetOutputPort())
