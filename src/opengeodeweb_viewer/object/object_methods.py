@@ -176,6 +176,7 @@ class VtkObjectView(VtkView):
         prop.SetEdgeColor(0.12, 0.35, 0.30)
         actor.SetMapper(mapper)
         actor.VisibilityOff()
+        actor.SetUseBounds(False)
 
     def highlight(self, pipeline: VtkPipeline) -> None:
         hl = pipeline.hoverHighlight
