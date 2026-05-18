@@ -179,14 +179,14 @@ class VtkObjectView(VtkView):
         actor.SetUseBounds(False)
 
     def highlight(self, pipeline: VtkPipeline) -> None:
-        hl = pipeline.hoverHighlight
-        self._apply_highlight_style(hl.actor, hl.mapper)
+        highlight = pipeline.hoverHighlight
+        self._apply_highlight_style(highlight.actor, highlight.mapper)
         input_port = (
             pipeline.filter.GetOutputPort()
             if pipeline.filter
             else pipeline.reader.GetOutputPort()
         )
-        hl.selection.AddNode(hl.selectionNode)
-        hl.extractSelection.SetInputConnection(0, input_port)
-        hl.extractSelection.SetInputData(1, hl.selection)
-        hl.mapper.SetInputConnection(hl.extractSelection.GetOutputPort())
+        highlight.selection.AddNode(highlight.selectionNode)
+        highlight.extractSelection.SetInputConnection(0, input_port)
+        highlight.extractSelection.SetInputData(1, highlight.selection)
+        highlight.mapper.SetInputConnection(highlight.extractSelection.GetOutputPort())
