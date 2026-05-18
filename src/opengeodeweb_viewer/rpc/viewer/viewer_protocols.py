@@ -314,11 +314,7 @@ class VtkViewerView(VtkView):
         self.clearHoverHighlights(params.ids)
         actor = picker.GetActor()
         pipeline_id = next(
-            (
-                id
-                for id in params.ids
-                if self.get_vtk_pipeline(id).actor == actor
-            ),
+            (id for id in params.ids if self.get_vtk_pipeline(id).actor == actor),
             None,
         )
         if pipeline_id:
@@ -346,7 +342,11 @@ class VtkViewerView(VtkView):
                 )
                 self.render(-1)
 
-                data_obj = dataset if dataset is not None else pipeline.reader.GetOutputDataObject(0)
+                data_obj = (
+                    dataset
+                    if dataset is not None
+                    else pipeline.reader.GetOutputDataObject(0)
+                )
                 data_attributes = {}
                 if isinstance(data_obj, vtkDataSet):
                     field_data = (
