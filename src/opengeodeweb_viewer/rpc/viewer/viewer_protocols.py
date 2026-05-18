@@ -304,7 +304,7 @@ class VtkViewerView(VtkView):
         self.render()
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["hover_highlight"]["rpc"])
-    def setHoverHighlight(self, rpc_params: RpcParams) -> None:
+    def setHoverHighlight(self, rpc_params: RpcParams) -> dict:
         validate_schema(
             rpc_params, self.viewer_schemas_dict["hover_highlight"], self.viewer_prefix
         )
@@ -313,15 +313,16 @@ class VtkViewerView(VtkView):
         picker.Pick(params.x, params.y, 0, self.get_renderer())
         self.clearHoverHighlights(params.ids)
         actor = picker.GetActor()
-        pipeline = next(
+        pipeline_id = next(
             (
-                self.get_vtk_pipeline(id)
+                id
                 for id in params.ids
                 if self.get_vtk_pipeline(id).actor == actor
             ),
             None,
         )
-        if pipeline:
+        if pipeline_id:
+            pipeline = self.get_vtk_pipeline(pipeline_id)
             id_to_select = (
                 picker.GetCellId()
                 if params.field_type == schemas.FieldType.CELL
@@ -329,6 +330,7 @@ class VtkViewerView(VtkView):
             )
             if id_to_select != -1:
                 dataset = None
+                geode_id = None
                 if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
                     flat_index = picker.GetFlatBlockIndex()
                     block = (
@@ -337,10 +339,49 @@ class VtkViewerView(VtkView):
                         else None
                     )
                     dataset = block if isinstance(block, vtkDataSet) else None
+                    if 0 <= flat_index < len(pipeline.blockGeodeIds):
+                        geode_id = pipeline.blockGeodeIds[flat_index]
                 self.updateHoverHighlight(
                     pipeline, id_to_select, params.field_type.value, dataset
                 )
+                self.render(-1)
+
+                data_obj = dataset if dataset is not None else pipeline.reader.GetOutputDataObject(0)
+                data_attributes = {}
+                if isinstance(data_obj, vtkDataSet):
+                    field_data = (
+                        data_obj.GetCellData()
+                        if params.field_type == schemas.FieldType.CELL
+                        else data_obj.GetPointData()
+                    )
+                    for i in range(field_data.GetNumberOfArrays()):
+                        array = field_data.GetArray(i)
+                        if array:
+                            array_name = array.GetName()
+                            if array_name:
+                                num_comps = array.GetNumberOfComponents()
+                                val = []
+                                for c in range(num_comps):
+                                    val.append(array.GetComponent(id_to_select, c))
+                                if len(val) == 1:
+                                    data_attributes[array_name] = val[0]
+                                else:
+                                    data_attributes[array_name] = val
+
+                    if params.field_type == schemas.FieldType.POINT:
+                        pt = data_obj.GetPoint(id_to_select)
+                        if pt:
+                            data_attributes["coordinates"] = list(pt)
+
+                return {
+                    "id": pipeline_id,
+                    "picked_id": id_to_select,
+                    "field_type": params.field_type.value,
+                    "geode_id": geode_id,
+                    "attributes": data_attributes,
+                }
         self.render(-1)
+        return {}
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:
