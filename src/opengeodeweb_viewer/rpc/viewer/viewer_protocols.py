@@ -344,9 +344,7 @@ class VtkViewerView(VtkView):
                 else None
             )
 
-        self.update_highlight(
-            pipeline, id_to_select, params.field_type.value, dataset
-        )
+        self.update_highlight(pipeline, id_to_select, params.field_type.value, dataset)
         self.render(-1)
 
         data_obj = dataset or pipeline.reader.GetOutputDataObject(0)
