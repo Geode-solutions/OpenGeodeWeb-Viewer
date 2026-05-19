@@ -231,10 +231,12 @@ class VtkViewerView(VtkView):
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
     def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str] | int | None]:
-        validate_schema(rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix)
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
+        )
         params = schemas.PickedIDS.from_dict(rpc_params)
         renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
-        
+
         actors = []
         picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, renderer)
@@ -248,7 +250,7 @@ class VtkViewerView(VtkView):
             actor = picker.GetActor()
 
         for actor in actors:
-            actor.SetPickable(True) 
+            actor.SetPickable(True)
 
         array_ids = [
             id for id in params.ids if self.get_vtk_pipeline(id).actor in actors
@@ -260,7 +262,9 @@ class VtkViewerView(VtkView):
             mapper = pipeline.mapper
             if isinstance(mapper, vtkCompositePolyDataMapper):
                 attr = mapper.GetCompositeDataDisplayAttributes()
-                if attr and not attr.GetBlockVisibility(pipeline.blockDataSets[viewer_id]):
+                if attr and not attr.GetBlockVisibility(
+                    pipeline.blockDataSets[viewer_id]
+                ):
                     array_ids, viewer_id = [], -1
         return {
             "array_ids": array_ids,
