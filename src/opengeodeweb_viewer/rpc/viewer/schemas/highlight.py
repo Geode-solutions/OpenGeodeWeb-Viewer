@@ -10,7 +10,7 @@ class FieldType(Enum):
 
 
 @dataclass
-class HoverHighlight(DataClassJsonMixin):
+class Highlight(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 

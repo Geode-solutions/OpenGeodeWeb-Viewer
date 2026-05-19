@@ -60,7 +60,7 @@ class VtkPipeline:
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
-    hoverHighlight: HighlightPipeline = field(default_factory=HighlightPipeline)
+    highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
 
@@ -152,14 +152,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         else:
             renderer.ResetCameraClippingRange()
 
-    def updateHoverHighlight(
+    def update_highlight(
         self,
         pipeline: VtkPipeline,
         id_to_select: int,
         field_type: str,
-        dataset: vtkDataSet | None = None,
+        dataset: vtkDataObject | None = None,
     ) -> None:
-        node = pipeline.hoverHighlight.selectionNode
+        node = pipeline.highlight.selectionNode
         node.SetContentType(vtkSelectionNode.INDICES)
         node.SetFieldType(
             vtkSelectionNode.CELL if field_type == "CELL" else vtkSelectionNode.POINT
@@ -169,15 +169,15 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         selection_list.InsertNextValue(id_to_select)
         node.SetSelectionList(selection_list)
         if dataset is not None:
-            pipeline.hoverHighlight.extractSelection.SetInputData(0, dataset)
-        pipeline.hoverHighlight.extractSelection.Modified()
-        pipeline.hoverHighlight.extractSelection.Update()
-        pipeline.hoverHighlight.actor.VisibilityOn()
+            pipeline.highlight.extractSelection.SetInputData(0, dataset)
+        pipeline.highlight.extractSelection.Modified()
+        pipeline.highlight.extractSelection.Update()
+        pipeline.highlight.actor.VisibilityOn()
 
-    def clearHoverHighlights(self, ids: list[str]) -> None:
+    def clear_highlights(self, ids: list[str]) -> None:
         for data_id in ids:
             pipeline = self.get_vtk_pipeline(data_id)
-            pipeline.hoverHighlight.actor.VisibilityOff()
+            pipeline.highlight.actor.VisibilityOff()
 
     def update_grid_scale_and_clipping_range(self) -> None:
         grid_scale = self.get_grid_scale()
