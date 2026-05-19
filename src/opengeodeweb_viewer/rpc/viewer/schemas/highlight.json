@@ -1,5 +1,5 @@
 {
-  "rpc": "hover_highlight",
+  "rpc": "highlight",
   "type": "object",
   "properties": {
     "x": {

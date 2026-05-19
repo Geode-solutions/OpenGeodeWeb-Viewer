@@ -7,7 +7,7 @@ from .reset_visualization import *
 from .reset_camera import *
 from .render import *
 from .picked_ids import *
-from .hover_highlight import *
+from .highlight import *
 from .grid_scale import *
 from .get_point_position import *
 from .axes import *

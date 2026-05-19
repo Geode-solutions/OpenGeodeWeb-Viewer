@@ -303,17 +303,17 @@ class VtkViewerView(VtkView):
         )
         self.render()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["hover_highlight"]["rpc"])
-    def setHoverHighlight(
+    @exportRpc(viewer_prefix + viewer_schemas_dict["highlight"]["rpc"])
+    def setHighlight(
         self, rpc_params: RpcParams
     ) -> dict[str, str | int | None | dict[str, list[float] | float]]:
         validate_schema(
-            rpc_params, self.viewer_schemas_dict["hover_highlight"], self.viewer_prefix
+            rpc_params, self.viewer_schemas_dict["highlight"], self.viewer_prefix
         )
-        params = schemas.HoverHighlight.from_dict(rpc_params)
+        params = schemas.Highlight.from_dict(rpc_params)
         picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, self.get_renderer())
-        self.clearHoverHighlights(params.ids)
+        self.clear_highlights(params.ids)
         actor = picker.GetActor()
         pipeline_id = next(
             (id for id in params.ids if self.get_vtk_pipeline(id).actor == actor), None
@@ -344,7 +344,7 @@ class VtkViewerView(VtkView):
                 else None
             )
 
-        self.updateHoverHighlight(
+        self.update_highlight(
             pipeline, id_to_select, params.field_type.value, dataset
         )
         self.render(-1)

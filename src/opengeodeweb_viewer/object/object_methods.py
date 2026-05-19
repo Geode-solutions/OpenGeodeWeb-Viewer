@@ -47,7 +47,7 @@ class VtkObjectView(VtkView):
             if actor.visibility == True:
                 resetCamara = False
         renderer.AddActor(data.actor)
-        renderer.AddActor(data.hoverHighlight.actor)
+        renderer.AddActor(data.highlight.actor)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -56,7 +56,7 @@ class VtkObjectView(VtkView):
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
-        renderer.RemoveActor(pipeline.hoverHighlight.actor)
+        renderer.RemoveActor(pipeline.highlight.actor)
         self.deregister_object(data_id)
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
@@ -179,7 +179,7 @@ class VtkObjectView(VtkView):
         actor.SetUseBounds(False)
 
     def highlight(self, pipeline: VtkPipeline) -> None:
-        highlight = pipeline.hoverHighlight
+        highlight = pipeline.highlight
         self._apply_highlight_style(highlight.actor, highlight.mapper)
         input_port = (
             pipeline.filter.GetOutputPort()
