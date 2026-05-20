@@ -21,7 +21,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference, vtkPoints, vtkUnsignedCharArray
-from vtkmodules.vtkCommonDataModel import  vtkDataSet, vtkPolyData, vtkCellArray
+from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkPolyData, vtkCellArray
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -405,7 +405,9 @@ class VtkViewerView(VtkView):
         )
         params = schemas.PreviewPoints.from_dict(rpc_params)
         points_data = params.points
-        style_name = params.style.value if hasattr(params.style, "value") else params.style
+        style_name = (
+            params.style.value if hasattr(params.style, "value") else params.style
+        )
 
         if not points_data:
             if self._preview_actor is not None:
