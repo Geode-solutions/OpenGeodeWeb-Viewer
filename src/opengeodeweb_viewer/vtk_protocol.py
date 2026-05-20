@@ -183,19 +183,22 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
             renderer = self.get_renderer()
-            bounds = vtkBoundingBox()
-            props = renderer.GetViewProps()
-            props.InitTraversal()
-            prop = props.GetNextProp()
-            while prop:
-                if prop.GetUseBounds() and prop != grid_scale:
-                    bounds.AddBounds(prop.GetBounds())
+            if not grid_scale.GetVisibility():
+                bounds = vtkBoundingBox()
+                props = renderer.GetViewProps()
+                props.InitTraversal()
                 prop = props.GetNextProp()
-            if bounds.IsValid():
-                final_bounds = [0.0] * 6
-                bounds.GetBounds(final_bounds)
-                grid_scale.SetBounds(final_bounds)
+                while prop:
+                    if prop.GetVisibility() and prop.GetUseBounds() and prop != grid_scale:
+                        bounds.AddBounds(prop.GetBounds())
+                    prop = props.GetNextProp()
+                if bounds.IsValid():
+                    final_bounds = [0.0] * 6
+                    bounds.GetBounds(final_bounds)
+                    grid_scale.SetBounds(final_bounds)
 
+            final_bounds = list(grid_scale.GetBounds())
+            if final_bounds[0] <= final_bounds[1]:
                 def get_dist(axis: int) -> float:
                     p1 = [final_bounds[0], final_bounds[2], final_bounds[4]]
                     p2 = list(p1)
