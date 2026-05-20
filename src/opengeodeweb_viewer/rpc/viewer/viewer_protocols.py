@@ -43,7 +43,7 @@ class VtkViewerView(VtkView):
 
     def __init__(self) -> None:
         super().__init__()
-        self._preview_actor = None
+        self._preview_actor: vtkActor | None = None
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["reset_visualization"]["rpc"])
     def resetVisualization(self, rpc_params: RpcParams) -> None:
@@ -448,10 +448,6 @@ class VtkViewerView(VtkView):
 
         self._preview_polydata.GetPointData().SetScalars(colors)
         self._preview_polydata.GetPointData().SetActiveScalars("Colors")
-        print("DEBUG PREVIEW COLORS:", colors.GetNumberOfTuples(), colors.GetNumberOfComponents(), flush=True)
-        self._preview_mapper.ScalarVisibilityOn()
-        self._preview_mapper.SetColorModeToDirectScalars()
-        self._preview_mapper.SetScalarModeToUsePointData()
 
         lines = vtkCellArray()
         if style_name == "curve":
