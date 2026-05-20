@@ -238,12 +238,24 @@ class VtkViewerView(VtkView):
         )
         params = schemas.PickedIDS.from_dict(rpc_params)
         renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
+
+        actors = []
         picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, renderer)
         actor = picker.GetActor()
         viewer_id = picker.GetFlatBlockIndex()
+
+        while actor:
+            actors.append(actor)
+            actor.SetPickable(False)
+            picker.Pick(params.x, params.y, 0, renderer)
+            actor = picker.GetActor()
+
+        for actor in actors:
+            actor.SetPickable(True)
+
         array_ids = [
-            id for id in params.ids if self.get_vtk_pipeline(id).actor == actor
+            id for id in params.ids if self.get_vtk_pipeline(id).actor in actors
         ]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
