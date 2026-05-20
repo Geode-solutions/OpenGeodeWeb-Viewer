@@ -20,7 +20,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkActor,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
-from vtkmodules.vtkCommonCore import reference, vtkPoints
+from vtkmodules.vtkCommonCore import reference, vtkPoints, vtkUnsignedCharArray
 from vtkmodules.vtkCommonDataModel import  vtkDataSet, vtkPolyData, vtkCellArray
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
@@ -405,6 +405,7 @@ class VtkViewerView(VtkView):
         )
         params = schemas.PreviewPoints.from_dict(rpc_params)
         points_data = params.points
+        style_name = params.style.value if hasattr(params.style, "value") else params.style
 
         if not points_data:
             if self._preview_actor is not None:
@@ -421,24 +422,43 @@ class VtkViewerView(VtkView):
             self._preview_polydata.SetVerts(self._preview_verts)
             self._preview_mapper = vtkDataSetMapper()
             self._preview_mapper.SetInputData(self._preview_polydata)
+            self._preview_mapper.ScalarVisibilityOn()
+            self._preview_mapper.SetColorModeToDirectScalars()
             self._preview_actor = vtkActor()
             self._preview_actor.SetMapper(self._preview_mapper)
             prop = self._preview_actor.GetProperty()
             prop.SetPointSize(10)
-            prop.SetColor(0.4, 0.4, 0.4)
             prop.SetLineWidth(2)
             self.get_renderer().AddActor(self._preview_actor)
 
         self._preview_points.Reset()
         self._preview_verts.Reset()
+
+        colors = vtkUnsignedCharArray()
+        colors.SetName("Colors")
+        colors.SetNumberOfComponents(3)
+
         for i, pt in enumerate(points_data):
             self._preview_points.InsertNextPoint(pt.x, pt.y, pt.z)
             self._preview_verts.InsertNextCell(1, [i])
+            if style_name == "curve" and i == 0:
+                colors.InsertNextTuple3(60, 153, 131)
+            else:
+                colors.InsertNextTuple3(102, 102, 102)
+
+        self._preview_polydata.GetPointData().SetScalars(colors)
+        self._preview_polydata.GetPointData().SetActiveScalars("Colors")
+        print("DEBUG PREVIEW COLORS:", colors.GetNumberOfTuples(), colors.GetNumberOfComponents(), flush=True)
+        self._preview_mapper.ScalarVisibilityOn()
+        self._preview_mapper.SetColorModeToDirectScalars()
+        self._preview_mapper.SetScalarModeToUsePointData()
 
         lines = vtkCellArray()
-        if params.style == "curve":
+        if style_name == "curve":
             for i in range(len(points_data) - 1):
                 lines.InsertNextCell(2, [i, i + 1])
+            if params.closed and len(points_data) >= 2:
+                lines.InsertNextCell(2, [len(points_data) - 1, 0])
         self._preview_polydata.SetLines(lines)
         self._preview_polydata.Modified()
         self.render(-1)

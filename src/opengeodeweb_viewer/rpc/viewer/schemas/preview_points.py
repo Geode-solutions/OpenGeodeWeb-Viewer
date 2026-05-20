@@ -1,7 +1,7 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -14,7 +14,7 @@ class Point(DataClassJsonMixin):
     z: float
 
 
-class Style(str, Enum):
+class Style(Enum):
     CURVE = "curve"
     POINTS = "points"
 
@@ -26,3 +26,4 @@ class PreviewPoints(DataClassJsonMixin):
 
     points: List[Point]
     style: Style
+    closed: Optional[bool] = None

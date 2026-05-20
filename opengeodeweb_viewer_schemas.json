@@ -1935,6 +1935,9 @@
               "points",
               "curve"
             ]
+          },
+          "closed": {
+            "type": "boolean"
           }
         },
         "required": [
