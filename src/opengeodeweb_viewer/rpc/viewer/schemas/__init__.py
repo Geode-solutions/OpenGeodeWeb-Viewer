@@ -6,6 +6,7 @@ from .set_background_color import *
 from .reset_visualization import *
 from .reset_camera import *
 from .render import *
+from .preview_points import *
 from .picked_ids import *
 from .highlight import *
 from .grid_scale import *
