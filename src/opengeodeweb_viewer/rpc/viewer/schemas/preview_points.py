@@ -14,7 +14,7 @@ class Point(DataClassJsonMixin):
     z: float
 
 
-class Style(str, Enum):
+class Style(Enum):
     CURVE = "curve"
     POINTS = "points"
 

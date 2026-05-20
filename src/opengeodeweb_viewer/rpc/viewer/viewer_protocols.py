@@ -21,7 +21,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkCommonCore import reference, vtkPoints
-from vtkmodules.vtkCommonDataModel import  vtkDataSet, vtkPolyData, vtkCellArray
+from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkPolyData, vtkCellArray
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
