@@ -189,7 +189,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 props.InitTraversal()
                 prop = props.GetNextProp()
                 while prop:
-                    if prop.GetVisibility() and prop.GetUseBounds() and prop != grid_scale:
+                    if (
+                        prop.GetVisibility()
+                        and prop.GetUseBounds()
+                        and prop != grid_scale
+                    ):
                         bounds.AddBounds(prop.GetBounds())
                     prop = props.GetNextProp()
                 if bounds.IsValid():
@@ -199,6 +203,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
             final_bounds = list(grid_scale.GetBounds())
             if final_bounds[0] <= final_bounds[1]:
+
                 def get_dist(axis: int) -> float:
                     p1 = [final_bounds[0], final_bounds[2], final_bounds[4]]
                     p2 = list(p1)
