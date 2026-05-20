@@ -1,0 +1,41 @@
+{
+  "rpc": "preview_points",
+  "type": "object",
+  "properties": {
+    "points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "z"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "style": {
+      "type": "string",
+      "enum": [
+        "points",
+        "curve"
+      ]
+    }
+  },
+  "required": [
+    "points",
+    "style"
+  ],
+  "additionalProperties": false
+}

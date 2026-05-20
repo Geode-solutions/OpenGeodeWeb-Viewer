@@ -13,14 +13,15 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindowInteractor,
     vtkAbstractMapper,
     vtkWorldPointPicker,
-    vtkPicker,
     vtkCellPicker,
     vtkPropPicker,
     vtkCompositePolyDataMapper,
+    vtkDataSetMapper,
+    vtkActor,
 )
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
-from vtkmodules.vtkCommonCore import reference, vtkIdTypeArray
-from vtkmodules.vtkCommonDataModel import vtkBoundingBox, vtkDataSet, vtkSelectionNode
+from vtkmodules.vtkCommonCore import reference, vtkPoints
+from vtkmodules.vtkCommonDataModel import  vtkDataSet, vtkPolyData, vtkCellArray
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -42,6 +43,7 @@ class VtkViewerView(VtkView):
 
     def __init__(self) -> None:
         super().__init__()
+        self._preview_actor = None
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["reset_visualization"]["rpc"])
     def resetVisualization(self, rpc_params: RpcParams) -> None:
@@ -395,3 +397,48 @@ class VtkViewerView(VtkView):
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
             grid_scale.SetUse2DMode(True)
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["preview_points"]["rpc"])
+    def previewPoints(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["preview_points"], self.viewer_prefix
+        )
+        params = schemas.PreviewPoints.from_dict(rpc_params)
+        points_data = params.points
+
+        if not points_data:
+            if self._preview_actor is not None:
+                self.get_renderer().RemoveActor(self._preview_actor)
+                self._preview_actor = None
+                self.render(-1)
+            return
+
+        if self._preview_actor is None:
+            self._preview_points = vtkPoints()
+            self._preview_verts = vtkCellArray()
+            self._preview_polydata = vtkPolyData()
+            self._preview_polydata.SetPoints(self._preview_points)
+            self._preview_polydata.SetVerts(self._preview_verts)
+            self._preview_mapper = vtkDataSetMapper()
+            self._preview_mapper.SetInputData(self._preview_polydata)
+            self._preview_actor = vtkActor()
+            self._preview_actor.SetMapper(self._preview_mapper)
+            prop = self._preview_actor.GetProperty()
+            prop.SetPointSize(10)
+            prop.SetColor(0.4, 0.4, 0.4)
+            prop.SetLineWidth(2)
+            self.get_renderer().AddActor(self._preview_actor)
+
+        self._preview_points.Reset()
+        self._preview_verts.Reset()
+        for i, pt in enumerate(points_data):
+            self._preview_points.InsertNextPoint(pt.x, pt.y, pt.z)
+            self._preview_verts.InsertNextCell(1, [i])
+
+        lines = vtkCellArray()
+        if params.style == "curve":
+            for i in range(len(points_data) - 1):
+                lines.InsertNextCell(2, [i, i + 1])
+        self._preview_polydata.SetLines(lines)
+        self._preview_polydata.Modified()
+        self.render(-1)
