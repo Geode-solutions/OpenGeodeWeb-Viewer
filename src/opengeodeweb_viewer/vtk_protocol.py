@@ -63,6 +63,7 @@ class VtkPipeline:
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
+    blockAttributeState: dict = field(default_factory=dict)  # block_id -> {name, field_type}
 
 
 class VtkTypingMixin:
