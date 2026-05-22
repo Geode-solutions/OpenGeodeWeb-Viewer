@@ -200,3 +200,40 @@ class VtkModelView(VtkObjectView):
         bounds = [0.0] * 6
         bbox.GetBounds(bounds)
         return bounds
+
+    def modelSetupColorMap(
+        self, data_id: str, points: list[float], minimum: float, maximum: float
+    ) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
+        from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
+        lookup_table = vtkColorTransferFunction()
+        pipeline.mapper.SetLookupTable(lookup_table)
+
+        if not points:
+            lookup_table.AddRGBPoint(minimum, 0, 0, 0)
+            lookup_table.AddRGBPoint(maximum, 1, 1, 1)
+        else:
+            x_values = points[::4]
+            x_minimum = min(x_values)
+            x_maximum = max(x_values)
+            x_range = x_maximum - x_minimum
+            target_range = maximum - minimum
+
+            for x_val, red_val, green_val, blue_val in zip(*[iter(points)] * 4):
+                if x_range != 0:
+                    new_x_val = minimum + (x_val - x_minimum) / x_range * target_range
+                else:
+                    new_x_val = minimum
+                lookup_table.AddRGBPoint(new_x_val, red_val, green_val, blue_val)
+
+        pipeline.mapper.SetScalarRange(minimum, maximum)
+        lookup_table.SetRange(minimum, maximum)
+        pipeline.mapper.SetUseLookupTableScalarRange(False)
+        pipeline.mapper.InterpolateScalarsBeforeMappingOn()
+
+    def modelDisplayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.mapper.SetScalarRange(minimum, maximum)
+        pipeline.mapper.GetLookupTable().SetRange(minimum, maximum)
+        pipeline.mapper.SetUseLookupTableScalarRange(False)
+

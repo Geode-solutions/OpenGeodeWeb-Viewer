@@ -1233,6 +1233,72 @@
             "color_mode"
           ],
           "additionalProperties": false
+        },
+        "attribute_name": {
+          "$id": "opengeodeweb_viewer.model.blocks.attribute_name",
+          "rpc": "attribute_name",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "field_type": {
+              "type": "string",
+              "enum": [
+                "points",
+                "cells"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "block_ids",
+            "name",
+            "field_type"
+          ],
+          "additionalProperties": false
+        },
+        "attribute_color_map": {
+          "$id": "opengeodeweb_viewer.model.blocks.attribute_color_map",
+          "rpc": "attribute_color_map",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "points",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
         }
       },
       "corners": {
