@@ -90,7 +90,11 @@ class VtkModelView(VtkObjectView):
             block.GetCellData().SetActiveScalars("")
             return
 
-        field_data = block.GetPointData() if style["association"] == "points" else block.GetCellData()
+        field_data = (
+            block.GetPointData()
+            if style["association"] == "points"
+            else block.GetCellData()
+        )
         scalar_array = field_data.GetArray(style["name"])
         if not scalar_array:
             return
@@ -104,7 +108,11 @@ class VtkModelView(VtkObjectView):
             span = x_max - x_min
             for i in range(0, len(points), 4):
                 x, r, g, b = points[i : i + 4]
-                new_x = minimum + (x - x_min) / span * (maximum - minimum) if span else minimum
+                new_x = (
+                    minimum + (x - x_min) / span * (maximum - minimum)
+                    if span
+                    else minimum
+                )
                 lut.AddRGBPoint(new_x, r, g, b)
         else:
             lut.AddRGBPoint(minimum, 0, 0, 0)
@@ -117,7 +125,11 @@ class VtkModelView(VtkObjectView):
         field_data.AddArray(rgba_colors)
         field_data.SetActiveScalars(rgba_colors.GetName())
 
-        other_field_data = block.GetCellData() if style["association"] == "points" else block.GetPointData()
+        other_field_data = (
+            block.GetCellData()
+            if style["association"] == "points"
+            else block.GetPointData()
+        )
         other_field_data.SetActiveScalars("")
 
         mapper = pipeline.mapper
@@ -205,7 +217,6 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             self.updateBlockColors(pipeline, block_id)
-
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
