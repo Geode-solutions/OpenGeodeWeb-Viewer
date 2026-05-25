@@ -11,6 +11,7 @@ from vtkmodules.vtkCommonDataModel import (
 from vtkmodules.vtkRenderingCore import (
     vtkCompositePolyDataMapper,
     vtkCompositeDataDisplayAttributes,
+    vtkColorTransferFunction,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
@@ -73,34 +74,99 @@ class VtkModelView(VtkObjectView):
         colors: list[ColorResult] = []
         for block_id in block_ids:
             block_dataset = pipeline.blockDataSets[block_id]
-            if color_mode == "random":
-                geode_id = pipeline.blockGeodeIds[block_id]
-                red, green, blue = deterministic_color(str(geode_id))
-                attr.SetBlockColor(block_dataset, [red, green, blue])
-                attr.SetBlockOpacity(block_dataset, 1.0)
-                colors.append(
-                    {
-                        "viewer_id": block_id,
-                        "geode_id": str(geode_id),
-                        "color": {
-                            "red": round(red * 255),
-                            "green": round(green * 255),
-                            "blue": round(blue * 255),
-                            "alpha": 1.0,
-                        },
-                    }
-                )
-            elif color is not None:
-                red, green, blue, alpha = (
-                    color.red / 255,
-                    color.green / 255,
-                    color.blue / 255,
-                    color.alpha,
-                )
-                attr.SetBlockColor(block_dataset, [red, green, blue])
-                attr.SetBlockOpacity(block_dataset, alpha)
+            if block_dataset:
+                block_dataset.GetPointData().SetActiveScalars("")
+                block_dataset.GetCellData().SetActiveScalars("")
+                if color_mode == "random":
+                    geode_id = pipeline.blockGeodeIds[block_id]
+                    red, green, blue = deterministic_color(str(geode_id))
+                    attr.SetBlockColor(block_dataset, [red, green, blue])
+                    attr.SetBlockOpacity(block_dataset, 1.0)
+                    colors.append(
+                        {
+                            "viewer_id": block_id,
+                            "geode_id": str(geode_id),
+                            "color": {
+                                "red": round(red * 255),
+                                "green": round(green * 255),
+                                "blue": round(blue * 255),
+                                "alpha": 1.0,
+                            },
+                        }
+                    )
+                elif color is not None:
+                    red, green, blue, alpha = (
+                        color.red / 255,
+                        color.green / 255,
+                        color.blue / 255,
+                        color.alpha,
+                    )
+                    attr.SetBlockColor(block_dataset, [red, green, blue])
+                    attr.SetBlockOpacity(block_dataset, alpha)
         mapper.Modified()
         return colors
+
+    def displayAttributeOnVertices(
+        self, pipeline: VtkPipeline, block_ids: list[int], name: str
+    ) -> None:
+        for block_id in block_ids:
+            block = pipeline.blockDataSets[block_id]
+            if block:
+                block.GetPointData().SetActiveScalars(name)
+                block.GetCellData().SetActiveScalars("")
+        mapper = pipeline.mapper
+        mapper.ScalarVisibilityOn()
+        mapper.SetScalarModeToUsePointData()
+        mapper.Modified()
+
+    def displayAttributeOnCells(
+        self, pipeline: VtkPipeline, block_ids: list[int], name: str
+    ) -> None:
+        for block_id in block_ids:
+            block = pipeline.blockDataSets[block_id]
+            if block:
+                block.GetCellData().SetActiveScalars(name)
+                block.GetPointData().SetActiveScalars("")
+        mapper = pipeline.mapper
+        mapper.ScalarVisibilityOn()
+        mapper.SetScalarModeToUseCellData()
+        mapper.Modified()
+
+    def setupColorMap(
+        self,
+        pipeline: VtkPipeline,
+        block_ids: list[int],
+        points: list[float],
+        minimum: float,
+        maximum: float,
+    ) -> None:
+        mapper = pipeline.mapper
+        lut = vtkColorTransferFunction()
+        mapper.SetLookupTable(lut)
+
+        if not points:
+            lut.AddRGBPoint(minimum, 0, 0, 0)
+            lut.AddRGBPoint(maximum, 1, 1, 1)
+        else:
+            x_values = points[::4]
+            x_min = min(x_values)
+            x_max = max(x_values)
+            x_range = x_max - x_min
+            target_range = maximum - minimum
+
+            for x, r, g, b in zip(*[iter(points)] * 4):
+                if x_range != 0:
+                    new_x = minimum + (x - x_min) / x_range * target_range
+                else:
+                    new_x = minimum
+                lut.AddRGBPoint(new_x, r, g, b)
+
+        mapper.SetScalarRange(minimum, maximum)
+        lut.SetRange(minimum, maximum)
+        mapper.SetUseLookupTableScalarRange(False)
+        mapper.InterpolateScalarsBeforeMappingOn()
+        mapper.Modified()
+
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
