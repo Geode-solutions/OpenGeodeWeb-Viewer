@@ -51,7 +51,6 @@ class ColorResult(TypedDict):
     color: ColorRGBA
 
 
-
 class VtkModelView(VtkObjectView):
     model_prefix = "opengeodeweb_viewer.model."
     model_schemas_dict = get_schemas_dict(
