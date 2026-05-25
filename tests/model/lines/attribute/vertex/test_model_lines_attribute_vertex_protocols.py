@@ -42,9 +42,7 @@ def test_lines_vertex_attribute(
         ]["rpc"],
         [{"id": model_id, "block_ids": list(range(14, 35)), "name": "unique vertices"}],
     )
-    assert (
-        server.compare_image("model/lines/vertex_attribute.jpeg") == True
-    )
+    assert server.compare_image("model/lines/vertex_attribute.jpeg") == True
 
 
 def test_lines_vertex_color_map(
@@ -101,6 +99,4 @@ def test_lines_vertex_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/lines/vertex_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/lines/vertex_color_map.jpeg") == True

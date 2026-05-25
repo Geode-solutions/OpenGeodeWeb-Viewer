@@ -39,12 +39,18 @@ def test_surfaces_polygon_attribute(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "triangle_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+            }
+        ],
     )
-    assert (
-        server.compare_image("model/surfaces/attribute.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/attribute.jpeg") == True
 
 
 def test_surfaces_polygon_color_map(
@@ -71,8 +77,16 @@ def test_surfaces_polygon_color_map(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "triangle_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+            }
+        ],
     )
 
     # Set color map: Blue to Red
@@ -80,7 +94,9 @@ def test_surfaces_polygon_color_map(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -101,6 +117,4 @@ def test_surfaces_polygon_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/color_map.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/color_map.jpeg") == True

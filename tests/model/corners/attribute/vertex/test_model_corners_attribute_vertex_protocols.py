@@ -40,12 +40,12 @@ def test_corners_vertex_attribute(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
-    assert (
-        server.compare_image("model/corners/attribute/vertex/attribute.jpeg") == True
-    )
+    assert server.compare_image("model/corners/attribute/vertex/attribute.jpeg") == True
 
 
 def test_corners_vertex_color_map(
@@ -72,7 +72,9 @@ def test_corners_vertex_color_map(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
 
@@ -81,7 +83,9 @@ def test_corners_vertex_color_map(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -102,6 +106,4 @@ def test_corners_vertex_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/corners/color_map.jpeg") == True
-    )
+    assert server.compare_image("model/corners/color_map.jpeg") == True
