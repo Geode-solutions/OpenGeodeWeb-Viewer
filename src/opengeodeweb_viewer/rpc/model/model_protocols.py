@@ -51,6 +51,14 @@ class ColorResult(TypedDict):
     color: ColorRGBA
 
 
+class BlockStyle(TypedDict):
+    name: str
+    association: str
+    points: list[float]
+    minimum: float
+    maximum: float
+
+
 class VtkModelView(VtkObjectView):
     model_prefix = "opengeodeweb_viewer.model."
     model_schemas_dict = get_schemas_dict(
@@ -60,9 +68,7 @@ class VtkModelView(VtkObjectView):
     def __init__(self) -> None:
         super().__init__()
 
-    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> dict:
-        if not hasattr(pipeline, "block_styles"):
-            pipeline.block_styles = {}
+    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> dict[str, Any]:
         if block_id not in pipeline.block_styles:
             pipeline.block_styles[block_id] = {
                 "name": "",
