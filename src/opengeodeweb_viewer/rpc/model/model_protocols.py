@@ -26,7 +26,7 @@ from opengeodeweb_viewer.utils_functions import (
     deterministic_color,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import VtkPipeline
+from opengeodeweb_viewer.vtk_protocol import VtkPipeline, BlockStyle
 from typing import Optional, List, TypedDict, Protocol
 from . import schemas
 
@@ -51,13 +51,6 @@ class ColorResult(TypedDict):
     color: ColorRGBA
 
 
-class BlockStyle(TypedDict):
-    name: str
-    association: str
-    points: list[float]
-    minimum: float
-    maximum: float
-
 
 class VtkModelView(VtkObjectView):
     model_prefix = "opengeodeweb_viewer.model."
@@ -68,20 +61,20 @@ class VtkModelView(VtkObjectView):
     def __init__(self) -> None:
         super().__init__()
 
-    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> dict[str, Any]:
+    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> BlockStyle:
         if block_id not in pipeline.block_styles:
-            pipeline.block_styles[block_id] = {
-                "name": "",
-                "association": "",
-                "points": [],
-                "minimum": 0.0,
-                "maximum": 1.0,
-            }
+            pipeline.block_styles[block_id] = BlockStyle(
+                name="",
+                association="",
+                points=[],
+                minimum=0.0,
+                maximum=1.0,
+            )
         return pipeline.block_styles[block_id]
 
     def updateBlockColors(self, pipeline: VtkPipeline, block_id: int) -> None:
         block = pipeline.blockDataSets[block_id]
-        if not block:
+        if not isinstance(block, vtkDataSet):
             return
 
         style = self._get_block_style(pipeline, block_id)
@@ -152,7 +145,7 @@ class VtkModelView(VtkObjectView):
         colors: list[ColorResult] = []
         for block_id in block_ids:
             block_dataset = pipeline.blockDataSets[block_id]
-            if block_dataset:
+            if isinstance(block_dataset, vtkDataSet):
                 block_dataset.GetPointData().SetActiveScalars("")
                 block_dataset.GetCellData().SetActiveScalars("")
                 self._get_block_style(pipeline, block_id)["name"] = ""
