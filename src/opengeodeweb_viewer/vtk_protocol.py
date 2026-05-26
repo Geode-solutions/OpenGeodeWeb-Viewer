@@ -28,7 +28,7 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
-from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
+from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor, vtkScalarBarActor
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Local application imports
@@ -43,6 +43,7 @@ class ViewerData:
     viewable_file: str | None
     viewer_object: ViewerType
     viewer_elements_type: ViewerElementsType
+    native_file: str | None = None
 
 
 @dataclass
@@ -63,6 +64,7 @@ class VtkPipeline:
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
+    scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
 
 
 class VtkTypingMixin:
@@ -122,6 +124,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     viewable_file=data.viewable_file,
                     viewer_object=data.viewer_object,
                     viewer_elements_type=data.viewer_elements_type,
+                    native_file=data.native_file,
                 )
             except Exception as e:
                 print(f"Error fetching data {data_id}: {e}")
@@ -194,7 +197,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                         and prop.GetUseBounds()
                         and prop != grid_scale
                     ):
-                        bounds.AddBounds(prop.GetBounds())
+                        prop_bounds = prop.GetBounds()
+                        if prop_bounds is not None:
+                            bounds.AddBounds(prop_bounds)
                     prop = props.GetNextProp()
                 if bounds.IsValid():
                     final_bounds = [0.0] * 6
@@ -260,6 +265,62 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                         visibility_setter(True)
                         grid_scale.SetAxisLabels(axis, None)
         self.reset_camera_clipping_range()
+
+    def update_scalar_bars_layout(self) -> None:
+        visible_bars = []
+        for data_id, pipeline in self.get_data_base().items():
+            if pipeline.scalarBar.GetVisibility() and pipeline.scalarBar.GetLookupTable() is not None:
+                visible_bars.append((data_id, pipeline.scalarBar))
+        
+        n = len(visible_bars)
+        if n == 0:
+            return
+            
+        start_x = 0.25
+        start_y = 0.04
+        margin_x = 0.015
+        margin_y = 0.04
+        
+        cols = 5
+        actual_width = 0.105
+        bar_height = 0.10
+        
+        for i, (data_id, bar) in enumerate(visible_bars):
+            pipeline = self.get_vtk_pipeline(data_id)
+            dataset = pipeline.reader.GetOutputAsDataSet()
+            
+            attr_name = ""
+            if dataset:
+                pd = dataset.GetPointData().GetScalars()
+                cd = dataset.GetCellData().GetScalars()
+                if pd:
+                    attr_name = pd.GetName()
+                elif cd:
+                    attr_name = cd.GetName()
+            
+            if not attr_name:
+                attr_name = "Attribute"
+                
+            bar.SetTitle(attr_name)
+            
+            bar.GetTitleTextProperty().SetVerticalJustificationToTop()
+            bar.GetTitleTextProperty().SetLineOffset(0.0)
+            bar.SetBarRatio(0.5)
+            
+            bar.SetNumberOfLabels(2)
+            bar.SetLabelFormat("%.2g")
+            bar.SetOrientationToHorizontal()
+            
+            row = i // cols
+            col = i % cols
+            
+            x = start_x + col * (actual_width + margin_x)
+            y = start_y + row * (bar_height + margin_y)
+            
+            bar.GetPositionCoordinate().SetCoordinateSystemToNormalizedViewport()
+            bar.GetPositionCoordinate().SetValue(x, y)
+            bar.SetWidth(actual_width)
+            bar.SetHeight(bar_height)
 
     def render(self, view: int = -1) -> None:
         self.update_grid_scale_and_clipping_range()

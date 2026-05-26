@@ -166,6 +166,10 @@ class VtkMeshView(VtkObjectView):
         lut.SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
         data.mapper.InterpolateScalarsBeforeMappingOn()
+        
+        data.scalarBar.SetLookupTable(lut)
+        data.scalarBar.SetVisibility(True)
+        self.update_scalar_bars_layout()
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["highlight"]["rpc"])
     def setMeshhighlight(self, rpc_params: RpcParams) -> None:
