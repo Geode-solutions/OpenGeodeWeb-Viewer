@@ -99,9 +99,7 @@ def test_lines_vertex_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/lines/vertex_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/lines/vertex_color_map.jpeg") == True
 
 
 def test_lines_vertex_color_map_range_update(
@@ -186,10 +184,7 @@ def test_lines_vertex_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("model/lines/updated_vertex_color_map.jpeg")
-        == True
-    )
+    assert server.compare_image("model/lines/updated_vertex_color_map.jpeg") == True
 
 
 def test_lines_vertex_color_map_red_shift(
@@ -274,9 +269,7 @@ def test_lines_vertex_color_map_red_shift(
         ],
     )
 
-    assert (
-        server.compare_image("model/lines/vertex_color_map_red_shift.jpeg") == True
-    )
+    assert server.compare_image("model/lines/vertex_color_map_red_shift.jpeg") == True
 
 
 def test_lines_vertex_color_map_rainbow(

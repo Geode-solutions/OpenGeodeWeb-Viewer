@@ -105,9 +105,7 @@ def test_surfaces_vertex_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
 
 
 def test_surfaces_vertex_color_map_range_update(
@@ -134,7 +132,9 @@ def test_surfaces_vertex_color_map_range_update(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
     )
 
@@ -143,7 +143,9 @@ def test_surfaces_vertex_color_map_range_update(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -171,7 +173,9 @@ def test_surfaces_vertex_color_map_range_update(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -192,10 +196,7 @@ def test_surfaces_vertex_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/updated_vertex_color_map.jpeg")
-        == True
-    )
+    assert server.compare_image("model/surfaces/updated_vertex_color_map.jpeg") == True
 
 
 def test_surfaces_vertex_color_map_red_shift(
@@ -222,7 +223,9 @@ def test_surfaces_vertex_color_map_red_shift(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
     )
 
@@ -231,7 +234,9 @@ def test_surfaces_vertex_color_map_red_shift(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -259,7 +264,9 @@ def test_surfaces_vertex_color_map_red_shift(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -280,9 +287,7 @@ def test_surfaces_vertex_color_map_red_shift(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
 
 
 def test_surfaces_vertex_color_map_rainbow(
@@ -309,7 +314,9 @@ def test_surfaces_vertex_color_map_rainbow(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
     )
 
@@ -318,7 +325,9 @@ def test_surfaces_vertex_color_map_rainbow(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -373,7 +382,9 @@ def test_surfaces_vertex_color_map_rainbow(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
