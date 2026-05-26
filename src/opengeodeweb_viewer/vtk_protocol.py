@@ -56,7 +56,7 @@ class HighlightPipeline:
 
 class BlockStyle(TypedDict):
     name: str
-    association: str
+    attribute_location: Literal["point", "cell"]
     points: list[float]
     minimum: float
     maximum: float

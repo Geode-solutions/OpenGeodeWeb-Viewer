@@ -64,7 +64,7 @@ class VtkModelView(VtkObjectView):
         if block_id not in pipeline.block_styles:
             pipeline.block_styles[block_id] = BlockStyle(
                 name="",
-                association="",
+                attribute_location="point",
                 points=[],
                 minimum=0.0,
                 maximum=1.0,
@@ -84,7 +84,7 @@ class VtkModelView(VtkObjectView):
 
         field_data = (
             block.GetPointData()
-            if style["association"] == "points"
+            if style["attribute_location"] == "point"
             else block.GetCellData()
         )
         scalar_array = field_data.GetArray(style["name"])
@@ -119,7 +119,7 @@ class VtkModelView(VtkObjectView):
 
         other_field_data = (
             block.GetCellData()
-            if style["association"] == "points"
+            if style["attribute_location"] == "point"
             else block.GetPointData()
         )
         other_field_data.SetActiveScalars("")
@@ -183,7 +183,7 @@ class VtkModelView(VtkObjectView):
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name
-            style["association"] = "points"
+            style["attribute_location"] = "point"
             self.updateBlockColors(pipeline, block_id)
 
     def displayAttributeOnCells(
@@ -192,7 +192,7 @@ class VtkModelView(VtkObjectView):
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name
-            style["association"] = "cells"
+            style["attribute_location"] = "cell"
             self.updateBlockColors(pipeline, block_id)
 
     def setupColorMap(
