@@ -43,7 +43,6 @@ class ViewerData:
     viewable_file: str | None
     viewer_object: ViewerType
     viewer_elements_type: ViewerElementsType
-    native_file: str | None = None
 
 
 @dataclass
@@ -124,7 +123,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     viewable_file=data.viewable_file,
                     viewer_object=data.viewer_object,
                     viewer_elements_type=data.viewer_elements_type,
-                    native_file=data.native_file,
                 )
             except Exception as e:
                 print(f"Error fetching data {data_id}: {e}")
@@ -276,14 +274,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if n == 0:
             return
             
-        start_x = 0.25
+        start_x = 0.22
         start_y = 0.04
-        margin_x = 0.015
+        margin_x = 0.01
         margin_y = 0.04
         
         cols = 5
-        actual_width = 0.105
-        bar_height = 0.10
+        actual_width = 0.12
+        bar_height = 0.08
         
         for i, (data_id, bar) in enumerate(visible_bars):
             pipeline = self.get_vtk_pipeline(data_id)
@@ -305,7 +303,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             
             bar.GetTitleTextProperty().SetVerticalJustificationToTop()
             bar.GetTitleTextProperty().SetLineOffset(0.0)
-            bar.SetBarRatio(0.5)
+            bar.SetBarRatio(0.4)
             
             bar.SetNumberOfLabels(2)
             bar.SetLabelFormat("%.2g")
