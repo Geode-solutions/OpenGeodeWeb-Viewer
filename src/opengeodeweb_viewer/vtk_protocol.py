@@ -281,7 +281,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         
         cols = 5
         actual_width = 0.12
-        bar_height = 0.08
+        row_height = 0.12
         
         for i, (data_id, bar) in enumerate(visible_bars):
             pipeline = self.get_vtk_pipeline(data_id)
@@ -299,11 +299,29 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if not attr_name:
                 attr_name = "Attribute"
                 
-            bar.SetTitle(attr_name)
-            
-            bar.GetTitleTextProperty().SetVerticalJustificationToTop()
-            bar.GetTitleTextProperty().SetLineOffset(0.0)
-            bar.SetBarRatio(0.4)
+            data_name = ""
+            try:
+                name_file_path = self.get_data_file_path(data_id, "name.txt")
+                if os.path.exists(name_file_path):
+                    with open(name_file_path, "r") as f:
+                        data_name = f.read().strip()
+            except Exception:
+                pass
+                
+            if data_name:
+                if len(data_name) > 30:
+                    data_name = data_name[:27] + "..."
+                bar.SetTitle(f"{attr_name}\n({data_name})")
+                bar.GetTitleTextProperty().SetVerticalJustificationToTop()
+                bar.GetTitleTextProperty().SetLineOffset(0.0)
+                bar.SetBarRatio(0.15)
+                bar_height = 0.12
+            else:
+                bar.SetTitle(attr_name)
+                bar.GetTitleTextProperty().SetVerticalJustificationToTop()
+                bar.GetTitleTextProperty().SetLineOffset(0.0)
+                bar.SetBarRatio(0.4)
+                bar_height = 0.08
             
             bar.SetNumberOfLabels(2)
             bar.SetLabelFormat("%.2g")
@@ -313,7 +331,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             col = i % cols
             
             x = start_x + col * (actual_width + margin_x)
-            y = start_y + row * (bar_height + margin_y)
+            y = start_y + row * (row_height + margin_y)
             
             bar.GetPositionCoordinate().SetCoordinateSystemToNormalizedViewport()
             bar.GetPositionCoordinate().SetValue(x, y)
