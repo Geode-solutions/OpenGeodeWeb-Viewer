@@ -39,12 +39,18 @@ def test_blocks_polyhedron_attribute(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(48, 50)), "name": "tetrahedron_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+            }
+        ],
     )
-    assert (
-        server.compare_image("model/blocks/attribute.jpeg") == True
-    )
+    assert server.compare_image("model/blocks/attribute.jpeg") == True
 
 
 def test_blocks_polyhedron_color_map(
@@ -71,8 +77,16 @@ def test_blocks_polyhedron_color_map(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(48, 50)), "name": "tetrahedron_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+            }
+        ],
     )
 
     # Set color map: Blue to Red
@@ -80,7 +94,9 @@ def test_blocks_polyhedron_color_map(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,

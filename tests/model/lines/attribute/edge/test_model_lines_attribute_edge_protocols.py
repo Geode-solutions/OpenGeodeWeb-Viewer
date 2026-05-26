@@ -42,9 +42,7 @@ def test_lines_edge_attribute(
         ]["rpc"],
         [{"id": model_id, "block_ids": list(range(14, 35)), "name": "edges"}],
     )
-    assert (
-        server.compare_image("model/lines/attribute.jpeg") == True
-    )
+    assert server.compare_image("model/lines/attribute.jpeg") == True
 
 
 def test_lines_edge_color_map(

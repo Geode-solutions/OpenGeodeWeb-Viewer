@@ -40,7 +40,9 @@ def test_corners_vertex_attribute(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
     assert (
@@ -72,7 +74,9 @@ def test_corners_vertex_color_map(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
 
@@ -81,7 +85,9 @@ def test_corners_vertex_color_map(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
