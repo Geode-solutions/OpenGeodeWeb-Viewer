@@ -29,7 +29,7 @@ class VtkModelLinesAttributeEdgeView(VtkModelView):
         model_lines_attribute_edge_prefix
         + model_lines_attribute_edge_schemas_dict["name"]["rpc"]
     )
-    def setModelLinesEdgeName(self, rpc_params: RpcParams) -> None:
+    def setModelLinesEdgeAttributeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_lines_attribute_edge_schemas_dict["name"],
@@ -43,7 +43,7 @@ class VtkModelLinesAttributeEdgeView(VtkModelView):
         model_lines_attribute_edge_prefix
         + model_lines_attribute_edge_schemas_dict["color_map"]["rpc"]
     )
-    def setModelLinesEdgeColorMap(self, rpc_params: RpcParams) -> None:
+    def setModelLinesEdgeAttributeColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_lines_attribute_edge_schemas_dict["color_map"],

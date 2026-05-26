@@ -29,7 +29,7 @@ class VtkModelCornersAttributeVertexView(VtkModelView):
         model_corners_attribute_vertex_prefix
         + model_corners_attribute_vertex_schemas_dict["name"]["rpc"]
     )
-    def setModelCornersVertexName(self, rpc_params: RpcParams) -> None:
+    def setModelCornersVertexAttributeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_corners_attribute_vertex_schemas_dict["name"],
@@ -43,7 +43,7 @@ class VtkModelCornersAttributeVertexView(VtkModelView):
         model_corners_attribute_vertex_prefix
         + model_corners_attribute_vertex_schemas_dict["color_map"]["rpc"]
     )
-    def setModelCornersVertexColorMap(self, rpc_params: RpcParams) -> None:
+    def setModelCornersVertexAttributeColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_corners_attribute_vertex_schemas_dict["color_map"],

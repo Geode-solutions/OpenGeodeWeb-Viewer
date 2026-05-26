@@ -29,7 +29,7 @@ class VtkModelBlocksAttributePolyhedronView(VtkModelView):
         model_blocks_attribute_polyhedron_prefix
         + model_blocks_attribute_polyhedron_schemas_dict["name"]["rpc"]
     )
-    def setModelBlocksPolyhedronName(self, rpc_params: RpcParams) -> None:
+    def setModelBlocksPolyhedronAttributeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_blocks_attribute_polyhedron_schemas_dict["name"],
@@ -43,7 +43,7 @@ class VtkModelBlocksAttributePolyhedronView(VtkModelView):
         model_blocks_attribute_polyhedron_prefix
         + model_blocks_attribute_polyhedron_schemas_dict["color_map"]["rpc"]
     )
-    def setModelBlocksPolyhedronColorMap(self, rpc_params: RpcParams) -> None:
+    def setModelBlocksPolyhedronAttributeColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_blocks_attribute_polyhedron_schemas_dict["color_map"],

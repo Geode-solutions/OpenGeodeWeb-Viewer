@@ -29,7 +29,7 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
         model_surfaces_attribute_polygon_prefix
         + model_surfaces_attribute_polygon_schemas_dict["name"]["rpc"]
     )
-    def setModelSurfacesPolygonName(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesPolygonAttributeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_surfaces_attribute_polygon_schemas_dict["name"],
@@ -43,7 +43,7 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
         model_surfaces_attribute_polygon_prefix
         + model_surfaces_attribute_polygon_schemas_dict["color_map"]["rpc"]
     )
-    def setModelSurfacesPolygonColorMap(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesPolygonAttributeColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_surfaces_attribute_polygon_schemas_dict["color_map"],

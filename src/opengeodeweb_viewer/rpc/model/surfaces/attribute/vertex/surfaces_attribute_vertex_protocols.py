@@ -29,7 +29,7 @@ class VtkModelSurfacesAttributeVertexView(VtkModelView):
         model_surfaces_attribute_vertex_prefix
         + model_surfaces_attribute_vertex_schemas_dict["name"]["rpc"]
     )
-    def setModelSurfacesVertexName(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesVertexAttributeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_surfaces_attribute_vertex_schemas_dict["name"],
@@ -43,7 +43,7 @@ class VtkModelSurfacesAttributeVertexView(VtkModelView):
         model_surfaces_attribute_vertex_prefix
         + model_surfaces_attribute_vertex_schemas_dict["color_map"]["rpc"]
     )
-    def setModelSurfacesVertexColorMap(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesVertexAttributeColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_surfaces_attribute_vertex_schemas_dict["color_map"],

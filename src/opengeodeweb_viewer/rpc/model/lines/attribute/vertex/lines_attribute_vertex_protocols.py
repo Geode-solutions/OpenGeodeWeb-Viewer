@@ -29,7 +29,7 @@ class VtkModelLinesAttributeVertexView(VtkModelView):
         model_lines_attribute_vertex_prefix
         + model_lines_attribute_vertex_schemas_dict["name"]["rpc"]
     )
-    def setModelLinesVertexName(self, rpc_params: RpcParams) -> None:
+    def setModelLinesVertexAttributeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_lines_attribute_vertex_schemas_dict["name"],
@@ -43,7 +43,7 @@ class VtkModelLinesAttributeVertexView(VtkModelView):
         model_lines_attribute_vertex_prefix
         + model_lines_attribute_vertex_schemas_dict["color_map"]["rpc"]
     )
-    def setModelLinesVertexColorMap(self, rpc_params: RpcParams) -> None:
+    def setModelLinesVertexAttributeColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_lines_attribute_vertex_schemas_dict["color_map"],

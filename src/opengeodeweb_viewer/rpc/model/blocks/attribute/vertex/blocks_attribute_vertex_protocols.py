@@ -29,7 +29,7 @@ class VtkModelBlocksAttributeVertexView(VtkModelView):
         model_blocks_attribute_vertex_prefix
         + model_blocks_attribute_vertex_schemas_dict["name"]["rpc"]
     )
-    def setModelBlocksVertexName(self, rpc_params: RpcParams) -> None:
+    def setModelBlocksVertexAttributeName(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_blocks_attribute_vertex_schemas_dict["name"],
@@ -43,7 +43,7 @@ class VtkModelBlocksAttributeVertexView(VtkModelView):
         model_blocks_attribute_vertex_prefix
         + model_blocks_attribute_vertex_schemas_dict["color_map"]["rpc"]
     )
-    def setModelBlocksVertexColorMap(self, rpc_params: RpcParams) -> None:
+    def setModelBlocksVertexAttributeColorMap(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.model_blocks_attribute_vertex_schemas_dict["color_map"],
