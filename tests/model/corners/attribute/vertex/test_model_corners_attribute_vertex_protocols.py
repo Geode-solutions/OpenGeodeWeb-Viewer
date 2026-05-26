@@ -45,9 +45,7 @@ def test_corners_vertex_attribute(
         ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
-    assert (
-        server.compare_image("model/corners/vertex_attribute.jpeg") == True
-    )
+    assert server.compare_image("model/corners/vertex_attribute.jpeg") == True
 
 
 def test_corners_vertex_color_map(
@@ -108,9 +106,7 @@ def test_corners_vertex_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/corners/vertex_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/corners/vertex_color_map.jpeg") == True
 
 
 def test_corners_vertex_color_map_range_update(
@@ -137,7 +133,9 @@ def test_corners_vertex_color_map_range_update(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
 
@@ -146,7 +144,9 @@ def test_corners_vertex_color_map_range_update(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -174,7 +174,9 @@ def test_corners_vertex_color_map_range_update(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -195,9 +197,7 @@ def test_corners_vertex_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("model/corners/updated_vertex_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/corners/updated_vertex_color_map.jpeg") == True
 
 
 def test_corners_vertex_color_map_red_shift(
@@ -224,7 +224,9 @@ def test_corners_vertex_color_map_red_shift(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
 
@@ -233,7 +235,9 @@ def test_corners_vertex_color_map_red_shift(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -261,7 +265,9 @@ def test_corners_vertex_color_map_red_shift(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -282,9 +288,7 @@ def test_corners_vertex_color_map_red_shift(
         ],
     )
 
-    assert (
-        server.compare_image("model/corners/vertex_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/corners/vertex_color_map.jpeg") == True
 
 
 def test_corners_vertex_color_map_rainbow(
@@ -311,7 +315,9 @@ def test_corners_vertex_color_map_rainbow(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [{"id": model_id, "block_ids": list(range(1, 13)), "name": "unique vertices"}],
     )
 
@@ -320,7 +326,9 @@ def test_corners_vertex_color_map_rainbow(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -375,7 +383,9 @@ def test_corners_vertex_color_map_rainbow(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,

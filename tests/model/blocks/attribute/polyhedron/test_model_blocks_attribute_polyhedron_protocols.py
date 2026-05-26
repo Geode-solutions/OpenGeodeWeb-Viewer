@@ -117,9 +117,7 @@ def test_blocks_polyhedron_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/blocks/color_map.jpeg") == True
-    )
+    assert server.compare_image("model/blocks/color_map.jpeg") == True
 
 
 def test_blocks_polyhedron_color_map_range_update(
@@ -146,8 +144,16 @@ def test_blocks_polyhedron_color_map_range_update(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(48, 50)), "name": "tetrahedron_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+            }
+        ],
     )
 
     # Set Blue to Red Map
@@ -155,7 +161,9 @@ def test_blocks_polyhedron_color_map_range_update(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -183,7 +191,9 @@ def test_blocks_polyhedron_color_map_range_update(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -231,8 +241,16 @@ def test_blocks_polyhedron_color_map_red_shift(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(48, 50)), "name": "tetrahedron_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+            }
+        ],
     )
 
     # Set Blue to Red Map on [0, 1]
@@ -240,7 +258,9 @@ def test_blocks_polyhedron_color_map_red_shift(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -268,7 +288,9 @@ def test_blocks_polyhedron_color_map_red_shift(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -316,8 +338,16 @@ def test_blocks_polyhedron_color_map_rainbow(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(48, 50)), "name": "tetrahedron_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+            }
+        ],
     )
 
     # Rainbow Desaturated Map
@@ -325,7 +355,9 @@ def test_blocks_polyhedron_color_map_rainbow(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -370,17 +402,16 @@ def test_blocks_polyhedron_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/blocks/color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("model/blocks/color_map_rainbow_initial.jpeg") == True
 
     # Update rainbow range via color map
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
