@@ -23,21 +23,23 @@ model_id = "123456789"
 
 def add_polygon_attribute_to_cube(model_id: str) -> None:
     data_folder = os.path.join(os.environ["DATA_FOLDER_PATH"], model_id)
-    for filepath in glob.glob(os.path.join(data_folder, "**", "Surface_*.vtp"), recursive=True):
+    for filepath in glob.glob(
+        os.path.join(data_folder, "**", "Surface_*.vtp"), recursive=True
+    ):
         reader = vtkXMLPolyDataReader()
         reader.SetFileName(filepath)
         reader.Update()
         polydata = reader.GetOutput()
-        
+
         num_cells = polydata.GetNumberOfCells()
         cell_array = vtkDoubleArray()
         cell_array.SetName("triangle_vertices")
         cell_array.SetNumberOfComponents(1)
         for i in range(num_cells):
             cell_array.InsertNextValue(float(i))
-            
+
         polydata.GetCellData().AddArray(cell_array)
-        
+
         writer = vtkXMLPolyDataWriter()
         writer.SetFileName(filepath)
         writer.SetInputData(polydata)
@@ -79,12 +81,18 @@ def test_surfaces_polygon_attribute(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "triangle_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+            }
+        ],
     )
-    assert (
-        server.compare_image("model/surfaces/attribute.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/attribute.jpeg") == True
 
 
 def test_surfaces_polygon_color_map(
@@ -111,8 +119,16 @@ def test_surfaces_polygon_color_map(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "triangle_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+            }
+        ],
     )
 
     # Set color map: Blue to Red
@@ -120,7 +136,9 @@ def test_surfaces_polygon_color_map(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -141,9 +159,7 @@ def test_surfaces_polygon_color_map(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/color_map.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/color_map.jpeg") == True
 
 
 def test_surfaces_polygon_color_map_range_update(
@@ -170,8 +186,16 @@ def test_surfaces_polygon_color_map_range_update(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "triangle_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+            }
+        ],
     )
 
     # Set Blue to Red Map
@@ -179,7 +203,9 @@ def test_surfaces_polygon_color_map_range_update(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -207,7 +233,9 @@ def test_surfaces_polygon_color_map_range_update(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -228,10 +256,7 @@ def test_surfaces_polygon_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/updated_color_map.jpeg")
-        == True
-    )
+    assert server.compare_image("model/surfaces/updated_color_map.jpeg") == True
 
 
 def test_surfaces_polygon_color_map_red_shift(
@@ -258,8 +283,16 @@ def test_surfaces_polygon_color_map_red_shift(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "triangle_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+            }
+        ],
     )
 
     # Set Blue to Red Map on [0, 1]
@@ -267,7 +300,9 @@ def test_surfaces_polygon_color_map_red_shift(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -295,7 +330,9 @@ def test_surfaces_polygon_color_map_red_shift(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -316,9 +353,7 @@ def test_surfaces_polygon_color_map_red_shift(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/color_map_red_shift.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/color_map_red_shift.jpeg") == True
 
 
 def test_surfaces_polygon_color_map_rainbow(
@@ -345,8 +380,16 @@ def test_surfaces_polygon_color_map_rainbow(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "triangle_vertices"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+            }
+        ],
     )
 
     # Rainbow Desaturated Map
@@ -354,7 +397,9 @@ def test_surfaces_polygon_color_map_rainbow(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -399,17 +444,16 @@ def test_surfaces_polygon_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("model/surfaces/color_map_rainbow_initial.jpeg") == True
 
     # Update rainbow range via color map
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "color_map"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
