@@ -276,11 +276,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             
         start_x = 0.22
         start_y = 0.04
-        margin_x = 0.01
+        margin_x = 0.03
         margin_y = 0.04
         
         cols = 5
-        actual_width = 0.12
+        actual_width = 0.10
         row_height = 0.12
         
         for i, (data_id, bar) in enumerate(visible_bars):
@@ -308,6 +308,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             except Exception:
                 pass
                 
+            bar.UnconstrainedFontSizeOn()
+            bar.GetLabelTextProperty().SetFontSize(14)
+            bar.GetTitleTextProperty().SetFontSize(14)
+            bar.GetLabelTextProperty().SetColor(0, 0, 0)
+            bar.GetTitleTextProperty().SetColor(0, 0, 0)
+            bar.GetLabelTextProperty().SetShadow(False)
+            bar.GetTitleTextProperty().SetShadow(False)
+            
             if data_name:
                 if len(data_name) > 30:
                     data_name = data_name[:27] + "..."
