@@ -112,7 +112,7 @@ class VtkModelView(VtkObjectView):
         try:
             viewer_data = self.get_viewer_data(data_id)
             file_name = str(viewer_data.viewable_file)
-            
+
             reader = vtkXMLMultiBlockDataReader()
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
