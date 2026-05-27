@@ -64,7 +64,7 @@ def test_points_with_point_set(
     )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": mesh_id, \"name\": \"\"}],
+        [{"id": mesh_id, "name": "points.vtp"}],
     )
     assert server.compare_image("mesh/points/register_point_set.jpeg") == True
 
