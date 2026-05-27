@@ -122,11 +122,6 @@ class ServerMonitor:
                     f.write(image)
                     f.close()
                 path_image = os.path.join(self.images_dir_path, filename)
-                import shutil
-
-                if os.environ.get("UPDATE_BASELINES") == "1":
-                    shutil.copy(test_file_path, path_image)
-                    return True
                 return self.images_diff(test_file_path, path_image) == 0.0
             else:
                 print("response =", image, flush=True)
