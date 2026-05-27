@@ -9,6 +9,12 @@
           "id": {
             "type": "string",
             "minLength": 1
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -1014,6 +1020,12 @@
           "id": {
             "type": "string",
             "minLength": 1
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -1507,6 +1519,12 @@
           "id": {
             "type": "string",
             "minLength": 1
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [

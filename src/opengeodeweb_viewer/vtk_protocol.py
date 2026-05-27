@@ -292,7 +292,10 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
         for i, (data_id, bar) in enumerate(visible_bars):
             pipeline = self.get_vtk_pipeline(data_id)
-            dataset = pipeline.reader.GetOutputAsDataSet()
+            if pipeline.filter:
+                dataset = pipeline.filter.GetOutputDataObject(0)
+            else:
+                dataset = pipeline.reader.GetOutputDataObject(0)
 
             attr_name = ""
             if dataset:
@@ -306,14 +309,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if not attr_name:
                 attr_name = "Attribute"
 
-            data_name = ""
-            try:
-                name_file_path = self.get_data_file_path(data_id, "name.txt")
-                if os.path.exists(name_file_path):
-                    with open(name_file_path, "r") as f:
-                        data_name = f.read().strip()
-            except Exception:
-                pass
+            data_name = dataset.GetObjectName() if dataset and dataset.GetObjectName() else data_id
 
             bar.UnconstrainedFontSizeOn()
             bar.GetLabelTextProperty().SetFontSize(14)
@@ -324,8 +320,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             bar.GetTitleTextProperty().SetShadow(False)
 
             if data_name:
-                if len(data_name) > 30:
-                    data_name = data_name[:27] + "..."
+                if len(data_name) > 22:
+                    data_name = data_name[:19] + "..."
                 bar.SetTitle(f"{attr_name}\n({data_name})\n")
                 bar.GetTitleTextProperty().SetVerticalJustificationToTop()
                 bar.GetTitleTextProperty().SetLineOffset(0.0)
