@@ -166,7 +166,7 @@ class VtkMeshView(VtkObjectView):
         lut.SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
         data.mapper.InterpolateScalarsBeforeMappingOn()
-        
+
         data.scalarBar.SetLookupTable(lut)
         data.scalarBar.SetVisibility(True)
         self.update_scalar_bars_layout()
