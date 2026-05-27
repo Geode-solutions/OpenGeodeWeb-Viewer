@@ -12,7 +12,7 @@ def test_register_mesh(
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "name": "hat.vtp"}],
+        [{"id": "123456789", \"name\": \"\"}],
     )
     assert server.compare_image("mesh/register.jpeg") == True
 
@@ -84,7 +84,7 @@ def test_apply_textures(
 
 
 # def test_display_vertex_attribute(server):
-#     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"], [{"id": "123456789", "name": "hat.vtp"}])
+#     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"], [{"id": "123456789", \"name\": \"\"}])
 #     assert server.compare_image("mesh/display_vertex_attribute_1.jpeg") == True
 
 #     server.call(
@@ -101,7 +101,7 @@ def test_apply_textures(
 #     assert server.compare_image("mesh/display_vertex_attribute_3.jpeg") == True
 
 # def test_display_polygon_attribute(server):
-#     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"], [{"id": "123456789", "name": "hat.vtp"}])
+#     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"], [{"id": "123456789", \"name\": \"\"}])
 #     assert server.compare_image("mesh/display_polygon_attribute_1.jpeg") == True
 
 #     server.call(

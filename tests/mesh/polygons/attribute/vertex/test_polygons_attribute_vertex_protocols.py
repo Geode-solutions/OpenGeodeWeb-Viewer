@@ -22,7 +22,7 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": mesh_id, "name": "hat.vtp"}],
+        [{"id": mesh_id, \"name\": \"\"}],
     )
 
 
