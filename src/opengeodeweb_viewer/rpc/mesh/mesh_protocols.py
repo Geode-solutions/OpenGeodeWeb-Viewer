@@ -51,7 +51,7 @@ class VtkMeshView(VtkObjectView):
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
             dataset = reader.GetOutputDataObject(0)
-            if dataset and params.name:
+            if dataset:
                 dataset.SetObjectName(params.name)
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())

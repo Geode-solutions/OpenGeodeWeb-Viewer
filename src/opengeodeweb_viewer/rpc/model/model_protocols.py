@@ -120,7 +120,7 @@ class VtkModelView(VtkObjectView):
             filter.SetInputConnection(reader.GetOutputPort())
             filter.Update()
             geometry_output = filter.GetOutputDataObject(0)
-            if geometry_output and params.name:
+            if geometry_output:
                 geometry_output.SetObjectName(params.name)
             mapper = vtkCompositePolyDataMapper()
             mapper.SetInputDataObject(geometry_output)
