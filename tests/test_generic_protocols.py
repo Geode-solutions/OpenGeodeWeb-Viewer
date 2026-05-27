@@ -14,7 +14,7 @@ def test_register_mesh(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["register"]["rpc"],
-        [{"id": data_id, "name": "test_name"}],
+        [{"id": data_id, "name": "CrossSection.vtm"}],
     )
     assert server.compare_image("mesh/register.jpeg") is True
 
@@ -28,7 +28,7 @@ def test_register_model(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["register"]["rpc"],
-        [{"id": data_id, "name": "test_name"}],
+        [{"id": data_id, "name": "CrossSection.vtm"}],
     )
     assert server.compare_image("model/register.jpeg") is True
 
