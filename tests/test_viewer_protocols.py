@@ -273,7 +273,6 @@ def test_render(server: ServerMonitor, dataset_factory: Callable[..., str]) -> N
         ],
     )
 
-
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["render"]["rpc"],
@@ -325,7 +324,6 @@ def test_set_z_scaling(
             }
         ],
     )
-
 
     server.call(
         VtkViewerView.viewer_prefix
