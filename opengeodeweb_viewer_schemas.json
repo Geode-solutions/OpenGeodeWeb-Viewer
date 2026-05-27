@@ -11,14 +11,12 @@
             "minLength": 1
           },
           "name": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "required": [
-          "id"
+          "id",
+          "name"
         ],
         "additionalProperties": false
       },
@@ -1022,14 +1020,12 @@
             "minLength": 1
           },
           "name": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "required": [
-          "id"
+          "id",
+          "name"
         ],
         "additionalProperties": false
       },
@@ -1521,14 +1517,12 @@
             "minLength": 1
           },
           "name": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "required": [
-          "id"
+          "id",
+          "name"
         ],
         "additionalProperties": false
       },

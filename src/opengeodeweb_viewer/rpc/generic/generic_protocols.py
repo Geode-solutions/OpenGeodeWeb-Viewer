@@ -37,9 +37,7 @@ class VtkGenericView(VtkView):
         )
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
-        specific_params = {"id": data_id}
-        if params.name is not None:
-            specific_params["name"] = params.name
+        specific_params = {"id": data_id, "name": params.name}
         viewer_object = self.get_viewer_data(data_id).viewer_object
         if viewer_object == "mesh":
             self.mesh_protocols.registerMesh(specific_params)
