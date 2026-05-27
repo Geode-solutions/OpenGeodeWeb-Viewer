@@ -166,15 +166,15 @@ class VtkObjectView(VtkView):
             attributes.SetBlockOpacity(blocks[block_id], alpha)
 
     def clearColors(self, data_id: str) -> None:
-        db = self.get_vtk_pipeline(data_id)
-        mapper = db.mapper
-        reader = db.reader
+        pipeline = self.get_vtk_pipeline(data_id)
+        mapper = pipeline.mapper
+        reader = pipeline.reader
         output = reader.GetOutputDataObject(0)
         if isinstance(output, vtkDataSet):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
-        db.scalarBar.SetVisibility(False)
+        pipeline.scalarBar.SetVisibility(False)
         self.update_scalar_bars_layout()
 
     def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:
