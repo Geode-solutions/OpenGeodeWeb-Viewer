@@ -319,13 +319,13 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if data_name:
                 if len(data_name) > 30:
                     data_name = data_name[:27] + "..."
-                bar.SetTitle(f"{attr_name}\n({data_name})")
+                bar.SetTitle(f"{attr_name}\n({data_name})\n")
                 bar.GetTitleTextProperty().SetVerticalJustificationToTop()
                 bar.GetTitleTextProperty().SetLineOffset(0.0)
                 bar.SetBarRatio(0.15)
                 bar_height = 0.12
             else:
-                bar.SetTitle(attr_name)
+                bar.SetTitle(f"{attr_name}\n")
                 bar.GetTitleTextProperty().SetVerticalJustificationToTop()
                 bar.GetTitleTextProperty().SetLineOffset(0.0)
                 bar.SetBarRatio(0.4)
