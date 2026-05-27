@@ -10,7 +10,7 @@ def test_register_model(
     dataset_factory(id="123456789", viewable_file="CrossSection.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "name": "test_name"}],
     )
     assert server.compare_image("model/register.jpeg") == True
 
@@ -22,7 +22,7 @@ def test_register_model_cube(
     dataset_factory(id="123456789", viewable_file="cube.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "name": "test_name"}],
     )
     assert server.compare_image("model/cube_register.jpeg") == True
 

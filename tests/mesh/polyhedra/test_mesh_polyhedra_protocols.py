@@ -22,7 +22,7 @@ def test_register_mesh(
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "name": "test_name"}],
     )
     assert server.compare_image("mesh/polyhedra/register.jpeg") == True
 
