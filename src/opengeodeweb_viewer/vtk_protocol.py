@@ -309,7 +309,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if not attr_name:
                 attr_name = "Attribute"
 
-            data_name = dataset.GetObjectName() if dataset and dataset.GetObjectName() else data_id
+            data_name = (
+                dataset.GetObjectName()
+                if dataset and dataset.GetObjectName()
+                else data_id
+            )
 
             bar.UnconstrainedFontSizeOn()
             bar.GetLabelTextProperty().SetFontSize(14)
