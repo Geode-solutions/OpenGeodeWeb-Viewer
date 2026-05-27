@@ -222,23 +222,23 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["pick_colormap"], self.viewer_prefix
         )
         params = schemas.PickColormap.from_dict(rpc_params)
-        
+
         renderWindow = self.getView("-1")
         size = renderWindow.GetSize()
         nx = params.x / size[0]
         ny = 1.0 - (params.y / size[1])
-        
+
         for data_id, pipeline in self.get_data_base().items():
             bar = pipeline.scalarBar
             if bar.GetVisibility() and bar.GetLookupTable() is not None:
                 pos = bar.GetPositionCoordinate()
                 bx, by = pos.GetValue()[0], pos.GetValue()[1]
                 w, h = bar.GetWidth(), bar.GetHeight()
-                
+
                 # Check if click falls within the scalar bar bounding box
                 if bx <= nx <= bx + w and by <= ny <= by + h:
                     return {"data_id": data_id}
-                    
+
         return {"data_id": None}
 
     def computeEpsilon(self, renderer: vtkRenderer, z: float) -> float:

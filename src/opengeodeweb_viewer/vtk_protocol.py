@@ -28,7 +28,11 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
-from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor, vtkScalarBarActor
+from vtkmodules.vtkRenderingAnnotation import (
+    vtkCubeAxesActor,
+    vtkAxesActor,
+    vtkScalarBarActor,
+)
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Local application imports
@@ -267,26 +271,29 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def update_scalar_bars_layout(self) -> None:
         visible_bars = []
         for data_id, pipeline in self.get_data_base().items():
-            if pipeline.scalarBar.GetVisibility() and pipeline.scalarBar.GetLookupTable() is not None:
+            if (
+                pipeline.scalarBar.GetVisibility()
+                and pipeline.scalarBar.GetLookupTable() is not None
+            ):
                 visible_bars.append((data_id, pipeline.scalarBar))
-        
+
         n = len(visible_bars)
         if n == 0:
             return
-            
+
         start_x = 0.22
         start_y = 0.04
         margin_x = 0.03
         margin_y = 0.04
-        
+
         cols = 5
         actual_width = 0.10
         row_height = 0.12
-        
+
         for i, (data_id, bar) in enumerate(visible_bars):
             pipeline = self.get_vtk_pipeline(data_id)
             dataset = pipeline.reader.GetOutputAsDataSet()
-            
+
             attr_name = ""
             if dataset:
                 pd = dataset.GetPointData().GetScalars()
@@ -295,10 +302,10 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     attr_name = pd.GetName()
                 elif cd:
                     attr_name = cd.GetName()
-            
+
             if not attr_name:
                 attr_name = "Attribute"
-                
+
             data_name = ""
             try:
                 name_file_path = self.get_data_file_path(data_id, "name.txt")
@@ -307,7 +314,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                         data_name = f.read().strip()
             except Exception:
                 pass
-                
+
             bar.UnconstrainedFontSizeOn()
             bar.GetLabelTextProperty().SetFontSize(14)
             bar.GetTitleTextProperty().SetFontSize(14)
@@ -315,7 +322,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             bar.GetTitleTextProperty().SetColor(0, 0, 0)
             bar.GetLabelTextProperty().SetShadow(False)
             bar.GetTitleTextProperty().SetShadow(False)
-            
+
             if data_name:
                 if len(data_name) > 30:
                     data_name = data_name[:27] + "..."
@@ -330,17 +337,17 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 bar.GetTitleTextProperty().SetLineOffset(0.0)
                 bar.SetBarRatio(0.4)
                 bar_height = 0.08
-            
+
             bar.SetNumberOfLabels(2)
             bar.SetLabelFormat("%.2g")
             bar.SetOrientationToHorizontal()
-            
+
             row = i // cols
             col = i % cols
-            
+
             x = start_x + col * (actual_width + margin_x)
             y = start_y + row * (row_height + margin_y)
-            
+
             bar.GetPositionCoordinate().SetCoordinateSystemToNormalizedViewport()
             bar.GetPositionCoordinate().SetValue(x, y)
             bar.SetWidth(actual_width)

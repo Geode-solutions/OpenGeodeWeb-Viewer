@@ -69,7 +69,10 @@ class VtkObjectView(VtkView):
         if not visibility:
             pipeline.scalarBar.SetVisibility(False)
         else:
-            if pipeline.mapper.GetScalarVisibility() and pipeline.mapper.GetLookupTable() is not None:
+            if (
+                pipeline.mapper.GetScalarVisibility()
+                and pipeline.mapper.GetLookupTable() is not None
+            ):
                 pipeline.scalarBar.SetVisibility(True)
         self.update_scalar_bars_layout()
 
