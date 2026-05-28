@@ -22,7 +22,7 @@ frozenlist>=1
     # via
     #   aiohttp
     #   aiosignal
-idna==3.16
+idna==3.17
     # via yarl
 kiwisolver>=1
     # via matplotlib
