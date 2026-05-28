@@ -8,6 +8,7 @@ from .reset_camera import *
 from .render import *
 from .preview_points import *
 from .picked_ids import *
+from .pick_colormap import *
 from .highlight import *
 from .grid_scale import *
 from .get_point_position import *

@@ -37,6 +37,7 @@ class VtkObjectView(VtkView):
         data.mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
         data.mapper.SetResolveCoincidentTopologyPolygonOffsetParameters(2, 0)
         data.mapper.SetResolveCoincidentTopologyPointOffsetParameter(-2)
+        data.scalarBar.SetVisibility(False)
 
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
@@ -48,6 +49,7 @@ class VtkObjectView(VtkView):
                 resetCamara = False
         renderer.AddActor(data.actor)
         renderer.AddActor(data.highlight.actor)
+        renderer.AddActor2D(data.scalarBar)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -57,11 +59,22 @@ class VtkObjectView(VtkView):
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
         renderer.RemoveActor(pipeline.highlight.actor)
+        renderer.RemoveActor2D(pipeline.scalarBar)
         self.deregister_object(data_id)
+        self.update_scalar_bars_layout()
 
     def SetVisibility(self, data_id: str, visibility: bool) -> None:
-        actor = self.get_vtk_pipeline(data_id).actor
-        actor.SetVisibility(visibility)
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.actor.SetVisibility(visibility)
+        if not visibility:
+            pipeline.scalarBar.SetVisibility(False)
+        else:
+            if (
+                pipeline.mapper.GetScalarVisibility()
+                and pipeline.mapper.GetLookupTable() is not None
+            ):
+                pipeline.scalarBar.SetVisibility(True)
+        self.update_scalar_bars_layout()
 
     def SetOpacity(self, data_id: str, opacity: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
@@ -153,14 +166,16 @@ class VtkObjectView(VtkView):
             attributes.SetBlockOpacity(blocks[block_id], alpha)
 
     def clearColors(self, data_id: str) -> None:
-        db = self.get_vtk_pipeline(data_id)
-        mapper = db.mapper
-        reader = db.reader
+        pipeline = self.get_vtk_pipeline(data_id)
+        mapper = pipeline.mapper
+        reader = pipeline.reader
         output = reader.GetOutputDataObject(0)
         if isinstance(output, vtkDataSet):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
+        pipeline.scalarBar.SetVisibility(False)
+        self.update_scalar_bars_layout()
 
     def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:
         mapper.ScalarVisibilityOff()

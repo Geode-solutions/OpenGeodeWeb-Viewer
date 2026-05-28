@@ -3,9 +3,9 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Register(DataClassJsonMixin):
+class PickColormap(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 
-    id: str
-    name: str
+    x: float
+    y: float

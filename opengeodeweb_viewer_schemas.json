@@ -9,10 +9,14 @@
           "id": {
             "type": "string",
             "minLength": 1
+          },
+          "name": {
+            "type": "string"
           }
         },
         "required": [
-          "id"
+          "id",
+          "name"
         ],
         "additionalProperties": false
       },
@@ -1014,10 +1018,14 @@
           "id": {
             "type": "string",
             "minLength": 1
+          },
+          "name": {
+            "type": "string"
           }
         },
         "required": [
-          "id"
+          "id",
+          "name"
         ],
         "additionalProperties": false
       },
@@ -1863,10 +1871,14 @@
           "id": {
             "type": "string",
             "minLength": 1
+          },
+          "name": {
+            "type": "string"
           }
         },
         "required": [
-          "id"
+          "id",
+          "name"
         ],
         "additionalProperties": false
       },
@@ -2469,6 +2481,24 @@
           "ids"
         ],
         "additionalProperties": false
+      },
+      "pick_colormap": {
+        "$id": "opengeodeweb_viewer.viewer.pick_colormap",
+        "route": "pick_colormap",
+        "rpc": "pick_colormap",
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
       },
       "highlight": {
         "$id": "opengeodeweb_viewer.viewer.highlight",

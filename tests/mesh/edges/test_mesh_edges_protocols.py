@@ -50,7 +50,7 @@ def test_edges_with_edged_curve(
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "123456789", "name": "edged_curve.vtp"}],
     )
     assert server.compare_image("mesh/edges/register_edged_curve.jpeg") == True
 

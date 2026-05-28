@@ -218,7 +218,9 @@ class VtkModelView(VtkObjectView):
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            file_name = str(self.get_viewer_data(data_id).viewable_file)
+            viewer_data = self.get_viewer_data(data_id)
+            file_name = str(viewer_data.viewable_file)
+
             reader = vtkXMLMultiBlockDataReader()
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
@@ -226,6 +228,8 @@ class VtkModelView(VtkObjectView):
             filter.SetInputConnection(reader.GetOutputPort())
             filter.Update()
             geometry_output = filter.GetOutputDataObject(0)
+            if geometry_output:
+                geometry_output.SetObjectName(params.name)
             mapper = vtkCompositePolyDataMapper()
             mapper.SetInputDataObject(geometry_output)
             attributes = vtkCompositeDataDisplayAttributes()

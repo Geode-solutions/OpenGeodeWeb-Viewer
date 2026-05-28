@@ -44,10 +44,15 @@ class VtkMeshView(VtkObjectView):
         params = schemas.Register.from_dict(rpc_params)
         data_id = params.id
         try:
-            file_name = str(self.get_viewer_data(data_id).viewable_file)
+            viewer_data = self.get_viewer_data(data_id)
+            file_name = str(viewer_data.viewable_file)
+
             reader = vtkXMLGenericDataObjectReader()
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
+            dataset = reader.GetOutputDataObject(0)
+            if dataset:
+                dataset.SetObjectName(params.name)
             mapper = vtkDataSetMapper()
             mapper.SetInputConnection(reader.GetOutputPort())
             data = VtkPipeline(reader, mapper)
@@ -166,6 +171,10 @@ class VtkMeshView(VtkObjectView):
         lut.SetRange(minimum, maximum)
         data.mapper.SetUseLookupTableScalarRange(False)
         data.mapper.InterpolateScalarsBeforeMappingOn()
+
+        data.scalarBar.SetLookupTable(lut)
+        data.scalarBar.SetVisibility(True)
+        self.update_scalar_bars_layout()
 
     @exportRpc(mesh_prefix + mesh_schemas_dict["highlight"]["rpc"])
     def setMeshhighlight(self, rpc_params: RpcParams) -> None:

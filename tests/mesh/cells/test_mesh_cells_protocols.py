@@ -21,7 +21,7 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": mesh_id}],
+        [{"id": mesh_id, "name": "regular_grid_2d.vti"}],
     )
     assert server.compare_image("mesh/cells/register.jpeg") == True
 

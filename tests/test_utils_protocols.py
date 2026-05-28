@@ -15,7 +15,7 @@ def test_reset_project_after_import(
     dataset_factory(id=pre_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": pre_id}],
+        [{"id": pre_id, "name": "hat.vtp"}],
     )
     assert server.compare_image("mesh/register.jpeg") is True
 
@@ -43,6 +43,6 @@ def test_reset_project_after_import(
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": post_id}],
+        [{"id": post_id, "name": "hat.vtp"}],
     )
     assert server.compare_image("viewer/import_project.jpeg") is True

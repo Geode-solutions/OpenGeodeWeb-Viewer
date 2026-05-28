@@ -1,0 +1,17 @@
+{
+  "route": "pick_colormap",
+  "rpc": "pick_colormap",
+  "type": "object",
+  "properties": {
+    "x": {
+      "type": "number"
+    },
+    "y": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "x",
+    "y"
+  ]
+}

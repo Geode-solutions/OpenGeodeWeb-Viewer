@@ -8,3 +8,4 @@ class Register(DataClassJsonMixin):
         print(self, flush=True)
 
     id: str
+    name: str
