@@ -1152,6 +1152,148 @@
     },
     "model": {
       "blocks": {
+        "attribute": {
+          "polyhedron": {
+            "name": {
+              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "vertex": {
+            "name": {
+              "$id": "opengeodeweb_viewer.model.blocks.attribute.vertex.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.model.blocks.attribute.vertex.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
         "visibility": {
           "$id": "opengeodeweb_viewer.model.blocks.visibility",
           "rpc": "visibility",
@@ -1244,6 +1386,78 @@
         }
       },
       "corners": {
+        "attribute": {
+          "vertex": {
+            "name": {
+              "$id": "opengeodeweb_viewer.model.corners.attribute.vertex.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.model.corners.attribute.vertex.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
         "visibility": {
           "$id": "opengeodeweb_viewer.model.corners.visibility",
           "rpc": "visibility",
@@ -1357,6 +1571,148 @@
         }
       },
       "lines": {
+        "attribute": {
+          "edge": {
+            "name": {
+              "$id": "opengeodeweb_viewer.model.lines.attribute.edge.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.model.lines.attribute.edge.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "vertex": {
+            "name": {
+              "$id": "opengeodeweb_viewer.model.lines.attribute.vertex.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.model.lines.attribute.vertex.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
         "visibility": {
           "$id": "opengeodeweb_viewer.model.lines.visibility",
           "rpc": "visibility",
@@ -1590,6 +1946,148 @@
         "additionalProperties": false
       },
       "surfaces": {
+        "attribute": {
+          "polygon": {
+            "name": {
+              "$id": "opengeodeweb_viewer.model.surfaces.attribute.polygon.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.model.surfaces.attribute.polygon.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "vertex": {
+            "name": {
+              "$id": "opengeodeweb_viewer.model.surfaces.attribute.vertex.name",
+              "rpc": "name",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "color_map": {
+              "$id": "opengeodeweb_viewer.model.surfaces.attribute.vertex.color_map",
+              "rpc": "color_map",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "block_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 1
+                },
+                "points": {
+                  "type": "array",
+                  "description": "Flat array of [value, r, g, b, ...]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 8
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "block_ids",
+                "points",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
         "visibility": {
           "$id": "opengeodeweb_viewer.model.surfaces.visibility",
           "rpc": "visibility",

@@ -70,6 +70,27 @@ from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
+from opengeodeweb_viewer.rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
+    VtkModelCornersAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.model.lines.attribute.vertex.lines_attribute_vertex_protocols import (
+    VtkModelLinesAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.model.lines.attribute.edge.lines_attribute_edge_protocols import (
+    VtkModelLinesAttributeEdgeView,
+)
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
+    VtkModelSurfacesAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
+    VtkModelSurfacesAttributePolygonView,
+)
+from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
+    VtkModelBlocksAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron.blocks_attribute_polyhedron_protocols import (
+    VtkModelBlocksAttributePolyhedronView,
+)
 from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
 from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
 
@@ -136,6 +157,13 @@ class _Server(VtkTypingMixin, ServerProtocol):
         self.registerVtkWebProtocol(VtkModelLinesView())
         self.registerVtkWebProtocol(VtkModelSurfacesView())
         self.registerVtkWebProtocol(VtkModelBlocksView())
+        self.registerVtkWebProtocol(VtkModelCornersAttributeVertexView())
+        self.registerVtkWebProtocol(VtkModelLinesAttributeVertexView())
+        self.registerVtkWebProtocol(VtkModelLinesAttributeEdgeView())
+        self.registerVtkWebProtocol(VtkModelSurfacesAttributeVertexView())
+        self.registerVtkWebProtocol(VtkModelSurfacesAttributePolygonView())
+        self.registerVtkWebProtocol(VtkModelBlocksAttributeVertexView())
+        self.registerVtkWebProtocol(VtkModelBlocksAttributePolyhedronView())
         self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.

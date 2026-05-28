@@ -1,7 +1,7 @@
 # Standard library imports
 import math
 import os
-from typing import cast, Any, Literal
+from typing import cast, Any, Literal, TypedDict
 from dataclasses import dataclass, field
 
 # Third party imports
@@ -58,6 +58,14 @@ class HighlightPipeline:
     extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
 
 
+class BlockStyle(TypedDict):
+    name: str
+    attribute_location: Literal["point", "cell"]
+    points: list[float]
+    minimum: float
+    maximum: float
+
+
 @dataclass
 class VtkPipeline:
     reader: vtkXMLReader
@@ -68,6 +76,7 @@ class VtkPipeline:
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
     scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
+    block_styles: dict[int, BlockStyle] = field(default_factory=dict)
 
 
 class VtkTypingMixin:
