@@ -53,7 +53,7 @@ def register_model_cube_with_polygon_attribute(
     add_polygon_attribute_to_cube(model_id)
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
-        [{"id": model_id}],
+        [{"id": model_id, "name": "cube.vtm"}],
     )
     assert server.compare_image("model/cube_register.jpeg") == True
 
