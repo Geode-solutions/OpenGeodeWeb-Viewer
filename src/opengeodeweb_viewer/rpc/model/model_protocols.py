@@ -11,6 +11,7 @@ from vtkmodules.vtkCommonDataModel import (
 from vtkmodules.vtkRenderingCore import (
     vtkCompositePolyDataMapper,
     vtkCompositeDataDisplayAttributes,
+    vtkColorTransferFunction,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
@@ -25,7 +26,7 @@ from opengeodeweb_viewer.utils_functions import (
     deterministic_color,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import VtkPipeline
+from opengeodeweb_viewer.vtk_protocol import VtkPipeline, BlockStyle
 from typing import Optional, List, TypedDict, Protocol
 from . import schemas
 
@@ -59,6 +60,76 @@ class VtkModelView(VtkObjectView):
     def __init__(self) -> None:
         super().__init__()
 
+    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> BlockStyle:
+        if block_id not in pipeline.block_styles:
+            pipeline.block_styles[block_id] = BlockStyle(
+                name="",
+                attribute_location="point",
+                points=[],
+                minimum=0.0,
+                maximum=1.0,
+            )
+        return pipeline.block_styles[block_id]
+
+    def updateBlockColors(self, pipeline: VtkPipeline, block_id: int) -> None:
+        block = pipeline.blockDataSets[block_id]
+        if not isinstance(block, vtkDataSet):
+            return
+
+        style = self._get_block_style(pipeline, block_id)
+        if not style["name"]:
+            block.GetPointData().SetActiveScalars("")
+            block.GetCellData().SetActiveScalars("")
+            return
+
+        field_data = (
+            block.GetPointData()
+            if style["attribute_location"] == "point"
+            else block.GetCellData()
+        )
+        scalar_array = field_data.GetArray(style["name"])
+        if not scalar_array:
+            return
+
+        lut = vtkColorTransferFunction()
+        points = style["points"]
+        minimum = style["minimum"]
+        maximum = style["maximum"]
+        if points:
+            x_min, x_max = points[0], points[-4]
+            span = x_max - x_min
+            for i in range(0, len(points), 4):
+                x, r, g, b = points[i : i + 4]
+                new_x = (
+                    minimum + (x - x_min) / span * (maximum - minimum)
+                    if span
+                    else minimum
+                )
+                lut.AddRGBPoint(new_x, r, g, b)
+        else:
+            lut.AddRGBPoint(minimum, 0, 0, 0)
+            lut.AddRGBPoint(maximum, 1, 1, 1)
+
+        lut.SetRange(minimum, maximum)
+        rgba_colors = lut.MapScalars(scalar_array, 0, 0)
+        rgba_colors.SetName(f"__colors_{style['name']}")
+
+        field_data.AddArray(rgba_colors)
+        field_data.SetActiveScalars(rgba_colors.GetName())
+
+        other_field_data = (
+            block.GetCellData()
+            if style["attribute_location"] == "point"
+            else block.GetPointData()
+        )
+        other_field_data.SetActiveScalars("")
+
+        mapper = pipeline.mapper
+        mapper.ScalarVisibilityOn()
+        mapper.SetColorModeToDirectScalars()
+        mapper.SetScalarModeToDefault()
+        mapper.Modified()
+
     def apply_color(
         self,
         pipeline: VtkPipeline,
@@ -73,34 +144,71 @@ class VtkModelView(VtkObjectView):
         colors: list[ColorResult] = []
         for block_id in block_ids:
             block_dataset = pipeline.blockDataSets[block_id]
-            if color_mode == "random":
-                geode_id = pipeline.blockGeodeIds[block_id]
-                red, green, blue = deterministic_color(str(geode_id))
-                attr.SetBlockColor(block_dataset, [red, green, blue])
-                attr.SetBlockOpacity(block_dataset, 1.0)
-                colors.append(
-                    {
-                        "viewer_id": block_id,
-                        "geode_id": str(geode_id),
-                        "color": {
-                            "red": round(red * 255),
-                            "green": round(green * 255),
-                            "blue": round(blue * 255),
-                            "alpha": 1.0,
-                        },
-                    }
-                )
-            elif color is not None:
-                red, green, blue, alpha = (
-                    color.red / 255,
-                    color.green / 255,
-                    color.blue / 255,
-                    color.alpha,
-                )
-                attr.SetBlockColor(block_dataset, [red, green, blue])
-                attr.SetBlockOpacity(block_dataset, alpha)
+            if isinstance(block_dataset, vtkDataSet):
+                block_dataset.GetPointData().SetActiveScalars("")
+                block_dataset.GetCellData().SetActiveScalars("")
+                self._get_block_style(pipeline, block_id)["name"] = ""
+                if color_mode == "random":
+                    geode_id = pipeline.blockGeodeIds[block_id]
+                    red, green, blue = deterministic_color(str(geode_id))
+                    attr.SetBlockColor(block_dataset, [red, green, blue])
+                    attr.SetBlockOpacity(block_dataset, 1.0)
+                    colors.append(
+                        {
+                            "viewer_id": block_id,
+                            "geode_id": str(geode_id),
+                            "color": {
+                                "red": round(red * 255),
+                                "green": round(green * 255),
+                                "blue": round(blue * 255),
+                                "alpha": 1.0,
+                            },
+                        }
+                    )
+                elif color is not None:
+                    red, green, blue, alpha = (
+                        color.red / 255,
+                        color.green / 255,
+                        color.blue / 255,
+                        color.alpha,
+                    )
+                    attr.SetBlockColor(block_dataset, [red, green, blue])
+                    attr.SetBlockOpacity(block_dataset, alpha)
         mapper.Modified()
         return colors
+
+    def displayAttributeOnVertices(
+        self, pipeline: VtkPipeline, block_ids: list[int], name: str
+    ) -> None:
+        for block_id in block_ids:
+            style = self._get_block_style(pipeline, block_id)
+            style["name"] = name
+            style["attribute_location"] = "point"
+            self.updateBlockColors(pipeline, block_id)
+
+    def displayAttributeOnCells(
+        self, pipeline: VtkPipeline, block_ids: list[int], name: str
+    ) -> None:
+        for block_id in block_ids:
+            style = self._get_block_style(pipeline, block_id)
+            style["name"] = name
+            style["attribute_location"] = "cell"
+            self.updateBlockColors(pipeline, block_id)
+
+    def setupColorMap(
+        self,
+        pipeline: VtkPipeline,
+        block_ids: list[int],
+        points: list[float],
+        minimum: float,
+        maximum: float,
+    ) -> None:
+        for block_id in block_ids:
+            style = self._get_block_style(pipeline, block_id)
+            style["points"] = points
+            style["minimum"] = minimum
+            style["maximum"] = maximum
+            self.updateBlockColors(pipeline, block_id)
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
