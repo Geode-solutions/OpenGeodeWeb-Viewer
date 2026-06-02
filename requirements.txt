@@ -51,7 +51,9 @@ python-dateutil==2.9.0.post0
 six>=1
     # via python-dateutil
 typing-extensions>=4
-    # via aiosignal
+    # via
+    #   aiohttp
+    #   aiosignal
 vtk==9.5.2
     # via -r requirements.in
 websocket-client>=1
