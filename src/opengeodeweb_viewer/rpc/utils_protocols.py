@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+from threading import Timer
 from typing import cast
 
 # Third party imports
@@ -28,7 +29,7 @@ class VtkUtilsView(VtkView):
             f"{self.utils_prefix + self.utils_schemas_dict['kill']['rpc']}", flush=True
         )
         print("Manual viewer kill, shutting down...", flush=True)
-        os._exit(0)
+        Timer(1.5, os._exit, [0]).start()
 
     @exportRpc(utils_prefix + utils_schemas_dict["import_project"]["rpc"])
     def importProject(self, rpc_params: RpcParams) -> None:
