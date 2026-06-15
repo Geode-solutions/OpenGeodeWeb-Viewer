@@ -270,7 +270,9 @@ class VtkViewerView(VtkView):
             if (pipeline := self.get_vtk_pipeline(pipeline_id)).pick_mapper is not None
         ]
         for pipeline in pipelines_to_restore:
-            pipeline.actor.SetMapper(pipeline.pick_mapper)
+            pick_mapper = pipeline.pick_mapper
+            if pick_mapper is not None:
+                pipeline.actor.SetMapper(pick_mapper)
 
         actors = []
         picker = vtkCellPicker(tolerance=0.005)
@@ -368,7 +370,9 @@ class VtkViewerView(VtkView):
             if (pipeline := self.get_vtk_pipeline(pipeline_id)).pick_mapper is not None
         ]
         for pipeline in pipelines_to_restore:
-            pipeline.actor.SetMapper(pipeline.pick_mapper)
+            pick_mapper = pipeline.pick_mapper
+            if pick_mapper is not None:
+                pipeline.actor.SetMapper(pick_mapper)
         try:
             picker.Pick(params.x, params.y, 0, self.get_renderer())
         finally:
