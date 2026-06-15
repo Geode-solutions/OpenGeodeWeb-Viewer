@@ -163,19 +163,21 @@ class VtkObjectView(VtkView):
                 child_dataset = source_multiblock.GetBlock(index)
                 if child_dataset is None:
                     continue
-                if (
-                    block_visibility_attributes.HasBlockVisibility(child_dataset)
-                    and not block_visibility_attributes.GetBlockVisibility(child_dataset)
-                ):
+                if block_visibility_attributes.HasBlockVisibility(
+                    child_dataset
+                ) and not block_visibility_attributes.GetBlockVisibility(child_dataset):
                     continue
                 if isinstance(child_dataset, vtkMultiBlockDataSet):
-                    pruned_multiblock.SetBlock(index, build_pruned_multiblock(child_dataset))
+                    pruned_multiblock.SetBlock(
+                        index, build_pruned_multiblock(child_dataset)
+                    )
                 else:
                     pruned_multiblock.SetBlock(index, child_dataset)
             return pruned_multiblock
 
-        pipeline.pick_mapper.SetInputDataObject(build_pruned_multiblock(original_dataset))
-
+        pipeline.pick_mapper.SetInputDataObject(
+            build_pruned_multiblock(original_dataset)
+        )
 
     def SetBlocksColor(
         self,
