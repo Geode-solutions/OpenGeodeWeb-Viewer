@@ -264,6 +264,14 @@ class VtkViewerView(VtkView):
         params = schemas.PickedIDS.from_dict(rpc_params)
         renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
 
+        pipelines_to_restore = [
+            pipeline
+            for pipeline_id in params.ids
+            if (pipeline := self.get_vtk_pipeline(pipeline_id)).pick_mapper is not None
+        ]
+        for pipeline in pipelines_to_restore:
+            pipeline.actor.SetMapper(pipeline.pick_mapper)
+
         actors = []
         picker = vtkCellPicker(tolerance=0.005)
         picker.Pick(params.x, params.y, 0, renderer)
@@ -278,6 +286,8 @@ class VtkViewerView(VtkView):
 
         for actor in actors:
             actor.SetPickable(True)
+        for pipeline in pipelines_to_restore:
+            pipeline.actor.SetMapper(pipeline.mapper)
 
         array_ids = [
             id for id in params.ids if self.get_vtk_pipeline(id).actor in actors
@@ -351,7 +361,20 @@ class VtkViewerView(VtkView):
         )
         params = schemas.Highlight.from_dict(rpc_params)
         picker = vtkCellPicker(tolerance=0.005)
-        picker.Pick(params.x, params.y, 0, self.get_renderer())
+
+        pipelines_to_restore = [
+            pipeline
+            for pipeline_id in params.ids
+            if (pipeline := self.get_vtk_pipeline(pipeline_id)).pick_mapper is not None
+        ]
+        for pipeline in pipelines_to_restore:
+            pipeline.actor.SetMapper(pipeline.pick_mapper)
+        try:
+            picker.Pick(params.x, params.y, 0, self.get_renderer())
+        finally:
+            for pipeline in pipelines_to_restore:
+                pipeline.actor.SetMapper(pipeline.mapper)
+
         self.clear_highlights(params.ids)
         actor = picker.GetActor()
         pipeline_id = next(

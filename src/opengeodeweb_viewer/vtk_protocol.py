@@ -77,6 +77,7 @@ class VtkPipeline:
     blockGeodeIds: list[str] = field(default_factory=list)
     scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
+    pick_mapper: vtkMapper | None = None
 
 
 class VtkTypingMixin:
