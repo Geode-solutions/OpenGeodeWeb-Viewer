@@ -377,6 +377,11 @@ class VtkViewerView(VtkView):
                 if 0 <= flat_index < len(pipeline.blockDataSets)
                 else None
             )
+            if dataset:
+                attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
+                if attr and not attr.GetBlockVisibility(dataset):
+                    self.render(-1)
+                    return {}
             geode_id = (
                 pipeline.blockGeodeIds[flat_index]
                 if 0 <= flat_index < len(pipeline.blockGeodeIds)
