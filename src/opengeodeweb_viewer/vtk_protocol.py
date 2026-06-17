@@ -255,7 +255,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         actors = []
         viewer_id = -1
         try:
-            # direct pick 
+            # direct pick
             picker.SnapToMeshPointOff()
             picker.Pick(x, y, 0, renderer)
             viewer_id = picker.GetFlatBlockIndex()
@@ -264,7 +264,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 actor.SetPickable(False)
                 picker.Pick(x, y, 0, renderer)
 
-            #finds thin geometry (lines/curves)
+            # finds thin geometry (lines/curves)
             if not actors:
                 picker.SnapToMeshPointOn()
                 picker.Pick(x, y, 0, renderer)
