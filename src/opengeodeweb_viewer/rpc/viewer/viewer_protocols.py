@@ -262,7 +262,9 @@ class VtkViewerView(VtkView):
         )
         params = schemas.PickedIDS.from_dict(rpc_params)
         picker = vtkCellPicker(tolerance=0.005)
-        actors, flat_index = self.pick_actors_under_coordinate(params.ids, params.x, params.y, picker)
+        actors, flat_index = self.pick_actors_under_coordinate(
+            params.ids, params.x, params.y, picker
+        )
         array_ids = [
             data_id
             for data_id in params.ids
@@ -273,7 +275,9 @@ class VtkViewerView(VtkView):
         viewer_id = flat_index if flat_index != -1 else None
         if viewer_id is not None:
             pipeline = self.get_vtk_pipeline(array_ids[0])
-            dataset, geode_id, is_visible = self.get_composite_block_info(pipeline, picker)
+            dataset, geode_id, is_visible = self.get_composite_block_info(
+                pipeline, picker
+            )
             if not is_visible:
                 return {"array_ids": [], "viewer_id": None}
         return {

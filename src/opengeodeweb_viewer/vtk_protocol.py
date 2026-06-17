@@ -204,7 +204,12 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.actor.SetMapper(mapper)
 
     def pick_cell_or_point(
-        self, data_ids: list[str], x: float, y: float, field_type: str, picker: vtkCellPicker
+        self,
+        data_ids: list[str],
+        x: float,
+        y: float,
+        field_type: str,
+        picker: vtkCellPicker,
     ) -> tuple[str | None, int]:
         self.swap_pick_mappers(data_ids, use_pick_mapper=True)
         try:
@@ -220,7 +225,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             ),
             None,
         )
-        id_to_select = picker.GetCellId() if field_type == "CELL" else picker.GetPointId()
+        id_to_select = (
+            picker.GetCellId() if field_type == "CELL" else picker.GetPointId()
+        )
         return data_id, id_to_select
 
     def pick_actors_under_coordinate(
@@ -256,7 +263,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
             if attr and not attr.GetBlockVisibility(dataset):
                 return None, None, False
-        geode_id = pipeline.blockGeodeIds[flat_index] if flat_index < len(pipeline.blockGeodeIds) else None
+        geode_id = (
+            pipeline.blockGeodeIds[flat_index]
+            if flat_index < len(pipeline.blockGeodeIds)
+            else None
+        )
         return dataset, geode_id, True
 
     def get_array_values(self, array: Any, id_to_select: int) -> list[float] | float:
@@ -275,7 +286,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         data_object = dataset or pipeline.reader.GetOutputDataObject(0)
         if not isinstance(data_object, vtkDataSet):
             return {}
-        field_data = data_object.GetCellData() if field_type == "CELL" else data_object.GetPointData()
+        field_data = (
+            data_object.GetCellData()
+            if field_type == "CELL"
+            else data_object.GetPointData()
+        )
         attributes = {}
         for i in range(field_data.GetNumberOfArrays()):
             array = field_data.GetArray(i)
