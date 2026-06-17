@@ -19,7 +19,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkDataSetMapper,
     vtkCompositePolyDataMapper,
-    vtkCellPicker,
+    vtkHardwarePicker,
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
@@ -79,7 +79,6 @@ class VtkPipeline:
     blockGeodeIds: list[str] = field(default_factory=list)
     scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
-    pick_mapper: vtkMapper | None = None
 
 
 class VtkTypingMixin:
@@ -196,26 +195,16 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
 
-    def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
-        for data_id in data_ids:
-            pipeline = self.get_vtk_pipeline(data_id)
-            if pipeline.pick_mapper:
-                mapper = pipeline.pick_mapper if use_pick_mapper else pipeline.mapper
-                pipeline.actor.SetMapper(mapper)
-
     def pick_cell_or_point(
         self,
         data_ids: list[str],
         x: float,
         y: float,
         field_type: str,
-        picker: vtkCellPicker,
+        picker: vtkHardwarePicker,
     ) -> tuple[str | None, int]:
-        self.swap_pick_mappers(data_ids, use_pick_mapper=True)
-        try:
-            picker.Pick(x, y, 0, self.get_renderer())
-        finally:
-            self.swap_pick_mappers(data_ids, use_pick_mapper=False)
+        picker.SetSnapToMeshPoint(field_type == "POINT")
+        picker.Pick(x, y, 0, self.get_renderer())
         actor = picker.GetActor()
         data_id = next(
             (
@@ -231,10 +220,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         return data_id, id_to_select
 
     def pick_actors_under_coordinate(
-        self, data_ids: list[str], x: float, y: float, picker: vtkCellPicker
+        self, data_ids: list[str], x: float, y: float, picker: vtkHardwarePicker
     ) -> tuple[list[vtkActor], int]:
         renderer = self.get_renderer()
-        self.swap_pick_mappers(data_ids, use_pick_mapper=True)
         actors = []
         viewer_id = -1
         try:
@@ -247,28 +235,23 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         finally:
             for actor in actors:
                 actor.SetPickable(True)
-            self.swap_pick_mappers(data_ids, use_pick_mapper=False)
         return actors, viewer_id
 
     def get_composite_block_info(
-        self, pipeline: VtkPipeline, picker: vtkCellPicker
-    ) -> tuple[vtkDataObject | None, str | None, bool]:
+        self, pipeline: VtkPipeline, picker: vtkHardwarePicker
+    ) -> tuple[vtkDataObject | None, str | None]:
         if not isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
-            return None, None, True
+            return None, None
         flat_index = picker.GetFlatBlockIndex()
         if not (0 <= flat_index < len(pipeline.blockDataSets)):
-            return None, None, True
+            return None, None
         dataset = pipeline.blockDataSets[flat_index]
-        if dataset:
-            attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
-            if attr and not attr.GetBlockVisibility(dataset):
-                return None, None, False
         geode_id = (
             pipeline.blockGeodeIds[flat_index]
             if flat_index < len(pipeline.blockGeodeIds)
             else None
         )
-        return dataset, geode_id, True
+        return dataset, geode_id
 
     def get_array_values(self, array: Any, id_to_select: int) -> list[float] | float:
         components = array.GetNumberOfComponents()
