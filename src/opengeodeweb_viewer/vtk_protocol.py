@@ -29,7 +29,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkSelectionNode,
 )
 from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
-from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
+from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray, vtkIdList
 from vtkmodules.vtkRenderingAnnotation import (
     vtkCubeAxesActor,
     vtkAxesActor,
@@ -203,21 +203,50 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         field_type: str,
         picker: vtkHardwarePicker,
     ) -> tuple[str | None, int]:
-        picker.SetSnapToMeshPoint(field_type == "POINT")
-        picker.Pick(x, y, 0, self.get_renderer())
-        actor = picker.GetActor()
-        data_id = next(
-            (
-                current_data_id
-                for current_data_id in data_ids
-                if self.get_vtk_pipeline(current_data_id).actor == actor
-            ),
-            None,
-        )
-        id_to_select = (
-            picker.GetCellId() if field_type == "CELL" else picker.GetPointId()
-        )
-        return data_id, id_to_select
+        renderer = self.get_renderer()
+
+        def find_data_id(actor: vtkActor | None) -> str | None:
+            return next(
+                (
+                    current_data_id
+                    for current_data_id in data_ids
+                    if self.get_vtk_pipeline(current_data_id).actor == actor
+                ),
+                None,
+            )
+
+        picker.SnapToMeshPointOff()
+        picker.Pick(x, y, 0, renderer)
+        data_id = find_data_id(picker.GetActor())
+        if data_id:
+            if field_type == "POINT":
+                return data_id, picker.GetPointId()
+            cell_id = picker.GetCellId()
+            if cell_id != -1:
+                return data_id, cell_id
+
+        picker.SnapToMeshPointOn()
+        picker.Pick(x, y, 0, renderer)
+        data_id = find_data_id(picker.GetActor())
+        if not data_id:
+            return None, -1
+        point_id = picker.GetPointId()
+        if field_type == "POINT":
+            return data_id, point_id
+        if point_id == -1:
+            return data_id, -1
+        pipeline = self.get_vtk_pipeline(data_id)
+        dataset, _ = self.get_composite_block_info(pipeline, picker)
+        data_object = dataset or pipeline.reader.GetOutputDataObject(0)
+        if not isinstance(data_object, vtkDataSet):
+            return data_id, -1
+        if hasattr(data_object, "BuildLinks"):
+            data_object.BuildLinks()
+        cell_ids = vtkIdList()
+        data_object.GetPointCells(point_id, cell_ids)
+        if cell_ids.GetNumberOfIds() > 0:
+            return data_id, cell_ids.GetId(0)
+        return data_id, -1
 
     def pick_actors_under_coordinate(
         self, data_ids: list[str], x: float, y: float, picker: vtkHardwarePicker
@@ -226,12 +255,22 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         actors = []
         viewer_id = -1
         try:
+            # direct pick 
+            picker.SnapToMeshPointOff()
             picker.Pick(x, y, 0, renderer)
             viewer_id = picker.GetFlatBlockIndex()
             while actor := picker.GetActor():
                 actors.append(actor)
                 actor.SetPickable(False)
                 picker.Pick(x, y, 0, renderer)
+
+            #finds thin geometry (lines/curves)
+            if not actors:
+                picker.SnapToMeshPointOn()
+                picker.Pick(x, y, 0, renderer)
+                if actor := picker.GetActor():
+                    actors.append(actor)
+                    viewer_id = picker.GetFlatBlockIndex()
         finally:
             for actor in actors:
                 actor.SetPickable(True)
