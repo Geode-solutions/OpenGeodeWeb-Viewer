@@ -14,6 +14,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
+    vtkMultiBlockDataSet,
 )
 from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 
@@ -132,6 +133,27 @@ class VtkObjectView(VtkView):
             actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
 
+    def _prune_hidden_blocks(
+        self,
+        dataset: vtkMultiBlockDataSet,
+        visibility_attributes: vtkCompositeDataDisplayAttributes,
+    ) -> vtkMultiBlockDataSet:
+        pruned = vtkMultiBlockDataSet()
+        pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
+        for index in range(dataset.GetNumberOfBlocks()):
+            block = dataset.GetBlock(index)
+            if block is None:
+                continue
+            if not visibility_attributes.GetBlockVisibility(block):
+                continue
+            if isinstance(block, vtkMultiBlockDataSet):
+                pruned.SetBlock(
+                    index, self._prune_hidden_blocks(block, visibility_attributes)
+                )
+            else:
+                pruned.SetBlock(index, block)
+        return pruned
+
     def SetBlocksVisibility(
         self, data_id: str, block_ids: list[int], visibility: bool
     ) -> None:
@@ -140,9 +162,21 @@ class VtkObjectView(VtkView):
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             raise Exception("Mapper is not a vtkCompositePolyDataMapper")
         blocks = pipeline.blockDataSets
-        attributes = mapper.GetCompositeDataDisplayAttributes()
+        visibility_attributes = mapper.GetCompositeDataDisplayAttributes()
         for block_id in block_ids:
-            attributes.SetBlockVisibility(blocks[block_id], visibility)
+            visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
+        dataset = (
+            pipeline.filter.GetOutputDataObject(0)
+            if pipeline.filter
+            else pipeline.reader.GetOutputDataObject(0)
+        )
+        if not isinstance(dataset, vtkMultiBlockDataSet):
+            return
+        if pipeline.pick_mapper is None:
+            pipeline.pick_mapper = vtkCompositePolyDataMapper()
+        pipeline.pick_mapper.SetInputDataObject(
+            self._prune_hidden_blocks(dataset, visibility_attributes)
+        )
 
     def SetBlocksColor(
         self,
