@@ -273,8 +273,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def get_array_values(self, array: Any, id_to_select: int) -> list[float] | float:
         components = array.GetNumberOfComponents()
         if components == 1:
-            return array.GetComponent(id_to_select, 0)
-        return [array.GetComponent(id_to_select, i) for i in range(components)]
+            return float(array.GetComponent(id_to_select, 0))
+        return [float(array.GetComponent(id_to_select, i)) for i in range(components)]
 
     def extract_picked_attributes(
         self,
