@@ -218,7 +218,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             picker.Pick(x, y, 0, self.get_renderer())
         finally:
             self.swap_pick_mappers(data_ids, use_pick_mapper=False)
-
         actor = picker.GetActor()
         # Find which pipeline owns the picked actor
         data_id = next(
@@ -256,27 +255,20 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
     def get_composite_block_info(
         self, pipeline: VtkPipeline, picker: vtkCellPicker
-    ) -> tuple[vtkDataObject | None, str | None, bool]:
+    ) -> tuple[vtkDataObject | None, str | None]:
         # Extract the specific block dataset and metadata from a picked composite flat index
         if not isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
-            return None, None, True
+            return None, None
         flat_index = picker.GetFlatBlockIndex()
         if not (0 <= flat_index < len(pipeline.blockDataSets)):
-            return None, None, True
-
+            return None, None
         dataset = pipeline.blockDataSets[flat_index]
-        if dataset:
-            # Extra safety check on the display visibility attribute
-            attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
-            if attr and not attr.GetBlockVisibility(dataset):
-                return None, None, False
-
         geode_id = (
             pipeline.blockGeodeIds[flat_index]
             if flat_index < len(pipeline.blockGeodeIds)
             else None
         )
-        return dataset, geode_id, True
+        return dataset, geode_id
 
     def get_array_values(self, array: Any, id_to_select: int) -> list[float] | float:
         components = array.GetNumberOfComponents()
