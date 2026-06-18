@@ -13,7 +13,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindowInteractor,
     vtkAbstractMapper,
     vtkWorldPointPicker,
-    vtkHardwarePicker,
+    vtkCellPicker,
     vtkPropPicker,
     vtkDataSetMapper,
     vtkActor,
@@ -261,11 +261,12 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
         )
         params = schemas.PickedIDS.from_dict(rpc_params)
-        picker = vtkHardwarePicker()
-        picker.SetPixelTolerance(15)
+        picker = vtkCellPicker(tolerance=0.005)
+        # Retrieve all actors under the clicked coordinates
         actors, flat_index = self.pick_actors_under_coordinate(
             params.ids, params.x, params.y, picker
         )
+        # Filter pipeline IDs whose actors are in the picked list
         array_ids = [
             data_id
             for data_id in params.ids
@@ -273,7 +274,17 @@ class VtkViewerView(VtkView):
         ]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
+        # Map flat_index to None if it is -1 (no composite block picked)
         viewer_id = flat_index if flat_index != -1 else None
+        if viewer_id is not None:
+            pipeline = self.get_vtk_pipeline(array_ids[0])
+            # Verify composite block visibility (discard pick if block is hidden)
+            dataset, geode_id, is_visible = self.get_composite_block_info(
+                pipeline, picker
+            )
+            if not is_visible:
+                return {"array_ids": [], "viewer_id": None}
+                
         return {
             "array_ids": array_ids,
             "viewer_id": viewer_id,
@@ -331,17 +342,27 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["highlight"], self.viewer_prefix
         )
         params = schemas.Highlight.from_dict(rpc_params)
+        
+        # 1. Clear previous highlights
         self.clear_highlights(params.ids)
-        picker = vtkHardwarePicker()
-        picker.SetPixelTolerance(15)
+        picker = vtkCellPicker(tolerance=0.005)
+        
+        # 2. Perform pick operation to identify clicked pipeline and primitive ID
         data_id, id_to_select = self.pick_cell_or_point(
             params.ids, params.x, params.y, params.field_type.value, picker
         )
         if not data_id or id_to_select == -1:
             self.render(-1)
             return {}
+            
+        # 3. Retrieve picked composite block information and check block visibility
         pipeline = self.get_vtk_pipeline(data_id)
-        dataset, geode_id = self.get_composite_block_info(pipeline, picker)
+        dataset, geode_id, is_visible = self.get_composite_block_info(pipeline, picker)
+        if not is_visible:
+            self.render(-1)
+            return {}
+            
+        # 4. Update highlight visibility and extract attributes from the picked element
         self.update_highlight(pipeline, id_to_select, params.field_type.value, dataset)
         self.render(-1)
         data_attributes = self.extract_picked_attributes(
