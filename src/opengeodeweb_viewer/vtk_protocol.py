@@ -213,12 +213,10 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         field_type: str,
         picker: vtkCellPicker,
     ) -> tuple[str | None, int]:
-        # Temporarily swap to pick mappers to prevent picking hidden blocks
         self.swap_pick_mappers(data_ids, use_pick_mapper=True)
         try:
             picker.Pick(x, y, 0, self.get_renderer())
         finally:
-            # Swap back to normal mappers
             self.swap_pick_mappers(data_ids, use_pick_mapper=False)
 
         actor = picker.GetActor()
@@ -239,7 +237,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def pick_actors_under_coordinate(
         self, data_ids: list[str], x: float, y: float, picker: vtkCellPicker
     ) -> tuple[list[vtkActor], int]:
-        # Swap mappers to ensure picking respects block visibility
         renderer = self.get_renderer()
         self.swap_pick_mappers(data_ids, use_pick_mapper=True)
         actors = []
@@ -247,13 +244,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         try:
             picker.Pick(x, y, 0, renderer)
             viewer_id = picker.GetFlatBlockIndex()
-            # Iteratively pick overlapping actors by temporarily hiding them
             while actor := picker.GetActor():
                 actors.append(actor)
                 actor.SetPickable(False)
                 picker.Pick(x, y, 0, renderer)
         finally:
-            # Revert pickability and swap back to normal mappers
             for actor in actors:
                 actor.SetPickable(True)
             self.swap_pick_mappers(data_ids, use_pick_mapper=False)

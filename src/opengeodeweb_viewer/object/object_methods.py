@@ -162,12 +162,10 @@ class VtkObjectView(VtkView):
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             raise Exception("Mapper is not a vtkCompositePolyDataMapper")
-        # Update block visibility attributes on the main mapper
         blocks = pipeline.blockDataSets
         visibility_attributes = mapper.GetCompositeDataDisplayAttributes()
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
-        # Extract output dataset from filter or reader
         dataset = (pipeline.filter or pipeline.reader).GetOutputDataObject(0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return
