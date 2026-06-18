@@ -220,7 +220,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         finally:
             # Swap back to normal mappers
             self.swap_pick_mappers(data_ids, use_pick_mapper=False)
-            
+
         actor = picker.GetActor()
         # Find which pipeline owns the picked actor
         data_id = next(
@@ -268,14 +268,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         flat_index = picker.GetFlatBlockIndex()
         if not (0 <= flat_index < len(pipeline.blockDataSets)):
             return None, None, True
-            
+
         dataset = pipeline.blockDataSets[flat_index]
         if dataset:
             # Extra safety check on the display visibility attribute
             attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
             if attr and not attr.GetBlockVisibility(dataset):
                 return None, None, False
-                
+
         geode_id = (
             pipeline.blockGeodeIds[flat_index]
             if flat_index < len(pipeline.blockGeodeIds)

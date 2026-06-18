@@ -284,7 +284,7 @@ class VtkViewerView(VtkView):
             )
             if not is_visible:
                 return {"array_ids": [], "viewer_id": None}
-                
+
         return {
             "array_ids": array_ids,
             "viewer_id": viewer_id,
@@ -342,11 +342,11 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["highlight"], self.viewer_prefix
         )
         params = schemas.Highlight.from_dict(rpc_params)
-        
+
         # 1. Clear previous highlights
         self.clear_highlights(params.ids)
         picker = vtkCellPicker(tolerance=0.005)
-        
+
         # 2. Perform pick operation to identify clicked pipeline and primitive ID
         data_id, id_to_select = self.pick_cell_or_point(
             params.ids, params.x, params.y, params.field_type.value, picker
@@ -354,14 +354,14 @@ class VtkViewerView(VtkView):
         if not data_id or id_to_select == -1:
             self.render(-1)
             return {}
-            
+
         # 3. Retrieve picked composite block information and check block visibility
         pipeline = self.get_vtk_pipeline(data_id)
         dataset, geode_id, is_visible = self.get_composite_block_info(pipeline, picker)
         if not is_visible:
             self.render(-1)
             return {}
-            
+
         # 4. Update highlight visibility and extract attributes from the picked element
         self.update_highlight(pipeline, id_to_select, params.field_type.value, dataset)
         self.render(-1)
