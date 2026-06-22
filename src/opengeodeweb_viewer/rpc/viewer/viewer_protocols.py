@@ -15,7 +15,6 @@ from vtkmodules.vtkRenderingCore import (
     vtkWorldPointPicker,
     vtkCellPicker,
     vtkPropPicker,
-    vtkCompositePolyDataMapper,
     vtkDataSetMapper,
     vtkActor,
 )
@@ -262,52 +261,26 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
         )
         params = schemas.PickedIDS.from_dict(rpc_params)
-        renderer = self.getView("-1").GetRenderers().GetFirstRenderer()
-
-        pipelines_to_restore = [
-            pipeline
-            for pipeline_id in params.ids
-            if (pipeline := self.get_vtk_pipeline(pipeline_id)).pick_mapper is not None
-        ]
-        for pipeline in pipelines_to_restore:
-            pick_mapper = pipeline.pick_mapper
-            if pick_mapper is not None:
-                pipeline.actor.SetMapper(pick_mapper)
-
-        actors = []
         picker = vtkCellPicker(tolerance=0.005)
-        picker.Pick(params.x, params.y, 0, renderer)
-        actor = picker.GetActor()
-        viewer_id = picker.GetFlatBlockIndex()
-
-        while actor:
-            actors.append(actor)
-            actor.SetPickable(False)
-            picker.Pick(params.x, params.y, 0, renderer)
-            actor = picker.GetActor()
-
-        for actor in actors:
-            actor.SetPickable(True)
-        for pipeline in pipelines_to_restore:
-            pipeline.actor.SetMapper(pipeline.mapper)
-
+        # Retrieve all actors under the clicked coordinates
+        actors, flat_index = self.pick_actors_under_coordinate(
+            params.ids, params.x, params.y, picker
+        )
+        # Filter pipeline IDs whose actors are in the picked list
         array_ids = [
-            id for id in params.ids if self.get_vtk_pipeline(id).actor in actors
+            data_id
+            for data_id in params.ids
+            if self.get_vtk_pipeline(data_id).actor in actors
         ]
         if not array_ids:
             return {"array_ids": [], "viewer_id": None}
-        if array_ids and viewer_id != -1:
+        viewer_id = flat_index if flat_index != -1 else None
+        if viewer_id is not None:
             pipeline = self.get_vtk_pipeline(array_ids[0])
-            mapper = pipeline.mapper
-            if isinstance(mapper, vtkCompositePolyDataMapper):
-                attr = mapper.GetCompositeDataDisplayAttributes()
-                if attr and not attr.GetBlockVisibility(
-                    pipeline.blockDataSets[viewer_id]
-                ):
-                    array_ids, viewer_id = [], -1
+            dataset, geode_id = self.get_composite_block_info(pipeline, picker)
         return {
             "array_ids": array_ids,
-            "viewer_id": viewer_id if viewer_id != -1 else None,
+            "viewer_id": viewer_id,
         }
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
@@ -362,89 +335,27 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["highlight"], self.viewer_prefix
         )
         params = schemas.Highlight.from_dict(rpc_params)
-        picker = vtkCellPicker(tolerance=0.005)
-
-        pipelines_to_restore = [
-            pipeline
-            for pipeline_id in params.ids
-            if (pipeline := self.get_vtk_pipeline(pipeline_id)).pick_mapper is not None
-        ]
-        for pipeline in pipelines_to_restore:
-            pick_mapper = pipeline.pick_mapper
-            if pick_mapper is not None:
-                pipeline.actor.SetMapper(pick_mapper)
-        try:
-            picker.Pick(params.x, params.y, 0, self.get_renderer())
-        finally:
-            for pipeline in pipelines_to_restore:
-                pipeline.actor.SetMapper(pipeline.mapper)
-
+        # Clear previous highlights
         self.clear_highlights(params.ids)
-        actor = picker.GetActor()
-        pipeline_id = next(
-            (id for id in params.ids if self.get_vtk_pipeline(id).actor == actor), None
+        picker = vtkCellPicker(tolerance=0.005)
+        # Perform pick operation to identify clicked pipeline and primitive ID
+        data_id, id_to_select = self.pick_cell_or_point(
+            params.ids, params.x, params.y, params.field_type.value, picker
         )
-        id_to_select = (
-            picker.GetCellId()
-            if params.field_type == schemas.FieldType.CELL
-            else picker.GetPointId()
-        )
-
-        if not pipeline_id or id_to_select == -1:
+        if not data_id or id_to_select == -1:
             self.render(-1)
             return {}
-
-        pipeline = self.get_vtk_pipeline(pipeline_id)
-        dataset = None
-        geode_id = None
-        if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
-            flat_index = picker.GetFlatBlockIndex()
-            dataset = (
-                pipeline.blockDataSets[flat_index]
-                if 0 <= flat_index < len(pipeline.blockDataSets)
-                else None
-            )
-            if dataset:
-                attr = pipeline.mapper.GetCompositeDataDisplayAttributes()
-                if attr and not attr.GetBlockVisibility(dataset):
-                    self.render(-1)
-                    return {}
-            geode_id = (
-                pipeline.blockGeodeIds[flat_index]
-                if 0 <= flat_index < len(pipeline.blockGeodeIds)
-                else None
-            )
-
+        # Retrieve picked composite block information
+        pipeline = self.get_vtk_pipeline(data_id)
+        dataset, geode_id = self.get_composite_block_info(pipeline, picker)
+        # Update highlight visibility and extract attributes from the picked element
         self.update_highlight(pipeline, id_to_select, params.field_type.value, dataset)
         self.render(-1)
-
-        data_obj = dataset or pipeline.reader.GetOutputDataObject(0)
-        data_attributes = {}
-        if isinstance(data_obj, vtkDataSet):
-            field_data = (
-                data_obj.GetCellData()
-                if params.field_type == schemas.FieldType.CELL
-                else data_obj.GetPointData()
-            )
-            for array_index in range(field_data.GetNumberOfArrays()):
-                array = field_data.GetArray(array_index)
-                if array and array.GetName():
-                    num_comps = array.GetNumberOfComponents()
-                    component_values = [
-                        array.GetComponent(id_to_select, component_index)
-                        for component_index in range(num_comps)
-                    ]
-                    data_attributes[array.GetName()] = (
-                        component_values[0] if num_comps == 1 else component_values
-                    )
-
-            if params.field_type == schemas.FieldType.POINT:
-                point_coordinates = data_obj.GetPoint(id_to_select)
-                if point_coordinates:
-                    data_attributes["coordinates"] = list(point_coordinates)
-
+        data_attributes = self.extract_picked_attributes(
+            pipeline, id_to_select, params.field_type.value, dataset
+        )
         return {
-            "id": pipeline_id,
+            "id": data_id,
             "picked_id": id_to_select,
             "field_type": params.field_type.value,
             "geode_id": geode_id,
