@@ -411,7 +411,6 @@ class VtkViewerView(VtkView):
             prop = self._preview_actor.GetProperty()
             prop.SetPointSize(10)
             prop.SetLineWidth(2)
-            # prop.SetOpacity(0.5)
             self.get_renderer().AddActor(self._preview_actor)
 
         self._preview_points.Reset()
