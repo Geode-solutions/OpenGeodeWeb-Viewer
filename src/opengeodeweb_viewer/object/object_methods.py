@@ -138,6 +138,7 @@ class VtkObjectView(VtkView):
         dataset: vtkMultiBlockDataSet,
         visibility_attributes: vtkCompositeDataDisplayAttributes,
     ) -> vtkMultiBlockDataSet:
+        # Recursively construct a new multi-block dataset excluding hidden blocks.
         pruned = vtkMultiBlockDataSet()
         pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
         for index in range(dataset.GetNumberOfBlocks()):
@@ -165,13 +166,10 @@ class VtkObjectView(VtkView):
         visibility_attributes = mapper.GetCompositeDataDisplayAttributes()
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
-        dataset = (
-            pipeline.filter.GetOutputDataObject(0)
-            if pipeline.filter
-            else pipeline.reader.GetOutputDataObject(0)
-        )
+        dataset = (pipeline.filter or pipeline.reader).GetOutputDataObject(0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return
+        # Re-build a pruned dataset for the dedicated pick mapper
         if pipeline.pick_mapper is None:
             pipeline.pick_mapper = vtkCompositePolyDataMapper()
         pipeline.pick_mapper.SetInputDataObject(

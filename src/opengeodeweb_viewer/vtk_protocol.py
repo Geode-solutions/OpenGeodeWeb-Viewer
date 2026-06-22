@@ -18,6 +18,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkRenderWindow,
     vtkDataSetMapper,
+    vtkCompositePolyDataMapper,
+    vtkCellPicker,
+    vtkHardwarePicker,
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
@@ -189,10 +192,113 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         pipeline.highlight.extractSelection.Update()
         pipeline.highlight.actor.VisibilityOn()
 
-    def clear_highlights(self, ids: list[str]) -> None:
-        for data_id in ids:
+    def clear_highlights(self, data_ids: list[str]) -> None:
+        for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
+
+    def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
+        # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).
+        for data_id in data_ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            if pipeline.pick_mapper:
+                mapper = pipeline.pick_mapper if use_pick_mapper else pipeline.mapper
+                pipeline.actor.SetMapper(mapper)
+
+    def pick_cell_or_point(
+        self,
+        data_ids: list[str],
+        x: float,
+        y: float,
+        field_type: str,
+        picker: vtkCellPicker,
+    ) -> tuple[str | None, int]:
+        self.swap_pick_mappers(data_ids, use_pick_mapper=True)
+        try:
+            picker.Pick(x, y, 0, self.get_renderer())
+        finally:
+            self.swap_pick_mappers(data_ids, use_pick_mapper=False)
+        actor = picker.GetActor()
+        # Find which pipeline owns the picked actor
+        data_id = next(
+            (
+                current_data_id
+                for current_data_id in data_ids
+                if self.get_vtk_pipeline(current_data_id).actor == actor
+            ),
+            None,
+        )
+        id_to_select = (
+            picker.GetCellId() if field_type == "CELL" else picker.GetPointId()
+        )
+        return data_id, id_to_select
+
+    def pick_actors_under_coordinate(
+        self, data_ids: list[str], x: float, y: float, picker: vtkCellPicker
+    ) -> tuple[list[vtkActor], int]:
+        renderer = self.get_renderer()
+        self.swap_pick_mappers(data_ids, use_pick_mapper=True)
+        actors = []
+        viewer_id = -1
+        try:
+            picker.Pick(x, y, 0, renderer)
+            viewer_id = picker.GetFlatBlockIndex()
+            while actor := picker.GetActor():
+                actors.append(actor)
+                actor.SetPickable(False)
+                picker.Pick(x, y, 0, renderer)
+        finally:
+            for actor in actors:
+                actor.SetPickable(True)
+            self.swap_pick_mappers(data_ids, use_pick_mapper=False)
+        return actors, viewer_id
+
+    def get_composite_block_info(
+        self, pipeline: VtkPipeline, picker: vtkCellPicker
+    ) -> tuple[vtkDataObject | None, str | None]:
+        # Extract the specific block dataset and metadata from a picked composite flat index
+        if not isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+            return None, None
+        flat_index = picker.GetFlatBlockIndex()
+        if not (0 <= flat_index < len(pipeline.blockDataSets)):
+            return None, None
+        dataset = pipeline.blockDataSets[flat_index]
+        geode_id = (
+            pipeline.blockGeodeIds[flat_index]
+            if flat_index < len(pipeline.blockGeodeIds)
+            else None
+        )
+        return dataset, geode_id
+
+    def get_array_values(self, array: Any, id_to_select: int) -> list[float] | float:
+        components = array.GetNumberOfComponents()
+        if components == 1:
+            return float(array.GetComponent(id_to_select, 0))
+        return [float(array.GetComponent(id_to_select, i)) for i in range(components)]
+
+    def extract_picked_attributes(
+        self,
+        pipeline: VtkPipeline,
+        id_to_select: int,
+        field_type: str,
+        dataset: vtkDataObject | None,
+    ) -> dict[str, list[float] | float]:
+        data_object = dataset or pipeline.reader.GetOutputDataObject(0)
+        if not isinstance(data_object, vtkDataSet):
+            return {}
+        field_data = (
+            data_object.GetCellData()
+            if field_type == "CELL"
+            else data_object.GetPointData()
+        )
+        attributes = {}
+        for i in range(field_data.GetNumberOfArrays()):
+            array = field_data.GetArray(i)
+            if array and array.GetName():
+                attributes[array.GetName()] = self.get_array_values(array, id_to_select)
+        if field_type == "POINT" and (coords := data_object.GetPoint(id_to_select)):
+            attributes["coordinates"] = list(coords)
+        return attributes
 
     def update_grid_scale_and_clipping_range(self) -> None:
         grid_scale = self.get_grid_scale()
