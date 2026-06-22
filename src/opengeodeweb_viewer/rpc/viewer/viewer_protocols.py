@@ -411,6 +411,7 @@ class VtkViewerView(VtkView):
             prop = self._preview_actor.GetProperty()
             prop.SetPointSize(10)
             prop.SetLineWidth(2)
+            prop.SetOpacity(0.5)
             self.get_renderer().AddActor(self._preview_actor)
 
         self._preview_points.Reset()
@@ -444,12 +445,6 @@ class VtkViewerView(VtkView):
             if len(points_data) >= 3:
                 lines.InsertNextCell(2, [len(points_data) - 1, 0])
                 polys.InsertNextCell(len(points_data), list(range(len(points_data))))
-
-        prop = self._preview_actor.GetProperty()
-        if style_name == "surface":
-            prop.SetOpacity(0.5)
-        else:
-            prop.SetOpacity(1.0)
 
         self._preview_polydata.SetLines(lines)
         self._preview_polydata.SetPolys(polys)
