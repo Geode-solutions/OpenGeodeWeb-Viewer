@@ -29,7 +29,7 @@ class VtkModelBlocksAttributePolyhedronView(VtkModelView):
         model_blocks_attribute_polyhedron_prefix
         + model_blocks_attribute_polyhedron_schemas_dict["name"]["rpc"]
     )
-    def setModelBlocksPolyhedronAttributeName(self, rpc_params: RpcParams) -> None:
+    def setModelBlocksPolyhedronAttributeName(self, rpc_params: RpcParams) -> dict:
         validate_schema(
             rpc_params,
             self.model_blocks_attribute_polyhedron_schemas_dict["name"],
@@ -37,7 +37,7 @@ class VtkModelBlocksAttributePolyhedronView(VtkModelView):
         )
         params = schemas.Name.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnCells(pipeline, params.block_ids, params.name)
+        return self.displayAttributeOnCells(pipeline, params.block_ids, params.name)
 
     @exportRpc(
         model_blocks_attribute_polyhedron_prefix

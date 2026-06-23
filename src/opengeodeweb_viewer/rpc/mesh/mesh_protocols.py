@@ -118,21 +118,25 @@ class VtkMeshView(VtkObjectView):
             actor = self.get_vtk_pipeline(mesh_id).actor
             actor.SetTexture(texture)
 
-    def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
+    def displayAttributeOnVertices(self, data_id: str, name: str) -> dict:
         reader = self.get_vtk_pipeline(data_id).reader
         points = reader.GetOutputAsDataSet().GetPointData()
         points.SetActiveScalars(name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
+        r = points.GetScalars().GetRange()
+        return {"minimum": r[0], "maximum": r[1]}
 
-    def displayAttributeOnCells(self, data_id: str, name: str) -> None:
+    def displayAttributeOnCells(self, data_id: str, name: str) -> dict:
         reader = self.get_vtk_pipeline(data_id).reader
         cells = reader.GetOutputAsDataSet().GetCellData()
         cells.SetActiveScalars(name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
+        r = cells.GetScalars().GetRange()
+        return {"minimum": r[0], "maximum": r[1]}
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
         print(

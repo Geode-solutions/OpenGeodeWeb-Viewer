@@ -29,14 +29,14 @@ class VtkMeshPolyhedraAttributePolyhedronView(VtkMeshView):
         mesh_polyhedra_attribute_polyhedron_prefix
         + mesh_polyhedra_attribute_polyhedron_schemas_dict["name"]["rpc"]
     )
-    def setMeshPolyhedraPolyhedronName(self, rpc_params: RpcParams) -> None:
+    def setMeshPolyhedraPolyhedronName(self, rpc_params: RpcParams) -> dict:
         validate_schema(
             rpc_params,
             self.mesh_polyhedra_attribute_polyhedron_schemas_dict["name"],
             self.mesh_polyhedra_attribute_polyhedron_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnCells(params.id, params.name)
+        return self.displayAttributeOnCells(params.id, params.name)
 
     @exportRpc(
         mesh_polyhedra_attribute_polyhedron_prefix

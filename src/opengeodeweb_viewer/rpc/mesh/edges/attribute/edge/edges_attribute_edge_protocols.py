@@ -27,14 +27,14 @@ class VtkMeshEdgesAttributeEdgeView(VtkMeshView):
         mesh_edges_attribute_edge_prefix
         + mesh_edges_attribute_edge_schemas_dict["name"]["rpc"]
     )
-    def setMeshEdgesEdgeName(self, rpc_params: RpcParams) -> None:
+    def setMeshEdgesEdgeName(self, rpc_params: RpcParams) -> dict:
         validate_schema(
             rpc_params,
             self.mesh_edges_attribute_edge_schemas_dict["name"],
             self.mesh_edges_attribute_edge_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnCells(params.id, params.name)
+        return self.displayAttributeOnCells(params.id, params.name)
 
     @exportRpc(
         mesh_edges_attribute_edge_prefix

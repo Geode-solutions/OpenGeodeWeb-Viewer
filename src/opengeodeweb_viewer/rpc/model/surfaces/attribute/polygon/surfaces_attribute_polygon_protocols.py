@@ -29,7 +29,7 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
         model_surfaces_attribute_polygon_prefix
         + model_surfaces_attribute_polygon_schemas_dict["name"]["rpc"]
     )
-    def setModelSurfacesPolygonAttributeName(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesPolygonAttributeName(self, rpc_params: RpcParams) -> dict:
         validate_schema(
             rpc_params,
             self.model_surfaces_attribute_polygon_schemas_dict["name"],
@@ -37,7 +37,7 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
         )
         params = schemas.Name.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnCells(pipeline, params.block_ids, params.name)
+        return self.displayAttributeOnCells(pipeline, params.block_ids, params.name)
 
     @exportRpc(
         model_surfaces_attribute_polygon_prefix

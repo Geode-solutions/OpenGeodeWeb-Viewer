@@ -29,7 +29,7 @@ class VtkModelBlocksAttributeVertexView(VtkModelView):
         model_blocks_attribute_vertex_prefix
         + model_blocks_attribute_vertex_schemas_dict["name"]["rpc"]
     )
-    def setModelBlocksVertexAttributeName(self, rpc_params: RpcParams) -> None:
+    def setModelBlocksVertexAttributeName(self, rpc_params: RpcParams) -> dict:
         validate_schema(
             rpc_params,
             self.model_blocks_attribute_vertex_schemas_dict["name"],
@@ -37,7 +37,7 @@ class VtkModelBlocksAttributeVertexView(VtkModelView):
         )
         params = schemas.Name.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnVertices(pipeline, params.block_ids, params.name)
+        return self.displayAttributeOnVertices(pipeline, params.block_ids, params.name)
 
     @exportRpc(
         model_blocks_attribute_vertex_prefix

@@ -179,21 +179,41 @@ class VtkModelView(VtkObjectView):
 
     def displayAttributeOnVertices(
         self, pipeline: VtkPipeline, block_ids: list[int], name: str
-    ) -> None:
+    ) -> dict:
+        ranges = {}
         for block_id in block_ids:
+            block = pipeline.blockDataSets[block_id]
+            if not isinstance(block, vtkDataSet):
+                continue
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name
             style["attribute_location"] = "point"
             self.updateBlockColors(pipeline, block_id)
+            array = block.GetPointData().GetArray(name)
+            if not array:
+                continue
+            range = array.GetRange()
+            ranges[block_id] = {"minimum": range[0], "maximum": range[1]}
+        return ranges
 
     def displayAttributeOnCells(
         self, pipeline: VtkPipeline, block_ids: list[int], name: str
-    ) -> None:
+    ) -> dict:
+        ranges = {}
         for block_id in block_ids:
+            block = pipeline.blockDataSets[block_id]
+            if not isinstance(block, vtkDataSet):
+                continue
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name
             style["attribute_location"] = "cell"
             self.updateBlockColors(pipeline, block_id)
+            array = block.GetCellData().GetArray(name)
+            if not array:
+                continue
+            r = array.GetRange()
+            ranges[block_id] = {"minimum": r[0], "maximum": r[1]}
+        return ranges
 
     def setupColorMap(
         self,

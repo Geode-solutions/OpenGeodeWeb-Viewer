@@ -29,14 +29,14 @@ class VtkMeshCellsAttributeVertexView(VtkMeshView):
         mesh_cells_attribute_vertex_prefix
         + mesh_cells_attribute_vertex_schemas_dict["name"]["rpc"]
     )
-    def setMeshCellsVertexName(self, rpc_params: RpcParams) -> None:
+    def setMeshCellsVertexName(self, rpc_params: RpcParams) -> dict:
         validate_schema(
             rpc_params,
             self.mesh_cells_attribute_vertex_schemas_dict["name"],
             self.mesh_cells_attribute_vertex_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnVertices(params.id, params.name)
+        return self.displayAttributeOnVertices(params.id, params.name)
 
     @exportRpc(
         mesh_cells_attribute_vertex_prefix
