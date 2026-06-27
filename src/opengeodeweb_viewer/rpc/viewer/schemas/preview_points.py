@@ -17,6 +17,7 @@ class Point(DataClassJsonMixin):
 class Style(Enum):
     CURVE = "curve"
     POINTS = "points"
+    SURFACE = "surface"
 
 
 @dataclass

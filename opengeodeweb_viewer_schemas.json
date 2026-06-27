@@ -2443,7 +2443,8 @@
             "type": "string",
             "enum": [
               "points",
-              "curve"
+              "curve",
+              "surface"
             ]
           },
           "closed": {

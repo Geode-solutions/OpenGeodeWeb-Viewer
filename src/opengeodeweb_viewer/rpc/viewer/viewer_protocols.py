@@ -423,7 +423,7 @@ class VtkViewerView(VtkView):
         for i, pt in enumerate(points_data):
             self._preview_points.InsertNextPoint(pt.x, pt.y, pt.z)
             self._preview_verts.InsertNextCell(1, [i])
-            if style_name == "curve" and i == 0:
+            if style_name in ["curve", "surface"] and i == 0:
                 colors.InsertNextTuple3(60, 153, 131)
             else:
                 colors.InsertNextTuple3(102, 102, 102)
@@ -432,11 +432,20 @@ class VtkViewerView(VtkView):
         self._preview_polydata.GetPointData().SetActiveScalars("Colors")
 
         lines = vtkCellArray()
+        polys = vtkCellArray()
         if style_name == "curve":
             for i in range(len(points_data) - 1):
                 lines.InsertNextCell(2, [i, i + 1])
             if params.closed and len(points_data) >= 2:
                 lines.InsertNextCell(2, [len(points_data) - 1, 0])
+        elif style_name == "surface":
+            for i in range(len(points_data) - 1):
+                lines.InsertNextCell(2, [i, i + 1])
+            if len(points_data) >= 3:
+                lines.InsertNextCell(2, [len(points_data) - 1, 0])
+                polys.InsertNextCell(len(points_data), list(range(len(points_data))))
+
         self._preview_polydata.SetLines(lines)
+        self._preview_polydata.SetPolys(polys)
         self._preview_polydata.Modified()
         self.render(-1)
