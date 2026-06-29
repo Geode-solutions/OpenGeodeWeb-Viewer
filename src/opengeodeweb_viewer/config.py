@@ -6,12 +6,12 @@ from sys import platform
 def default_config() -> None:
     os.environ["HOST"] = "localhost"
     os.environ["PORT"] = "1234"
+    os.environ["PROJECT_FOLDER_PATH"] = "/project/"
     os.environ["DATA_FOLDER_PATH"] = os.path.join(os.environ["PROJECT_FOLDER_PATH"], "data")
 
 
 def prod_config() -> None:
     default_config()
-    os.environ["PROJECT_FOLDER_PATH"] = "/project/"
 
 def dev_config() -> None:
     default_config()
