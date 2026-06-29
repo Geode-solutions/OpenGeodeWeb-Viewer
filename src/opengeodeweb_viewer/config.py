@@ -13,6 +13,7 @@ def default_config() -> None:
 def prod_config() -> None:
     default_config()
 
+
 def dev_config() -> None:
     default_config()
     data_folder_path = os.environ.get("DATA_FOLDER_PATH")
