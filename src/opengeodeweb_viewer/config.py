@@ -6,11 +6,11 @@ from sys import platform
 def default_config() -> None:
     os.environ["HOST"] = "localhost"
     os.environ["PORT"] = "1234"
-    os.environ["PROJECT_FOLDER_PATH"] = "/project/"
     os.environ["DATA_FOLDER_PATH"] = os.path.join(os.environ["PROJECT_FOLDER_PATH"], "data")
 
 
 def prod_config() -> None:
+    os.environ["PROJECT_FOLDER_PATH"] = "/project/"
     default_config()
 
 
@@ -47,8 +47,8 @@ def _copy_test_assets(
 def test_config() -> None:
     default_config()
     if "DATA_FOLDER_PATH" not in os.environ:
-        data_path = os.path.join(os.path.dirname(__file__), "..", "..", "tests", "data")
-        os.environ["DATA_FOLDER_PATH"] = os.path.abspath(data_path)
+        project_folder_path = os.path.join(os.path.dirname(__file__), "..", "..", "tests")
+        os.environ["PROJECT_FOLDER_PATH"] = os.path.abspath(project_folder_path)
 
     data_path = os.environ["DATA_FOLDER_PATH"]
     if not os.path.exists(data_path):
