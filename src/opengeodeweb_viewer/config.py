@@ -4,23 +4,17 @@ from sys import platform
 
 
 def default_config() -> None:
-    os.environ["DEFAULT_HOST"] = "localhost"
-    os.environ["DEFAULT_PORT"] = "1234"
+    os.environ["HOST"] = "localhost"
+    os.environ["PORT"] = "1234"
+    os.environ["DATA_FOLDER_PATH"] = os.path.join(os.environ["PROJECT_FOLDER_PATH"], "data")
 
 
 def prod_config() -> None:
     default_config()
-    os.environ["DATA_FOLDER_PATH"] = "/data/"
-
+    os.environ["PROJECT_FOLDER_PATH"] = "/project/"
 
 def dev_config() -> None:
     default_config()
-    if platform == "linux":
-        os.environ["DATA_FOLDER_PATH"] = "/temp/OpenGeodeWeb_Data/"
-    elif platform == "win32":
-        os.environ["DATA_FOLDER_PATH"] = os.path.join(
-            "C:/Users", os.getlogin(), "OpenGeodeWeb_Data"
-        )
     data_folder_path = os.environ.get("DATA_FOLDER_PATH")
     if data_folder_path and not os.path.exists(data_folder_path):
         os.mkdir(data_folder_path)

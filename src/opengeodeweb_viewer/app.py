@@ -207,11 +207,11 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
     args = parser.parse_args()
 
     if not "host" in args:
-        args.host = os.environ["DEFAULT_HOST"]
+        args.host = os.environ["HOST"]
     if not "port" in args or args.port == 8080:
-        args.port = os.environ.get("DEFAULT_PORT")
-    if "data_folder_path" in args and args.data_folder_path:
-        os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
+        args.port = os.environ.get("PORT")
+    if "project_folder_path" in args and args.project_folder_path:
+        os.environ["PROJECT_FOLDER_PATH"] = args.project_folder_path
 
     db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
     connection.init_database(db_full_path, create_tables=False)
