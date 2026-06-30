@@ -105,11 +105,12 @@ class _Server(VtkTypingMixin, ServerProtocol):
     view = None
     debug = False
 
+    
+
     @staticmethod
     def add_arguments(parser: argparse.ArgumentParser) -> None:
         parser.add_argument(
-            "--data_folder_path",
-            default=os.environ.get("DATA_FOLDER_PATH"),
+            "--project_folder_path",
             help="Path to the folder where data is stored",
         )
 
@@ -194,24 +195,31 @@ class _Server(VtkTypingMixin, ServerProtocol):
 
 
 def run_server(Server: type[ServerProtocol] = _Server) -> None:
-    PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
-    if PYTHON_ENV == "prod":
-        prod_config()
-    elif PYTHON_ENV == "dev":
-        dev_config()
-
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
 
     Server.add_arguments(parser)
     args = parser.parse_args()
 
-    if not "host" in args:
-        args.host = os.environ["HOST"]
-    if not "port" in args or args.port == 8080:
-        args.port = os.environ.get("PORT")
-    if "project_folder_path" in args and args.project_folder_path:
-        os.environ["PROJECT_FOLDER_PATH"] = args.project_folder_path
+    if not "project_folder_path" in args :
+        raise ValueError("project_folder_path must be provided")
+
+    PYTHON_ENV = os.environ.get("PYTHON_ENV", "prod").strip().lower()
+
+    if PYTHON_ENV == "prod":
+        app_config = ProdConfig(args.project_folder_path)
+    elif PYTHON_ENV == "dev":
+        app_config = DevConfig(args.project_folder_path)
+    elif PYTHON_ENV == "test":
+        app_config = TestConfig(args.project_folder_path)
+    else:
+        raise ValueError(f"Unknown PYTHON_ENV: {PYTHON_ENV!r}")
+
+
+    if args.host is not None:
+        app_config.HOST = args.host
+    if args.port is not None:
+        app_config.PORT = args.port
 
     db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
     connection.init_database(db_full_path, create_tables=False)

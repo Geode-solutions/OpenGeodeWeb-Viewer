@@ -1,26 +1,41 @@
 import os
 from shutil import copyfile, copytree
-from sys import platform
 
 
-def default_config() -> None:
-    os.environ["HOST"] = "localhost"
-    os.environ["PORT"] = "1234"
-    os.environ["DATA_FOLDER_PATH"] = os.path.join(
-        os.environ["PROJECT_FOLDER_PATH"], "data"
-    )
+class Config:
+    HOST = "localhost"
+    PORT = "1234"
+    DATABASE_FILENAME = "project.db"
+
+    def __init__(self, project_folder_path: str):
+        self.PROJECT_FOLDER_PATH = project_folder_path
+        self.DATA_FOLDER_PATH = os.path.join(project_folder_path, "data")
+        os.environ["PROJECT_FOLDER_PATH"] = project_folder_path
+        os.environ["DATA_FOLDER_PATH"] = self.DATA_FOLDER_PATH
+        os.environ["HOST"] = self.HOST
+        os.environ["PORT"] = self.PORT
+        os.environ["DATABASE_FILENAME"] = self.DATABASE_FILENAME
 
 
-def prod_config() -> None:
-    os.environ["PROJECT_FOLDER_PATH"] = "/project/"
-    default_config()
+class ProdConfig(Config):
+    def __init__(self) -> None:
+        super().__init__("/project")
 
 
-def dev_config() -> None:
-    default_config()
-    data_folder_path = os.environ.get("DATA_FOLDER_PATH")
-    if data_folder_path and not os.path.exists(data_folder_path):
-        os.mkdir(data_folder_path)
+class DevConfig(Config):
+    def __init__(self) -> None:
+        super().__init__(os.path.dirname(os.path.abspath(__file__)))
+        os.makedirs(self.DATA_FOLDER_PATH, exist_ok=True)
+
+
+class TestConfig(Config):
+    def __init__(self, project_folder_path: str) -> None:
+        print("Received ", project_folder_path, flush=True)
+        super().__init__(project_folder_path)
+        os.makedirs(self.DATA_FOLDER_PATH, exist_ok=True)
+        db_file = os.path.join(self.DATA_FOLDER_PATH, self.DATABASE_FILENAME)
+        if not os.path.exists(db_file):
+            open(db_file, "a").close()
 
 
 def _copy_test_assets(
@@ -46,18 +61,3 @@ def _copy_test_assets(
             copyfile(src, os.path.join(uploads_directory, file))
 
 
-def test_config() -> None:
-    default_config()
-    if "DATA_FOLDER_PATH" not in os.environ:
-        project_folder_path = os.path.join(
-            os.path.dirname(__file__), "..", "..", "tests"
-        )
-        os.environ["PROJECT_FOLDER_PATH"] = os.path.abspath(project_folder_path)
-
-    data_path = os.environ["DATA_FOLDER_PATH"]
-    if not os.path.exists(data_path):
-        os.makedirs(data_path, exist_ok=True)
-
-    db_file = os.path.join(data_path, "project.db")
-    if not os.path.exists(db_file):
-        open(db_file, "a").close()

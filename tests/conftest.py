@@ -9,7 +9,7 @@ import os
 import shutil
 import xml.etree.ElementTree as ET
 from typing import Callable, Generator, Any
-from opengeodeweb_viewer import config
+from opengeodeweb_viewer.config import TestConfig
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
@@ -158,7 +158,7 @@ class FixtureHelper:
     def __init__(self, root_path: Path) -> None:
         self.root_path = Path(root_path)
 
-    def get_xprocess_args(self) -> tuple[str, type, type]:
+    def get_xprocess_args(self, project_folder_path: str) -> tuple[str, type, type]:
         class Starter(ProcessStarter):  # type: ignore
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
@@ -167,6 +167,8 @@ class FixtureHelper:
             # command to start process
             args = [
                 "opengeodeweb-viewer",
+                "--project_folder_path",
+                project_folder_path,
             ]
 
         return "app", Starter, ServerMonitor
@@ -178,7 +180,8 @@ HELPER = FixtureHelper(ROOT_PATH)
 
 @pytest.fixture
 def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
-    name, Starter, Monitor = HELPER.get_xprocess_args()
+    project_folder_path = str(Path(__file__).parent.absolute())
+    name, Starter, Monitor = HELPER.get_xprocess_args(project_folder_path)
     os.environ["PYTHON_ENV"] = "test"
     _, log = xprocess.ensure(name, Starter)
     monitor = Monitor(log)
@@ -194,15 +197,13 @@ def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
 @pytest.fixture(scope="session", autouse=True)
 def configure_test_environment() -> Generator[None, None, None]:
     project_folder_path = str(Path(__file__).parent.absolute())
-    os.environ["PROJECT_FOLDER_PATH"] = project_folder_path
-
-    config.test_config()
-    db_path = Path(os.environ["DATA_FOLDER_PATH"]) / "project.db"
+    app_config = TestConfig(project_folder_path)
+    db_path = Path(app_config.DATA_FOLDER_PATH) / "project.db"
     init_database(db_path=str(db_path))
     os.environ["TEST_DB_PATH"] = str(db_path)
 
     yield
-    tmp_data_path = os.environ.get("DATA_FOLDER_PATH")
+    tmp_data_path = app_config.DATA_FOLDER_PATH
     if tmp_data_path and "ogw_test_data_" in tmp_data_path:
         shutil.rmtree(tmp_data_path, ignore_errors=True)
         print(f"Cleaned up test data folder: {tmp_data_path}", flush=True)
