@@ -18,9 +18,9 @@ type RpcTestParams = list[dict[str, Any] | int] | None
 
 
 class ServerMonitor:
-    def __init__(self, log: str) -> None:
+    def __init__(self, log: str, port: str = "1234") -> None:
         self.log = log
-        self.ws = create_connection("ws://localhost:1234/ws")
+        self.ws = create_connection(f"ws://localhost:{port}/ws")
         self.images_dir_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "data", "images")
         )

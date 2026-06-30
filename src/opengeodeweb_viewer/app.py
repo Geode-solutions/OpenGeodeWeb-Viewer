@@ -197,7 +197,7 @@ class _Server(VtkTypingMixin, ServerProtocol):
 def run_server(Server: type[ServerProtocol] = _Server) -> None:
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
-
+    parser.set_defaults(port=None, host=None)
     Server.add_arguments(parser)
     args = parser.parse_args()
 
@@ -215,11 +215,11 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
     else:
         raise ValueError(f"Unknown PYTHON_ENV: {PYTHON_ENV!r}")
 
-
-    if args.host is not None:
-        app_config.HOST = args.host
-    if args.port is not None:
-        app_config.PORT = args.port
+    if args.host is None:
+        args.host = app_config.HOST
+    print(args.port, app_config.PORT, flush=True)
+    if args.port is None:
+        args.port = app_config.PORT
 
     db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
     connection.init_database(db_full_path, create_tables=False)
