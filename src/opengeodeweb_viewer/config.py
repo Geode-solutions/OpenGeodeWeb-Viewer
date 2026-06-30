@@ -10,7 +10,10 @@ class Config:
     def __init__(self, project_folder_path: str):
         self.PROJECT_FOLDER_PATH = project_folder_path
         self.DATA_FOLDER_PATH = os.path.join(project_folder_path, "data")
-        os.environ["PROJECT_FOLDER_PATH"] = project_folder_path
+        self.sync_env()
+
+    def sync_env(self) -> None:
+        os.environ["PROJECT_FOLDER_PATH"] = self.PROJECT_FOLDER_PATH
         os.environ["DATA_FOLDER_PATH"] = self.DATA_FOLDER_PATH
         os.environ["HOST"] = self.HOST
         os.environ["PORT"] = self.PORT
@@ -19,12 +22,12 @@ class Config:
 
 class ProdConfig(Config):
     def __init__(self, project_folder_path: str) -> None:
-        super().__init__("/project")
+        super().__init__(project_folder_path)
 
 
 class DevConfig(Config):
     def __init__(self, project_folder_path: str) -> None:
-        super().__init__(os.path.dirname(os.path.abspath(__file__)))
+        super().__init__(project_folder_path)
         os.makedirs(self.DATA_FOLDER_PATH, exist_ok=True)
 
 

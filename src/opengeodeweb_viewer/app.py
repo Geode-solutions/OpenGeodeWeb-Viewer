@@ -199,8 +199,10 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
     Server.add_arguments(parser)
     args = parser.parse_args()
 
-    if not "project_folder_path" in args:
+    if args.project_folder_path is None:
         raise ValueError("project_folder_path must be provided")
+    else:
+        args.project_folder_path = os.path.abspath(args.project_folder_path)
 
     PYTHON_ENV = os.environ.get("PYTHON_ENV", "prod").strip().lower()
 
@@ -214,10 +216,18 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
     else:
         raise ValueError(f"Unknown PYTHON_ENV: {PYTHON_ENV!r}")
 
-    if args.host is None:
+
+    if args.host is not None:
+        app_config.HOST = str(args.host)
+    else:
         args.host = app_config.HOST
-    if args.port is None:
+
+    if args.port is not None:
+        app_config.PORT = str(args.port)
+    else:
         args.port = app_config.PORT
+
+    app_config.sync_env()
 
     db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
     connection.init_database(db_full_path, create_tables=False)
@@ -225,7 +235,7 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     print(f"{args=}", flush=True)
     Server.configure(args)
-
+    print(os.environ, flush=True)
     server.start_webserver(options=args, protocol=Server)
 
 
