@@ -105,8 +105,6 @@ class _Server(VtkTypingMixin, ServerProtocol):
     view = None
     debug = False
 
-    
-
     @staticmethod
     def add_arguments(parser: argparse.ArgumentParser) -> None:
         parser.add_argument(
@@ -201,7 +199,7 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
     Server.add_arguments(parser)
     args = parser.parse_args()
 
-    if not "project_folder_path" in args :
+    if not "project_folder_path" in args:
         raise ValueError("project_folder_path must be provided")
 
     PYTHON_ENV = os.environ.get("PYTHON_ENV", "prod").strip().lower()
@@ -217,7 +215,6 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     if args.host is None:
         args.host = app_config.HOST
-    print(args.port, app_config.PORT, flush=True)
     if args.port is None:
         args.port = app_config.PORT
 
