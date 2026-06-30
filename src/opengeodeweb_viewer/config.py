@@ -59,5 +59,3 @@ def _copy_test_assets(
                 copyfile(src, os.path.join(tmp_data_root, test_id, file))
             copyfile(src, os.path.join(structure_directory, file))
             copyfile(src, os.path.join(uploads_directory, file))
-
-
