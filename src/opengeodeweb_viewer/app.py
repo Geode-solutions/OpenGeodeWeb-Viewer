@@ -216,7 +216,6 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
     else:
         raise ValueError(f"Unknown PYTHON_ENV: {PYTHON_ENV!r}")
 
-
     if args.host is not None:
         app_config.HOST = str(args.host)
     else:
