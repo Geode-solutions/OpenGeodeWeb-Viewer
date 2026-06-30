@@ -235,7 +235,6 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     print(f"{args=}", flush=True)
     Server.configure(args)
-    print(os.environ, flush=True)
     server.start_webserver(options=args, protocol=Server)
 
 
