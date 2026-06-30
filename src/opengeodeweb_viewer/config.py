@@ -18,12 +18,12 @@ class Config:
 
 
 class ProdConfig(Config):
-    def __init__(self) -> None:
+    def __init__(self, project_folder_path: str) -> None:
         super().__init__("/project")
 
 
 class DevConfig(Config):
-    def __init__(self) -> None:
+    def __init__(self, project_folder_path: str) -> None:
         super().__init__(os.path.dirname(os.path.abspath(__file__)))
         os.makedirs(self.DATA_FOLDER_PATH, exist_ok=True)
 

@@ -204,6 +204,7 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     PYTHON_ENV = os.environ.get("PYTHON_ENV", "prod").strip().lower()
 
+    app_config: Config
     if PYTHON_ENV == "prod":
         app_config = ProdConfig(args.project_folder_path)
     elif PYTHON_ENV == "dev":
