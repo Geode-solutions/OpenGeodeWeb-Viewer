@@ -13,6 +13,8 @@ class Config:
         self.sync_env()
 
     def sync_env(self) -> None:
+        print("self.PROJECT_FOLDER_PATH=", self.PROJECT_FOLDER_PATH)
+        print("self.DATA_FOLDER_PATH=", self.DATA_FOLDER_PATH)
         os.environ["PROJECT_FOLDER_PATH"] = self.PROJECT_FOLDER_PATH
         os.environ["DATA_FOLDER_PATH"] = self.DATA_FOLDER_PATH
         os.environ["HOST"] = self.HOST
