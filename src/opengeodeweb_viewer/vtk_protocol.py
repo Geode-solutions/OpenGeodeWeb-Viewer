@@ -127,9 +127,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if Data is None:
             raise Exception("Data model not available")
 
-        db_full_path = os.path.join(self.DATA_FOLDER_PATH, "project.db")
-        init_database(db_full_path, create_tables=False)
-
         with get_session() as session:
             if not session:
                 raise Exception("No database session available")
