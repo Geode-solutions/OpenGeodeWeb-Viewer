@@ -43,6 +43,22 @@ from opengeodeweb_microservice.database.connection import get_session, init_data
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
 
+import stat
+
+
+def list_with_permissions(path: str) -> None:
+    for entry in sorted(os.listdir(path)):
+        full_path = os.path.join(path, entry)
+        try:
+            mode = os.stat(full_path).st_mode
+            perm = stat.filemode(mode)
+            octal = oct(mode)[-3:]
+            size = os.path.getsize(full_path)
+            entry_type = "d" if os.path.isdir(full_path) else "-"
+            print(f"{entry_type}{perm[1:]}  {octal}  {size:8,}  {entry}")
+        except:
+            print(f"??????  -----  {entry}  (access error)")
+
 
 @dataclass
 class ViewerData:
@@ -126,6 +142,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def get_viewer_data(self, data_id: str) -> ViewerData:
         if Data is None:
             raise Exception("Data model not available")
+
+        list_with_permissions(self.DATA_FOLDER_PATH)
 
         with get_session() as session:
             if not session:
