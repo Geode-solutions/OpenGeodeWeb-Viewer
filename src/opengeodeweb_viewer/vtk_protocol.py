@@ -39,7 +39,7 @@ from vtkmodules.vtkRenderingAnnotation import (
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Local application imports
-from opengeodeweb_microservice.database.connection import get_session
+from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
 
@@ -126,6 +126,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def get_viewer_data(self, data_id: str) -> ViewerData:
         if Data is None:
             raise Exception("Data model not available")
+
+        db_full_path = os.path.join(self.DATA_FOLDER_PATH, "project.db")
+        init_database(db_full_path, create_tables=False)
 
         with get_session() as session:
             if not session:
