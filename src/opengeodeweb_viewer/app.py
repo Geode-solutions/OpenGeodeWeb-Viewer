@@ -108,8 +108,7 @@ class _Server(VtkTypingMixin, ServerProtocol):
     @staticmethod
     def add_arguments(parser: argparse.ArgumentParser) -> None:
         parser.add_argument(
-            "--data_folder_path",
-            default=os.environ.get("DATA_FOLDER_PATH"),
+            "--project_folder_path",
             help="Path to the folder where data is stored",
         )
 
@@ -194,24 +193,40 @@ class _Server(VtkTypingMixin, ServerProtocol):
 
 
 def run_server(Server: type[ServerProtocol] = _Server) -> None:
-    PYTHON_ENV = os.environ.get("PYTHON_ENV", default="prod").strip().lower()
-    if PYTHON_ENV == "prod":
-        prod_config()
-    elif PYTHON_ENV == "dev":
-        dev_config()
-
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
-
+    parser.set_defaults(port=None, host=None)
     Server.add_arguments(parser)
     args = parser.parse_args()
 
-    if not "host" in args:
-        args.host = os.environ["DEFAULT_HOST"]
-    if not "port" in args or args.port == 8080:
-        args.port = os.environ.get("DEFAULT_PORT")
-    if "data_folder_path" in args and args.data_folder_path:
-        os.environ["DATA_FOLDER_PATH"] = args.data_folder_path
+    if args.project_folder_path is None:
+        raise ValueError("project_folder_path must be provided")
+    else:
+        args.project_folder_path = os.path.abspath(args.project_folder_path)
+
+    PYTHON_ENV = os.environ.get("PYTHON_ENV", "prod").strip().lower()
+
+    app_config: Config
+    if PYTHON_ENV == "prod":
+        app_config = ProdConfig(args.project_folder_path)
+    elif PYTHON_ENV == "dev":
+        app_config = DevConfig(args.project_folder_path)
+    elif PYTHON_ENV == "test":
+        app_config = TestConfig(args.project_folder_path)
+    else:
+        raise ValueError(f"Unknown PYTHON_ENV: {PYTHON_ENV!r}")
+
+    if args.host is not None:
+        app_config.HOST = str(args.host)
+    else:
+        args.host = app_config.HOST
+
+    if args.port is not None:
+        app_config.PORT = str(args.port)
+    else:
+        args.port = app_config.PORT
+
+    app_config.sync_env()
 
     db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
     connection.init_database(db_full_path, create_tables=False)
@@ -219,7 +234,6 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     print(f"{args=}", flush=True)
     Server.configure(args)
-
     server.start_webserver(options=args, protocol=Server)
 
 
