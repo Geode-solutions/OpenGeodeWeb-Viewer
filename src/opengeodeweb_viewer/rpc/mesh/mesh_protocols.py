@@ -118,11 +118,9 @@ class VtkMeshView(VtkObjectView):
             actor = self.get_vtk_pipeline(mesh_id).actor
             actor.SetTexture(texture)
 
-    def displayAttributeOnVertices(self, data_id: str, name: str) -> None:
-        parts = name.split(":")
-        attribute_name = parts[0]
-        item = int(parts[1]) if len(parts) > 1 else 0
-
+    def displayAttributeOnVertices(
+        self, data_id: str, attribute_name: str, item: int = 0
+    ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
         points = reader.GetOutputAsDataSet().GetPointData()
         points.SetActiveScalars(attribute_name)
@@ -131,11 +129,9 @@ class VtkMeshView(VtkObjectView):
         mapper.SetScalarModeToUsePointData()
         mapper.SetArrayComponent(item)
 
-    def displayAttributeOnCells(self, data_id: str, name: str) -> None:
-        parts = name.split(":")
-        attribute_name = parts[0]
-        item = int(parts[1]) if len(parts) > 1 else 0
-
+    def displayAttributeOnCells(
+        self, data_id: str, attribute_name: str, item: int = 0
+    ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
         cells = reader.GetOutputAsDataSet().GetCellData()
         cells.SetActiveScalars(attribute_name)

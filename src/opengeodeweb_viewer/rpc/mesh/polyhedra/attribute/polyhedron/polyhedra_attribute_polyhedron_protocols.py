@@ -36,7 +36,7 @@ class VtkMeshPolyhedraAttributePolyhedronView(VtkMeshView):
             self.mesh_polyhedra_attribute_polyhedron_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnCells(params.id, params.name)
+        self.displayAttributeOnCells(params.id, params.name, params.item)
 
     @exportRpc(
         mesh_polyhedra_attribute_polyhedron_prefix

@@ -34,7 +34,7 @@ class VtkMeshEdgesAttributeEdgeView(VtkMeshView):
             self.mesh_edges_attribute_edge_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnCells(params.id, params.name)
+        self.displayAttributeOnCells(params.id, params.name, params.item)
 
     @exportRpc(
         mesh_edges_attribute_edge_prefix

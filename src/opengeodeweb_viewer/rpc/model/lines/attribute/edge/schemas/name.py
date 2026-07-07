@@ -1,6 +1,6 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -11,3 +11,4 @@ class Name(DataClassJsonMixin):
     block_ids: List[int]
     id: str
     name: str
+    item: Optional[int] = None

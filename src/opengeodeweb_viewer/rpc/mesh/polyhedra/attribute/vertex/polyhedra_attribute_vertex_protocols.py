@@ -36,7 +36,7 @@ class VtkMeshPolyhedraAttributeVertexView(VtkMeshView):
             self.mesh_polyhedra_attribute_vertex_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnVertices(params.id, params.name)
+        self.displayAttributeOnVertices(params.id, params.name, params.item)
 
     @exportRpc(
         mesh_polyhedra_attribute_vertex_prefix

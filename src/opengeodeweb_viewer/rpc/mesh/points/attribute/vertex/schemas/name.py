@@ -1,5 +1,6 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -9,3 +10,4 @@ class Name(DataClassJsonMixin):
 
     id: str
     name: str
+    item: Optional[int] = None
