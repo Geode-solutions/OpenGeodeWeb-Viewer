@@ -37,9 +37,8 @@ class VtkModelBlocksAttributePolyhedronView(VtkModelView):
         )
         params = schemas.Name.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnCells(
-            pipeline, params.block_ids, params.name, params.item
-        )
+        item = params.item if params.item is not None else 0
+        self.displayAttributeOnCells(pipeline, params.block_ids, params.name, item)
 
     @exportRpc(
         model_blocks_attribute_polyhedron_prefix

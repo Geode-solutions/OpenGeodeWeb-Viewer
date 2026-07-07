@@ -36,7 +36,8 @@ class VtkMeshPolygonsAttributePolygonView(VtkMeshView):
             self.mesh_polygons_attribute_polygon_prefix,
         )
         params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnCells(params.id, params.name, params.item)
+        item = params.item if params.item is not None else 0
+        self.displayAttributeOnCells(params.id, params.name, item)
 
     @exportRpc(
         mesh_polygons_attribute_polygon_prefix
