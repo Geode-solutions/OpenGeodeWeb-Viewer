@@ -327,3 +327,26 @@ def test_cells_vertex_color_map_rainbow(
     )
 
     assert server.compare_image("mesh/cells/vertex_color_map_rainbow.jpeg") == True
+
+
+def test_cells_vertex_vector_component(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register(server, dataset_factory)
+
+    # Set active attribute with a vector component (points:1)
+    server.call(
+        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
+            "name"
+        ]["rpc"],
+        [{"id": mesh_id, "name": "points:1"}],
+    )
+
+    # Render and assert we receive non-empty image bytes (no backend crashes)
+    server.call("opengeodeweb_viewer.viewer.render")
+    while True:
+        response = server.ws.recv()
+        if isinstance(response, bytes):
+            assert len(response) > 0
+            break
