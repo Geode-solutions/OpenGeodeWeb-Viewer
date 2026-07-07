@@ -455,8 +455,16 @@ def test_surfaces_vertex_vector_component(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices:0"}],
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "unique vertices:0",
+            }
+        ],
     )
 
     # Render and assert we receive non-empty image bytes (no backend crashes)
