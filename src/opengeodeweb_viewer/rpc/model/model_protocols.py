@@ -68,8 +68,8 @@ class VtkModelView(VtkObjectView):
                 points=[],
                 minimum=0.0,
                 maximum=1.0,
+                item=0,
             )
-            style["item"] = 0
             pipeline.block_styles[block_id] = style
         return pipeline.block_styles[block_id]
 
