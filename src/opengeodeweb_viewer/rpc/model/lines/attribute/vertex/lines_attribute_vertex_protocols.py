@@ -37,7 +37,9 @@ class VtkModelLinesAttributeVertexView(VtkModelView):
         )
         params = schemas.Name.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnVertices(pipeline, params.block_ids, params.name, params.item)
+        self.displayAttributeOnVertices(
+            pipeline, params.block_ids, params.name, params.item
+        )
 
     @exportRpc(
         model_lines_attribute_vertex_prefix

@@ -180,7 +180,11 @@ class VtkModelView(VtkObjectView):
         return colors
 
     def displayAttributeOnVertices(
-        self, pipeline: VtkPipeline, block_ids: list[int], attribute_name: str, item: int = 0
+        self,
+        pipeline: VtkPipeline,
+        block_ids: list[int],
+        attribute_name: str,
+        item: int = 0,
     ) -> None:
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
@@ -190,7 +194,11 @@ class VtkModelView(VtkObjectView):
             self.updateBlockColors(pipeline, block_id)
 
     def displayAttributeOnCells(
-        self, pipeline: VtkPipeline, block_ids: list[int], attribute_name: str, item: int = 0
+        self,
+        pipeline: VtkPipeline,
+        block_ids: list[int],
+        attribute_name: str,
+        item: int = 0,
     ) -> None:
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
