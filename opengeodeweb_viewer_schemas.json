@@ -98,9 +98,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -114,22 +114,6 @@
                 "item": {
                   "type": "integer",
                   "minimum": 0
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
                 "points": {
                   "type": "array",
@@ -148,6 +132,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"

@@ -27,27 +27,14 @@ class VtkMeshCellsAttributeVertexView(VtkMeshView):
 
     @exportRpc(
         mesh_cells_attribute_vertex_prefix
-        + mesh_cells_attribute_vertex_schemas_dict["name"]["rpc"]
+        + mesh_cells_attribute_vertex_schemas_dict["attribute"]["rpc"]
     )
-    def setMeshCellsVertexName(self, rpc_params: RpcParams) -> None:
+    def setMeshCellsVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.mesh_cells_attribute_vertex_schemas_dict["name"],
+            self.mesh_cells_attribute_vertex_schemas_dict["attribute"],
             self.mesh_cells_attribute_vertex_prefix,
         )
-        params = schemas.Name.from_dict(rpc_params)
-        item = params.item if params.item is not None else 0
-        self.displayAttributeOnVertices(params.id, params.name, item)
-
-    @exportRpc(
-        mesh_cells_attribute_vertex_prefix
-        + mesh_cells_attribute_vertex_schemas_dict["color_map"]["rpc"]
-    )
-    def setMeshCellsVertexColorMap(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_cells_attribute_vertex_schemas_dict["color_map"],
-            self.mesh_cells_attribute_vertex_prefix,
-        )
-        params = schemas.ColorMap.from_dict(rpc_params)
+        params = schemas.Attribute.from_dict(rpc_params)
+        self.displayAttributeOnVertices(params.id, params.name, params.item)
         self.setupColorMap(params.id, params.points, params.minimum, params.maximum)
