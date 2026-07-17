@@ -119,26 +119,40 @@ class VtkMeshView(VtkObjectView):
             actor.SetTexture(texture)
 
     def displayAttributeOnVertices(
-        self, data_id: str, attribute_name: str, item: int = 0
+        self,
+        data_id: str,
+        attribute_name: str,
+        item: int,
+        points: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
-        points = reader.GetOutputAsDataSet().GetPointData()
-        points.SetActiveScalars(attribute_name)
+        point_data = reader.GetOutputAsDataSet().GetPointData()
+        point_data.SetActiveScalars(attribute_name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetArrayComponent(item)
+        self.setupColorMap(data_id, points, minimum, maximum)
 
     def displayAttributeOnCells(
-        self, data_id: str, attribute_name: str, item: int = 0
+        self,
+        data_id: str,
+        attribute_name: str,
+        item: int,
+        points: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
-        cells = reader.GetOutputAsDataSet().GetCellData()
-        cells.SetActiveScalars(attribute_name)
+        cell_data = reader.GetOutputAsDataSet().GetCellData()
+        cell_data.SetActiveScalars(attribute_name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetArrayComponent(item)
+        self.setupColorMap(data_id, points, minimum, maximum)
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
         print(

@@ -36,5 +36,11 @@ class VtkMeshCellsAttributeVertexView(VtkMeshView):
             self.mesh_cells_attribute_vertex_prefix,
         )
         params = schemas.Attribute.from_dict(rpc_params)
-        self.displayAttributeOnVertices(params.id, params.name, params.item)
-        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)
+        self.displayAttributeOnVertices(
+            params.id,
+            params.name,
+            params.item,
+            params.points,
+            params.minimum,
+            params.maximum,
+        )
