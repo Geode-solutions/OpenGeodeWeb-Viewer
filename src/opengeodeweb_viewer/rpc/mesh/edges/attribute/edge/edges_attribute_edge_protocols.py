@@ -15,9 +15,7 @@ from . import schemas
 
 
 class VtkMeshEdgesAttributeEdgeView(VtkMeshView):
-    mesh_edges_attribute_edge_prefix = (
-        "opengeodeweb_viewer.mesh.edges.attribute.edge."
-    )
+    mesh_edges_attribute_edge_prefix = "opengeodeweb_viewer.mesh.edges.attribute.edge."
     mesh_edges_attribute_edge_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )

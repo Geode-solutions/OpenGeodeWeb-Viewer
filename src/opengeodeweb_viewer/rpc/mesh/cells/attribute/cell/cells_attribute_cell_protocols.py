@@ -15,9 +15,7 @@ from . import schemas
 
 
 class VtkMeshCellsAttributeCellView(VtkMeshView):
-    mesh_cells_attribute_cell_prefix = (
-        "opengeodeweb_viewer.mesh.cells.attribute.cell."
-    )
+    mesh_cells_attribute_cell_prefix = "opengeodeweb_viewer.mesh.cells.attribute.cell."
     mesh_cells_attribute_cell_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
