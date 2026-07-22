@@ -121,7 +121,7 @@ class VtkMeshView(VtkObjectView):
     def displayAttributeOnVertices(
         self,
         data_id: str,
-        attribute_name: str,
+        name: str,
         item: int = 0,
         color_map: list[float] | None = None,
         minimum: float | None = None,
@@ -129,7 +129,7 @@ class VtkMeshView(VtkObjectView):
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
         points = reader.GetOutputAsDataSet().GetPointData()
-        points.SetActiveScalars(attribute_name)
+        points.SetActiveScalars(name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
@@ -140,7 +140,7 @@ class VtkMeshView(VtkObjectView):
     def displayAttributeOnCells(
         self,
         data_id: str,
-        attribute_name: str,
+        name: str,
         item: int = 0,
         color_map: list[float] | None = None,
         minimum: float | None = None,
@@ -148,7 +148,7 @@ class VtkMeshView(VtkObjectView):
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
         cells = reader.GetOutputAsDataSet().GetCellData()
-        cells.SetActiveScalars(attribute_name)
+        cells.SetActiveScalars(name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
