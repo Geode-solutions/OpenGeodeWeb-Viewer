@@ -53,7 +53,6 @@ def test_points_vertex_attribute(
     assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
 
 
-
 def test_points_vertex_color_map_range_update(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
