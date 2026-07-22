@@ -1,10 +1,18 @@
 {
-  "rpc": "color_map",
+  "rpc": "attribute",
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
       "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "item": {
+      "type": "integer",
+      "minimum": 0
     },
     "points": {
       "type": "array",
@@ -21,6 +29,6 @@
       "type": "number"
     }
   },
-  "required": ["id", "points", "minimum", "maximum"],
+  "required": ["id", "name", "item", "points", "minimum", "maximum"],
   "additionalProperties": false
 }

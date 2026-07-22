@@ -15,7 +15,9 @@ from . import schemas
 
 
 class VtkMeshEdgesAttributeEdgeView(VtkMeshView):
-    mesh_edges_attribute_edge_prefix = "opengeodeweb_viewer.mesh.edges.attribute.edge."
+    mesh_edges_attribute_edge_prefix = (
+        "opengeodeweb_viewer.mesh.edges.attribute.edge."
+    )
     mesh_edges_attribute_edge_schemas_dict = get_schemas_dict(
         os.path.join(os.path.dirname(__file__), "schemas")
     )
@@ -25,27 +27,20 @@ class VtkMeshEdgesAttributeEdgeView(VtkMeshView):
 
     @exportRpc(
         mesh_edges_attribute_edge_prefix
-        + mesh_edges_attribute_edge_schemas_dict["name"]["rpc"]
+        + mesh_edges_attribute_edge_schemas_dict["attribute"]["rpc"]
     )
-    def setMeshEdgesEdgeName(self, rpc_params: RpcParams) -> None:
+    def setMeshEdgesEdgeAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.mesh_edges_attribute_edge_schemas_dict["name"],
+            self.mesh_edges_attribute_edge_schemas_dict["attribute"],
             self.mesh_edges_attribute_edge_prefix,
         )
-        params = schemas.Name.from_dict(rpc_params)
-        item = params.item if params.item is not None else 0
-        self.displayAttributeOnCells(params.id, params.name, item)
-
-    @exportRpc(
-        mesh_edges_attribute_edge_prefix
-        + mesh_edges_attribute_edge_schemas_dict["color_map"]["rpc"]
-    )
-    def setMeshEdgesEdgeColorMap(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_edges_attribute_edge_schemas_dict["color_map"],
-            self.mesh_edges_attribute_edge_prefix,
+        params = schemas.Attribute.from_dict(rpc_params)
+        self.displayAttributeOnCells(
+            params.id,
+            params.name,
+            params.item,
+            params.points,
+            params.minimum,
+            params.maximum,
         )
-        params = schemas.ColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)

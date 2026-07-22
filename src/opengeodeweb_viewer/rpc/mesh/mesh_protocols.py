@@ -128,8 +128,8 @@ class VtkMeshView(VtkObjectView):
         maximum: float | None = None,
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
-        point_data = reader.GetOutputAsDataSet().GetPointData()
-        point_data.SetActiveScalars(attribute_name)
+        points = reader.GetOutputAsDataSet().GetPointData()
+        points.SetActiveScalars(attribute_name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
@@ -147,8 +147,8 @@ class VtkMeshView(VtkObjectView):
         maximum: float | None = None,
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
-        cell_data = reader.GetOutputAsDataSet().GetCellData()
-        cell_data.SetActiveScalars(attribute_name)
+        cells = reader.GetOutputAsDataSet().GetCellData()
+        cells.SetActiveScalars(attribute_name)
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
