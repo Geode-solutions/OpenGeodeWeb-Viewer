@@ -32,24 +32,17 @@ def test_cells_cell_color_map(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "RGB_data"}],
-    )
-
-    # Set color map: Blue to Red
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
         + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "RGB_data",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -75,24 +68,17 @@ def test_cells_cell_color_map_range_update(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "RGB_data"}],
-    )
-
-    # Set Blue to Red Map
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
         + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "RGB_data",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -111,15 +97,17 @@ def test_cells_cell_color_map_range_update(
 
     assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
         + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "RGB_data",
+                "item": 0,
                 "points": [
                     100.0,
                     0,
@@ -145,24 +133,17 @@ def test_cells_cell_color_map_red_shift(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "RGB_data"}],
-    )
-
-    # Set Blue to Red Map
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
         + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "RGB_data",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -181,15 +162,17 @@ def test_cells_cell_color_map_red_shift(
 
     assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
         + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "RGB_data",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -215,24 +198,17 @@ def test_cells_cell_color_map_rainbow(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "RGB_data"}],
-    )
-
     # Rainbow Desaturated Map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
         + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "RGB_data",
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -277,15 +253,17 @@ def test_cells_cell_color_map_rainbow(
         server.compare_image("mesh/cells/cell_color_map_rainbow_initial.jpeg") == True
     )
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
         + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "RGB_data",
+                "item": 0,
                 "points": [
                     50.0,
                     71 / 255,

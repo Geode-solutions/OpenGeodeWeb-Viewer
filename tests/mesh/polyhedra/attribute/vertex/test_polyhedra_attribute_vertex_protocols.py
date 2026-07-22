@@ -34,28 +34,19 @@ def test_polyhedra_vertex_color_map(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "toto_on_vertices"}],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
-        + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
         [
             {
                 "id": mesh_id,
+                "name": "toto_on_vertices",
+                "item": 0,
                 "points": [
                     1.0,
                     0,
@@ -81,28 +72,19 @@ def test_polyhedra_vertex_color_map_range_update(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "toto_on_vertices"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
-        + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
         [
             {
                 "id": mesh_id,
+                "name": "toto_on_vertices",
+                "item": 0,
                 "points": [
                     1.0,
                     0,
@@ -121,17 +103,19 @@ def test_polyhedra_vertex_color_map_range_update(
 
     assert server.compare_image("mesh/polyhedra/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
         [
             {
                 "id": mesh_id,
+                "name": "toto_on_vertices",
+                "item": 0,
                 "points": [
                     10.0,
                     0,
@@ -160,28 +144,19 @@ def test_polyhedra_vertex_color_map_red_shift(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "toto_on_vertices"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
-        + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
         [
             {
                 "id": mesh_id,
+                "name": "toto_on_vertices",
+                "item": 0,
                 "points": [
                     1.0,
                     0,
@@ -200,17 +175,19 @@ def test_polyhedra_vertex_color_map_red_shift(
 
     assert server.compare_image("mesh/polyhedra/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
         [
             {
                 "id": mesh_id,
+                "name": "toto_on_vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -238,28 +215,19 @@ def test_polyhedra_vertex_color_map_rainbow(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "toto_on_vertices"}],
-    )
-
-    # Rainbow Desaturated Map
-    server.call(
-        VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
-        + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
         [
             {
                 "id": mesh_id,
+                "name": "toto_on_vertices",
+                "item": 0,
                 "points": [
                     1.0,
                     71 / 255,
@@ -305,17 +273,19 @@ def test_polyhedra_vertex_color_map_rainbow(
         == True
     )
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
         [
             {
                 "id": mesh_id,
+                "name": "toto_on_vertices",
+                "item": 0,
                 "points": [
                     2.0,
                     71 / 255,

@@ -37,54 +37,21 @@ def test_points_vertex_attribute(
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
         + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "lambert2SG"}],
-    )
-    assert server.compare_image("mesh/points/vertex_attribute.jpeg") == True
-
-
-def test_points_vertex_color_map(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-
-    test_register(server, dataset_factory)
-
-    # Set active attribute
-    server.call(
-        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "lambert2SG"}],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
-                "points": [
-                    0.0,
-                    0,
-                    0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0,
-                    0,
-                ],
+                "name": "lambert2SG",
+                "item": 0,
+                "points": [0.0, 0, 0, 1.0, 1.0, 1.0, 0, 0],
                 "minimum": 0.0,
                 "maximum": 1.0,
             }
         ],
     )
-
     assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
+
 
 
 def test_points_vertex_color_map_range_update(
@@ -93,24 +60,17 @@ def test_points_vertex_color_map_range_update(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
         + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "lambert2SG"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "lambert2SG",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -129,15 +89,17 @@ def test_points_vertex_color_map_range_update(
 
     assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
         + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "lambert2SG",
+                "item": 0,
                 "points": [
                     0.8,
                     0,
@@ -165,24 +127,17 @@ def test_points_vertex_color_map_red_shift(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
         + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "lambert2SG"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "lambert2SG",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -201,15 +156,17 @@ def test_points_vertex_color_map_red_shift(
 
     assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
         + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "lambert2SG",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -235,24 +192,17 @@ def test_points_vertex_color_map_rainbow(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "lambert2SG"}],
-    )
-
     # Rainbow Desaturated Map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
         + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "lambert2SG",
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -298,15 +248,17 @@ def test_points_vertex_color_map_rainbow(
         == True
     )
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
         + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "lambert2SG",
+                "item": 0,
                 "points": [
                     0.1,
                     71 / 255,
