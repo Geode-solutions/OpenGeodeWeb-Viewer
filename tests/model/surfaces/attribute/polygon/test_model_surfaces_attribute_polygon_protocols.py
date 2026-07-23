@@ -80,7 +80,7 @@ def test_surfaces_polygon_attribute(
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -89,6 +89,19 @@ def test_surfaces_polygon_attribute(
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
                 "name": "triangle_vertices",
+                "item": 0,
+                "points": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -114,11 +127,11 @@ def test_surfaces_polygon_color_map(
         [{"id": model_id, "block_ids": list(range(36, 47)), "visibility": True}],
     )
 
-    # Set active polygon attribute
+    # Set active polygon attribute, item, color map & range
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -127,22 +140,7 @@ def test_surfaces_polygon_color_map(
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
                 "name": "triangle_vertices",
-            }
-        ],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
-        + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(36, 47)),
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -185,7 +183,7 @@ def test_surfaces_polygon_color_map_range_update(
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -194,22 +192,7 @@ def test_surfaces_polygon_color_map_range_update(
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
                 "name": "triangle_vertices",
-            }
-        ],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
-        + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(36, 47)),
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -228,11 +211,11 @@ def test_surfaces_polygon_color_map_range_update(
 
     assert server.compare_image("model/surfaces/color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -240,6 +223,8 @@ def test_surfaces_polygon_color_map_range_update(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+                "item": 0,
                 "points": [
                     40.0,
                     0.0,
@@ -282,7 +267,7 @@ def test_surfaces_polygon_color_map_red_shift(
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -291,22 +276,7 @@ def test_surfaces_polygon_color_map_red_shift(
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
                 "name": "triangle_vertices",
-            }
-        ],
-    )
-
-    # Set Blue to Red Map on [0, 1]
-    server.call(
-        VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
-        + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(36, 47)),
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -325,11 +295,11 @@ def test_surfaces_polygon_color_map_red_shift(
 
     assert server.compare_image("model/surfaces/color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -337,6 +307,8 @@ def test_surfaces_polygon_color_map_red_shift(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+                "item": 0,
                 "points": [
                     3.0,
                     0.0,
@@ -375,11 +347,11 @@ def test_surfaces_polygon_color_map_rainbow(
         [{"id": model_id, "block_ids": list(range(36, 47)), "visibility": True}],
     )
 
-    # Set active polygon attribute
+    # Rainbow Desaturated Map
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -388,22 +360,7 @@ def test_surfaces_polygon_color_map_rainbow(
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
                 "name": "triangle_vertices",
-            }
-        ],
-    )
-
-    # Rainbow Desaturated Map
-    server.call(
-        VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
-        + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(36, 47)),
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -446,11 +403,11 @@ def test_surfaces_polygon_color_map_rainbow(
 
     assert server.compare_image("model/surfaces/color_map_rainbow_initial.jpeg") == True
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -458,6 +415,8 @@ def test_surfaces_polygon_color_map_rainbow(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "triangle_vertices",
+                "item": 0,
                 "points": [
                     5.0,
                     71 / 255,

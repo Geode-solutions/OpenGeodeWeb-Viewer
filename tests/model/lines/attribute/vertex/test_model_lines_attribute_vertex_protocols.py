@@ -38,9 +38,28 @@ def test_lines_vertex_attribute(
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "name"
+            "attribute"
         ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "unique vertices"}],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
+                "points": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
+            }
+        ],
     )
     assert server.compare_image("model/lines/vertex_attribute.jpeg") == True
 
@@ -64,25 +83,18 @@ def test_lines_vertex_color_map(
         [{"id": model_id, "block_ids": list(range(14, 35)), "visibility": True}],
     )
 
-    # Set active vertex attribute
+    # Set active vertex attribute, item, color map & range
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "unique vertices"}],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -125,21 +137,14 @@ def test_lines_vertex_color_map_range_update(
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "unique vertices"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -158,16 +163,18 @@ def test_lines_vertex_color_map_range_update(
 
     assert server.compare_image("model/lines/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     40.0,
                     0.0,
@@ -210,21 +217,14 @@ def test_lines_vertex_color_map_red_shift(
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "unique vertices"}],
-    )
-
-    # Set Blue to Red Map on [0, 1]
-    server.call(
-        VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -243,16 +243,18 @@ def test_lines_vertex_color_map_red_shift(
 
     assert server.compare_image("model/lines/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     3.0,
                     0.0,
@@ -291,25 +293,18 @@ def test_lines_vertex_color_map_rainbow(
         [{"id": model_id, "block_ids": list(range(14, 35)), "visibility": True}],
     )
 
-    # Set active vertex attribute
-    server.call(
-        VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "unique vertices"}],
-    )
-
     # Rainbow Desaturated Map
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -355,16 +350,18 @@ def test_lines_vertex_color_map_rainbow(
         == True
     )
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
         + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     5.0,
                     71 / 255,

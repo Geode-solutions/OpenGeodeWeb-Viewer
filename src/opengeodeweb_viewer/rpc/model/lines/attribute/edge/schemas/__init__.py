@@ -1,2 +1,1 @@
-from .name import *
-from .color_map import *
+from .attribute import *

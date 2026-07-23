@@ -1,5 +1,5 @@
 {
-  "rpc": "color_map",
+  "rpc": "attribute",
   "type": "object",
   "properties": {
     "id": {
@@ -10,6 +10,14 @@
       "type": "array",
       "items": { "type": "integer" },
       "minItems": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "item": {
+      "type": "integer",
+      "minimum": 0
     },
     "points": {
       "type": "array",
@@ -26,6 +34,6 @@
       "type": "number"
     }
   },
-  "required": ["id", "block_ids", "points", "minimum", "maximum"],
+  "required": ["id", "block_ids", "name", "item", "points", "minimum", "maximum"],
   "additionalProperties": false
 }

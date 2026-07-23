@@ -38,9 +38,28 @@ def test_lines_edge_attribute(
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "name"
+            "attribute"
         ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "edges"}],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
+                "points": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
+            }
+        ],
     )
     assert server.compare_image("model/lines/attribute.jpeg") == True
 
@@ -64,25 +83,18 @@ def test_lines_edge_color_map(
         [{"id": model_id, "block_ids": list(range(14, 35)), "visibility": True}],
     )
 
-    # Set active edge attribute
+    # Set active edge attribute, item, color map & range
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "edges"}],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -125,21 +137,14 @@ def test_lines_edge_color_map_range_update(
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "edges"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -158,16 +163,18 @@ def test_lines_edge_color_map_range_update(
 
     assert server.compare_image("model/lines/color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
                 "points": [
                     40.0,
                     0.0,
@@ -210,21 +217,14 @@ def test_lines_edge_color_map_red_shift(
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "edges"}],
-    )
-
-    # Set Blue to Red Map on [0, 1]
-    server.call(
-        VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -243,16 +243,18 @@ def test_lines_edge_color_map_red_shift(
 
     assert server.compare_image("model/lines/color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
                 "points": [
                     3.0,
                     0.0,
@@ -291,25 +293,18 @@ def test_lines_edge_color_map_rainbow(
         [{"id": model_id, "block_ids": list(range(14, 35)), "visibility": True}],
     )
 
-    # Set active edge attribute
-    server.call(
-        VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": model_id, "block_ids": list(range(14, 35)), "name": "edges"}],
-    )
-
     # Rainbow Desaturated Map
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -352,16 +347,18 @@ def test_lines_edge_color_map_rainbow(
 
     assert server.compare_image("model/lines/color_map_rainbow_initial.jpeg") == True
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
         + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": model_id,
                 "block_ids": list(range(14, 35)),
+                "name": "edges",
+                "item": 0,
                 "points": [
                     5.0,
                     71 / 255,
