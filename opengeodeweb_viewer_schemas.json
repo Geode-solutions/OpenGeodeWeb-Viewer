@@ -1064,9 +1064,9 @@
       "blocks": {
         "attribute": {
           "polyhedron": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -1087,30 +1087,6 @@
                 "item": {
                   "type": "integer",
                   "minimum": 0
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
                 },
                 "points": {
                   "type": "array",
@@ -1130,6 +1106,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
