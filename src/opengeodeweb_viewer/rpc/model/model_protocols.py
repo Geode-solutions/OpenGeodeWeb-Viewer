@@ -183,28 +183,40 @@ class VtkModelView(VtkObjectView):
         self,
         pipeline: VtkPipeline,
         block_ids: list[int],
-        attribute_name: str,
-        item: int = 0,
+        name: str,
+        item: int,
+        color_map: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
-            style["name"] = attribute_name
+            style["name"] = name
             style["item"] = item
             style["attribute_location"] = "point"
+            style["points"] = color_map
+            style["minimum"] = minimum
+            style["maximum"] = maximum
             self.updateBlockColors(pipeline, block_id)
 
     def displayAttributeOnCells(
         self,
         pipeline: VtkPipeline,
         block_ids: list[int],
-        attribute_name: str,
-        item: int = 0,
+        name: str,
+        item: int,
+        color_map: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
-            style["name"] = attribute_name
+            style["name"] = name
             style["item"] = item
             style["attribute_location"] = "cell"
+            style["points"] = color_map
+            style["minimum"] = minimum
+            style["maximum"] = maximum
             self.updateBlockColors(pipeline, block_id)
 
     def setupColorMap(
