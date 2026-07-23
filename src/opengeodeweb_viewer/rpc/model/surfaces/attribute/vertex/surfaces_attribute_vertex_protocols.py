@@ -37,5 +37,9 @@ class VtkModelSurfacesAttributeVertexView(VtkModelView):
         )
         params = schemas.Attribute.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnVertices(pipeline, params.block_ids, params.name, params.item)
-        self.setupColorMap(pipeline, params.block_ids, params.points, params.minimum, params.maximum)
+        self.displayAttributeOnVertices(
+            pipeline, params.block_ids, params.name, params.item
+        )
+        self.setupColorMap(
+            pipeline, params.block_ids, params.points, params.minimum, params.maximum
+        )
