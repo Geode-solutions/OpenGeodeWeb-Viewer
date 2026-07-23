@@ -40,9 +40,9 @@
       "cells": {
         "attribute": {
           "cell": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.cells.attribute.cell.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.cells.attribute.cell.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -52,22 +52,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.cells.attribute.cell.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -86,6 +74,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -94,9 +84,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -106,22 +96,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.cells.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -140,6 +118,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -219,9 +199,9 @@
       "edges": {
         "attribute": {
           "edge": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.edges.attribute.edge.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.edges.attribute.edge.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -231,22 +211,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.edges.attribute.edge.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -265,6 +233,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -273,9 +243,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.edges.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.edges.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -285,22 +255,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.edges.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -319,6 +277,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -417,9 +377,9 @@
       "points": {
         "attribute": {
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.points.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.points.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -429,22 +389,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.points.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -463,6 +411,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -636,9 +586,9 @@
       "polygons": {
         "attribute": {
           "polygon": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.polygon.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.polygon.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -648,22 +598,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.polygon.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -682,6 +620,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -690,9 +630,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -702,22 +642,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.polygons.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -736,6 +664,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -815,9 +745,9 @@
       "polyhedra": {
         "attribute": {
           "polyhedron": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.polyhedron.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.polyhedron.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -827,22 +757,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.polyhedron.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -861,6 +779,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -869,9 +789,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -881,22 +801,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -915,6 +823,8 @@
               },
               "required": [
                 "id",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -1154,9 +1064,9 @@
       "blocks": {
         "attribute": {
           "polyhedron": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -1173,30 +1083,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.blocks.attribute.polyhedron.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -1216,6 +1106,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -1224,9 +1116,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.blocks.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.blocks.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -1243,30 +1135,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.blocks.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -1286,6 +1158,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -1388,9 +1262,9 @@
       "corners": {
         "attribute": {
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.corners.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.corners.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -1407,30 +1281,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.corners.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -1450,6 +1304,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -1573,9 +1429,9 @@
       "lines": {
         "attribute": {
           "edge": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.lines.attribute.edge.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.lines.attribute.edge.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -1592,30 +1448,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.lines.attribute.edge.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -1635,6 +1471,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -1643,9 +1481,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.lines.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.lines.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -1662,30 +1500,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.lines.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -1705,6 +1523,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -1948,9 +1768,9 @@
       "surfaces": {
         "attribute": {
           "polygon": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.surfaces.attribute.polygon.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.surfaces.attribute.polygon.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -1967,30 +1787,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.surfaces.attribute.polygon.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -2010,6 +1810,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"
@@ -2018,9 +1820,9 @@
             }
           },
           "vertex": {
-            "name": {
-              "$id": "opengeodeweb_viewer.model.surfaces.attribute.vertex.name",
-              "rpc": "name",
+            "attribute": {
+              "$id": "opengeodeweb_viewer.model.surfaces.attribute.vertex.attribute",
+              "rpc": "attribute",
               "type": "object",
               "properties": {
                 "id": {
@@ -2037,30 +1839,10 @@
                 "name": {
                   "type": "string",
                   "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "block_ids",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "color_map": {
-              "$id": "opengeodeweb_viewer.model.surfaces.attribute.vertex.color_map",
-              "rpc": "color_map",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 1
                 },
-                "block_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer"
-                  },
-                  "minItems": 1
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
                 },
                 "points": {
                   "type": "array",
@@ -2080,6 +1862,8 @@
               "required": [
                 "id",
                 "block_ids",
+                "name",
+                "item",
                 "points",
                 "minimum",
                 "maximum"

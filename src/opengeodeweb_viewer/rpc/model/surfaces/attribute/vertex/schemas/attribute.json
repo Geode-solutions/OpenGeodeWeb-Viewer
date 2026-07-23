@@ -1,0 +1,39 @@
+{
+  "rpc": "attribute",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "block_ids": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "minItems": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "item": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "points": {
+      "type": "array",
+      "description": "Flat array of [value, r, g, b, ...]",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 8
+    },
+    "minimum": {
+      "type": "number"
+    },
+    "maximum": {
+      "type": "number"
+    }
+  },
+  "required": ["id", "block_ids", "name", "item", "points", "minimum", "maximum"],
+  "additionalProperties": false
+}

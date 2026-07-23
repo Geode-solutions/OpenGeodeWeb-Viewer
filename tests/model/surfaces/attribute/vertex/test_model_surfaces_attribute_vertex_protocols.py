@@ -38,11 +38,30 @@ def test_surfaces_vertex_attribute(
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
+                "points": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
+            }
+        ],
     )
     assert server.compare_image("model/surfaces/vertex_attribute.jpeg") == True
 
@@ -66,22 +85,11 @@ def test_surfaces_vertex_color_map(
         [{"id": model_id, "block_ids": list(range(36, 47)), "visibility": True}],
     )
 
-    # Set active vertex attribute
+    # Set active vertex attribute, item, color map & range
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
-        + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -89,6 +97,8 @@ def test_surfaces_vertex_color_map(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -131,18 +141,7 @@ def test_surfaces_vertex_color_map_range_update(
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
-        + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -150,6 +149,8 @@ def test_surfaces_vertex_color_map_range_update(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -168,11 +169,11 @@ def test_surfaces_vertex_color_map_range_update(
 
     assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -180,6 +181,8 @@ def test_surfaces_vertex_color_map_range_update(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     40.0,
                     0.0,
@@ -222,18 +225,7 @@ def test_surfaces_vertex_color_map_red_shift(
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
-    )
-
-    # Set Blue to Red Map on [0, 1]
-    server.call(
-        VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
-        + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -241,6 +233,8 @@ def test_surfaces_vertex_color_map_red_shift(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -259,11 +253,11 @@ def test_surfaces_vertex_color_map_red_shift(
 
     assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -271,6 +265,8 @@ def test_surfaces_vertex_color_map_red_shift(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     3.0,
                     0.0,
@@ -309,22 +305,11 @@ def test_surfaces_vertex_color_map_rainbow(
         [{"id": model_id, "block_ids": list(range(36, 47)), "visibility": True}],
     )
 
-    # Set active vertex attribute
-    server.call(
-        VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
-        + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "name"
-        ][
-            "rpc"
-        ],
-        [{"id": model_id, "block_ids": list(range(36, 47)), "name": "unique vertices"}],
-    )
-
     # Rainbow Desaturated Map
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -332,6 +317,8 @@ def test_surfaces_vertex_color_map_rainbow(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -377,11 +364,11 @@ def test_surfaces_vertex_color_map_rainbow(
         == True
     )
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -389,6 +376,8 @@ def test_surfaces_vertex_color_map_rainbow(
             {
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
                 "points": [
                     5.0,
                     71 / 255,
@@ -430,3 +419,60 @@ def test_surfaces_vertex_color_map_rainbow(
     )
 
     assert server.compare_image("model/surfaces/vertex_color_map_rainbow.jpeg") == True
+
+
+def test_surfaces_vertex_vector_component(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_model_cube(server, dataset_factory)
+
+    # Hide all blocks to ensure visibility of surfaces
+    server.call(
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["visibility"]["rpc"],
+        [{"id": model_id, "block_ids": list(range(1, 50)), "visibility": False}],
+    )
+    # Show only surfaces
+    server.call(
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["visibility"]["rpc"],
+        [{"id": model_id, "block_ids": list(range(36, 47)), "visibility": True}],
+    )
+
+    # Set active vertex attribute with item
+    server.call(
+        VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
+        + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
+            "attribute"
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "name": "unique vertices",
+                "item": 0,
+                "points": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
+            }
+        ],
+    )
+
+    # Render and assert we receive non-empty image bytes (no backend crashes)
+    server.call("opengeodeweb_viewer.viewer.render")
+    while True:
+        response = server.ws.recv()
+        if isinstance(response, bytes):
+            assert len(response) > 0
+            break

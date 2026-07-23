@@ -38,7 +38,7 @@ def test_blocks_polyhedron_attribute(
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -47,6 +47,19 @@ def test_blocks_polyhedron_attribute(
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
                 "name": "tetrahedron_vertices",
+                "item": 0,
+                "points": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
             }
         ],
     )
@@ -72,11 +85,11 @@ def test_blocks_polyhedron_color_map(
         [{"id": model_id, "block_ids": list(range(48, 50)), "visibility": True}],
     )
 
-    # Set active polyhedron attribute
+    # Set active polyhedron attribute, item, color map & range
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -85,22 +98,7 @@ def test_blocks_polyhedron_color_map(
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
                 "name": "tetrahedron_vertices",
-            }
-        ],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
-        + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(48, 50)),
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -143,7 +141,7 @@ def test_blocks_polyhedron_color_map_range_update(
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -152,22 +150,7 @@ def test_blocks_polyhedron_color_map_range_update(
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
                 "name": "tetrahedron_vertices",
-            }
-        ],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
-        + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(48, 50)),
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -186,11 +169,11 @@ def test_blocks_polyhedron_color_map_range_update(
 
     assert server.compare_image("model/blocks/color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -198,6 +181,8 @@ def test_blocks_polyhedron_color_map_range_update(
             {
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+                "item": 0,
                 "points": [
                     40.0,
                     0.0,
@@ -240,7 +225,7 @@ def test_blocks_polyhedron_color_map_red_shift(
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -249,22 +234,7 @@ def test_blocks_polyhedron_color_map_red_shift(
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
                 "name": "tetrahedron_vertices",
-            }
-        ],
-    )
-
-    # Set Blue to Red Map on [0, 1]
-    server.call(
-        VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
-        + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(48, 50)),
+                "item": 0,
                 "points": [
                     0.0,
                     0.0,
@@ -283,11 +253,11 @@ def test_blocks_polyhedron_color_map_red_shift(
 
     assert server.compare_image("model/blocks/color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -295,6 +265,8 @@ def test_blocks_polyhedron_color_map_red_shift(
             {
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+                "item": 0,
                 "points": [
                     3.0,
                     0.0,
@@ -333,11 +305,11 @@ def test_blocks_polyhedron_color_map_rainbow(
         [{"id": model_id, "block_ids": list(range(48, 50)), "visibility": True}],
     )
 
-    # Set active polyhedron attribute
+    # Rainbow Desaturated Map
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "name"
+            "attribute"
         ][
             "rpc"
         ],
@@ -346,22 +318,7 @@ def test_blocks_polyhedron_color_map_rainbow(
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
                 "name": "tetrahedron_vertices",
-            }
-        ],
-    )
-
-    # Rainbow Desaturated Map
-    server.call(
-        VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
-        + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "color_map"
-        ][
-            "rpc"
-        ],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(48, 50)),
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -404,11 +361,11 @@ def test_blocks_polyhedron_color_map_rainbow(
 
     assert server.compare_image("model/blocks/color_map_rainbow_initial.jpeg") == True
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
-            "color_map"
+            "attribute"
         ][
             "rpc"
         ],
@@ -416,6 +373,8 @@ def test_blocks_polyhedron_color_map_rainbow(
             {
                 "id": model_id,
                 "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+                "item": 0,
                 "points": [
                     5.0,
                     71 / 255,

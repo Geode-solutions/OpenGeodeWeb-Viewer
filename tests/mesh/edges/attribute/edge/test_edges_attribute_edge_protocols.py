@@ -34,24 +34,17 @@ def test_edges_edge_color_map(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute (cycle_id)
-    server.call(
-        VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "cycle_id"}],
-    )
-
-    # Set color map: Blue to Red
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
         + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "cycle_id",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -77,24 +70,17 @@ def test_edges_edge_color_map_range_update(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "cycle_id"}],
-    )
-
-    # Set Blue to Red Map
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
         + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "cycle_id",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -113,15 +99,17 @@ def test_edges_edge_color_map_range_update(
 
     assert server.compare_image("mesh/edges/edge_color_map.jpeg") == True
 
-    # Update range via color map
+    # Update range via attribute
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
         + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "cycle_id",
+                "item": 0,
                 "points": [
                     4.0,
                     0,
@@ -147,24 +135,17 @@ def test_edges_edge_color_map_rainbow(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["name"][
-            "rpc"
-        ],
-        [{"id": mesh_id, "name": "cycle_id"}],
-    )
-
     # Rainbow Desaturated Map
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
         + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "cycle_id",
+                "item": 0,
                 "points": [
                     0.0,
                     71 / 255,
@@ -209,15 +190,17 @@ def test_edges_edge_color_map_rainbow(
         server.compare_image("mesh/edges/edge_color_map_rainbow_initial.jpeg") == True
     )
 
-    # Update rainbow range via color map
+    # Update rainbow range via attribute
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
         + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "cycle_id",
+                "item": 0,
                 "points": [
                     2.0,
                     71 / 255,

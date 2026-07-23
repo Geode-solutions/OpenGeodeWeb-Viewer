@@ -27,26 +27,20 @@ class VtkMeshPointsAttributeVertexView(VtkMeshView):
 
     @exportRpc(
         mesh_points_attribute_vertex_prefix
-        + mesh_points_attribute_vertex_schemas_dict["name"]["rpc"]
+        + mesh_points_attribute_vertex_schemas_dict["attribute"]["rpc"]
     )
-    def setMeshPointsVertexName(self, rpc_params: RpcParams) -> None:
+    def setMeshPointsVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.mesh_points_attribute_vertex_schemas_dict["name"],
+            self.mesh_points_attribute_vertex_schemas_dict["attribute"],
             self.mesh_points_attribute_vertex_prefix,
         )
-        params = schemas.Name.from_dict(rpc_params)
-        self.displayAttributeOnVertices(params.id, params.name)
-
-    @exportRpc(
-        mesh_points_attribute_vertex_prefix
-        + mesh_points_attribute_vertex_schemas_dict["color_map"]["rpc"]
-    )
-    def setMeshPointsVertexColorMap(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_points_attribute_vertex_schemas_dict["color_map"],
-            self.mesh_points_attribute_vertex_prefix,
+        params = schemas.Attribute.from_dict(rpc_params)
+        self.displayAttributeOnVertices(
+            params.id,
+            params.name,
+            params.item,
+            params.points,
+            params.minimum,
+            params.maximum,
         )
-        params = schemas.ColorMap.from_dict(rpc_params)
-        self.setupColorMap(params.id, params.points, params.minimum, params.maximum)

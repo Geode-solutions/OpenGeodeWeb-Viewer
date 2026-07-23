@@ -32,24 +32,17 @@ def test_cells_vertex_color_map(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map in a single call
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
         + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "points"}],
-    )
-
-    # Set color map: Blue to Red
-    server.call(
-        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "points",
+                "item": 0,
                 "points": [
                     2.0,
                     0,
@@ -75,24 +68,17 @@ def test_cells_vertex_color_map_range_update(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
         + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "points"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "points",
+                "item": 0,
                 "points": [
                     2.0,
                     0,
@@ -115,11 +101,13 @@ def test_cells_vertex_color_map_range_update(
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
         + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "points",
+                "item": 0,
                 "points": [
                     200.0,
                     0,
@@ -145,24 +133,17 @@ def test_cells_vertex_color_map_red_shift(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
+    # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
         + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "points"}],
-    )
-
-    # Set Blue to Red Map
-    server.call(
-        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "points",
+                "item": 0,
                 "points": [
                     2.0,
                     0,
@@ -185,11 +166,13 @@ def test_cells_vertex_color_map_red_shift(
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
         + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "points",
+                "item": 0,
                 "points": [
                     0.0,
                     0,
@@ -215,24 +198,17 @@ def test_cells_vertex_color_map_rainbow(
 
     test_register(server, dataset_factory)
 
-    # Set active attribute
-    server.call(
-        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "name"
-        ]["rpc"],
-        [{"id": mesh_id, "name": "points"}],
-    )
-
     # Rainbow Desaturated Map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
         + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "points",
+                "item": 0,
                 "points": [
                     2.0,
                     71 / 255,
@@ -281,11 +257,13 @@ def test_cells_vertex_color_map_rainbow(
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
         + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "color_map"
+            "attribute"
         ]["rpc"],
         [
             {
                 "id": mesh_id,
+                "name": "points",
+                "item": 0,
                 "points": [
                     50.0,
                     71 / 255,
@@ -327,3 +305,44 @@ def test_cells_vertex_color_map_rainbow(
     )
 
     assert server.compare_image("mesh/cells/vertex_color_map_rainbow.jpeg") == True
+
+
+def test_cells_vertex_vector_component(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register(server, dataset_factory)
+
+    # Set active attribute with a vector component (points, item 1)
+    server.call(
+        VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "name": "points",
+                "item": 1,
+                "points": [
+                    2.0,
+                    0,
+                    0,
+                    1.0,
+                    498.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 2.0,
+                "maximum": 498.0,
+            }
+        ],
+    )
+
+    # Render and assert we receive non-empty image bytes (no backend crashes)
+    server.call("opengeodeweb_viewer.viewer.render")
+    while True:
+        response = server.ws.recv()
+        if isinstance(response, bytes):
+            assert len(response) > 0
+            break

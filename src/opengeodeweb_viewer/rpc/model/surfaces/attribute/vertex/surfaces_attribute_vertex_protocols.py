@@ -27,30 +27,21 @@ class VtkModelSurfacesAttributeVertexView(VtkModelView):
 
     @exportRpc(
         model_surfaces_attribute_vertex_prefix
-        + model_surfaces_attribute_vertex_schemas_dict["name"]["rpc"]
+        + model_surfaces_attribute_vertex_schemas_dict["attribute"]["rpc"]
     )
-    def setModelSurfacesVertexAttributeName(self, rpc_params: RpcParams) -> None:
+    def setModelSurfacesVertexAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.model_surfaces_attribute_vertex_schemas_dict["name"],
+            self.model_surfaces_attribute_vertex_schemas_dict["attribute"],
             self.model_surfaces_attribute_vertex_prefix,
         )
-        params = schemas.Name.from_dict(rpc_params)
-        pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnVertices(pipeline, params.block_ids, params.name)
-
-    @exportRpc(
-        model_surfaces_attribute_vertex_prefix
-        + model_surfaces_attribute_vertex_schemas_dict["color_map"]["rpc"]
-    )
-    def setModelSurfacesVertexAttributeColorMap(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.model_surfaces_attribute_vertex_schemas_dict["color_map"],
-            self.model_surfaces_attribute_vertex_prefix,
-        )
-        params = schemas.ColorMap.from_dict(rpc_params)
-        pipeline = self.get_vtk_pipeline(params.id)
-        self.setupColorMap(
-            pipeline, params.block_ids, params.points, params.minimum, params.maximum
+        params = schemas.Attribute.from_dict(rpc_params)
+        self.displayAttributeOnVertices(
+            params.id,
+            params.block_ids,
+            params.name,
+            params.item,
+            params.points,
+            params.minimum,
+            params.maximum,
         )

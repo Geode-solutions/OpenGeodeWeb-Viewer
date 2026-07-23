@@ -67,6 +67,7 @@ class BlockStyle(TypedDict):
     points: list[float]
     minimum: float
     maximum: float
+    item: int
 
 
 @dataclass

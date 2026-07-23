@@ -62,13 +62,15 @@ class VtkModelView(VtkObjectView):
 
     def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> BlockStyle:
         if block_id not in pipeline.block_styles:
-            pipeline.block_styles[block_id] = BlockStyle(
+            style = BlockStyle(
                 name="",
                 attribute_location="point",
                 points=[],
                 minimum=0.0,
                 maximum=1.0,
+                item=0,
             )
+            pipeline.block_styles[block_id] = style
         return pipeline.block_styles[block_id]
 
     def updateBlockColors(self, pipeline: VtkPipeline, block_id: int) -> None:
@@ -111,7 +113,7 @@ class VtkModelView(VtkObjectView):
             lut.AddRGBPoint(maximum, 1, 1, 1)
 
         lut.SetRange(minimum, maximum)
-        rgba_colors = lut.MapScalars(scalar_array, 0, 0)
+        rgba_colors = lut.MapScalars(scalar_array, 0, style.get("item", 0))
         rgba_colors.SetName(f"__colors_{style['name']}")
 
         field_data.AddArray(rgba_colors)
@@ -178,21 +180,45 @@ class VtkModelView(VtkObjectView):
         return colors
 
     def displayAttributeOnVertices(
-        self, pipeline: VtkPipeline, block_ids: list[int], name: str
+        self,
+        data_id: str,
+        block_ids: list[int],
+        name: str,
+        item: int,
+        color_map: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name
+            style["item"] = item
             style["attribute_location"] = "point"
+            style["points"] = color_map
+            style["minimum"] = minimum
+            style["maximum"] = maximum
             self.updateBlockColors(pipeline, block_id)
 
     def displayAttributeOnCells(
-        self, pipeline: VtkPipeline, block_ids: list[int], name: str
+        self,
+        data_id: str,
+        block_ids: list[int],
+        name: str,
+        item: int,
+        color_map: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name
+            style["item"] = item
             style["attribute_location"] = "cell"
+            style["points"] = color_map
+            style["minimum"] = minimum
+            style["maximum"] = maximum
             self.updateBlockColors(pipeline, block_id)
 
     def setupColorMap(

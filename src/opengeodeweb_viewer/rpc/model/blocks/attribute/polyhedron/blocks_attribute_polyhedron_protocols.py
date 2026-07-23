@@ -27,30 +27,21 @@ class VtkModelBlocksAttributePolyhedronView(VtkModelView):
 
     @exportRpc(
         model_blocks_attribute_polyhedron_prefix
-        + model_blocks_attribute_polyhedron_schemas_dict["name"]["rpc"]
+        + model_blocks_attribute_polyhedron_schemas_dict["attribute"]["rpc"]
     )
-    def setModelBlocksPolyhedronAttributeName(self, rpc_params: RpcParams) -> None:
+    def setModelBlocksPolyhedronAttribute(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
-            self.model_blocks_attribute_polyhedron_schemas_dict["name"],
+            self.model_blocks_attribute_polyhedron_schemas_dict["attribute"],
             self.model_blocks_attribute_polyhedron_prefix,
         )
-        params = schemas.Name.from_dict(rpc_params)
-        pipeline = self.get_vtk_pipeline(params.id)
-        self.displayAttributeOnCells(pipeline, params.block_ids, params.name)
-
-    @exportRpc(
-        model_blocks_attribute_polyhedron_prefix
-        + model_blocks_attribute_polyhedron_schemas_dict["color_map"]["rpc"]
-    )
-    def setModelBlocksPolyhedronAttributeColorMap(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.model_blocks_attribute_polyhedron_schemas_dict["color_map"],
-            self.model_blocks_attribute_polyhedron_prefix,
-        )
-        params = schemas.ColorMap.from_dict(rpc_params)
-        pipeline = self.get_vtk_pipeline(params.id)
-        self.setupColorMap(
-            pipeline, params.block_ids, params.points, params.minimum, params.maximum
+        params = schemas.Attribute.from_dict(rpc_params)
+        self.displayAttributeOnCells(
+            params.id,
+            params.block_ids,
+            params.name,
+            params.item,
+            params.points,
+            params.minimum,
+            params.maximum,
         )
