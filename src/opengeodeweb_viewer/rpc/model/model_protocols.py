@@ -181,7 +181,7 @@ class VtkModelView(VtkObjectView):
 
     def displayAttributeOnVertices(
         self,
-        pipeline: VtkPipeline,
+        data_id: str,
         block_ids: list[int],
         name: str,
         item: int,
@@ -189,6 +189,7 @@ class VtkModelView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name
@@ -201,7 +202,7 @@ class VtkModelView(VtkObjectView):
 
     def displayAttributeOnCells(
         self,
-        pipeline: VtkPipeline,
+        data_id: str,
         block_ids: list[int],
         name: str,
         item: int,
@@ -209,6 +210,7 @@ class VtkModelView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = self._get_block_style(pipeline, block_id)
             style["name"] = name

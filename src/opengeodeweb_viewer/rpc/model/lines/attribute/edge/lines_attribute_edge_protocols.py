@@ -36,9 +36,8 @@ class VtkModelLinesAttributeEdgeView(VtkModelView):
             self.model_lines_attribute_edge_prefix,
         )
         params = schemas.Attribute.from_dict(rpc_params)
-        pipeline = self.get_vtk_pipeline(params.id)
         self.displayAttributeOnCells(
-            pipeline,
+            params.id,
             params.block_ids,
             params.name,
             params.item,

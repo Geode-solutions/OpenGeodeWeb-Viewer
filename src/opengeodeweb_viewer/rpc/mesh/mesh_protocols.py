@@ -122,10 +122,10 @@ class VtkMeshView(VtkObjectView):
         self,
         data_id: str,
         name: str,
-        item: int = 0,
-        color_map: list[float] | None = None,
-        minimum: float | None = None,
-        maximum: float | None = None,
+        item: int,
+        color_map: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
         points = reader.GetOutputAsDataSet().GetPointData()
@@ -134,17 +134,16 @@ class VtkMeshView(VtkObjectView):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetArrayComponent(item)
-        if color_map is not None and minimum is not None and maximum is not None:
-            self.setupColorMap(data_id, color_map, minimum, maximum)
+        self.setupColorMap(data_id, color_map, minimum, maximum)
 
     def displayAttributeOnCells(
         self,
         data_id: str,
         name: str,
-        item: int = 0,
-        color_map: list[float] | None = None,
-        minimum: float | None = None,
-        maximum: float | None = None,
+        item: int,
+        color_map: list[float],
+        minimum: float,
+        maximum: float,
     ) -> None:
         reader = self.get_vtk_pipeline(data_id).reader
         cells = reader.GetOutputAsDataSet().GetCellData()
@@ -153,8 +152,7 @@ class VtkMeshView(VtkObjectView):
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetArrayComponent(item)
-        if color_map is not None and minimum is not None and maximum is not None:
-            self.setupColorMap(data_id, color_map, minimum, maximum)
+        self.setupColorMap(data_id, color_map, minimum, maximum)
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
         print(
