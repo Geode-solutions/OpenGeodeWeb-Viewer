@@ -48,7 +48,7 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
-from opengeodeweb_viewer.rpc.viewer.schemas import Plane
+from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
 
 
 @dataclass
