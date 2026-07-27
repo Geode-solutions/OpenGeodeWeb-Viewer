@@ -28,6 +28,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkBoundingBox,
     vtkSelection,
     vtkSelectionNode,
+    vtkPlane,
 )
 from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
 from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
@@ -42,6 +43,7 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
+from opengeodeweb_viewer.rpc.viewer.schemas import PlaneData
 
 
 @dataclass
@@ -197,6 +199,18 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
+
+    def SetClippingPlanes(
+        self, data_ids: list[str], planes_data: list[PlaneData]
+    ) -> None:
+        for data_id in data_ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            pipeline.mapper.RemoveAllClippingPlanes()
+            for plane_info in planes_data:
+                plane = vtkPlane()
+                plane.SetOrigin(plane_info.origin)
+                plane.SetNormal(plane_info.normal)
+                pipeline.mapper.AddClippingPlane(plane)
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).

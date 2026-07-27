@@ -362,6 +362,17 @@ class VtkViewerView(VtkView):
             "attributes": data_attributes,
         }
 
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["clipping_planes"]["rpc"])
+    def setClippingPlanes(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["clipping_planes"], self.viewer_prefix
+        )
+        params = schemas.ClippingPlanes.from_dict(rpc_params)
+        self.SetClippingPlanes(params.ids, params.planes)
+        self.render(-1)
+
+
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:
         validate_schema(

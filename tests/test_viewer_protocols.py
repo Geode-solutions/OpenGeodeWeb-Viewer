@@ -361,3 +361,25 @@ def test_combined_scaling_and_grid(
         [{"z_scale": 2.5}],
     )
     assert server.compare_image("viewer/combined_scaling_and_grid.jpeg") == True
+
+
+def test_clipping_planes(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        [
+            {
+                "ids": ["123456789"],
+                "planes": [
+                    {
+                        "origin": [0.0, 0.0, 0.0],
+                        "normal": [1.0, 0.0, 0.0],
+                    }
+                ],
+            }
+        ],
+    )
