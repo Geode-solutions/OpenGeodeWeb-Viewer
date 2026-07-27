@@ -48,7 +48,7 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
-from opengeodeweb_viewer.rpc.viewer.schemas import Plane
+from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
 
 
 @dataclass
@@ -211,7 +211,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     ) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
-            pipeline.mapper.RemoveAllClippingPlanes()
+            if not planes_data:
+                if pipeline.clipping_filter is not None:
+                    pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
+                    pipeline.clipping_filter = None
+                continue
             implicit_boolean = vtkImplicitBoolean()
             implicit_boolean.SetOperationTypeToIntersection()
             for plane_info in planes_data:
