@@ -2358,12 +2358,13 @@
           "ids": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
             }
           },
           "planes": {
             "type": "array",
-            "minItems": 1,
             "items": {
               "type": "object",
               "properties": {
