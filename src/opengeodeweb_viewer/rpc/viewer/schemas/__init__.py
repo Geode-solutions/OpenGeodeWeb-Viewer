@@ -12,5 +12,5 @@ from .pick_colormap import *
 from .highlight import *
 from .grid_scale import *
 from .get_point_position import *
-from .axes import *
 from .clipping_planes import *
+from .axes import *

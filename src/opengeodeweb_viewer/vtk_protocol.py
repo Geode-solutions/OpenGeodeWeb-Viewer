@@ -227,7 +227,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             geom_filter.SetInputConnection(clipping_filter.GetOutputPort())
             pipeline.mapper.SetInputConnection(geom_filter.GetOutputPort())
 
-
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).
         for data_id in data_ids:

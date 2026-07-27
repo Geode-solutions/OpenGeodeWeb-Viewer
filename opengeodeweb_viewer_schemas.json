@@ -2350,6 +2350,54 @@
         ],
         "additionalProperties": false
       },
+      "clipping_planes": {
+        "$id": "opengeodeweb_viewer.viewer.clipping_planes",
+        "rpc": "clipping_planes",
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "planes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "normal": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": [
+                "origin",
+                "normal"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "ids",
+          "planes"
+        ],
+        "additionalProperties": false
+      },
       "axes": {
         "$id": "opengeodeweb_viewer.viewer.axes",
         "rpc": "axes",
