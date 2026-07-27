@@ -48,7 +48,7 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
-from opengeodeweb_viewer.rpc.viewer.schemas import PlaneData
+from opengeodeweb_viewer.rpc.viewer.schemas import Plane
 
 
 @dataclass
@@ -207,7 +207,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline.highlight.actor.VisibilityOff()
 
     def set_clipping_planes(
-        self, data_ids: list[str], planes_data: list[PlaneData]
+        self, data_ids: list[str], planes_data: list[Plane]
     ) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
