@@ -212,9 +212,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             if not planes_data:
-                if pipeline.clipping_filter is not None:
-                    pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
-                    pipeline.clipping_filter = None
+                pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
+                pipeline.clipping_filter = None
                 continue
             implicit_boolean = vtkImplicitBoolean()
             implicit_boolean.SetOperationTypeToIntersection()
