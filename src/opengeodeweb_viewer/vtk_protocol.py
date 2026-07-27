@@ -29,8 +29,13 @@ from vtkmodules.vtkCommonDataModel import (
     vtkSelection,
     vtkSelectionNode,
     vtkPlane,
+    vtkImplicitBoolean,
 )
-from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
+from vtkmodules.vtkFiltersExtraction import (
+    vtkExtractSelection,
+    vtkExtractGeometry,
+)
+from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
 from vtkmodules.vtkRenderingAnnotation import (
     vtkCubeAxesActor,
@@ -78,6 +83,7 @@ class VtkPipeline:
     mapper: vtkMapper
     filter: vtkAlgorithm | None = None
     actor: vtkActor = field(default_factory=vtkActor)
+    clipping_filter: vtkExtractGeometry | None = None
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
@@ -200,17 +206,27 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
 
-    def SetClippingPlanes(
+    def set_clipping_planes(
         self, data_ids: list[str], planes_data: list[PlaneData]
     ) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.mapper.RemoveAllClippingPlanes()
+            implicit_boolean = vtkImplicitBoolean()
+            implicit_boolean.SetOperationTypeToIntersection()
             for plane_info in planes_data:
                 plane = vtkPlane()
                 plane.SetOrigin(plane_info.origin)
                 plane.SetNormal(plane_info.normal)
-                pipeline.mapper.AddClippingPlane(plane)
+                implicit_boolean.AddFunction(plane)
+            clipping_filter = vtkExtractGeometry()
+            clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
+            clipping_filter.SetImplicitFunction(implicit_boolean)
+            pipeline.clipping_filter = clipping_filter
+            geom_filter = vtkGeometryFilter()
+            geom_filter.SetInputConnection(clipping_filter.GetOutputPort())
+            pipeline.mapper.SetInputConnection(geom_filter.GetOutputPort())
+
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).

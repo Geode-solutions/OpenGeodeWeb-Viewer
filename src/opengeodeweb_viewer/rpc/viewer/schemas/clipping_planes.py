@@ -10,8 +10,5 @@ class PlaneData(DataClassJsonMixin):
 
 @dataclass
 class ClippingPlanes(DataClassJsonMixin):
-    def __post_init__(self) -> None:
-        print(self, flush=True)
-
     ids: list[str]
     planes: list[PlaneData]

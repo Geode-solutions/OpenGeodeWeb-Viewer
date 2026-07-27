@@ -369,7 +369,7 @@ class VtkViewerView(VtkView):
             rpc_params, self.viewer_schemas_dict["clipping_planes"], self.viewer_prefix
         )
         params = schemas.ClippingPlanes.from_dict(rpc_params)
-        self.SetClippingPlanes(params.ids, params.planes)
+        self.set_clipping_planes(params.ids, params.planes)
         self.render(-1)
 
 
