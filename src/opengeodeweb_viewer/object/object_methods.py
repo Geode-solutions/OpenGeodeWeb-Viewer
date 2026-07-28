@@ -133,27 +133,6 @@ class VtkObjectView(VtkView):
             actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
 
-    def _prune_hidden_blocks(
-        self,
-        dataset: vtkMultiBlockDataSet,
-        visibility_attributes: vtkCompositeDataDisplayAttributes,
-    ) -> vtkMultiBlockDataSet:
-        # Recursively construct a new multi-block dataset excluding hidden blocks.
-        pruned = vtkMultiBlockDataSet()
-        pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
-        for index in range(dataset.GetNumberOfBlocks()):
-            block = dataset.GetBlock(index)
-            if block is None:
-                continue
-            if not visibility_attributes.GetBlockVisibility(block):
-                continue
-            if isinstance(block, vtkMultiBlockDataSet):
-                pruned.SetBlock(
-                    index, self._prune_hidden_blocks(block, visibility_attributes)
-                )
-            else:
-                pruned.SetBlock(index, block)
-        return pruned
 
     def SetBlocksVisibility(
         self, data_id: str, block_ids: list[int], visibility: bool
@@ -166,7 +145,7 @@ class VtkObjectView(VtkView):
         visibility_attributes = mapper.GetCompositeDataDisplayAttributes()
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
-        dataset = (pipeline.filter or pipeline.reader).GetOutputDataObject(0)
+        dataset = mapper.GetInputDataObject(0, 0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return
         # Re-build a pruned dataset for the dedicated pick mapper

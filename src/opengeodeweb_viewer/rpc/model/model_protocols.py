@@ -127,6 +127,9 @@ class VtkModelView(VtkObjectView):
         other_field_data.SetActiveScalars("")
 
         mapper = pipeline.mapper
+        attr = mapper.GetCompositeDataDisplayAttributes()
+        if attr:
+            attr.RemoveBlockColor(block)
         mapper.ScalarVisibilityOn()
         mapper.SetColorModeToDirectScalars()
         mapper.SetScalarModeToDefault()

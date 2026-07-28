@@ -127,10 +127,12 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        points = reader.GetOutputAsDataSet().GetPointData()
-        points.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
+        active_ds = pipeline.mapper.GetInputDataObject(0, 0)
+        if active_ds:
+            active_ds.GetPointData().SetActiveScalars(name)
+        mapper = pipeline.mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetArrayComponent(item)
@@ -145,10 +147,12 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        cells = reader.GetOutputAsDataSet().GetCellData()
-        cells.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
+        active_ds = pipeline.mapper.GetInputDataObject(0, 0)
+        if active_ds:
+            active_ds.GetCellData().SetActiveScalars(name)
+        mapper = pipeline.mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetArrayComponent(item)

@@ -11,7 +11,10 @@ from vtkmodules.vtkIOXML import (
     vtkXMLReader,
 )
 from vtkmodules.vtkWebCore import vtkWebApplication
-from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
+from vtkmodules.vtkCommonExecutionModel import (
+    vtkAlgorithm,
+    vtkCompositeDataPipeline,
+)
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkMapper,
@@ -25,6 +28,7 @@ from vtkmodules.vtkRenderingCore import (
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
     vtkDataSet,
+    vtkMultiBlockDataSet,
     vtkBoundingBox,
     vtkSelection,
     vtkSelectionNode,
@@ -195,8 +199,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         selection_list.SetNumberOfComponents(1)
         selection_list.InsertNextValue(id_to_select)
         node.SetSelectionList(selection_list)
-        if dataset is not None:
-            pipeline.highlight.extractSelection.SetInputData(0, dataset)
+        target_dataset = dataset or pipeline.mapper.GetInputDataObject(0, 0)
+        pipeline.highlight.extractSelection.SetInputData(0, target_dataset)
         pipeline.highlight.extractSelection.Modified()
         pipeline.highlight.extractSelection.Update()
         pipeline.highlight.actor.VisibilityOn()
@@ -206,29 +210,131 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
 
+    def _extract_blocks(
+        self, multiblock: vtkDataObject | None
+    ) -> list[vtkDataObject | None]:
+        if not isinstance(multiblock, vtkMultiBlockDataSet):
+            return []
+        blocks: list[vtkDataObject | None] = []
+        iterator = multiblock.NewTreeIterator()
+        iterator.InitTraversal()
+        while not iterator.IsDoneWithTraversal():
+            flat_index = iterator.GetCurrentFlatIndex()
+            blocks.extend([None] * (flat_index + 1 - len(blocks)))
+            blocks[flat_index] = iterator.GetCurrentDataObject()
+            iterator.GoToNextItem()
+        return blocks
+
+    def _prune_hidden_blocks(
+        self, dataset: vtkMultiBlockDataSet, attributes: Any
+    ) -> vtkMultiBlockDataSet:
+        pruned = vtkMultiBlockDataSet()
+        pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
+        for index in range(dataset.GetNumberOfBlocks()):
+            block = dataset.GetBlock(index)
+            if block and attributes.GetBlockVisibility(block):
+                child = (
+                    self._prune_hidden_blocks(block, attributes)
+                    if isinstance(block, vtkMultiBlockDataSet)
+                    else block
+                )
+                pruned.SetBlock(index, child)
+        return pruned
+
+    def _transfer_composite_attributes(
+        self,
+        attributes: Any,
+        source_blocks: list[vtkDataObject | None],
+        destination_blocks: list[vtkDataObject | None],
+    ) -> None:
+        color_rgb = [0.0, 0.0, 0.0]
+        for source_block, destination_block in zip(source_blocks, destination_blocks):
+            if source_block and destination_block:
+                if attributes.HasBlockColor(source_block):
+                    attributes.GetBlockColor(source_block, color_rgb)
+                    attributes.SetBlockColor(destination_block, color_rgb)
+                else:
+                    attributes.RemoveBlockColor(destination_block)
+                if attributes.HasBlockVisibility(source_block):
+                    attributes.SetBlockVisibility(
+                        destination_block, attributes.GetBlockVisibility(source_block)
+                    )
+                if attributes.HasBlockOpacity(source_block):
+                    attributes.SetBlockOpacity(
+                        destination_block, attributes.GetBlockOpacity(source_block)
+                    )
+
+    def _create_implicit_boolean(self, planes_data: list[Plane]) -> vtkImplicitBoolean:
+        implicit_boolean = vtkImplicitBoolean()
+        implicit_boolean.SetOperationTypeToIntersection()
+        for plane_info in planes_data:
+            plane = vtkPlane()
+            plane.SetOrigin(plane_info.origin)
+            plane.SetNormal(plane_info.normal)
+            implicit_boolean.AddFunction(plane)
+        return implicit_boolean
+
+    def _sync_composite_pipeline(
+        self, pipeline: VtkPipeline, dataset: vtkDataObject
+    ) -> None:
+        blocks = self._extract_blocks(dataset)
+        attributes = pipeline.mapper.GetCompositeDataDisplayAttributes()
+        self._transfer_composite_attributes(attributes, pipeline.blockDataSets, blocks)
+        pipeline.blockDataSets = blocks
+        pipeline.mapper.SetInputDataObject(dataset)
+        if pipeline.pick_mapper and isinstance(dataset, vtkMultiBlockDataSet):
+            pipeline.pick_mapper.SetInputDataObject(
+                self._prune_hidden_blocks(dataset, attributes)
+            )
+        if hasattr(self, "updateBlockColors"):
+            for block_id in pipeline.block_styles:
+                self.updateBlockColors(pipeline, block_id)
+
     def set_clipping_planes(
         self, data_ids: list[str], planes_data: list[Plane]
     ) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
+            is_composite = isinstance(pipeline.mapper, vtkCompositePolyDataMapper)
             if not planes_data:
-                pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
+                if is_composite:
+                    original_dataset = (
+                        pipeline.filter.GetOutputDataObject(0)
+                        if pipeline.filter
+                        else pipeline.reader.GetOutputDataObject(0)
+                    )
+                    self._sync_composite_pipeline(pipeline, original_dataset)
+                else:
+                    pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
+                    reader_dataset = pipeline.reader.GetOutputAsDataSet()
+                    if active_points := reader_dataset.GetPointData().GetScalars():
+                        reader_dataset.GetPointData().SetActiveScalars(active_points.GetName())
+                    if active_cells := reader_dataset.GetCellData().GetScalars():
+                        reader_dataset.GetCellData().SetActiveScalars(active_cells.GetName())
                 pipeline.clipping_filter = None
                 continue
-            implicit_boolean = vtkImplicitBoolean()
-            implicit_boolean.SetOperationTypeToIntersection()
-            for plane_info in planes_data:
-                plane = vtkPlane()
-                plane.SetOrigin(plane_info.origin)
-                plane.SetNormal(plane_info.normal)
-                implicit_boolean.AddFunction(plane)
             clipping_filter = vtkExtractGeometry()
+            geometry_filter = vtkGeometryFilter()
+            if is_composite:
+                clipping_filter.SetExecutive(vtkCompositeDataPipeline())
+                geometry_filter.SetExecutive(vtkCompositeDataPipeline())
             clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
-            clipping_filter.SetImplicitFunction(implicit_boolean)
+            clipping_filter.SetImplicitFunction(self._create_implicit_boolean(planes_data))
+            geometry_filter.SetInputConnection(clipping_filter.GetOutputPort())
+            geometry_filter.Update()
+            if is_composite:
+                self._sync_composite_pipeline(
+                    pipeline, geometry_filter.GetOutputDataObject(0)
+                )
+            else:
+                pipeline.mapper.SetInputConnection(geometry_filter.GetOutputPort())
+                reader_dataset = pipeline.reader.GetOutputAsDataSet()
+                filtered_dataset = geometry_filter.GetOutputDataObject(0)
+                if active_points := reader_dataset.GetPointData().GetScalars():
+                    filtered_dataset.GetPointData().SetActiveScalars(active_points.GetName())
+                if active_cells := reader_dataset.GetCellData().GetScalars():
+                    filtered_dataset.GetCellData().SetActiveScalars(active_cells.GetName())
             pipeline.clipping_filter = clipping_filter
-            geom_filter = vtkGeometryFilter()
-            geom_filter.SetInputConnection(clipping_filter.GetOutputPort())
-            pipeline.mapper.SetInputConnection(geom_filter.GetOutputPort())
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).
