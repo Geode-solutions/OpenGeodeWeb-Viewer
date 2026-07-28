@@ -133,7 +133,6 @@ class VtkObjectView(VtkView):
             actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
 
-
     def SetBlocksVisibility(
         self, data_id: str, block_ids: list[int], visibility: bool
     ) -> None:

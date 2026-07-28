@@ -308,9 +308,13 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
                     reader_dataset = pipeline.reader.GetOutputAsDataSet()
                     if active_points := reader_dataset.GetPointData().GetScalars():
-                        reader_dataset.GetPointData().SetActiveScalars(active_points.GetName())
+                        reader_dataset.GetPointData().SetActiveScalars(
+                            active_points.GetName()
+                        )
                     if active_cells := reader_dataset.GetCellData().GetScalars():
-                        reader_dataset.GetCellData().SetActiveScalars(active_cells.GetName())
+                        reader_dataset.GetCellData().SetActiveScalars(
+                            active_cells.GetName()
+                        )
                 pipeline.clipping_filter = None
                 continue
             clipping_filter = vtkExtractGeometry()
@@ -319,7 +323,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 clipping_filter.SetExecutive(vtkCompositeDataPipeline())
                 geometry_filter.SetExecutive(vtkCompositeDataPipeline())
             clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
-            clipping_filter.SetImplicitFunction(self._create_implicit_boolean(planes_data))
+            clipping_filter.SetImplicitFunction(
+                self._create_implicit_boolean(planes_data)
+            )
             geometry_filter.SetInputConnection(clipping_filter.GetOutputPort())
             geometry_filter.Update()
             if is_composite:
@@ -331,9 +337,13 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 reader_dataset = pipeline.reader.GetOutputAsDataSet()
                 filtered_dataset = geometry_filter.GetOutputDataObject(0)
                 if active_points := reader_dataset.GetPointData().GetScalars():
-                    filtered_dataset.GetPointData().SetActiveScalars(active_points.GetName())
+                    filtered_dataset.GetPointData().SetActiveScalars(
+                        active_points.GetName()
+                    )
                 if active_cells := reader_dataset.GetCellData().GetScalars():
-                    filtered_dataset.GetCellData().SetActiveScalars(active_cells.GetName())
+                    filtered_dataset.GetCellData().SetActiveScalars(
+                        active_cells.GetName()
+                    )
             pipeline.clipping_filter = clipping_filter
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
