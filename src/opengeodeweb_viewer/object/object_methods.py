@@ -142,6 +142,7 @@ class VtkObjectView(VtkView):
             raise Exception("Mapper is not a vtkCompositePolyDataMapper")
         blocks = pipeline.blockDataSets
         visibility_attributes = mapper.GetCompositeDataDisplayAttributes()
+        print(f"{visibility_attributes=}", flush=True)
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
         dataset = mapper.GetInputDataObject(0, 0)

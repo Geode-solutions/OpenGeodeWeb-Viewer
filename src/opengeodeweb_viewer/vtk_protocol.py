@@ -1,7 +1,7 @@
 # Standard library imports
 import math
 import os
-from typing import cast, Any, Literal, TypedDict
+from typing import cast, Any, Literal, TypedDict, Callable
 from dataclasses import dataclass, field
 
 # Third party imports
@@ -22,8 +22,10 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderWindow,
     vtkDataSetMapper,
     vtkCompositePolyDataMapper,
+    vtkCompositeDataDisplayAttributes,
     vtkCellPicker,
     vtkHardwarePicker,
+    vtkColorTransferFunction,
 )
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
@@ -226,7 +228,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         return blocks
 
     def _prune_hidden_blocks(
-        self, dataset: vtkMultiBlockDataSet, attributes: Any
+        self, dataset: vtkMultiBlockDataSet, attributes: vtkCompositeDataDisplayAttributes
     ) -> vtkMultiBlockDataSet:
         pruned = vtkMultiBlockDataSet()
         pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
@@ -241,14 +243,90 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pruned.SetBlock(index, child)
         return pruned
 
-    def _transfer_composite_attributes(
-        self,
-        attributes: Any,
-        source_blocks: list[vtkDataObject | None],
-        destination_blocks: list[vtkDataObject | None],
+    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> BlockStyle:
+        if block_id not in pipeline.block_styles:
+            style = BlockStyle(
+                name="",
+                attribute_location="point",
+                points=[],
+                minimum=0.0,
+                maximum=1.0,
+                item=0,
+            )
+            pipeline.block_styles[block_id] = style
+        return pipeline.block_styles[block_id]
+
+    def updateBlockColors(self, pipeline: VtkPipeline, block_id: int) -> None:
+        block = pipeline.blockDataSets[block_id]
+        if not isinstance(block, vtkDataSet):
+            return
+
+        style = self._get_block_style(pipeline, block_id)
+        if not style["name"]:
+            block.GetPointData().SetActiveScalars("")
+            block.GetCellData().SetActiveScalars("")
+            return
+
+        field_data = (
+            block.GetPointData()
+            if style["attribute_location"] == "point"
+            else block.GetCellData()
+        )
+        scalar_array = field_data.GetArray(style["name"])
+        if not scalar_array:
+            return
+
+        lut = vtkColorTransferFunction()
+        points = style["points"]
+        minimum = style["minimum"]
+        maximum = style["maximum"]
+        if points:
+            x_min, x_max = points[0], points[-4]
+            span = x_max - x_min
+            for i in range(0, len(points), 4):
+                x, r, g, b = points[i : i + 4]
+                new_x = (
+                    minimum + (x - x_min) / span * (maximum - minimum)
+                    if span
+                    else minimum
+                )
+                lut.AddRGBPoint(new_x, r, g, b)
+        else:
+            lut.AddRGBPoint(minimum, 0, 0, 0)
+            lut.AddRGBPoint(maximum, 1, 1, 1)
+
+        lut.SetRange(minimum, maximum)
+        rgba_colors = lut.MapScalars(scalar_array, 0, style.get("item", 0))
+        rgba_colors.SetName(f"__colors_{style['name']}")
+
+        field_data.AddArray(rgba_colors)
+        field_data.SetActiveScalars(rgba_colors.GetName())
+
+        other_field_data = (
+            block.GetCellData()
+            if style["attribute_location"] == "point"
+            else block.GetPointData()
+        )
+        other_field_data.SetActiveScalars("")
+
+        mapper = pipeline.mapper
+        attributes = mapper.GetCompositeDataDisplayAttributes()
+        if attributes:
+            attributes.RemoveBlockColor(block)
+        mapper.ScalarVisibilityOn()
+        mapper.SetColorModeToDirectScalars()
+        mapper.SetScalarModeToDefault()
+        mapper.Modified()
+
+    def _sync_composite_pipeline(
+        self, pipeline: VtkPipeline, dataset: vtkDataObject
     ) -> None:
+        blocks = self._extract_blocks(dataset)
+        attributes = pipeline.mapper.GetCompositeDataDisplayAttributes()
+        print(f"[_sync_composite_pipeline] {attributes=}", flush=True)
+        print(f"[_sync_composite_pipeline] {pipeline.block_styles=}", flush=True)
         color_rgb = [0.0, 0.0, 0.0]
-        for source_block, destination_block in zip(source_blocks, destination_blocks):
+        for source_block, destination_block in zip(pipeline.blockDataSets, blocks):
             if source_block and destination_block:
                 if attributes.HasBlockColor(source_block):
                     attributes.GetBlockColor(source_block, color_rgb)
@@ -263,32 +341,15 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     attributes.SetBlockOpacity(
                         destination_block, attributes.GetBlockOpacity(source_block)
                     )
-
-    def _create_implicit_boolean(self, planes_data: list[Plane]) -> vtkImplicitBoolean:
-        implicit_boolean = vtkImplicitBoolean()
-        implicit_boolean.SetOperationTypeToIntersection()
-        for plane_info in planes_data:
-            plane = vtkPlane()
-            plane.SetOrigin(plane_info.origin)
-            plane.SetNormal(plane_info.normal)
-            implicit_boolean.AddFunction(plane)
-        return implicit_boolean
-
-    def _sync_composite_pipeline(
-        self, pipeline: VtkPipeline, dataset: vtkDataObject
-    ) -> None:
-        blocks = self._extract_blocks(dataset)
-        attributes = pipeline.mapper.GetCompositeDataDisplayAttributes()
-        self._transfer_composite_attributes(attributes, pipeline.blockDataSets, blocks)
         pipeline.blockDataSets = blocks
         pipeline.mapper.SetInputDataObject(dataset)
         if pipeline.pick_mapper and isinstance(dataset, vtkMultiBlockDataSet):
             pipeline.pick_mapper.SetInputDataObject(
                 self._prune_hidden_blocks(dataset, attributes)
             )
-        if hasattr(self, "updateBlockColors"):
-            for block_id in pipeline.block_styles:
-                self.updateBlockColors(pipeline, block_id)
+        for block_id in pipeline.block_styles:
+            print(f"[_sync_composite_pipeline] Updating block colors for {block_id=}", flush=True)
+            self.updateBlockColors(pipeline, block_id)
 
     def set_clipping_planes(
         self, data_ids: list[str], planes_data: list[Plane]
@@ -323,9 +384,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 clipping_filter.SetExecutive(vtkCompositeDataPipeline())
                 geometry_filter.SetExecutive(vtkCompositeDataPipeline())
             clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
-            clipping_filter.SetImplicitFunction(
-                self._create_implicit_boolean(planes_data)
-            )
+            implicit_boolean = vtkImplicitBoolean()
+            implicit_boolean.SetOperationTypeToIntersection()
+            for plane_info in planes_data:
+                plane = vtkPlane()
+                plane.SetOrigin(plane_info.origin)
+                plane.SetNormal(plane_info.normal)
+                implicit_boolean.AddFunction(plane)
+            clipping_filter.SetImplicitFunction(implicit_boolean)
             geometry_filter.SetInputConnection(clipping_filter.GetOutputPort())
             geometry_filter.Update()
             if is_composite:

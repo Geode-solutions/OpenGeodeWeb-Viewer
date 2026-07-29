@@ -60,81 +60,6 @@ class VtkModelView(VtkObjectView):
     def __init__(self) -> None:
         super().__init__()
 
-    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> BlockStyle:
-        if block_id not in pipeline.block_styles:
-            style = BlockStyle(
-                name="",
-                attribute_location="point",
-                points=[],
-                minimum=0.0,
-                maximum=1.0,
-                item=0,
-            )
-            pipeline.block_styles[block_id] = style
-        return pipeline.block_styles[block_id]
-
-    def updateBlockColors(self, pipeline: VtkPipeline, block_id: int) -> None:
-        block = pipeline.blockDataSets[block_id]
-        if not isinstance(block, vtkDataSet):
-            return
-
-        style = self._get_block_style(pipeline, block_id)
-        if not style["name"]:
-            block.GetPointData().SetActiveScalars("")
-            block.GetCellData().SetActiveScalars("")
-            return
-
-        field_data = (
-            block.GetPointData()
-            if style["attribute_location"] == "point"
-            else block.GetCellData()
-        )
-        scalar_array = field_data.GetArray(style["name"])
-        if not scalar_array:
-            return
-
-        lut = vtkColorTransferFunction()
-        points = style["points"]
-        minimum = style["minimum"]
-        maximum = style["maximum"]
-        if points:
-            x_min, x_max = points[0], points[-4]
-            span = x_max - x_min
-            for i in range(0, len(points), 4):
-                x, r, g, b = points[i : i + 4]
-                new_x = (
-                    minimum + (x - x_min) / span * (maximum - minimum)
-                    if span
-                    else minimum
-                )
-                lut.AddRGBPoint(new_x, r, g, b)
-        else:
-            lut.AddRGBPoint(minimum, 0, 0, 0)
-            lut.AddRGBPoint(maximum, 1, 1, 1)
-
-        lut.SetRange(minimum, maximum)
-        rgba_colors = lut.MapScalars(scalar_array, 0, style.get("item", 0))
-        rgba_colors.SetName(f"__colors_{style['name']}")
-
-        field_data.AddArray(rgba_colors)
-        field_data.SetActiveScalars(rgba_colors.GetName())
-
-        other_field_data = (
-            block.GetCellData()
-            if style["attribute_location"] == "point"
-            else block.GetPointData()
-        )
-        other_field_data.SetActiveScalars("")
-
-        mapper = pipeline.mapper
-        attr = mapper.GetCompositeDataDisplayAttributes()
-        if attr:
-            attr.RemoveBlockColor(block)
-        mapper.ScalarVisibilityOn()
-        mapper.SetColorModeToDirectScalars()
-        mapper.SetScalarModeToDefault()
-        mapper.Modified()
-
     def apply_color(
         self,
         pipeline: VtkPipeline,
@@ -146,6 +71,7 @@ class VtkModelView(VtkObjectView):
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             return []
         attr = mapper.GetCompositeDataDisplayAttributes()
+        print(f"{attr=}", flush=True)
         colors: list[ColorResult] = []
         for block_id in block_ids:
             block_dataset = pipeline.blockDataSets[block_id]
