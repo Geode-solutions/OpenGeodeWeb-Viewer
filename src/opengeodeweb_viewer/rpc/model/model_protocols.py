@@ -1,33 +1,31 @@
 # Standard library imports
 import os
+from typing import Optional, Protocol, TypedDict
 
 # Third party imports
+from opengeodeweb_microservice.schemas import get_schemas_dict
 from vtkmodules.vtkCommonDataModel import (
-    vtkCompositeDataSet,
     vtkBoundingBox,
+    vtkCompositeDataSet,
     vtkDataSet,
-    vtkSelectionNode,
-)
-from vtkmodules.vtkRenderingCore import (
-    vtkCompositePolyDataMapper,
-    vtkCompositeDataDisplayAttributes,
-    vtkColorTransferFunction,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
-from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
+from vtkmodules.vtkRenderingCore import (
+    vtkCompositeDataDisplayAttributes,
+    vtkCompositePolyDataMapper,
+)
 from wslink import register as exportRpc  # type: ignore
-from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-    deterministic_color,
-)
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import VtkPipeline, BlockStyle
-from typing import Optional, List, TypedDict, Protocol
+from opengeodeweb_viewer.utils_functions import (
+    deterministic_color,
+    RpcParams,
+    validate_schema,
+)
+from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from . import schemas
 
 
@@ -78,7 +76,7 @@ class VtkModelView(VtkObjectView):
             if isinstance(block_dataset, vtkDataSet):
                 block_dataset.GetPointData().SetActiveScalars("")
                 block_dataset.GetCellData().SetActiveScalars("")
-                self._get_block_style(pipeline, block_id)["name"] = ""
+                pipeline.get_block_style(block_id)["name"] = ""
                 if color_mode == "random":
                     geode_id = pipeline.blockGeodeIds[block_id]
                     red, green, blue = deterministic_color(str(geode_id))
@@ -120,14 +118,14 @@ class VtkModelView(VtkObjectView):
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
-            style = self._get_block_style(pipeline, block_id)
+            style = pipeline.get_block_style(block_id)
             style["name"] = name
             style["item"] = item
             style["attribute_location"] = "point"
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
-            self.updateBlockColors(pipeline, block_id)
+            pipeline.update_block_colors(block_id)
 
     def displayAttributeOnCells(
         self,
@@ -141,14 +139,14 @@ class VtkModelView(VtkObjectView):
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
-            style = self._get_block_style(pipeline, block_id)
+            style = pipeline.get_block_style(block_id)
             style["name"] = name
             style["item"] = item
             style["attribute_location"] = "cell"
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
-            self.updateBlockColors(pipeline, block_id)
+            pipeline.update_block_colors(block_id)
 
     def setupColorMap(
         self,
@@ -159,11 +157,11 @@ class VtkModelView(VtkObjectView):
         maximum: float,
     ) -> None:
         for block_id in block_ids:
-            style = self._get_block_style(pipeline, block_id)
+            style = pipeline.get_block_style(block_id)
             style["points"] = points
             style["minimum"] = minimum
             style["maximum"] = maximum
-            self.updateBlockColors(pipeline, block_id)
+            pipeline.update_block_colors(block_id)
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:

@@ -2,27 +2,23 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
-from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
-from vtkmodules.vtkRenderingCore import (
-    vtkDataSetMapper,
-    vtkActor,
-    vtkTexture,
-    vtkColorTransferFunction,
-)
-from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
-from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
-from vtkmodules.vtkCommonDataModel import vtkPolyData
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.schemas import get_schemas_dict
+from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
+from vtkmodules.vtkRenderingCore import (
+    vtkColorTransferFunction,
+    vtkDataSetMapper,
+    vtkTexture,
+)
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import VtkPipeline
+from opengeodeweb_viewer.utils_functions import (
+    RpcParams,
+    validate_schema,
+)
+from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from . import schemas
 
 

@@ -1,101 +1,44 @@
 # Standard library imports
 import math
 import os
-from typing import cast, Any, Literal, TypedDict
-from dataclasses import dataclass, field
+from typing import Any, cast
 
 # Third party imports
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.web import protocols as vtk_protocols
-from vtkmodules.vtkIOXML import (
-    vtkXMLReader,
-)
 from vtkmodules.vtkWebCore import vtkWebApplication
-from vtkmodules.vtkCommonExecutionModel import (
-    vtkAlgorithm,
-    vtkCompositeDataPipeline,
-)
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
-    vtkMapper,
+    vtkCellPicker,
+    vtkCompositePolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
-    vtkDataSetMapper,
-    vtkCompositePolyDataMapper,
-    vtkCompositeDataDisplayAttributes,
-    vtkCellPicker,
-    vtkHardwarePicker,
-    vtkColorTransferFunction,
 )
 from vtkmodules.vtkCommonDataModel import (
+    vtkBoundingBox,
     vtkDataObject,
     vtkDataSet,
-    vtkMultiBlockDataSet,
-    vtkBoundingBox,
-    vtkSelection,
-    vtkSelectionNode,
-    vtkPlane,
     vtkImplicitBoolean,
+    vtkPlane,
+    vtkSelectionNode,
 )
-from vtkmodules.vtkFiltersExtraction import (
-    vtkExtractSelection,
-    vtkExtractGeometry,
-)
+from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
-from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
+from vtkmodules.vtkCommonCore import vtkIdTypeArray, vtkStringArray
 from vtkmodules.vtkRenderingAnnotation import (
-    vtkCubeAxesActor,
     vtkAxesActor,
-    vtkScalarBarActor,
+    vtkCubeAxesActor,
 )
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Local application imports
-from opengeodeweb_microservice.database.connection import get_session, init_database
+from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
-from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
-
-
-@dataclass
-class ViewerData:
-    id: str
-    viewable_file: str | None
-    viewer_object: ViewerType
-    viewer_elements_type: ViewerElementsType
-
-
-@dataclass
-class HighlightPipeline:
-    actor: vtkActor = field(default_factory=vtkActor)
-    mapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
-    selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
-    selection: vtkSelection = field(default_factory=vtkSelection)
-    extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
-
-
-class BlockStyle(TypedDict):
-    name: str
-    attribute_location: Literal["point", "cell"]
-    points: list[float]
-    minimum: float
-    maximum: float
-    item: int
-
-
-@dataclass
-class VtkPipeline:
-    reader: vtkXMLReader
-    mapper: vtkMapper
-    filter: vtkAlgorithm | None = None
-    actor: vtkActor = field(default_factory=vtkActor)
-    clipping_filter: vtkExtractGeometry | None = None
-    highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
-    blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
-    blockGeodeIds: list[str] = field(default_factory=list)
-    scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
-    block_styles: dict[int, BlockStyle] = field(default_factory=dict)
-    pick_mapper: vtkMapper | None = None
+from opengeodeweb_viewer.vtk_pipeline import (
+    ViewerData,
+    VtkPipeline,
+)
 
 
 class VtkTypingMixin:
@@ -185,7 +128,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         else:
             renderer.ResetCameraClippingRange()
 
-    def update_highlight(
+    def highlight_selection(
         self,
         pipeline: VtkPipeline,
         id_to_select: int,
@@ -212,151 +155,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
 
-    def _extract_blocks(
-        self, multiblock: vtkDataObject | None
-    ) -> list[vtkDataObject | None]:
-        if not isinstance(multiblock, vtkMultiBlockDataSet):
-            return []
-        blocks: list[vtkDataObject | None] = []
-        iterator = multiblock.NewTreeIterator()
-        iterator.InitTraversal()
-        while not iterator.IsDoneWithTraversal():
-            flat_index = iterator.GetCurrentFlatIndex()
-            blocks.extend([None] * (flat_index + 1 - len(blocks)))
-            blocks[flat_index] = iterator.GetCurrentDataObject()
-            iterator.GoToNextItem()
-        return blocks
-
-    def _prune_hidden_blocks(
-        self,
-        dataset: vtkMultiBlockDataSet,
-        attributes: vtkCompositeDataDisplayAttributes,
-    ) -> vtkMultiBlockDataSet:
-        pruned = vtkMultiBlockDataSet()
-        pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
-        for index in range(dataset.GetNumberOfBlocks()):
-            block = dataset.GetBlock(index)
-            if block and attributes.GetBlockVisibility(block):
-                child = (
-                    self._prune_hidden_blocks(block, attributes)
-                    if isinstance(block, vtkMultiBlockDataSet)
-                    else block
-                )
-                pruned.SetBlock(index, child)
-        return pruned
-
-    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> BlockStyle:
-        if block_id not in pipeline.block_styles:
-            style = BlockStyle(
-                name="",
-                attribute_location="point",
-                points=[],
-                minimum=0.0,
-                maximum=1.0,
-                item=0,
-            )
-            pipeline.block_styles[block_id] = style
-        return pipeline.block_styles[block_id]
-
-    def updateBlockColors(self, pipeline: VtkPipeline, block_id: int) -> None:
-        block = pipeline.blockDataSets[block_id]
-        if not isinstance(block, vtkDataSet):
-            return
-
-        style = self._get_block_style(pipeline, block_id)
-        if not style["name"]:
-            block.GetPointData().SetActiveScalars("")
-            block.GetCellData().SetActiveScalars("")
-            return
-
-        field_data = (
-            block.GetPointData()
-            if style["attribute_location"] == "point"
-            else block.GetCellData()
-        )
-        scalar_array = field_data.GetArray(style["name"])
-        if not scalar_array:
-            return
-
-        lut = vtkColorTransferFunction()
-        points = style["points"]
-        minimum = style["minimum"]
-        maximum = style["maximum"]
-        if points:
-            x_min, x_max = points[0], points[-4]
-            span = x_max - x_min
-            for i in range(0, len(points), 4):
-                x, r, g, b = points[i : i + 4]
-                new_x = (
-                    minimum + (x - x_min) / span * (maximum - minimum)
-                    if span
-                    else minimum
-                )
-                lut.AddRGBPoint(new_x, r, g, b)
-        else:
-            lut.AddRGBPoint(minimum, 0, 0, 0)
-            lut.AddRGBPoint(maximum, 1, 1, 1)
-
-        lut.SetRange(minimum, maximum)
-        rgba_colors = lut.MapScalars(scalar_array, 0, style.get("item", 0))
-        rgba_colors.SetName(f"__colors_{style['name']}")
-
-        field_data.AddArray(rgba_colors)
-        field_data.SetActiveScalars(rgba_colors.GetName())
-
-        other_field_data = (
-            block.GetCellData()
-            if style["attribute_location"] == "point"
-            else block.GetPointData()
-        )
-        other_field_data.SetActiveScalars("")
-
-        if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
-            attributes = pipeline.mapper.GetCompositeDataDisplayAttributes()
-            if attributes:
-                attributes.RemoveBlockColor(block)
-        pipeline.mapper.ScalarVisibilityOn()
-        pipeline.mapper.SetColorModeToDirectScalars()
-        pipeline.mapper.SetScalarModeToDefault()
-        pipeline.mapper.Modified()
-
-    def _sync_composite_pipeline(
-        self, pipeline: VtkPipeline, dataset: vtkDataObject
-    ) -> None:
-        blocks = self._extract_blocks(dataset)
-        mapper = cast(vtkCompositePolyDataMapper, pipeline.mapper)
-        attributes = mapper.GetCompositeDataDisplayAttributes()
-        print(f"[_sync_composite_pipeline] {attributes=}", flush=True)
-        print(f"[_sync_composite_pipeline] {pipeline.block_styles=}", flush=True)
-        color_rgb = [0.0, 0.0, 0.0]
-        for source_block, destination_block in zip(pipeline.blockDataSets, blocks):
-            if source_block and destination_block:
-                if attributes.HasBlockColor(source_block):
-                    attributes.GetBlockColor(source_block, color_rgb)
-                    attributes.SetBlockColor(destination_block, color_rgb)
-                else:
-                    attributes.RemoveBlockColor(destination_block)
-                if attributes.HasBlockVisibility(source_block):
-                    attributes.SetBlockVisibility(
-                        destination_block, attributes.GetBlockVisibility(source_block)
-                    )
-                if attributes.HasBlockOpacity(source_block):
-                    attributes.SetBlockOpacity(
-                        destination_block, attributes.GetBlockOpacity(source_block)
-                    )
-        pipeline.blockDataSets = blocks
-        pipeline.mapper.SetInputDataObject(dataset)
-        if pipeline.pick_mapper and isinstance(dataset, vtkMultiBlockDataSet):
-            pipeline.pick_mapper.SetInputDataObject(
-                self._prune_hidden_blocks(dataset, attributes)
-            )
-        for block_id in pipeline.block_styles:
-            print(
-                f"[_sync_composite_pipeline] Updating block colors for {block_id=}",
-                flush=True,
-            )
-            self.updateBlockColors(pipeline, block_id)
-
     def _restore_active_scalars(self, source: vtkDataSet, target: vtkDataSet) -> None:
         if active_points := source.GetPointData().GetScalars():
             target.GetPointData().SetActiveScalars(active_points.GetName())
@@ -376,18 +174,17 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                         if pipeline.filter
                         else pipeline.reader.GetOutputDataObject(0)
                     )
-                    self._sync_composite_pipeline(pipeline, original_dataset)
+                    pipeline.sync_composite_pipeline(original_dataset)
                 else:
                     pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
                     reader_dataset = pipeline.reader.GetOutputAsDataSet()
                     self._restore_active_scalars(reader_dataset, reader_dataset)
                 pipeline.clipping_filter = None
                 continue
+            # vtkExtractGeometry does not support vtkUnstructuredGrid
             clipping_filter = vtkExtractGeometry()
+            # transform data from vtkUnstructuredGrid to vtkPolyData
             geometry_filter = vtkGeometryFilter()
-            if is_composite:
-                clipping_filter.SetExecutive(vtkCompositeDataPipeline())
-                geometry_filter.SetExecutive(vtkCompositeDataPipeline())
             clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
             implicit_boolean = vtkImplicitBoolean()
             implicit_boolean.SetOperationTypeToIntersection()
@@ -400,8 +197,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             geometry_filter.SetInputConnection(clipping_filter.GetOutputPort())
             geometry_filter.Update()
             if is_composite:
-                self._sync_composite_pipeline(
-                    pipeline, geometry_filter.GetOutputDataObject(0)
+                pipeline.sync_composite_pipeline(
+                    geometry_filter.GetOutputDataObject(0)
                 )
             else:
                 pipeline.mapper.SetInputConnection(geometry_filter.GetOutputPort())

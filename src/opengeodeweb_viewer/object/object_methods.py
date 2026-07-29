@@ -1,25 +1,17 @@
-# Standard library imports
-import os
-
 # Third party imports
-from vtkmodules.vtkIOXML import vtkXMLDataReader, vtkXMLImageDataReader
-from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
-from vtkmodules.vtkRenderingCore import (
-    vtkMapper,
-    vtkActor,
-    vtkTexture,
-    vtkCompositePolyDataMapper,
-    vtkCompositeDataDisplayAttributes,
-    vtkDataSetMapper,
-)
 from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
     vtkMultiBlockDataSet,
 )
-from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
+from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkCompositePolyDataMapper,
+    vtkDataSetMapper,
+)
 
 # Local application imports
-from opengeodeweb_viewer.vtk_protocol import VtkView, VtkPipeline
+from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
+from opengeodeweb_viewer.vtk_protocol import VtkView
 
 
 class VtkObjectView(VtkView):
@@ -152,7 +144,7 @@ class VtkObjectView(VtkView):
         if pipeline.pick_mapper is None:
             pipeline.pick_mapper = vtkCompositePolyDataMapper()
         pipeline.pick_mapper.SetInputDataObject(
-            self._prune_hidden_blocks(dataset, visibility_attributes)
+            pipeline.prune_hidden_blocks(dataset, visibility_attributes)
         )
 
     def SetBlocksColor(
