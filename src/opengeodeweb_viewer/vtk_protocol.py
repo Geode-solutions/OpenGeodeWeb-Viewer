@@ -228,7 +228,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         return blocks
 
     def _prune_hidden_blocks(
-        self, dataset: vtkMultiBlockDataSet, attributes: vtkCompositeDataDisplayAttributes
+        self,
+        dataset: vtkMultiBlockDataSet,
+        attributes: vtkCompositeDataDisplayAttributes,
     ) -> vtkMultiBlockDataSet:
         pruned = vtkMultiBlockDataSet()
         pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
@@ -349,7 +351,10 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 self._prune_hidden_blocks(dataset, attributes)
             )
         for block_id in pipeline.block_styles:
-            print(f"[_sync_composite_pipeline] Updating block colors for {block_id=}", flush=True)
+            print(
+                f"[_sync_composite_pipeline] Updating block colors for {block_id=}",
+                flush=True,
+            )
             self.updateBlockColors(pipeline, block_id)
 
     def _restore_active_scalars(
