@@ -10,7 +10,6 @@ from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
-from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
@@ -177,17 +176,16 @@ class VtkModelView(VtkObjectView):
             reader = vtkXMLMultiBlockDataReader()
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
-            filter = vtkGeometryFilter()
-            filter.SetInputConnection(reader.GetOutputPort())
-            filter.Update()
-            geometry_output = filter.GetOutputDataObject(0)
-            if geometry_output:
-                geometry_output.SetObjectName(params.name)
             mapper = vtkCompositePolyDataMapper()
-            mapper.SetInputDataObject(geometry_output)
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            data = VtkPipeline(reader, mapper, filter)
+            data = VtkPipeline(reader, mapper)
+            data.filter.SetInputConnection(reader.GetOutputPort())
+            data.filter.Update()
+            geometry_output = data.filter.GetOutputDataObject(0)
+            if geometry_output:
+                geometry_output.SetObjectName(params.name)
+            mapper.SetInputDataObject(geometry_output)
             self.highlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()

@@ -125,6 +125,7 @@ class VtkMeshView(VtkObjectView):
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
+        pipeline.filter.Update()
         active_ds = pipeline.mapper.GetInputDataObject(0, 0)
         if active_ds:
             active_ds.GetPointData().SetActiveScalars(name)
@@ -145,6 +146,7 @@ class VtkMeshView(VtkObjectView):
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
+        pipeline.filter.Update()
         active_ds = pipeline.mapper.GetInputDataObject(0, 0)
         if active_ds:
             active_ds.GetCellData().SetActiveScalars(name)

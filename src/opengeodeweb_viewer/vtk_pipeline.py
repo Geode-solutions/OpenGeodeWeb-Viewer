@@ -26,6 +26,7 @@ from vtkmodules.vtkFiltersExtraction import (
     vtkExtractGeometry,
     vtkExtractSelection,
 )
+from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkIOXML import vtkXMLReader
 
 # Local application imports
@@ -65,7 +66,7 @@ class BlockStyle(TypedDict):
 class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
-    filter: vtkAlgorithm | None = None
+    filter: vtkGeometryFilter = field(default_factory=vtkGeometryFilter)
     actor: vtkActor = field(default_factory=vtkActor)
     clipping_filter: vtkExtractGeometry | None = None
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
@@ -130,13 +131,11 @@ class VtkPipeline:
         block = self.blockDataSets[block_id]
         if not isinstance(block, vtkDataSet):
             return
-
         style = self.get_block_style(block_id)
         if not style["name"]:
             block.GetPointData().SetActiveScalars("")
             block.GetCellData().SetActiveScalars("")
             return
-
         field_data = (
             block.GetPointData()
             if style["attribute_location"] == "point"
@@ -212,6 +211,13 @@ class VtkPipeline:
         self.blockDataSets = new_blocks
         for block_id in self.block_styles:
             self.update_block_colors(block_id)
+
+    def restore_active_scalars(self, target: vtkDataSet) -> None:
+        source = self.reader.GetOutputAsDataSet()
+        if active_points := source.GetPointData().GetScalars():
+            target.GetPointData().SetActiveScalars(active_points.GetName())
+        if active_cells := source.GetCellData().GetScalars():
+            target.GetCellData().SetActiveScalars(active_cells.GetName())
 
     def sync_composite_pipeline(self, dataset: vtkDataObject) -> None:
         new_blocks = self.extract_blocks(dataset)

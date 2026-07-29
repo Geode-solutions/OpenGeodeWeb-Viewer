@@ -155,12 +155,6 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
 
-    def _restore_active_scalars(self, source: vtkDataSet, target: vtkDataSet) -> None:
-        if active_points := source.GetPointData().GetScalars():
-            target.GetPointData().SetActiveScalars(active_points.GetName())
-        if active_cells := source.GetCellData().GetScalars():
-            target.GetCellData().SetActiveScalars(active_cells.GetName())
-
     def set_clipping_planes(
         self, data_ids: list[str], planes_data: list[Plane]
     ) -> None:
@@ -169,22 +163,16 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             is_composite = isinstance(pipeline.mapper, vtkCompositePolyDataMapper)
             if not planes_data:
                 if is_composite:
-                    original_dataset = (
-                        pipeline.filter.GetOutputDataObject(0)
-                        if pipeline.filter
-                        else pipeline.reader.GetOutputDataObject(0)
-                    )
+                    pipeline.filter.SetInputConnection(pipeline.reader.GetOutputPort())
+                    pipeline.filter.Update()
+                    original_dataset = pipeline.filter.GetOutputDataObject(0)
                     pipeline.sync_composite_pipeline(original_dataset)
                 else:
                     pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
-                    reader_dataset = pipeline.reader.GetOutputAsDataSet()
-                    self._restore_active_scalars(reader_dataset, reader_dataset)
+                    pipeline.restore_active_scalars(pipeline.reader.GetOutputAsDataSet())
                 pipeline.clipping_filter = None
                 continue
-            # vtkExtractGeometry does not support vtkUnstructuredGrid
             clipping_filter = vtkExtractGeometry()
-            # transform data from vtkUnstructuredGrid to vtkPolyData
-            geometry_filter = vtkGeometryFilter()
             clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
             implicit_boolean = vtkImplicitBoolean()
             implicit_boolean.SetOperationTypeToIntersection()
@@ -194,15 +182,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 plane.SetNormal(plane_info.normal)
                 implicit_boolean.AddFunction(plane)
             clipping_filter.SetImplicitFunction(implicit_boolean)
-            geometry_filter.SetInputConnection(clipping_filter.GetOutputPort())
-            geometry_filter.Update()
+            pipeline.filter.SetInputConnection(clipping_filter.GetOutputPort())
+            pipeline.filter.Update()
+            filtered_dataset = pipeline.filter.GetOutputDataObject(0)
             if is_composite:
-                pipeline.sync_composite_pipeline(geometry_filter.GetOutputDataObject(0))
+                pipeline.sync_composite_pipeline(filtered_dataset)
             else:
-                pipeline.mapper.SetInputConnection(geometry_filter.GetOutputPort())
-                reader_dataset = pipeline.reader.GetOutputAsDataSet()
-                filtered_dataset = geometry_filter.GetOutputDataObject(0)
-                self._restore_active_scalars(reader_dataset, filtered_dataset)
+                pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
+                pipeline.restore_active_scalars(filtered_dataset)
             pipeline.clipping_filter = clipping_filter
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
