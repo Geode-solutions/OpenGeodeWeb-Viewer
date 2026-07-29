@@ -1,7 +1,7 @@
 # Standard library imports
 import math
 import os
-from typing import cast, Any, Literal, TypedDict, Callable
+from typing import cast, Any, Literal, TypedDict
 from dataclasses import dataclass, field
 
 # Third party imports
@@ -309,20 +309,21 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         )
         other_field_data.SetActiveScalars("")
 
-        mapper = pipeline.mapper
-        attributes = mapper.GetCompositeDataDisplayAttributes()
-        if attributes:
-            attributes.RemoveBlockColor(block)
-        mapper.ScalarVisibilityOn()
-        mapper.SetColorModeToDirectScalars()
-        mapper.SetScalarModeToDefault()
-        mapper.Modified()
+        if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+            attributes = pipeline.mapper.GetCompositeDataDisplayAttributes()
+            if attributes:
+                attributes.RemoveBlockColor(block)
+        pipeline.mapper.ScalarVisibilityOn()
+        pipeline.mapper.SetColorModeToDirectScalars()
+        pipeline.mapper.SetScalarModeToDefault()
+        pipeline.mapper.Modified()
 
     def _sync_composite_pipeline(
         self, pipeline: VtkPipeline, dataset: vtkDataObject
     ) -> None:
         blocks = self._extract_blocks(dataset)
-        attributes = pipeline.mapper.GetCompositeDataDisplayAttributes()
+        mapper = cast(vtkCompositePolyDataMapper, pipeline.mapper)
+        attributes = mapper.GetCompositeDataDisplayAttributes()
         print(f"[_sync_composite_pipeline] {attributes=}", flush=True)
         print(f"[_sync_composite_pipeline] {pipeline.block_styles=}", flush=True)
         color_rgb = [0.0, 0.0, 0.0]
@@ -351,6 +352,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             print(f"[_sync_composite_pipeline] Updating block colors for {block_id=}", flush=True)
             self.updateBlockColors(pipeline, block_id)
 
+    def _restore_active_scalars(
+        self, source: vtkDataSet, target: vtkDataSet
+    ) -> None:
+        if active_points := source.GetPointData().GetScalars():
+            target.GetPointData().SetActiveScalars(active_points.GetName())
+        if active_cells := source.GetCellData().GetScalars():
+            target.GetCellData().SetActiveScalars(active_cells.GetName())
+
     def set_clipping_planes(
         self, data_ids: list[str], planes_data: list[Plane]
     ) -> None:
@@ -368,14 +377,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 else:
                     pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
                     reader_dataset = pipeline.reader.GetOutputAsDataSet()
-                    if active_points := reader_dataset.GetPointData().GetScalars():
-                        reader_dataset.GetPointData().SetActiveScalars(
-                            active_points.GetName()
-                        )
-                    if active_cells := reader_dataset.GetCellData().GetScalars():
-                        reader_dataset.GetCellData().SetActiveScalars(
-                            active_cells.GetName()
-                        )
+                    self._restore_active_scalars(reader_dataset, reader_dataset)
                 pipeline.clipping_filter = None
                 continue
             clipping_filter = vtkExtractGeometry()
@@ -402,14 +404,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.mapper.SetInputConnection(geometry_filter.GetOutputPort())
                 reader_dataset = pipeline.reader.GetOutputAsDataSet()
                 filtered_dataset = geometry_filter.GetOutputDataObject(0)
-                if active_points := reader_dataset.GetPointData().GetScalars():
-                    filtered_dataset.GetPointData().SetActiveScalars(
-                        active_points.GetName()
-                    )
-                if active_cells := reader_dataset.GetCellData().GetScalars():
-                    filtered_dataset.GetCellData().SetActiveScalars(
-                        active_cells.GetName()
-                    )
+                self._restore_active_scalars(reader_dataset, filtered_dataset)
             pipeline.clipping_filter = clipping_filter
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
