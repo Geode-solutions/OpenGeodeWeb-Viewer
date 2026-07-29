@@ -197,9 +197,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             geometry_filter.SetInputConnection(clipping_filter.GetOutputPort())
             geometry_filter.Update()
             if is_composite:
-                pipeline.sync_composite_pipeline(
-                    geometry_filter.GetOutputDataObject(0)
-                )
+                pipeline.sync_composite_pipeline(geometry_filter.GetOutputDataObject(0))
             else:
                 pipeline.mapper.SetInputConnection(geometry_filter.GetOutputPort())
                 reader_dataset = pipeline.reader.GetOutputAsDataSet()
