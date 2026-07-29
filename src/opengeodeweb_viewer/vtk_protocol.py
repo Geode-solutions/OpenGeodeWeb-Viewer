@@ -169,7 +169,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     pipeline.sync_composite_pipeline(original_dataset)
                 else:
                     pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
-                    pipeline.restore_active_scalars(pipeline.reader.GetOutputAsDataSet())
+                    pipeline.restore_active_scalars(
+                        pipeline.reader.GetOutputAsDataSet()
+                    )
                 pipeline.clipping_filter = None
                 continue
             clipping_filter = vtkExtractGeometry()
