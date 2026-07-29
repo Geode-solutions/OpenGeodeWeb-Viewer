@@ -357,9 +357,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             )
             self.updateBlockColors(pipeline, block_id)
 
-    def _restore_active_scalars(
-        self, source: vtkDataSet, target: vtkDataSet
-    ) -> None:
+    def _restore_active_scalars(self, source: vtkDataSet, target: vtkDataSet) -> None:
         if active_points := source.GetPointData().GetScalars():
             target.GetPointData().SetActiveScalars(active_points.GetName())
         if active_cells := source.GetCellData().GetScalars():
