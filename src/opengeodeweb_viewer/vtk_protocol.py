@@ -130,7 +130,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def setup_pipeline(self, pipeline: VtkPipeline, name: str) -> vtkDataObject | None:
         pipeline.filter.SetInputConnection(pipeline.reader.GetOutputPort())
         pipeline.filter.Update()
-        geometry_output = pipeline.filter.GetOutputDataObject(0)
+        geometry_output: vtkDataObject | None = pipeline.filter.GetOutputDataObject(0)
         if geometry_output:
             geometry_output.SetObjectName(name)
         if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
