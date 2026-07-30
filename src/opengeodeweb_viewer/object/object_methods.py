@@ -199,6 +199,8 @@ class VtkObjectView(VtkView):
     def highlight(self, pipeline: VtkPipeline) -> None:
         highlight = pipeline.highlight
         self._apply_highlight_style(highlight.actor, highlight.mapper)
+        if pipeline.filter.GetNumberOfInputConnections(0) == 0:
+            pipeline.filter.SetInputConnection(pipeline.reader.GetOutputPort())
         input_port = pipeline.filter.GetOutputPort()
         highlight.selection.AddNode(highlight.selectionNode)
         highlight.extractSelection.SetInputConnection(0, input_port)

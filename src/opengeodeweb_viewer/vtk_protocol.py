@@ -128,7 +128,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         else:
             renderer.ResetCameraClippingRange()
 
-    def highlight_selection(
+    def update_highlight(
         self,
         pipeline: VtkPipeline,
         id_to_select: int,
@@ -161,38 +161,34 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             is_composite = isinstance(pipeline.mapper, vtkCompositePolyDataMapper)
-            if not planes_data:
-                if is_composite:
-                    pipeline.filter.SetInputConnection(pipeline.reader.GetOutputPort())
-                    pipeline.filter.Update()
-                    original_dataset = pipeline.filter.GetOutputDataObject(0)
-                    pipeline.sync_composite_pipeline(original_dataset)
-                else:
-                    pipeline.mapper.SetInputConnection(pipeline.reader.GetOutputPort())
-                    pipeline.restore_active_scalars(
-                        pipeline.reader.GetOutputAsDataSet()
-                    )
+            if planes_data:
+                clipping_filter = vtkExtractGeometry()
+                clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
+                implicit_boolean = vtkImplicitBoolean()
+                implicit_boolean.SetOperationTypeToIntersection()
+                for plane_info in planes_data:
+                    plane = vtkPlane()
+                    plane.SetOrigin(plane_info.origin)
+                    plane.SetNormal(plane_info.normal)
+                    implicit_boolean.AddFunction(plane)
+                clipping_filter.SetImplicitFunction(implicit_boolean)
+                pipeline.clipping_filter = clipping_filter
+                input_port = clipping_filter.GetOutputPort()
+            else:
                 pipeline.clipping_filter = None
-                continue
-            clipping_filter = vtkExtractGeometry()
-            clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
-            implicit_boolean = vtkImplicitBoolean()
-            implicit_boolean.SetOperationTypeToIntersection()
-            for plane_info in planes_data:
-                plane = vtkPlane()
-                plane.SetOrigin(plane_info.origin)
-                plane.SetNormal(plane_info.normal)
-                implicit_boolean.AddFunction(plane)
-            clipping_filter.SetImplicitFunction(implicit_boolean)
-            pipeline.filter.SetInputConnection(clipping_filter.GetOutputPort())
+                input_port = pipeline.reader.GetOutputPort()
+            pipeline.filter.SetInputConnection(input_port)
             pipeline.filter.Update()
             filtered_dataset = pipeline.filter.GetOutputDataObject(0)
             if is_composite:
                 pipeline.sync_composite_pipeline(filtered_dataset)
             else:
-                pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
-                pipeline.restore_active_scalars(filtered_dataset)
-            pipeline.clipping_filter = clipping_filter
+                pipeline.mapper.SetInputConnection(input_port)
+                pipeline.restore_active_scalars(
+                    cast(vtkDataSet, filtered_dataset)
+                    if planes_data
+                    else pipeline.reader.GetOutputAsDataSet()
+                )
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).
