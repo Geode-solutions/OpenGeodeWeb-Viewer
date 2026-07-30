@@ -13,7 +13,8 @@ from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.blocks_attribute_vert
 from tests.model.test_model_protocols import test_register_model_cube
 from tests.conftest import ServerMonitor
 
-model_id = "123456789"
+# Local constants
+model_id = "12345678901234567890123456789012"
 
 
 def test_blocks_vertex_attribute(

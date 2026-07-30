@@ -4,10 +4,14 @@ from typing import Callable
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 # Local application imports
 from tests.mesh.test_mesh_protocols import test_register_mesh
 from tests.conftest import ServerMonitor
+
+# Local constants
+mesh_id = "12345678901234567890123456789012"
 
 
 def test_polygons_color(
@@ -21,7 +25,7 @@ def test_polygons_color(
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["color"]["rpc"],
         [
             {
-                "id": "123456789",
+                "id": mesh_id,
                 "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1.0},
             }
         ],
@@ -38,6 +42,30 @@ def test_polygons_visibility(
     server.call(
         VtkMeshPolygonsView.mesh_polygons_prefix
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["visibility"]["rpc"],
-        [{"id": "123456789", "visibility": False}],
+        [{"id": mesh_id, "visibility": False}],
     )
     assert server.compare_image("mesh/polygons/visibility.jpeg") == True
+
+
+def test_polygons_clipping_plane(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "planes": [
+                    {
+                        "origin": [0.0, 2.5, 0.0],
+                        "normal": [1.0, 0.0, 1.0],
+                    }
+                ],
+            }
+        ],
+    )
+    assert server.compare_image("mesh/polygons/clipping_plane.jpeg") == True

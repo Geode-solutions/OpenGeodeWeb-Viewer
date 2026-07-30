@@ -46,12 +46,9 @@ class VtkMeshView(VtkObjectView):
             reader = vtkXMLGenericDataObjectReader()
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
-            dataset = reader.GetOutputDataObject(0)
-            if dataset:
-                dataset.SetObjectName(params.name)
             mapper = vtkDataSetMapper()
-            mapper.SetInputConnection(reader.GetOutputPort())
             data = VtkPipeline(reader, mapper)
+            self.setup_pipeline(data, params.name)
             self.highlight(data)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
@@ -103,16 +100,14 @@ class VtkMeshView(VtkObjectView):
             texture = vtkTexture()
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
-            reader = self.get_vtk_pipeline(mesh_id).reader
-            output = reader.GetOutputAsDataSet()
-            point_data = output.GetPointData()
-            for i in range(point_data.GetNumberOfArrays()):
-                array = point_data.GetArray(i)
-                if array.GetName() == tex_info.texture_name:
-                    point_data.SetTCoords(array)
-                    break
-            actor = self.get_vtk_pipeline(mesh_id).actor
-            actor.SetTexture(texture)
+            pipeline = self.get_vtk_pipeline(mesh_id)
+            output = pipeline.reader.GetOutputAsDataSet()
+            array = output.GetPointData().GetArray(tex_info.texture_name)
+            if array:
+                output.GetPointData().SetTCoords(array)
+            pipeline.filter.Modified()
+            pipeline.filter.Update()
+            pipeline.actor.SetTexture(texture)
 
     def displayAttributeOnVertices(
         self,

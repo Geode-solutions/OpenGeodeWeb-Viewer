@@ -10,6 +10,9 @@ from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
 from tests.model.test_model_protocols import test_register_model
 from tests.conftest import ServerMonitor
 
+# Local constants
+model_id = "12345678901234567890123456789012"
+
 
 def test_points_visibility(
     server: ServerMonitor, dataset_factory: Callable[..., str]
@@ -20,7 +23,7 @@ def test_points_visibility(
     server.call(
         VtkModelPointsView.model_points_prefix
         + VtkModelPointsView.model_points_schemas_dict["visibility"]["rpc"],
-        [{"id": "123456789", "visibility": True}],
+        [{"id": model_id, "visibility": True}],
     )
     assert server.compare_image("model/points/visibility.jpeg") == True
 
@@ -34,6 +37,6 @@ def test_points_size(
     server.call(
         VtkModelPointsView.model_points_prefix
         + VtkModelPointsView.model_points_schemas_dict["size"]["rpc"],
-        [{"id": "123456789", "size": 20}],
+        [{"id": model_id, "size": 20}],
     )
     assert server.compare_image("model/points/size.jpeg") == True

@@ -124,9 +124,20 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if grid_scale is not None and grid_scale.GetVisibility():
             grid_scale.SetUseBounds(True)
             renderer.ResetCameraClippingRange()
-            grid_scale.SetUseBounds(False)
         else:
             renderer.ResetCameraClippingRange()
+
+    def setup_pipeline(self, pipeline: VtkPipeline, name: str) -> vtkDataObject | None:
+        pipeline.filter.SetInputConnection(pipeline.reader.GetOutputPort())
+        pipeline.filter.Update()
+        geometry_output = pipeline.filter.GetOutputDataObject(0)
+        if geometry_output:
+            geometry_output.SetObjectName(name)
+        if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+            pipeline.mapper.SetInputDataObject(geometry_output)
+        else:
+            pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
+        return geometry_output
 
     def update_highlight(
         self,
@@ -378,16 +389,13 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.reset_camera_clipping_range()
 
     def update_scalar_bars_layout(self) -> None:
-        visible_bars = []
-        for data_id, pipeline in self.get_data_base().items():
-            if (
-                pipeline.scalarBar.GetVisibility()
-                and pipeline.scalarBar.GetLookupTable() is not None
-            ):
-                visible_bars.append((data_id, pipeline.scalarBar))
-
-        n = len(visible_bars)
-        if n == 0:
+        visible_bars = [
+            (data_id, pipeline)
+            for data_id, pipeline in self.get_data_base().items()
+            if pipeline.scalarBar.GetVisibility()
+            and pipeline.scalarBar.GetLookupTable() is not None
+        ]
+        if not visible_bars:
             return
 
         start_x = 0.22
@@ -399,21 +407,16 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         actual_width = 0.10
         row_height = 0.12
 
-        for i, (data_id, bar) in enumerate(visible_bars):
-            dataset = pipeline.reader.GetOutputDataObject(0)
-
-            attr_name = ""
-            if dataset:
-                pd = dataset.GetPointData().GetScalars()
-                cd = dataset.GetCellData().GetScalars()
-                if pd:
-                    attr_name = pd.GetName()
-                elif cd:
-                    attr_name = cd.GetName()
-
-            if not attr_name:
-                attr_name = "Attribute"
-
+        for i, (data_id, pipeline) in enumerate(visible_bars):
+            bar = pipeline.scalarBar
+            dataset = pipeline.filter.GetOutputDataObject(0)
+            scalars = (
+                dataset.GetPointData().GetScalars()
+                or dataset.GetCellData().GetScalars()
+                if dataset
+                else None
+            )
+            attr_name = scalars.GetName() if scalars else "Attribute"
             data_name = (
                 dataset.GetObjectName()
                 if dataset and dataset.GetObjectName()

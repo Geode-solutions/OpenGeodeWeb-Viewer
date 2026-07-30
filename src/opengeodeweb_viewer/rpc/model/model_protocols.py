@@ -1,6 +1,6 @@
 # Standard library imports
 import os
-from typing import Optional, Protocol, TypedDict
+from typing import Optional, Protocol, TypedDict, cast
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -9,6 +9,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkCompositeDataSet,
     vtkDataSet,
 )
+from vtkmodules.vtkCommonDataModel import vtkMultiBlockDataSet
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkRenderingCore import (
@@ -180,12 +181,9 @@ class VtkModelView(VtkObjectView):
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
             data = VtkPipeline(reader, mapper)
-            data.filter.SetInputConnection(reader.GetOutputPort())
-            data.filter.Update()
-            geometry_output = data.filter.GetOutputDataObject(0)
-            if geometry_output:
-                geometry_output.SetObjectName(params.name)
-            mapper.SetInputDataObject(geometry_output)
+            geometry_output = cast(
+                vtkMultiBlockDataSet, self.setup_pipeline(data, params.name)
+            )
             self.highlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()

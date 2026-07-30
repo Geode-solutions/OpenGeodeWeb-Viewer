@@ -12,6 +12,9 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from tests.mesh.test_mesh_protocols import test_register_mesh
 from tests.conftest import ServerMonitor
 
+# Local constants
+mesh_id = "12345678901234567890123456789012"
+
 
 def test_reset_visualization(server: ServerMonitor) -> None:
     server.call(
@@ -342,11 +345,11 @@ def test_combined_scaling_and_grid(
     )
     assert server.compare_image("viewer/reset_visualization.jpeg") == True
     dataset_factory(
-        id="123456789", viewable_file="hat.vtp", viewer_elements_type="polygons"
+        id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "name": "hat.vtp"}],
+        [{"id": mesh_id, "name": "hat.vtp"}],
     )
     assert server.compare_image("viewer/register_hat.jpeg") == True
     server.call(
@@ -373,7 +376,7 @@ def test_clipping_planes(
         + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
-                "ids": ["123456789"],
+                "ids": [mesh_id],
                 "planes": [
                     {
                         "origin": [0.0, 0.0, 0.0],
