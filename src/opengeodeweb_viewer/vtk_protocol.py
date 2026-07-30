@@ -400,11 +400,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         row_height = 0.12
 
         for i, (data_id, bar) in enumerate(visible_bars):
-            pipeline = self.get_vtk_pipeline(data_id)
-            if pipeline.filter:
-                dataset = pipeline.filter.GetOutputDataObject(0)
-            else:
-                dataset = pipeline.reader.GetOutputDataObject(0)
+            dataset = pipeline.reader.GetOutputDataObject(0)
 
             attr_name = ""
             if dataset:
