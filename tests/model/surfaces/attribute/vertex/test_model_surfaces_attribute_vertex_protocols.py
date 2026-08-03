@@ -13,7 +13,8 @@ from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_
 from tests.model.test_model_protocols import test_register_model_cube
 from tests.conftest import ServerMonitor
 
-model_id = "123456789"
+# Local constants
+model_id = "12345678901234567890123456789012"
 
 
 def test_surfaces_vertex_attribute(

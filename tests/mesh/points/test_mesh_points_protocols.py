@@ -15,7 +15,7 @@ from tests.conftest import ServerMonitor
 def test_points_visibility(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    mesh_id = "123456789"
+    mesh_id = "12345678901234567890123456789012"
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -29,7 +29,7 @@ def test_points_visibility(
 def test_points_size(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    mesh_id = "123456789"
+    mesh_id = "12345678901234567890123456789012"
     test_points_visibility(server, dataset_factory)
 
     server.call(
@@ -43,7 +43,7 @@ def test_points_size(
 def test_points_color(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    mesh_id = "123456789"
+    mesh_id = "12345678901234567890123456789012"
     test_points_size(server, dataset_factory)
 
     server.call(
