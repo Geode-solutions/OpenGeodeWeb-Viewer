@@ -127,14 +127,12 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        points = reader.GetOutputAsDataSet().GetPointData()
-        points.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
-        mapper.ScalarVisibilityOn()
-        mapper.SetScalarModeToUsePointData()
-        mapper.SetArrayComponent(item)
-        self.setupColorMap(data_id, color_map, minimum, maximum)
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
+        pipeline.mapper.ScalarVisibilityOn()
+        pipeline.mapper.SetScalarModeToUsePointData()
+        pipeline.mapper.ColorByArrayComponent(name, item)
+        self.setupColorMap(data_id, color_map, minimum, maximum, item)
 
     def displayAttributeOnCells(
         self,
@@ -145,14 +143,12 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        cells = reader.GetOutputAsDataSet().GetCellData()
-        cells.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
-        mapper.ScalarVisibilityOn()
-        mapper.SetScalarModeToUseCellData()
-        mapper.SetArrayComponent(item)
-        self.setupColorMap(data_id, color_map, minimum, maximum)
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
+        pipeline.mapper.ScalarVisibilityOn()
+        pipeline.mapper.SetScalarModeToUseCellData()
+        pipeline.mapper.ColorByArrayComponent(name, item)
+        self.setupColorMap(data_id, color_map, minimum, maximum, item)
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
         print(
@@ -164,10 +160,12 @@ class VtkMeshView(VtkObjectView):
         data.mapper.SetUseLookupTableScalarRange(False)
 
     def setupColorMap(
-        self, data_id: str, points: list[float], minimum: float, maximum: float
+        self, data_id: str, points: list[float], minimum: float, maximum: float, item: int = 0
     ) -> None:
         data = self.get_vtk_pipeline(data_id)
         lut = vtkColorTransferFunction()
+        lut.SetVectorModeToComponent()
+        lut.SetVectorComponent(item)
         data.mapper.SetLookupTable(lut)
 
         if not points:
