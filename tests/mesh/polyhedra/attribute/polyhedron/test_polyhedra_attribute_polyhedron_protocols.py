@@ -330,3 +330,40 @@ def test_polyhedra_polyhedron_color_map_rainbow(
     assert (
         server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow.jpeg") == True
     )
+
+
+def test_polyhedra_polyhedron_attribute_item(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
+        + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "name": "toto_on_polyhedra",
+                "item": 1,
+                "points": [
+                    3.0,
+                    0,
+                    0,
+                    1.0,
+                    6.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 3.0,
+                "maximum": 6.0,
+            }
+        ],
+    )
+
+    assert (
+        server.compare_image("mesh/polyhedra/polyhedron_attribute_item.jpeg") == True
+    )

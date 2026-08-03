@@ -118,13 +118,14 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        points = reader.GetOutputAsDataSet().GetPointData()
-        points.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
-        mapper.ScalarVisibilityOn()
-        mapper.SetScalarModeToUsePointData()
-        mapper.SetArrayComponent(item)
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
+        pipeline.filter.Update()
+        if active_ds := pipeline.mapper.GetInputDataObject(0, 0):
+            active_ds.GetPointData().SetActiveScalars(name)
+        pipeline.mapper.ScalarVisibilityOn()
+        pipeline.mapper.SetScalarModeToUsePointData()
+        pipeline.mapper.ColorByArrayComponent(name, item)
         self.setupColorMap(data_id, color_map, minimum, maximum, item)
 
     def displayAttributeOnCells(
@@ -136,13 +137,14 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        cells = reader.GetOutputAsDataSet().GetCellData()
-        cells.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
-        mapper.ScalarVisibilityOn()
-        mapper.SetScalarModeToUseCellData()
-        mapper.SetArrayComponent(item)
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
+        pipeline.filter.Update()
+        if active_ds := pipeline.mapper.GetInputDataObject(0, 0):
+            active_ds.GetCellData().SetActiveScalars(name)
+        pipeline.mapper.ScalarVisibilityOn()
+        pipeline.mapper.SetScalarModeToUseCellData()
+        pipeline.mapper.ColorByArrayComponent(name, item)
         self.setupColorMap(data_id, color_map, minimum, maximum, item)
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:

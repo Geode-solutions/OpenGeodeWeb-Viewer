@@ -327,3 +327,38 @@ def test_polygons_polygon_color_map_rainbow(
     )
 
     assert server.compare_image("mesh/polygons/polygon_color_map_rainbow.jpeg") == True
+
+
+def test_polygons_polygon_attribute_item(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
+        + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "name": "triangle_vertices",
+                "item": 1,
+                "points": [
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    50.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 0.0,
+                "maximum": 50.0,
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/polygons/polygon_attribute_item.jpeg") == True

@@ -404,3 +404,51 @@ def test_blocks_vertex_color_map_rainbow(
     )
 
     assert server.compare_image("model/blocks/vertex_color_map_rainbow.jpeg") == True
+
+
+def test_blocks_vertex_attribute_item(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_model_cube(server, dataset_factory)
+
+    # Hide all blocks to ensure visibility of blocks
+    server.call(
+        VtkModelBlocksView.model_blocks_prefix
+        + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
+        [{"id": model_id, "block_ids": list(range(1, 50)), "visibility": False}],
+    )
+    # Show only blocks
+    server.call(
+        VtkModelBlocksView.model_blocks_prefix
+        + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
+        [{"id": model_id, "block_ids": list(range(48, 50)), "visibility": True}],
+    )
+
+    server.call(
+        VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(48, 50)),
+                "name": "unique vertices",
+                "item": 1,
+                "points": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
+            }
+        ],
+    )
+    assert server.compare_image("model/blocks/vertex_attribute_item.jpeg") == True
