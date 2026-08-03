@@ -11,7 +11,7 @@ from opengeodeweb_viewer.rpc.mesh.cells.attribute.cell.cells_attribute_cell_prot
 from tests.conftest import ServerMonitor
 
 # Local constants
-mesh_id = "123456789"
+mesh_id = "12345678901234567890123456789012"
 
 
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:

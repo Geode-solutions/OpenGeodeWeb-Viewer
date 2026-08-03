@@ -1,33 +1,31 @@
 # Standard library imports
 import os
+from typing import Optional, Protocol, TypedDict, cast
 
 # Third party imports
+from opengeodeweb_microservice.schemas import get_schemas_dict
 from vtkmodules.vtkCommonDataModel import (
-    vtkCompositeDataSet,
     vtkBoundingBox,
+    vtkCompositeDataSet,
     vtkDataSet,
-    vtkSelectionNode,
 )
-from vtkmodules.vtkRenderingCore import (
-    vtkCompositePolyDataMapper,
-    vtkCompositeDataDisplayAttributes,
-    vtkColorTransferFunction,
-)
+from vtkmodules.vtkCommonDataModel import vtkMultiBlockDataSet
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
-from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from vtkmodules.vtkRenderingCore import (
+    vtkCompositeDataDisplayAttributes,
+    vtkCompositePolyDataMapper,
+)
 from wslink import register as exportRpc  # type: ignore
-from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-    deterministic_color,
-)
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import VtkPipeline, BlockStyle
-from typing import Optional, List, TypedDict, Protocol
+from opengeodeweb_viewer.utils_functions import (
+    deterministic_color,
+    RpcParams,
+    validate_schema,
+)
+from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from . import schemas
 
 
@@ -60,78 +58,6 @@ class VtkModelView(VtkObjectView):
     def __init__(self) -> None:
         super().__init__()
 
-    def _get_block_style(self, pipeline: VtkPipeline, block_id: int) -> BlockStyle:
-        if block_id not in pipeline.block_styles:
-            style = BlockStyle(
-                name="",
-                attribute_location="point",
-                points=[],
-                minimum=0.0,
-                maximum=1.0,
-                item=0,
-            )
-            pipeline.block_styles[block_id] = style
-        return pipeline.block_styles[block_id]
-
-    def updateBlockColors(self, pipeline: VtkPipeline, block_id: int) -> None:
-        block = pipeline.blockDataSets[block_id]
-        if not isinstance(block, vtkDataSet):
-            return
-
-        style = self._get_block_style(pipeline, block_id)
-        if not style["name"]:
-            block.GetPointData().SetActiveScalars("")
-            block.GetCellData().SetActiveScalars("")
-            return
-
-        field_data = (
-            block.GetPointData()
-            if style["attribute_location"] == "point"
-            else block.GetCellData()
-        )
-        scalar_array = field_data.GetArray(style["name"])
-        if not scalar_array:
-            return
-
-        lut = vtkColorTransferFunction()
-        points = style["points"]
-        minimum = style["minimum"]
-        maximum = style["maximum"]
-        if points:
-            x_min, x_max = points[0], points[-4]
-            span = x_max - x_min
-            for i in range(0, len(points), 4):
-                x, r, g, b = points[i : i + 4]
-                new_x = (
-                    minimum + (x - x_min) / span * (maximum - minimum)
-                    if span
-                    else minimum
-                )
-                lut.AddRGBPoint(new_x, r, g, b)
-        else:
-            lut.AddRGBPoint(minimum, 0, 0, 0)
-            lut.AddRGBPoint(maximum, 1, 1, 1)
-
-        lut.SetRange(minimum, maximum)
-        rgba_colors = lut.MapScalars(scalar_array, 0, style.get("item", 0))
-        rgba_colors.SetName(f"__colors_{style['name']}")
-
-        field_data.AddArray(rgba_colors)
-        field_data.SetActiveScalars(rgba_colors.GetName())
-
-        other_field_data = (
-            block.GetCellData()
-            if style["attribute_location"] == "point"
-            else block.GetPointData()
-        )
-        other_field_data.SetActiveScalars("")
-
-        mapper = pipeline.mapper
-        mapper.ScalarVisibilityOn()
-        mapper.SetColorModeToDirectScalars()
-        mapper.SetScalarModeToDefault()
-        mapper.Modified()
-
     def apply_color(
         self,
         pipeline: VtkPipeline,
@@ -143,13 +69,14 @@ class VtkModelView(VtkObjectView):
         if not isinstance(mapper, vtkCompositePolyDataMapper):
             return []
         attr = mapper.GetCompositeDataDisplayAttributes()
+        print(f"{attr=}", flush=True)
         colors: list[ColorResult] = []
         for block_id in block_ids:
             block_dataset = pipeline.blockDataSets[block_id]
             if isinstance(block_dataset, vtkDataSet):
                 block_dataset.GetPointData().SetActiveScalars("")
                 block_dataset.GetCellData().SetActiveScalars("")
-                self._get_block_style(pipeline, block_id)["name"] = ""
+                pipeline.get_block_style(block_id)["name"] = ""
                 if color_mode == "random":
                     geode_id = pipeline.blockGeodeIds[block_id]
                     red, green, blue = deterministic_color(str(geode_id))
@@ -191,14 +118,14 @@ class VtkModelView(VtkObjectView):
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
-            style = self._get_block_style(pipeline, block_id)
+            style = pipeline.get_block_style(block_id)
             style["name"] = name
             style["item"] = item
             style["attribute_location"] = "point"
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
-            self.updateBlockColors(pipeline, block_id)
+            pipeline.update_block_colors(block_id)
 
     def displayAttributeOnCells(
         self,
@@ -212,14 +139,14 @@ class VtkModelView(VtkObjectView):
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
-            style = self._get_block_style(pipeline, block_id)
+            style = pipeline.get_block_style(block_id)
             style["name"] = name
             style["item"] = item
             style["attribute_location"] = "cell"
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
-            self.updateBlockColors(pipeline, block_id)
+            pipeline.update_block_colors(block_id)
 
     def setupColorMap(
         self,
@@ -230,11 +157,11 @@ class VtkModelView(VtkObjectView):
         maximum: float,
     ) -> None:
         for block_id in block_ids:
-            style = self._get_block_style(pipeline, block_id)
+            style = pipeline.get_block_style(block_id)
             style["points"] = points
             style["minimum"] = minimum
             style["maximum"] = maximum
-            self.updateBlockColors(pipeline, block_id)
+            pipeline.update_block_colors(block_id)
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
@@ -250,17 +177,13 @@ class VtkModelView(VtkObjectView):
             reader = vtkXMLMultiBlockDataReader()
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
-            filter = vtkGeometryFilter()
-            filter.SetInputConnection(reader.GetOutputPort())
-            filter.Update()
-            geometry_output = filter.GetOutputDataObject(0)
-            if geometry_output:
-                geometry_output.SetObjectName(params.name)
             mapper = vtkCompositePolyDataMapper()
-            mapper.SetInputDataObject(geometry_output)
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
-            data = VtkPipeline(reader, mapper, filter)
+            data = VtkPipeline(reader, mapper)
+            geometry_output = cast(
+                vtkMultiBlockDataSet, self.setup_pipeline(data, params.name)
+            )
             self.highlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()

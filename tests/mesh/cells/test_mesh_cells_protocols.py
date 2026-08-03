@@ -4,13 +4,14 @@ from typing import Callable
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.cells.cells_protocols import VtkMeshCellsView
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 # Local application imports
 from tests.mesh.test_mesh_protocols import test_register_mesh
 from tests.conftest import ServerMonitor
 
 # Local constants
-mesh_id = "123456789"
+mesh_id = "12345678901234567890123456789012"
 
 
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
@@ -52,3 +53,27 @@ def test_cells_visibility(
         [{"id": mesh_id, "visibility": False}],
     )
     assert server.compare_image("mesh/cells/visibility.jpeg") == True
+
+
+def test_cells_clipping_plane(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "planes": [
+                    {
+                        "origin": [262.0, 387.0, 0.0],
+                        "normal": [1.0, 1.0, 0.0],
+                    }
+                ],
+            }
+        ],
+    )
+    assert server.compare_image("mesh/cells/clipping_plane.jpeg") == True

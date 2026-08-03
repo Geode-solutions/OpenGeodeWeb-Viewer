@@ -18,7 +18,8 @@ from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon.surfaces_attribute
 # Local application imports
 from tests.conftest import ServerMonitor
 
-model_id = "123456789"
+# Local constants
+model_id = "12345678901234567890123456789012"
 
 
 def add_polygon_attribute_to_cube(model_id: str) -> None:

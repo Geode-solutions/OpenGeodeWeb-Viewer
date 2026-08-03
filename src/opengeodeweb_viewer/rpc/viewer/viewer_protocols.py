@@ -31,7 +31,7 @@ from opengeodeweb_viewer.utils_functions import (
     RpcParams,
 )
 from opengeodeweb_viewer.vtk_protocol import VtkView
-from . import schemas
+from opengeodeweb_viewer.rpc.viewer import schemas
 
 
 class VtkViewerView(VtkView):
@@ -361,6 +361,14 @@ class VtkViewerView(VtkView):
             "geode_id": geode_id,
             "attributes": data_attributes,
         }
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["clipping_planes"]["rpc"])
+    def setClippingPlanes(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["clipping_planes"], self.viewer_prefix
+        )
+        params = schemas.ClippingPlanes.from_dict(rpc_params)
+        self.set_clipping_planes(params.ids, params.planes)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:
