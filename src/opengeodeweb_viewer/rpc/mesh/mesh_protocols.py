@@ -128,7 +128,8 @@ class VtkMeshView(VtkObjectView):
         maximum: float,
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
-        pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
+        dataset = pipeline.reader.GetOutputAsDataSet()
+        dataset.GetPointData().SetActiveScalars(name)
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUsePointData()
         pipeline.mapper.ColorByArrayComponent(name, item)
@@ -144,7 +145,8 @@ class VtkMeshView(VtkObjectView):
         maximum: float,
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
-        pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
+        dataset = pipeline.reader.GetOutputAsDataSet()
+        dataset.GetCellData().SetActiveScalars(name)
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUseCellData()
         pipeline.mapper.ColorByArrayComponent(name, item)
