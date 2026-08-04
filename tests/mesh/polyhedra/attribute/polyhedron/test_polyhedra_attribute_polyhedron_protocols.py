@@ -342,7 +342,9 @@ def test_polyhedra_polyhedron_attribute_item(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -364,6 +366,4 @@ def test_polyhedra_polyhedron_attribute_item(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polyhedra/polyhedron_attribute_item.jpeg") == True
-    )
+    assert server.compare_image("mesh/polyhedra/polyhedron_attribute_item.jpeg") == True

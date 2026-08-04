@@ -333,7 +333,9 @@ def test_polygons_vertex_attribute_item(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ]["rpc"],
+        ][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,

@@ -333,4 +333,3 @@ def test_points_vertex_attribute_item(
         ],
     )
     assert server.compare_image("mesh/points/vertex_attribute_item.jpeg") == True
-
