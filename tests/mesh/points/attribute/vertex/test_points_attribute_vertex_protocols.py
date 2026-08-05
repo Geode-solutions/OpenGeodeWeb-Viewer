@@ -299,3 +299,37 @@ def test_points_vertex_color_map_rainbow(
     )
 
     assert server.compare_image("mesh/points/vertex_color_map_rainbow.jpeg") == True
+
+
+def test_points_vertex_attribute_item(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "name": "points",
+                "item": 1,
+                "points": [
+                    2.0,
+                    0,
+                    0,
+                    1.0,
+                    498.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 2.0,
+                "maximum": 498.0,
+            }
+        ],
+    )
+    assert server.compare_image("mesh/points/vertex_attribute_item.jpeg") == True
