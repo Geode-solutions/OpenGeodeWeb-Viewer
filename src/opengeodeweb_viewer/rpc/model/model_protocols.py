@@ -12,7 +12,9 @@ from vtkmodules.vtkCommonDataModel import (
 from vtkmodules.vtkCommonDataModel import vtkMultiBlockDataSet
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
+from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
+    vtkColorTransferFunction,
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
 )
@@ -21,6 +23,7 @@ from wslink import register as exportRpc  # type: ignore
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.utils_functions import (
+    create_color_transfer_function,
     deterministic_color,
     RpcParams,
     validate_schema,
@@ -104,7 +107,37 @@ class VtkModelView(VtkObjectView):
                     attr.SetBlockColor(block_dataset, [red, green, blue])
                     attr.SetBlockOpacity(block_dataset, alpha)
         mapper.Modified()
+        self.setupModelColorMap(pipeline)
         return colors
+
+    def setupModelColorMap(self, pipeline: VtkPipeline) -> None:
+        active_configs = set()
+        for style in pipeline.block_styles.values():
+            if style and style.get("name"):
+                attribute_config = (
+                    style["name"],
+                    style.get("attribute_location", "point"),
+                    style.get("item", 0),
+                    style.get("minimum", 0.0),
+                    style.get("maximum", 1.0),
+                    tuple(style.get("points", [])),
+                )
+                active_configs.add(attribute_config)
+        for attribute_config in active_configs:
+            name, location, item, minimum, maximum, points = attribute_config
+            if attribute_config not in pipeline.scalar_bars:
+                bar = vtkScalarBarActor()
+                self.get_renderer().AddActor2D(bar)
+                pipeline.scalar_bars[attribute_config] = bar
+            bar = pipeline.scalar_bars[attribute_config]
+            lut = create_color_transfer_function(list(points), minimum, maximum, item)
+            bar.SetLookupTable(lut)
+            bar.SetVisibility(True)
+        for attribute_config, bar in pipeline.scalar_bars.items():
+            if attribute_config not in active_configs:
+                bar.SetVisibility(False)
+
+        self.update_scalar_bars_layout()
 
     def displayAttributeOnVertices(
         self,
@@ -126,6 +159,7 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             pipeline.update_block_colors(block_id)
+        self.setupModelColorMap(pipeline)
 
     def displayAttributeOnCells(
         self,
@@ -147,6 +181,7 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             pipeline.update_block_colors(block_id)
+        self.setupModelColorMap(pipeline)
 
     def setupColorMap(
         self,
@@ -162,6 +197,7 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             pipeline.update_block_colors(block_id)
+        self.setupModelColorMap(pipeline)
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:

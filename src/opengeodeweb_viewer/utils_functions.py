@@ -3,6 +3,7 @@
 # Third party imports
 import fastjsonschema  # type: ignore
 import math
+from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
 from opengeodeweb_microservice.schemas import SchemaDict
 
@@ -55,3 +56,27 @@ def deterministic_color(identifier: str) -> tuple[float, float, float]:
         return round(255 * intensity) / 255
 
     return (component(0), component(PHASE_GREEN), component(4))
+
+
+def create_color_transfer_function(
+    points: list[float], minimum: float, maximum: float, item: int = 0
+) -> vtkColorTransferFunction:
+    lut = vtkColorTransferFunction()
+    lut.SetVectorModeToComponent()
+    lut.SetVectorComponent(item)
+    lut.SetRange(minimum, maximum)
+    if points:
+        x_min, x_max = points[0], points[-4]
+        span = x_max - x_min
+        for i in range(0, len(points), 4):
+            x, r, g, b = points[i : i + 4]
+            new_x = (
+                minimum + (x - x_min) / span * (maximum - minimum)
+                if span
+                else minimum
+            )
+            lut.AddRGBPoint(new_x, r, g, b)
+    else:
+        lut.AddRGBPoint(minimum, 0, 0, 0)
+        lut.AddRGBPoint(maximum, 1, 1, 1)
+    return lut

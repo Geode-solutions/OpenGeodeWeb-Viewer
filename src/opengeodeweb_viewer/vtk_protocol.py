@@ -1,4 +1,5 @@
 # Standard library imports
+from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 import math
 import os
 from typing import Any, cast
@@ -389,12 +390,27 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.reset_camera_clipping_range()
 
     def update_scalar_bars_layout(self) -> None:
-        visible_bars = [
-            (data_id, pipeline)
-            for data_id, pipeline in self.get_data_base().items()
-            if pipeline.scalarBar.GetVisibility()
-            and pipeline.scalarBar.GetLookupTable() is not None
-        ]
+        visible_bars: list[tuple[vtkScalarBarActor, str, str, VtkPipeline]] = []
+        for data_id, pipeline in self.get_data_base().items():
+            if (
+                pipeline.scalarBar.GetVisibility()
+                and pipeline.scalarBar.GetLookupTable() is not None
+            ):
+                dataset = pipeline.filter.GetOutputDataObject(0)
+                scalars = (
+                    dataset.GetPointData().GetScalars()
+                    or dataset.GetCellData().GetScalars()
+                    if isinstance(dataset, vtkDataSet)
+                    else None
+                )
+                attr_name = scalars.GetName() if scalars else "Attribute"
+                visible_bars.append((pipeline.scalarBar, attr_name, data_id, pipeline))
+
+            for attribute_config, bar in pipeline.scalar_bars.items():
+                if bar.GetVisibility() and bar.GetLookupTable() is not None:
+                    attr_name = attribute_config[0]
+                    visible_bars.append((bar, attr_name, data_id, pipeline))
+
         if not visible_bars:
             return
 
@@ -407,16 +423,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         actual_width = 0.10
         row_height = 0.12
 
-        for i, (data_id, pipeline) in enumerate(visible_bars):
-            bar = pipeline.scalarBar
+        for i, (bar, attr_name, data_id, pipeline) in enumerate(visible_bars):
             dataset = pipeline.filter.GetOutputDataObject(0)
-            scalars = (
-                dataset.GetPointData().GetScalars()
-                or dataset.GetCellData().GetScalars()
-                if dataset
-                else None
-            )
-            attr_name = scalars.GetName() if scalars else "Attribute"
             data_name = (
                 dataset.GetObjectName()
                 if dataset and dataset.GetObjectName()
