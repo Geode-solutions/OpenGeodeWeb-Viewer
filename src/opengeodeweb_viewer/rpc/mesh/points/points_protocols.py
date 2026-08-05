@@ -32,6 +32,7 @@ class VtkMeshPointsView(VtkMeshView):
         )
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetPointsVisibility(params.id, params.visibility)
+        return { **params }
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
     def setMeshPointsColor(self, rpc_params: RpcParams) -> None:
