@@ -2,27 +2,23 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
-from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
-from vtkmodules.vtkRenderingCore import (
-    vtkDataSetMapper,
-    vtkActor,
-    vtkTexture,
-    vtkColorTransferFunction,
-)
-from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkCellTypes
-from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
-from vtkmodules.vtkCommonDataModel import vtkPolyData
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_microservice.schemas import get_schemas_dict
+from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
+from vtkmodules.vtkRenderingCore import (
+    vtkColorTransferFunction,
+    vtkDataSetMapper,
+    vtkTexture,
+)
+from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.vtk_protocol import VtkPipeline
+from opengeodeweb_viewer.utils_functions import (
+    RpcParams,
+    validate_schema,
+)
+from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from . import schemas
 
 
@@ -50,12 +46,9 @@ class VtkMeshView(VtkObjectView):
             reader = vtkXMLGenericDataObjectReader()
             reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
             reader.Update()
-            dataset = reader.GetOutputDataObject(0)
-            if dataset:
-                dataset.SetObjectName(params.name)
             mapper = vtkDataSetMapper()
-            mapper.SetInputConnection(reader.GetOutputPort())
             data = VtkPipeline(reader, mapper)
+            self.setup_pipeline(data, params.name)
             self.highlight(data)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
@@ -107,16 +100,14 @@ class VtkMeshView(VtkObjectView):
             texture = vtkTexture()
             texture.SetInputConnection(texture_reader.GetOutputPort())
             texture.InterpolateOn()
-            reader = self.get_vtk_pipeline(mesh_id).reader
-            output = reader.GetOutputAsDataSet()
-            point_data = output.GetPointData()
-            for i in range(point_data.GetNumberOfArrays()):
-                array = point_data.GetArray(i)
-                if array.GetName() == tex_info.texture_name:
-                    point_data.SetTCoords(array)
-                    break
-            actor = self.get_vtk_pipeline(mesh_id).actor
-            actor.SetTexture(texture)
+            pipeline = self.get_vtk_pipeline(mesh_id)
+            output = pipeline.reader.GetOutputAsDataSet()
+            array = output.GetPointData().GetArray(tex_info.texture_name)
+            if array:
+                output.GetPointData().SetTCoords(array)
+            pipeline.filter.Modified()
+            pipeline.filter.Update()
+            pipeline.actor.SetTexture(texture)
 
     def displayAttributeOnVertices(
         self,
@@ -127,10 +118,13 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        points = reader.GetOutputAsDataSet().GetPointData()
-        points.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
+        pipeline.filter.Update()
+        active_ds = pipeline.mapper.GetInputDataObject(0, 0)
+        if active_ds:
+            active_ds.GetPointData().SetActiveScalars(name)
+        mapper = pipeline.mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointData()
         mapper.SetArrayComponent(item)
@@ -145,10 +139,13 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
     ) -> None:
-        reader = self.get_vtk_pipeline(data_id).reader
-        cells = reader.GetOutputAsDataSet().GetCellData()
-        cells.SetActiveScalars(name)
-        mapper = self.get_vtk_pipeline(data_id).mapper
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
+        pipeline.filter.Update()
+        active_ds = pipeline.mapper.GetInputDataObject(0, 0)
+        if active_ds:
+            active_ds.GetCellData().SetActiveScalars(name)
+        mapper = pipeline.mapper
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUseCellData()
         mapper.SetArrayComponent(item)

@@ -2,17 +2,20 @@ from typing import Callable
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from tests.conftest import ServerMonitor
 
+# Local constants
+mesh_id = "12345678901234567890123456789012"
+
 
 def test_register_mesh(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     dataset_factory(
-        id="123456789", viewable_file="hat.vtp", viewer_elements_type="polygons"
+        id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "name": "hat.vtp"}],
+        [{"id": mesh_id, "name": "hat.vtp"}],
     )
     assert server.compare_image("mesh/register.jpeg") == True
 
@@ -24,7 +27,7 @@ def test_deregister_mesh(
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["deregister"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": mesh_id}],
     )
 
     assert server.compare_image("mesh/deregister.jpeg") == True
@@ -35,7 +38,7 @@ def test_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) 
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["visibility"]["rpc"],
-        [{"id": "123456789", "visibility": False}],
+        [{"id": mesh_id, "visibility": False}],
     )
     assert server.compare_image("mesh/visibility.jpeg") == True
 
@@ -47,7 +50,7 @@ def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"],
         [
             {
-                "id": "123456789",
+                "id": mesh_id,
                 "color": {"red": 50, "green": 2, "blue": 250, "alpha": 1.0},
             }
         ],
@@ -70,7 +73,7 @@ def test_apply_textures(
         + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
         [
             {
-                "id": "123456789",
+                "id": mesh_id,
                 "textures": [
                     {
                         "texture_name": "lambert2SG",

@@ -1,87 +1,44 @@
 # Standard library imports
 import math
 import os
-from typing import cast, Any, Literal, TypedDict
-from dataclasses import dataclass, field
+from typing import Any, cast
 
 # Third party imports
 import vtkmodules.vtkRenderingOpenGL2
 from vtkmodules.web import protocols as vtk_protocols
-from vtkmodules.vtkIOXML import (
-    vtkXMLReader,
-)
 from vtkmodules.vtkWebCore import vtkWebApplication
-from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
-    vtkMapper,
+    vtkCellPicker,
+    vtkCompositePolyDataMapper,
     vtkRenderer,
     vtkRenderWindow,
-    vtkDataSetMapper,
-    vtkCompositePolyDataMapper,
-    vtkCellPicker,
-    vtkHardwarePicker,
 )
 from vtkmodules.vtkCommonDataModel import (
+    vtkBoundingBox,
     vtkDataObject,
     vtkDataSet,
-    vtkBoundingBox,
-    vtkSelection,
+    vtkImplicitBoolean,
+    vtkPlane,
     vtkSelectionNode,
 )
-from vtkmodules.vtkFiltersExtraction import vtkExtractSelection
-from vtkmodules.vtkCommonCore import vtkStringArray, vtkIdTypeArray
+from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
+from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from vtkmodules.vtkCommonCore import vtkIdTypeArray, vtkStringArray
 from vtkmodules.vtkRenderingAnnotation import (
-    vtkCubeAxesActor,
     vtkAxesActor,
-    vtkScalarBarActor,
+    vtkCubeAxesActor,
 )
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Local application imports
-from opengeodeweb_microservice.database.connection import get_session, init_database
+from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
-from opengeodeweb_microservice.database.data_types import ViewerType, ViewerElementsType
-
-
-@dataclass
-class ViewerData:
-    id: str
-    viewable_file: str | None
-    viewer_object: ViewerType
-    viewer_elements_type: ViewerElementsType
-
-
-@dataclass
-class HighlightPipeline:
-    actor: vtkActor = field(default_factory=vtkActor)
-    mapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
-    selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
-    selection: vtkSelection = field(default_factory=vtkSelection)
-    extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
-
-
-class BlockStyle(TypedDict):
-    name: str
-    attribute_location: Literal["point", "cell"]
-    points: list[float]
-    minimum: float
-    maximum: float
-    item: int
-
-
-@dataclass
-class VtkPipeline:
-    reader: vtkXMLReader
-    mapper: vtkMapper
-    filter: vtkAlgorithm | None = None
-    actor: vtkActor = field(default_factory=vtkActor)
-    highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
-    blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
-    blockGeodeIds: list[str] = field(default_factory=list)
-    scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
-    block_styles: dict[int, BlockStyle] = field(default_factory=dict)
-    pick_mapper: vtkMapper | None = None
+from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
+from opengeodeweb_viewer.vtk_pipeline import (
+    ViewerData,
+    VtkPipeline,
+)
 
 
 class VtkTypingMixin:
@@ -167,9 +124,20 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if grid_scale is not None and grid_scale.GetVisibility():
             grid_scale.SetUseBounds(True)
             renderer.ResetCameraClippingRange()
-            grid_scale.SetUseBounds(False)
         else:
             renderer.ResetCameraClippingRange()
+
+    def setup_pipeline(self, pipeline: VtkPipeline, name: str) -> vtkDataObject | None:
+        pipeline.filter.SetInputConnection(pipeline.reader.GetOutputPort())
+        pipeline.filter.Update()
+        geometry_output: vtkDataObject | None = pipeline.filter.GetOutputDataObject(0)
+        if geometry_output:
+            geometry_output.SetObjectName(name)
+        if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+            pipeline.mapper.SetInputDataObject(geometry_output)
+        else:
+            pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
+        return geometry_output
 
     def update_highlight(
         self,
@@ -187,8 +155,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         selection_list.SetNumberOfComponents(1)
         selection_list.InsertNextValue(id_to_select)
         node.SetSelectionList(selection_list)
-        if dataset is not None:
-            pipeline.highlight.extractSelection.SetInputData(0, dataset)
+        target_dataset = dataset or pipeline.mapper.GetInputDataObject(0, 0)
+        pipeline.highlight.extractSelection.SetInputData(0, target_dataset)
         pipeline.highlight.extractSelection.Modified()
         pipeline.highlight.extractSelection.Update()
         pipeline.highlight.actor.VisibilityOn()
@@ -197,6 +165,41 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             pipeline.highlight.actor.VisibilityOff()
+
+    def set_clipping_planes(
+        self, data_ids: list[str], planes_data: list[Plane]
+    ) -> None:
+        for data_id in data_ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            is_composite = isinstance(pipeline.mapper, vtkCompositePolyDataMapper)
+            if planes_data:
+                clipping_filter = vtkExtractGeometry()
+                clipping_filter.SetInputConnection(pipeline.reader.GetOutputPort())
+                implicit_boolean = vtkImplicitBoolean()
+                implicit_boolean.SetOperationTypeToIntersection()
+                for plane_info in planes_data:
+                    plane = vtkPlane()
+                    plane.SetOrigin(plane_info.origin)
+                    plane.SetNormal(plane_info.normal)
+                    implicit_boolean.AddFunction(plane)
+                clipping_filter.SetImplicitFunction(implicit_boolean)
+                pipeline.clipping_filter = clipping_filter
+                input_port = clipping_filter.GetOutputPort()
+            else:
+                pipeline.clipping_filter = None
+                input_port = pipeline.reader.GetOutputPort()
+            pipeline.filter.SetInputConnection(input_port)
+            pipeline.filter.Update()
+            filtered_dataset = pipeline.filter.GetOutputDataObject(0)
+            if is_composite:
+                pipeline.sync_composite_pipeline(filtered_dataset)
+            else:
+                pipeline.mapper.SetInputConnection(input_port)
+                pipeline.restore_active_scalars(
+                    cast(vtkDataSet, filtered_dataset)
+                    if planes_data
+                    else pipeline.reader.GetOutputAsDataSet()
+                )
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).
@@ -386,16 +389,13 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.reset_camera_clipping_range()
 
     def update_scalar_bars_layout(self) -> None:
-        visible_bars = []
-        for data_id, pipeline in self.get_data_base().items():
-            if (
-                pipeline.scalarBar.GetVisibility()
-                and pipeline.scalarBar.GetLookupTable() is not None
-            ):
-                visible_bars.append((data_id, pipeline.scalarBar))
-
-        n = len(visible_bars)
-        if n == 0:
+        visible_bars = [
+            (data_id, pipeline)
+            for data_id, pipeline in self.get_data_base().items()
+            if pipeline.scalarBar.GetVisibility()
+            and pipeline.scalarBar.GetLookupTable() is not None
+        ]
+        if not visible_bars:
             return
 
         start_x = 0.22
@@ -407,25 +407,16 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         actual_width = 0.10
         row_height = 0.12
 
-        for i, (data_id, bar) in enumerate(visible_bars):
-            pipeline = self.get_vtk_pipeline(data_id)
-            if pipeline.filter:
-                dataset = pipeline.filter.GetOutputDataObject(0)
-            else:
-                dataset = pipeline.reader.GetOutputDataObject(0)
-
-            attr_name = ""
-            if dataset:
-                pd = dataset.GetPointData().GetScalars()
-                cd = dataset.GetCellData().GetScalars()
-                if pd:
-                    attr_name = pd.GetName()
-                elif cd:
-                    attr_name = cd.GetName()
-
-            if not attr_name:
-                attr_name = "Attribute"
-
+        for i, (data_id, pipeline) in enumerate(visible_bars):
+            bar = pipeline.scalarBar
+            dataset = pipeline.filter.GetOutputDataObject(0)
+            scalars = (
+                dataset.GetPointData().GetScalars()
+                or dataset.GetCellData().GetScalars()
+                if dataset
+                else None
+            )
+            attr_name = scalars.GetName() if scalars else "Attribute"
             data_name = (
                 dataset.GetObjectName()
                 if dataset and dataset.GetObjectName()
