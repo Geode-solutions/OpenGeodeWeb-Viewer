@@ -305,3 +305,38 @@ def test_cells_cell_color_map_rainbow(
     )
 
     assert server.compare_image("mesh/cells/cell_color_map_rainbow.jpeg") == True
+
+
+def test_cells_cell_attribute_item(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "name": "RGB_data",
+                "item": 1,
+                "points": [
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    255.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 0.0,
+                "maximum": 255.0,
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/cells/cell_color_map_item.jpeg") == True
