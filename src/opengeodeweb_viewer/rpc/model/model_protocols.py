@@ -107,10 +107,10 @@ class VtkModelView(VtkObjectView):
                     attr.SetBlockColor(block_dataset, [red, green, blue])
                     attr.SetBlockOpacity(block_dataset, alpha)
         mapper.Modified()
-        self.setupModelColorMap(pipeline)
+        self.setup_model_color_map(pipeline)
         return colors
 
-    def setupModelColorMap(self, pipeline: VtkPipeline) -> None:
+    def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
         active_configs = set()
         for style in pipeline.block_styles.values():
             if style and style.get("name"):
@@ -159,7 +159,7 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             pipeline.update_block_colors(block_id)
-        self.setupModelColorMap(pipeline)
+        self.setup_model_color_map(pipeline)
 
     def displayAttributeOnCells(
         self,
@@ -181,7 +181,7 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             pipeline.update_block_colors(block_id)
-        self.setupModelColorMap(pipeline)
+        self.setup_model_color_map(pipeline)
 
     def setupColorMap(
         self,
@@ -197,7 +197,7 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             pipeline.update_block_colors(block_id)
-        self.setupModelColorMap(pipeline)
+        self.setup_model_color_map(pipeline)
 
     @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
     def registerModel(self, rpc_params: RpcParams) -> None:
