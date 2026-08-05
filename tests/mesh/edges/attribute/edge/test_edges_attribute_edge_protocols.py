@@ -242,3 +242,38 @@ def test_edges_edge_color_map_rainbow(
     )
 
     assert server.compare_image("mesh/edges/edge_color_map_rainbow.jpeg") == True
+
+
+def test_edges_edge_attribute_item(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": mesh_id,
+                "name": "cycle_id",
+                "item": 1,
+                "points": [
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    8.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 0.0,
+                "maximum": 8.0,
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/edges/edge_attribute_item.jpeg") == True

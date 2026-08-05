@@ -307,7 +307,7 @@ def test_cells_vertex_color_map_rainbow(
     assert server.compare_image("mesh/cells/vertex_color_map_rainbow.jpeg") == True
 
 
-def test_cells_vertex_vector_component(
+def test_cells_vertex_attribute_item(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_register(server, dataset_factory)
@@ -339,10 +339,4 @@ def test_cells_vertex_vector_component(
         ],
     )
 
-    # Render and assert we receive non-empty image bytes (no backend crashes)
-    server.call("opengeodeweb_viewer.viewer.render")
-    while True:
-        response = server.ws.recv()
-        if isinstance(response, bytes):
-            assert len(response) > 0
-            break
+    assert server.compare_image("mesh/cells/vertex_attribute_item.jpeg") == True

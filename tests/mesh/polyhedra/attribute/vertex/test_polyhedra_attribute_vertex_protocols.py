@@ -327,3 +327,40 @@ def test_polyhedra_vertex_color_map_rainbow(
     )
 
     assert server.compare_image("mesh/polyhedra/vertex_color_map_rainbow.jpeg") == True
+
+
+def test_polyhedra_vertex_attribute_item(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
+        + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
+            "attribute"
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": mesh_id,
+                "name": "points",
+                "item": 1,
+                "points": [
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    10.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 0.0,
+                "maximum": 10.0,
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/polyhedra/vertex_attribute_item.jpeg") == True
