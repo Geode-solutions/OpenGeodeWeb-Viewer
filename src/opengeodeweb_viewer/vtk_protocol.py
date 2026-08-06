@@ -455,7 +455,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 bar_height = 0.08
 
             bar.SetNumberOfLabels(2)
-            bar.SetLabelFormat("%.2g")
+            bar.SetLabelFormat("%g")
             bar.SetOrientationToHorizontal()
 
             row = i // cols
