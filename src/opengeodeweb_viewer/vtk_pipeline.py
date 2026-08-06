@@ -141,33 +141,24 @@ class VtkPipeline:
         is_point = style["attribute_location"] == "point"
         field_data = block.GetPointData() if is_point else block.GetCellData()
         other_field_data = block.GetCellData() if is_point else block.GetPointData()
-
         scalar_array = field_data.GetArray(style["name"])
         if not scalar_array:
             return
-
-        field_data.SetActiveScalars(style["name"])
-        other_field_data.SetActiveScalars("")
-
         item = style.get("item", 0)
-        minimum = style["minimum"]
-        maximum = style["maximum"]
-        points = style["points"]
-        lut = create_color_transfer_function(points, minimum, maximum, item)
-
+        lut = create_color_transfer_function(
+            style["points"], style["minimum"], style["maximum"], item
+        )
+        rgba_colors = lut.MapScalars(scalar_array, 1, item)
+        rgba_colors.SetName(f"__colors_{style['name']}")
+        field_data.AddArray(rgba_colors)
+        field_data.SetActiveScalars(rgba_colors.GetName())
+        other_field_data.SetActiveScalars("")
         if isinstance(self.mapper, vtkCompositePolyDataMapper):
             if attributes := self.mapper.GetCompositeDataDisplayAttributes():
                 attributes.RemoveBlockColor(block)
         self.mapper.ScalarVisibilityOn()
-        self.mapper.SetLookupTable(lut)
-        self.mapper.SetScalarRange(minimum, maximum)
-        self.mapper.SetColorModeToMapScalars()
-        if is_point:
-            self.mapper.SetScalarModeToUsePointData()
-        else:
-            self.mapper.SetScalarModeToUseCellData()
-        self.mapper.ColorByArrayComponent(style["name"], item)
-        self.mapper.InterpolateScalarsBeforeMappingOn()
+        self.mapper.SetColorModeToDirectScalars()
+        self.mapper.SetScalarModeToDefault()
         self.mapper.Modified()
 
     def sync_block_display_attributes(
