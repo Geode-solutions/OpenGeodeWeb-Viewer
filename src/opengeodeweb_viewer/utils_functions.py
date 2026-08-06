@@ -71,9 +71,7 @@ def create_color_transfer_function(
         for i in range(0, len(points), 4):
             x, r, g, b = points[i : i + 4]
             new_x = (
-                minimum + (x - x_min) / span * (maximum - minimum)
-                if span
-                else minimum
+                minimum + (x - x_min) / span * (maximum - minimum) if span else minimum
             )
             lut.AddRGBPoint(new_x, r, g, b)
     else:
