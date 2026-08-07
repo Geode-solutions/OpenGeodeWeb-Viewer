@@ -63,6 +63,9 @@ class BlockStyle(TypedDict):
     item: int
 
 
+AttributeConfig = tuple[str, str, int, float, float, tuple[float, ...]]
+
+
 @dataclass
 class VtkPipeline:
     reader: vtkXMLReader
@@ -74,7 +77,7 @@ class VtkPipeline:
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
     scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
-    scalar_bars: dict[tuple, vtkScalarBarActor] = field(default_factory=dict)
+    scalar_bars: dict[AttributeConfig, vtkScalarBarActor] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
 
