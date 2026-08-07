@@ -406,9 +406,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 attr_name = scalars.GetName() if scalars else "Attribute"
                 visible_bars.append((pipeline.scalarBar, attr_name, data_id, pipeline))
 
-            for attribute_config, bar in pipeline.scalar_bars.items():
+            for attr_name, bar in pipeline.scalar_bars.items():
                 if bar.GetVisibility() and bar.GetLookupTable() is not None:
-                    attr_name = attribute_config[0]
                     visible_bars.append((bar, attr_name, data_id, pipeline))
 
         if not visible_bars:
