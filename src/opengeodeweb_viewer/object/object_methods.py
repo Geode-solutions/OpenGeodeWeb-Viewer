@@ -53,6 +53,8 @@ class VtkObjectView(VtkView):
         renderer.RemoveActor(pipeline.actor)
         renderer.RemoveActor(pipeline.highlight.actor)
         renderer.RemoveActor2D(pipeline.scalarBar)
+        for bar in pipeline.scalar_bars.values():
+            renderer.RemoveActor2D(bar)
         self.deregister_object(data_id)
         self.update_scalar_bars_layout()
 
@@ -61,12 +63,20 @@ class VtkObjectView(VtkView):
         pipeline.actor.SetVisibility(visibility)
         if not visibility:
             pipeline.scalarBar.SetVisibility(False)
+            for bar in pipeline.scalar_bars.values():
+                bar.SetVisibility(False)
         else:
             if (
                 pipeline.mapper.GetScalarVisibility()
                 and pipeline.mapper.GetLookupTable() is not None
             ):
                 pipeline.scalarBar.SetVisibility(True)
+            for style in pipeline.block_styles.values():
+                if style and style.get("name"):
+                    for bar in pipeline.scalar_bars.values():
+                        if bar.GetLookupTable() is not None:
+                            bar.SetVisibility(True)
+                    break
         self.update_scalar_bars_layout()
 
     def SetOpacity(self, data_id: str, opacity: float) -> None:
@@ -176,8 +186,16 @@ class VtkObjectView(VtkView):
         if isinstance(output, vtkDataSet):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
+        elif isinstance(mapper, vtkCompositePolyDataMapper):
+            pipeline.block_styles.clear()
+            for block in pipeline.blockDataSets:
+                if isinstance(block, vtkDataSet):
+                    block.GetPointData().SetActiveScalars("")
+                    block.GetCellData().SetActiveScalars("")
         mapper.ScalarVisibilityOff()
         pipeline.scalarBar.SetVisibility(False)
+        for bar in pipeline.scalar_bars.values():
+            bar.SetVisibility(False)
         self.update_scalar_bars_layout()
 
     def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:
