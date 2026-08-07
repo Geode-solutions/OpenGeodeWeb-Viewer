@@ -63,7 +63,9 @@ class BlockStyle(TypedDict):
     item: int
 
 
-AttributeConfig = tuple[str, str, int, float, float, tuple[float, ...]]
+AttributeConfig = tuple[
+    str, Literal["point", "cell"], int, float, float, tuple[float, ...]
+]
 
 
 @dataclass
