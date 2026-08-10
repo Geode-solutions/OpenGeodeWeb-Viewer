@@ -25,7 +25,7 @@ class VtkMeshPointsView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> dict[str, dict[Any, Any]]:
+    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> dict[str, Any]:
         validate_schema(
             rpc_params,
             self.mesh_points_schemas_dict["visibility"],
