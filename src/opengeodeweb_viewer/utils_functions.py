@@ -14,6 +14,7 @@ type RpcParams = dict[str, str]
 
 R = TypeVar("R")
 
+
 def exportRpc(rpc_id: str) -> Callable[[Callable[..., R]], Callable[..., R]]:
     def decorator(function: Callable[..., R]) -> Callable[..., R]:
         def wrapper(self: Any, *args: Any, **kwargs: Any) -> R:
@@ -23,8 +24,11 @@ def exportRpc(rpc_id: str) -> Callable[[Callable[..., R]], Callable[..., R]]:
             if do_stream:
                 self.publish(rpc_id, result)
             return result
+
         return register(rpc_id)(wrapper)  # type: ignore[no-any-return]
+
     return decorator
+
 
 def validate_schema(
     rpc_params: RpcParams, schema: SchemaDict, prefix: str = ""
