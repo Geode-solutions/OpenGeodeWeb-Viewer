@@ -22,7 +22,7 @@ frozenlist>=1
     # via
     #   aiohttp
     #   aiosignal
-idna==3.18
+idna>=3
     # via yarl
 kiwisolver>=1
     # via matplotlib
@@ -36,7 +36,7 @@ numpy>=2
     # via
     #   contourpy
     #   matplotlib
-packaging==26.3
+packaging>=26
     # via matplotlib
 pillow>=12
     # via matplotlib
@@ -56,11 +56,11 @@ typing-extensions>=4
     #   aiosignal
 vtk==9.5.2
     # via -r requirements.in
-websocket-client>=1
+websocket-client==1.8.0
     # via -r requirements.in
 wslink==1.12.4
     # via -r requirements.in
 yarl>=1
     # via aiohttp
 
-opengeodeweb-microservice==1.*,>=1.2.0rc2
+opengeodeweb-microservice==1.*,>=1.2.0

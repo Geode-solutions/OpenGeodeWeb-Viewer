@@ -34,6 +34,7 @@ from opengeodeweb_microservice.database.data_types import (
     ViewerElementsType,
     ViewerType,
 )
+from opengeodeweb_viewer.utils_functions import create_color_transfer_function
 
 
 @dataclass
@@ -73,6 +74,7 @@ class VtkPipeline:
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
     scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
+    scalar_bars: dict[str, vtkScalarBarActor] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
 
@@ -139,50 +141,24 @@ class VtkPipeline:
         is_point = style["attribute_location"] == "point"
         field_data = block.GetPointData() if is_point else block.GetCellData()
         other_field_data = block.GetCellData() if is_point else block.GetPointData()
-
         scalar_array = field_data.GetArray(style["name"])
         if not scalar_array:
             return
-
-        field_data.SetActiveScalars(style["name"])
-        other_field_data.SetActiveScalars("")
-
         item = style.get("item", 0)
-        minimum = style["minimum"]
-        maximum = style["maximum"]
-        points = style["points"]
-        lut = vtkColorTransferFunction()
-        lut.SetVectorModeToComponent()
-        lut.SetVectorComponent(item)
-        lut.SetRange(minimum, maximum)
-        if points:
-            x_min, x_max = points[0], points[-4]
-            span = x_max - x_min
-            for i in range(0, len(points), 4):
-                x, r, g, b = points[i : i + 4]
-                new_x = (
-                    minimum + (x - x_min) / span * (maximum - minimum)
-                    if span
-                    else minimum
-                )
-                lut.AddRGBPoint(new_x, r, g, b)
-        else:
-            lut.AddRGBPoint(minimum, 0, 0, 0)
-            lut.AddRGBPoint(maximum, 1, 1, 1)
-
+        lut = create_color_transfer_function(
+            style["points"], style["minimum"], style["maximum"], item
+        )
+        rgba_colors = lut.MapScalars(scalar_array, 1, item)
+        rgba_colors.SetName(f"__colors_{style['name']}")
+        field_data.AddArray(rgba_colors)
+        field_data.SetActiveScalars(rgba_colors.GetName())
+        other_field_data.SetActiveScalars("")
         if isinstance(self.mapper, vtkCompositePolyDataMapper):
             if attributes := self.mapper.GetCompositeDataDisplayAttributes():
                 attributes.RemoveBlockColor(block)
         self.mapper.ScalarVisibilityOn()
-        self.mapper.SetLookupTable(lut)
-        self.mapper.SetScalarRange(minimum, maximum)
-        self.mapper.SetColorModeToMapScalars()
-        if is_point:
-            self.mapper.SetScalarModeToUsePointData()
-        else:
-            self.mapper.SetScalarModeToUseCellData()
-        self.mapper.ColorByArrayComponent(style["name"], item)
-        self.mapper.InterpolateScalarsBeforeMappingOn()
+        self.mapper.SetColorModeToDirectScalars()
+        self.mapper.SetScalarModeToDefault()
         self.mapper.Modified()
 
     def sync_block_display_attributes(
