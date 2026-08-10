@@ -2,7 +2,7 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
+from opengeodeweb_viewer.utils_functions import exportRpc
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
