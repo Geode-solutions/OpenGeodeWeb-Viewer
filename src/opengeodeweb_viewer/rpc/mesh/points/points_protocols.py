@@ -1,4 +1,5 @@
 # Standard library imports
+from typing import Any
 import os
 
 # Third party imports
@@ -24,7 +25,7 @@ class VtkMeshPointsView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> dict[str, str]:
+    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> dict[str, dict[Any, Any]]:
         validate_schema(
             rpc_params,
             self.mesh_points_schemas_dict["visibility"],
