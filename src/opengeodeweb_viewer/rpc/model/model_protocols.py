@@ -126,7 +126,10 @@ class VtkModelView(VtkObjectView):
                     or active_attrs[attr_key]["points"] != points
                 ):
                     attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
-                    if attr_key in active_attrs and active_attrs[attr_key]["points"] != points:
+                    if (
+                        attr_key in active_attrs
+                        and active_attrs[attr_key]["points"] != points
+                    ):
                         attr_key = f"{attr_key} (Block {block_id})"
                 active_attrs[attr_key] = style
         for name, style in active_attrs.items():
