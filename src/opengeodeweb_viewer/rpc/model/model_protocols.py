@@ -119,18 +119,25 @@ class VtkModelView(VtkObjectView):
                 minimum = style["minimum"]
                 maximum = style["maximum"]
                 points = style["points"]
-                attr_key = f"{name} (Item {item + 1})" if item > 0 else name
+                attr_key = name
                 if attr_key in active_attrs and (
-                    active_attrs[attr_key]["minimum"] != minimum
+                    active_attrs[attr_key]["item"] != item
+                    or active_attrs[attr_key]["minimum"] != minimum
                     or active_attrs[attr_key]["maximum"] != maximum
                     or active_attrs[attr_key]["points"] != points
                 ):
-                    attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
-                    if (
-                        attr_key in active_attrs
-                        and active_attrs[attr_key]["points"] != points
+                    attr_key = f"{name} (Item {item + 1})" if item > 0 else name
+                    if attr_key in active_attrs and (
+                        active_attrs[attr_key]["minimum"] != minimum
+                        or active_attrs[attr_key]["maximum"] != maximum
+                        or active_attrs[attr_key]["points"] != points
                     ):
-                        attr_key = f"{attr_key} (Block {block_id})"
+                        attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
+                        if (
+                            attr_key in active_attrs
+                            and active_attrs[attr_key]["points"] != points
+                        ):
+                            attr_key = f"{attr_key} (Block {block_id})"
                 active_attrs[attr_key] = style
         for name, style in active_attrs.items():
             if name not in pipeline.scalar_bars:
