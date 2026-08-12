@@ -112,4 +112,3 @@ def test_blocks_shrink(
         ],
     )
     assert server.compare_image("model/blocks/shrink.jpeg") == True
-

@@ -212,9 +212,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.clipping_filter = None
             self.update_pipeline_filter(pipeline)
 
-    def set_shrink(
-        self, data_ids: list[str], shrink_factor: float
-    ) -> None:
+    def set_shrink(self, data_ids: list[str], shrink_factor: float) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             if shrink_factor < 1.0:

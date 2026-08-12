@@ -96,4 +96,3 @@ def test_cells_shrink(
         ],
     )
     assert server.compare_image("mesh/cells/shrink.jpeg") == True
-

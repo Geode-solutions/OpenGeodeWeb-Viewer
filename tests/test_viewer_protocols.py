@@ -387,9 +387,7 @@ def test_clipping_planes(
     )
 
 
-def test_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     server.call(
         VtkViewerView.viewer_prefix

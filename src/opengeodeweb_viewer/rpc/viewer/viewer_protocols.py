@@ -378,7 +378,6 @@ class VtkViewerView(VtkView):
         params = schemas.Shrink.from_dict(rpc_params)
         self.set_shrink(params.ids, params.shrink_factor)
 
-
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:
         validate_schema(
