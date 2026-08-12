@@ -1,6 +1,7 @@
 from .update_data import *
 from .update_camera import *
 from .take_screenshot import *
+from .shrink import *
 from .set_z_scaling import *
 from .set_background_color import *
 from .reset_visualization import *

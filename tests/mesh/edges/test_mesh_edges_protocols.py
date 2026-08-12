@@ -94,3 +94,21 @@ def test_edges_clipping_plane(
         ],
     )
     assert server.compare_image("mesh/edges/clipping_plane.jpeg") == True
+
+
+def test_edges_shrink(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "shrink_factor": 0.8,
+            }
+        ],
+    )
+    assert server.compare_image("mesh/edges/shrink.jpeg") == True
