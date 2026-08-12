@@ -22,11 +22,10 @@ def exportRpc(rpc_id: str) -> Callable[[Callable[..., R]], Callable[..., R]]:
             print("do_stream", do_stream, flush=True)
             result = function(self, *args, **kwargs)
             if do_stream:
-                self.publish(rpc_id, result)
+                rpc_params = args[0] if args else None
+                self.publish(rpc_id, rpc_params)
             return result
-
         return register(rpc_id)(wrapper)  # type: ignore[no-any-return]
-
     return decorator
 
 

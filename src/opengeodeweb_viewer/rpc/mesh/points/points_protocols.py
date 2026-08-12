@@ -25,7 +25,7 @@ class VtkMeshPointsView(VtkMeshView):
         super().__init__()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> dict[str, Any]:
+    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> None:
         validate_schema(
             rpc_params,
             self.mesh_points_schemas_dict["visibility"],
@@ -33,7 +33,6 @@ class VtkMeshPointsView(VtkMeshView):
         )
         params = schemas.Visibility.from_dict(rpc_params)
         self.SetPointsVisibility(params.id, params.visibility)
-        return params.to_dict()
 
     @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
     def setMeshPointsColor(self, rpc_params: RpcParams) -> None:
