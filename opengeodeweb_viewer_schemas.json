@@ -2119,6 +2119,31 @@
         ],
         "additionalProperties": false
       },
+      "shrink": {
+        "$id": "opengeodeweb_viewer.viewer.shrink",
+        "rpc": "shrink",
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            }
+          },
+          "shrink_factor": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "ids",
+          "shrink_factor"
+        ],
+        "additionalProperties": false
+      },
       "set_z_scaling": {
         "$id": "opengeodeweb_viewer.viewer.set_z_scaling",
         "rpc": "set_z_scaling",

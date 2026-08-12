@@ -77,3 +77,22 @@ def test_cells_clipping_plane(
         ],
     )
     assert server.compare_image("mesh/cells/clipping_plane.jpeg") == True
+
+
+def test_cells_shrink(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "shrink_factor": 0.8,
+            }
+        ],
+    )
+    assert server.compare_image("mesh/cells/shrink.jpeg") == True

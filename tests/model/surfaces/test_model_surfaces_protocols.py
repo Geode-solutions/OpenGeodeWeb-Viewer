@@ -106,3 +106,22 @@ def test_surfaces_clipping_plane(
         ],
     )
     assert server.compare_image("model/surfaces/clipping_plane.jpeg") == True
+
+
+def test_surfaces_shrink(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_surfaces_polygons_visibility(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        [
+            {
+                "ids": [model_id],
+                "shrink_factor": 0.8,
+            }
+        ],
+    )
+    assert server.compare_image("model/surfaces/shrink.jpeg") == True
