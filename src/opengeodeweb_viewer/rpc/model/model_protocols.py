@@ -82,7 +82,7 @@ class VtkModelView(VtkObjectView):
                 pipeline.get_block_style(block_id)["name"] = ""
                 if color_mode == "random":
                     geode_id = pipeline.blockGeodeIds[block_id]
-                    red, green, blue = deterministic_color(str(geode_id))
+                    red, green, blue = deterministic_color(f"{geode_id}_{block_id}")
                     attr.SetBlockColor(block_dataset, [red, green, blue])
                     attr.SetBlockOpacity(block_dataset, 1.0)
                     colors.append(
