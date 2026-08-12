@@ -25,7 +25,9 @@ def exportRpc(rpc_id: str) -> Callable[[Callable[..., R]], Callable[..., R]]:
                 rpc_params = args[0] if args else None
                 self.publish(rpc_id, rpc_params)
             return result
+
         return register(rpc_id)(wrapper)  # type: ignore[no-any-return]
+
     return decorator
 
 
