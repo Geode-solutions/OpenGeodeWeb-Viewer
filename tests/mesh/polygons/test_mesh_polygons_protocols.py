@@ -69,3 +69,22 @@ def test_polygons_clipping_plane(
         ],
     )
     assert server.compare_image("mesh/polygons/clipping_plane.jpeg") == True
+
+
+def test_polygons_shrink(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "shrink_factor": 0.8,
+            }
+        ],
+    )
+    assert server.compare_image("mesh/polygons/shrink.jpeg") == True
