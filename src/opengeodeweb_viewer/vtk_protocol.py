@@ -316,7 +316,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         field_type: str,
         dataset: vtkDataObject | None,
     ) -> dict[str, list[float] | float]:
-        data_object = dataset or pipeline.reader.GetOutputDataObject(0)
+        data_object = dataset or pipeline.mapper.GetInputDataObject(0, 0)
         if not isinstance(data_object, vtkDataSet):
             return {}
         field_data = (
