@@ -478,7 +478,6 @@ def test_ruler(
         + VtkViewerView.viewer_schemas_dict["ruler"]["rpc"],
         [
             {
-                "enabled": True,
                 "point1": [-0.2, -0.2, 0.0],
                 "point2": [0.2, 0.2, 0.0],
             }

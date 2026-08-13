@@ -2,9 +2,6 @@
   "rpc": "ruler",
   "type": "object",
   "properties": {
-    "enabled": {
-      "type": "boolean"
-    },
     "point1": {
       "type": "array",
       "items": {

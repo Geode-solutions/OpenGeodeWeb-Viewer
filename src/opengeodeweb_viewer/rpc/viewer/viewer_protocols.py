@@ -485,12 +485,12 @@ class VtkViewerView(VtkView):
         assert ruler is not None
         point1: tuple[float, float, float] | None = (
             (params.point1[0], params.point1[1], params.point1[2])
-            if params.enabled and params.point1
+            if params.point1
             else None
         )
         point2: tuple[float, float, float] | None = (
             (params.point2[0], params.point2[1], params.point2[2])
-            if params.enabled and params.point2
+            if params.point2
             else None
         )
         distance = ruler.set_endpoints(point1, point2, renderer=self.get_renderer())
