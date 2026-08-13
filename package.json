@@ -2,38 +2,38 @@
   "name": "@geode/opengeodeweb-viewer",
   "version": "0.0.0",
   "description": "",
-  "scripts": {
-    "json": "npx opengeodeweb-microservice-generate opengeodeweb_viewer rpc rpc .",
-    "test": "npm run json",
-    "build": "npm run json"
+  "homepage": "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer",
+  "bugs": {
+    "url": "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
   },
-  "dependencies": {
-    "@geode/opengeodeweb-microservice": "0.0.0"
+  "license": "MIT",
+  "author": {
+    "name": "Geode-solutions",
+    "email": "contact@geode-solutions.com",
+    "url": "https://geode-solutions.com/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Geode-solutions/OpenGeodeWeb-Viewer.git"
+  },
+  "files": [
+    "opengeodeweb_viewer_schemas.json"
+  ],
   "exports": {
     "./opengeodeweb_viewer_schemas.json": {
       "import": "./opengeodeweb_viewer_schemas.json",
       "require": "./opengeodeweb_viewer_schemas.json"
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Geode-solutions/OpenGeodeWeb-Viewer.git"
-  },
-  "author": {
-    "name": "Geode-solutions",
-    "email": "contact@geode-solutions.com",
-    "url": "https://geode-solutions.com/"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
-  },
-  "homepage": "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer",
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "opengeodeweb_viewer_schemas.json"
-  ]
+  "scripts": {
+    "json": "npx opengeodeweb-microservice-generate --startDir src/opengeodeweb_viewer/rpc --key rpc --separator .",
+    "test": "npm run json",
+    "build": "npm run json"
+  },
+  "dependencies": {
+    "@geode/opengeodeweb-microservice": "0.0.0"
+  }
 }
