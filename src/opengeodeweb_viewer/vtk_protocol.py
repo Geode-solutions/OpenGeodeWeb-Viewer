@@ -38,6 +38,7 @@ from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
 from opengeodeweb_viewer.vtk_pipeline import (
+    RulerPipeline,
     ViewerData,
     VtkPipeline,
 )
@@ -82,6 +83,12 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
     def set_widget(self, widget: vtkOrientationMarkerWidget) -> None:
         self.coreServer.setSharedObject("widget", widget)
+
+    def get_ruler(self) -> RulerPipeline | None:
+        return cast(RulerPipeline | None, self.getSharedObject("ruler"))
+
+    def set_ruler(self, ruler: RulerPipeline) -> None:
+        self.coreServer.setSharedObject("ruler", ruler)
 
     def get_viewer_data(self, data_id: str) -> ViewerData:
         if Data is None:

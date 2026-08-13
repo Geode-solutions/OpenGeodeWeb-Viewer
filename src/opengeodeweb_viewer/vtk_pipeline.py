@@ -1,12 +1,15 @@
 # Standard library imports
 from dataclasses import dataclass, field
+import math
 from typing import cast, Literal, TypedDict
 
 # Third party imports
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkDataSetMapper,
+    vtkFollower,
     vtkMapper,
+    vtkPolyDataMapper,
     vtkCompositePolyDataMapper,
     vtkCompositeDataDisplayAttributes,
     vtkColorTransferFunction,
@@ -14,6 +17,8 @@ from vtkmodules.vtkRenderingCore import (
 from vtkmodules.vtkRenderingAnnotation import (
     vtkScalarBarActor,
 )
+from vtkmodules.vtkRenderingFreeType import vtkVectorText
+from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
     vtkDataSet,
@@ -53,6 +58,120 @@ class HighlightPipeline:
     selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
     selection: vtkSelection = field(default_factory=vtkSelection)
     extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
+
+@dataclass
+class RulerPipeline:
+    _SPHERE_RESOLUTION = 32
+    _PRIMARY_COLOR = (60 / 255, 153 / 255, 131 / 255)
+    _TEXT_COLOR = (0.05, 0.05, 0.05)
+
+    _point1: tuple[float, float, float] | None = field(default=None, init=False)
+    _point2: tuple[float, float, float] | None = field(default=None, init=False)
+    _line_source: vtkLineSource = field(default_factory=vtkLineSource)
+    line_actor: vtkActor = field(init=False)
+    _point1_source: vtkSphereSource = field(init=False)
+    point1_actor: vtkActor = field(init=False)
+    _point2_source: vtkSphereSource = field(init=False)
+    point2_actor: vtkActor = field(init=False)
+    _text_source: vtkVectorText = field(default_factory=vtkVectorText)
+    text_follower: vtkFollower = field(init=False)
+
+    def __post_init__(self) -> None:
+        self.line_actor = self._setup_actor(
+            vtkActor(), self._line_source, self._PRIMARY_COLOR, line_width=3.0
+        )
+        self._point1_source, self.point1_actor = self._make_sphere()
+        self._point2_source, self.point2_actor = self._make_sphere()
+        self.text_follower = self._setup_actor(
+            vtkFollower(), self._text_source, self._TEXT_COLOR, offset=-50000.0
+        )
+
+    def add_to_renderer(self, renderer) -> None:
+        self.text_follower.SetCamera(renderer.GetActiveCamera())
+        for actor in (
+            self.line_actor,
+            self.point1_actor,
+            self.point2_actor,
+            self.text_follower,
+        ):
+            actor.VisibilityOff()
+            renderer.AddActor(actor)
+
+    def _setup_actor(
+        self,
+        actor,
+        source,
+        color: tuple[float, float, float],
+        line_width: float | None = None,
+        offset: float = -10000.0,
+    ):
+        mapper = vtkPolyDataMapper()
+        mapper.SetInputConnection(source.GetOutputPort())
+        mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(offset, offset)
+        mapper.SetRelativeCoincidentTopologyLineOffsetParameters(offset, offset)
+        mapper.SetRelativeCoincidentTopologyPointOffsetParameter(offset)
+        actor.SetMapper(mapper)
+        actor.SetPickable(False)
+        actor_property = actor.GetProperty()
+        actor_property.SetColor(*color)
+        actor_property.SetAmbient(1.0)
+        actor_property.SetDiffuse(0.0)
+        if line_width is not None:
+            actor_property.SetLineWidth(line_width)
+        return actor
+
+    def _make_sphere(self) -> tuple[vtkSphereSource, vtkActor]:
+        source = vtkSphereSource()
+        source.SetPhiResolution(self._SPHERE_RESOLUTION)
+        source.SetThetaResolution(self._SPHERE_RESOLUTION)
+        return source, self._setup_actor(vtkActor(), source, self._PRIMARY_COLOR)
+
+    def update_scale(self, renderer=None) -> None:
+        if self._point1 is None or renderer is None:
+            return
+        camera_position = renderer.GetActiveCamera().GetPosition()
+        self._point1_source.SetRadius(
+            max(math.dist(self._point1, camera_position) * 0.003, 0.0001)
+        )
+        if self._point2 is None:
+            return
+        self._point2_source.SetRadius(
+            max(math.dist(self._point2, camera_position) * 0.003, 0.0001)
+        )
+        midpoint = tuple(
+            (coord1 + coord2) / 2
+            for coord1, coord2 in zip(self._point1, self._point2)
+        )
+        text_scale = max(math.dist(midpoint, camera_position) * 0.008, 0.001)
+        self.text_follower.SetPosition(
+            midpoint[0], midpoint[1] + text_scale * 1.2, midpoint[2]
+        )
+        self.text_follower.SetScale(text_scale, text_scale, text_scale)
+
+    def set_endpoints(
+        self,
+        point1: tuple[float, float, float] | None,
+        point2: tuple[float, float, float] | None,
+        renderer=None,
+    ) -> float:
+        self._point1 = point1
+        self._point2 = point2
+        self.point1_actor.SetVisibility(point1 is not None)
+        self.point2_actor.SetVisibility(point2 is not None)
+        self.line_actor.SetVisibility(point2 is not None)
+        self.text_follower.SetVisibility(point2 is not None)
+        if point1 is not None:
+            self._point1_source.SetCenter(*point1)
+        if point2 is None or point1 is None:
+            self.update_scale(renderer)
+            return 0.0
+        self._line_source.SetPoint1(*point1)
+        self._line_source.SetPoint2(*point2)
+        self._point2_source.SetCenter(*point2)
+        distance = math.dist(point1, point2)
+        self._text_source.SetText(f"{distance:.2f}")
+        self.update_scale(renderer)
+        return distance
 
 
 class BlockStyle(TypedDict):
