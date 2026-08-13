@@ -370,7 +370,6 @@ def test_clipping_planes(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_register_mesh(server, dataset_factory)
-
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
@@ -386,3 +385,82 @@ def test_clipping_planes(
             }
         ],
     )
+
+
+def test_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    test_register_mesh(server, dataset_factory)
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "shrink_factor": 0.8,
+            }
+        ],
+    )
+    assert server.compare_image("viewer/shrink.jpeg") == True
+
+
+def test_clipping_then_shrink(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "planes": [
+                    {
+                        "origin": [0.0, 0.0, 0.0],
+                        "normal": [1.0, 0.0, 0.0],
+                    }
+                ],
+            }
+        ],
+    )
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "shrink_factor": 0.8,
+            }
+        ],
+    )
+    assert server.compare_image("viewer/clipping_then_shrink.jpeg") == True
+
+
+def test_shrink_then_clipping(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "shrink_factor": 0.8,
+            }
+        ],
+    )
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "planes": [
+                    {
+                        "origin": [0.0, 0.0, 0.0],
+                        "normal": [1.0, 0.0, 0.0],
+                    }
+                ],
+            }
+        ],
+    )
+    assert server.compare_image("viewer/clipping_then_shrink.jpeg") == True
