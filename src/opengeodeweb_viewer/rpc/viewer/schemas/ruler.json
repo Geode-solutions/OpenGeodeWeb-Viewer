@@ -2,25 +2,22 @@
   "rpc": "ruler",
   "type": "object",
   "properties": {
-    "point1": {
+    "points": {
       "type": "array",
       "items": {
-        "type": "number"
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 3,
+        "maxItems": 3
       },
-      "minItems": 3,
-      "maxItems": 3
-    },
-    "point2": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "minItems": 3,
-      "maxItems": 3
+      "minItems": 1,
+      "maxItems": 2
     }
   },
   "required": [
-    "point1"
+    "points"
   ],
   "additionalProperties": false
 }

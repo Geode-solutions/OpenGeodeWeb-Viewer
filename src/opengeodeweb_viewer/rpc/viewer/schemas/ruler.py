@@ -1,6 +1,6 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass
@@ -8,5 +8,4 @@ class Ruler(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 
-    point1: List[float]
-    point2: Optional[List[float]] = None
+    points: List[List[float]]
