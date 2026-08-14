@@ -466,16 +466,13 @@ def test_shrink_then_clipping(
     assert server.compare_image("viewer/clipping_then_shrink.jpeg") == True
 
 
-def test_ruler(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_ruler(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
     )
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["ruler"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["ruler"]["rpc"],
         [
             {
                 "point1": [-0.2, -0.2, 0.0],

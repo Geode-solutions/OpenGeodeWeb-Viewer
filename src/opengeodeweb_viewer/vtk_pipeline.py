@@ -59,6 +59,7 @@ class HighlightPipeline:
     selection: vtkSelection = field(default_factory=vtkSelection)
     extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
 
+
 @dataclass
 class RulerPipeline:
     _SPHERE_RESOLUTION = 32
@@ -139,8 +140,7 @@ class RulerPipeline:
             max(math.dist(self._point2, camera_position) * 0.003, 0.0001)
         )
         midpoint = tuple(
-            (coord1 + coord2) / 2
-            for coord1, coord2 in zip(self._point1, self._point2)
+            (coord1 + coord2) / 2 for coord1, coord2 in zip(self._point1, self._point2)
         )
         text_scale = max(math.dist(midpoint, camera_position) * 0.008, 0.001)
         self.text_follower.SetPosition(
