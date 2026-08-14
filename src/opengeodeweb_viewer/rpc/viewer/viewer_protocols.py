@@ -474,9 +474,7 @@ class VtkViewerView(VtkView):
         self.render(-1)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["ruler"]["rpc"])
-    def setRuler(
-        self, rpc_params: RpcParams
-    ) -> dict[str, float | list[float] | None]:
+    def setRuler(self, rpc_params: RpcParams) -> dict[str, float | list[float] | None]:
         validate_schema(
             rpc_params, self.viewer_schemas_dict["ruler"], self.viewer_prefix
         )
@@ -504,4 +502,3 @@ class VtkViewerView(VtkView):
         ruler = self.get_ruler()
         assert ruler is not None
         ruler.reset()
-
