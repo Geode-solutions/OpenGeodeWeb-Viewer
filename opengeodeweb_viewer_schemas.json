@@ -2121,9 +2121,41 @@
         ],
         "additionalProperties": false
       },
+      "ruler": {
+        "$id": "opengeodeweb_viewer.viewer.ruler",
+        "rpc": "ruler",
+        "type": "object",
+        "properties": {
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "minItems": 1,
+            "maxItems": 2
+          }
+        },
+        "required": [
+          "points"
+        ],
+        "additionalProperties": false
+      },
       "reset_visualization": {
         "$id": "opengeodeweb_viewer.viewer.reset_visualization",
         "rpc": "reset_visualization",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "reset_ruler": {
+        "$id": "opengeodeweb_viewer.viewer.reset_ruler",
+        "rpc": "reset_ruler",
         "type": "object",
         "properties": {},
         "required": [],

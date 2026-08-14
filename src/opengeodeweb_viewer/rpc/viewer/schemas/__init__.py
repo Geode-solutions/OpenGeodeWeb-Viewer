@@ -4,7 +4,9 @@ from .take_screenshot import *
 from .shrink import *
 from .set_z_scaling import *
 from .set_background_color import *
+from .ruler import *
 from .reset_visualization import *
+from .reset_ruler import *
 from .reset_camera import *
 from .render import *
 from .preview_points import *

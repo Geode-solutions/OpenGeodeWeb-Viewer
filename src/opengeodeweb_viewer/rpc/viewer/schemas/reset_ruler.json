@@ -1,0 +1,7 @@
+{
+  "rpc": "reset_ruler",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}

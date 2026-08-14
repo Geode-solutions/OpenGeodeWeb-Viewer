@@ -30,6 +30,7 @@ from opengeodeweb_viewer.utils_functions import (
     validate_schema,
     RpcParams,
 )
+from opengeodeweb_viewer.vtk_pipeline import RulerPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_viewer.rpc.viewer import schemas
 
@@ -98,6 +99,9 @@ class VtkViewerView(VtkView):
 
         self.set_axes(axes)
         self.set_widget(widget)
+        ruler = RulerPipeline()
+        ruler.add_to_renderer(renderer)
+        self.set_ruler(ruler)
 
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 
@@ -319,6 +323,9 @@ class VtkViewerView(VtkView):
         camera.SetPosition(camera_options.position)
         camera.SetViewAngle(camera_options.view_angle)
         camera.SetClippingRange(camera_options.clipping_range)
+        ruler = self.get_ruler()
+        if ruler is not None:
+            ruler.update_scale(self.get_renderer())
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["render"]["rpc"])
     def renderNow(self, rpc_params: RpcParams) -> None:
@@ -465,3 +472,29 @@ class VtkViewerView(VtkView):
         self._preview_polydata.SetPolys(polys)
         self._preview_polydata.Modified()
         self.render(-1)
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["ruler"]["rpc"])
+    def setRuler(self, rpc_params: RpcParams) -> dict[str, float | list[float] | None]:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["ruler"], self.viewer_prefix
+        )
+        params = schemas.Ruler.from_dict(rpc_params)
+        ruler = self.get_ruler()
+        assert ruler is not None
+        point1 = params.points[0]
+        point2 = params.points[1] if len(params.points) > 1 else None
+        distance = ruler.set_endpoints(point1, point2, renderer=self.get_renderer())
+        return {
+            "distance": distance,
+            "point1": point1,
+            "point2": point2,
+        }
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["reset_ruler"]["rpc"])
+    def resetRuler(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["reset_ruler"], self.viewer_prefix
+        )
+        ruler = self.get_ruler()
+        assert ruler is not None
+        ruler.reset()
