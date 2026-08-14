@@ -148,23 +148,33 @@ class RulerPipeline:
         )
         self.text_follower.SetScale(text_scale, text_scale, text_scale)
 
+    def reset(self) -> None:
+        self._point1 = None
+        self._point2 = None
+        self.point1_actor.VisibilityOff()
+        self.point2_actor.VisibilityOff()
+        self.line_actor.VisibilityOff()
+        self.text_follower.VisibilityOff()
+
     def set_endpoints(
         self,
-        point1: tuple[float, float, float] | None,
+        point1: tuple[float, float, float],
         point2: tuple[float, float, float] | None,
         renderer=None,
     ) -> float:
         self._point1 = point1
         self._point2 = point2
-        self.point1_actor.SetVisibility(point1 is not None)
-        self.point2_actor.SetVisibility(point2 is not None)
-        self.line_actor.SetVisibility(point2 is not None)
-        self.text_follower.SetVisibility(point2 is not None)
-        if point1 is not None:
-            self._point1_source.SetCenter(*point1)
-        if point2 is None or point1 is None:
+        self.point1_actor.VisibilityOn()
+        self._point1_source.SetCenter(*point1)
+        if point2 is None:
+            self.point2_actor.VisibilityOff()
+            self.line_actor.VisibilityOff()
+            self.text_follower.VisibilityOff()
             self.update_scale(renderer)
             return 0.0
+        self.point2_actor.VisibilityOn()
+        self.line_actor.VisibilityOn()
+        self.text_follower.VisibilityOn()
         self._line_source.SetPoint1(*point1)
         self._line_source.SetPoint2(*point2)
         self._point2_source.SetCenter(*point2)

@@ -474,19 +474,17 @@ class VtkViewerView(VtkView):
         self.render(-1)
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["ruler"]["rpc"])
-    def setRuler(self, rpc_params: RpcParams) -> dict[str, float | list[float] | None]:
+    def setRuler(
+        self, rpc_params: RpcParams
+    ) -> dict[str, float | list[float] | None]:
         validate_schema(
             rpc_params, self.viewer_schemas_dict["ruler"], self.viewer_prefix
         )
         params = schemas.Ruler.from_dict(rpc_params)
         ruler = self.get_ruler()
         assert ruler is not None
-        point1: tuple[float, float, float] | None = (
-            (params.point1[0], params.point1[1], params.point1[2])
-            if params.point1
-            else None
-        )
-        point2: tuple[float, float, float] | None = (
+        point1 = (params.point1[0], params.point1[1], params.point1[2])
+        point2 = (
             (params.point2[0], params.point2[1], params.point2[2])
             if params.point2
             else None
@@ -494,6 +492,16 @@ class VtkViewerView(VtkView):
         distance = ruler.set_endpoints(point1, point2, renderer=self.get_renderer())
         return {
             "distance": distance,
-            "point1": list(point1) if point1 else None,
-            "point2": list(point2) if point2 else None,
+            "point1": params.point1,
+            "point2": params.point2,
         }
+
+    @exportRpc(viewer_prefix + viewer_schemas_dict["reset_ruler"]["rpc"])
+    def resetRuler(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["reset_ruler"], self.viewer_prefix
+        )
+        ruler = self.get_ruler()
+        assert ruler is not None
+        ruler.reset()
+

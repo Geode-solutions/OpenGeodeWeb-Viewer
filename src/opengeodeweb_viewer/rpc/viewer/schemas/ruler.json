@@ -19,6 +19,8 @@
       "maxItems": 3
     }
   },
-  "required": [],
+  "required": [
+    "point1"
+  ],
   "additionalProperties": false
 }
