@@ -79,13 +79,15 @@ class RulerPipeline:
     text_follower: vtkFollower = field(init=False)
 
     def __post_init__(self) -> None:
-        self.line_actor = self._setup_actor(
-            vtkActor(), self._line_source, self._PRIMARY_COLOR, line_width=3.0
+        self.line_actor = vtkActor()
+        self._setup_actor(
+            self.line_actor, self._line_source, self._PRIMARY_COLOR, line_width=3.0
         )
         self._point1_source, self.point1_actor = self._make_sphere()
         self._point2_source, self.point2_actor = self._make_sphere()
-        self.text_follower = self._setup_actor(
-            vtkFollower(), self._text_source, self._TEXT_COLOR, offset=-50000.0
+        self.text_follower = vtkFollower()
+        self._setup_actor(
+            self.text_follower, self._text_source, self._TEXT_COLOR, offset=-50000.0
         )
 
     def add_to_renderer(self, renderer: vtkRenderer) -> None:
@@ -106,7 +108,7 @@ class RulerPipeline:
         color: tuple[float, float, float],
         line_width: float | None = None,
         offset: float = -10000.0,
-    ):
+    ) -> None:
         mapper = vtkPolyDataMapper()
         mapper.SetInputConnection(source.GetOutputPort())
         mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(offset, offset)
@@ -120,13 +122,14 @@ class RulerPipeline:
         actor_property.SetDiffuse(0.0)
         if line_width is not None:
             actor_property.SetLineWidth(line_width)
-        return actor
 
     def _make_sphere(self) -> tuple[vtkSphereSource, vtkActor]:
         source = vtkSphereSource()
         source.SetPhiResolution(self._SPHERE_RESOLUTION)
         source.SetThetaResolution(self._SPHERE_RESOLUTION)
-        return source, self._setup_actor(vtkActor(), source, self._PRIMARY_COLOR)
+        actor = vtkActor()
+        self._setup_actor(actor, source, self._PRIMARY_COLOR)
+        return source, actor
 
     def update_scale(self, renderer: vtkRenderer | None = None) -> None:
         if self._point1 is None or renderer is None:
