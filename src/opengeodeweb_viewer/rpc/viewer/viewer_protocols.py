@@ -481,17 +481,13 @@ class VtkViewerView(VtkView):
         params = schemas.Ruler.from_dict(rpc_params)
         ruler = self.get_ruler()
         assert ruler is not None
-        point1 = (params.points[0][0], params.points[0][1], params.points[0][2])
-        point2 = (
-            (params.points[1][0], params.points[1][1], params.points[1][2])
-            if len(params.points) > 1
-            else None
-        )
+        point1 = params.points[0]
+        point2 = params.points[1] if len(params.points) > 1 else None
         distance = ruler.set_endpoints(point1, point2, renderer=self.get_renderer())
         return {
             "distance": distance,
-            "point1": list(point1),
-            "point2": list(point2) if point2 is not None else None,
+            "point1": point1,
+            "point2": point2,
         }
 
     @exportRpc(viewer_prefix + viewer_schemas_dict["reset_ruler"]["rpc"])

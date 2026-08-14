@@ -67,8 +67,8 @@ class RulerPipeline:
     _PRIMARY_COLOR = (60 / 255, 153 / 255, 131 / 255)
     _TEXT_COLOR = (0.05, 0.05, 0.05)
 
-    _point1: tuple[float, float, float] | None = field(default=None, init=False)
-    _point2: tuple[float, float, float] | None = field(default=None, init=False)
+    _point1: list[float] | None = field(default=None, init=False)
+    _point2: list[float] | None = field(default=None, init=False)
     _line_source: vtkLineSource = field(default_factory=vtkLineSource)
     line_actor: vtkActor = field(init=False)
     _point1_source: vtkSphereSource = field(init=False)
@@ -162,8 +162,8 @@ class RulerPipeline:
 
     def set_endpoints(
         self,
-        point1: tuple[float, float, float],
-        point2: tuple[float, float, float] | None,
+        point1: list[float],
+        point2: list[float] | None,
         renderer: vtkRenderer | None = None,
     ) -> float:
         self._point1 = point1
