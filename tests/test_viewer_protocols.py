@@ -475,8 +475,7 @@ def test_ruler(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["ruler"]["rpc"],
         [
             {
-                "point1": [-0.2, -0.2, 0.0],
-                "point2": [0.2, 0.2, 0.0],
+                "points": [[-0.2, -0.2, 0.0], [0.2, 0.2, 0.0]],
             }
         ],
     )
