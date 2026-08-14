@@ -13,6 +13,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkCompositePolyDataMapper,
     vtkCompositeDataDisplayAttributes,
     vtkColorTransferFunction,
+    vtkRenderer,
 )
 from vtkmodules.vtkRenderingAnnotation import (
     vtkScalarBarActor,
@@ -87,7 +88,7 @@ class RulerPipeline:
             vtkFollower(), self._text_source, self._TEXT_COLOR, offset=-50000.0
         )
 
-    def add_to_renderer(self, renderer) -> None:
+    def add_to_renderer(self, renderer: vtkRenderer) -> None:
         self.text_follower.SetCamera(renderer.GetActiveCamera())
         for actor in (
             self.line_actor,
@@ -100,8 +101,8 @@ class RulerPipeline:
 
     def _setup_actor(
         self,
-        actor,
-        source,
+        actor: vtkActor,
+        source: vtkAlgorithm,
         color: tuple[float, float, float],
         line_width: float | None = None,
         offset: float = -10000.0,
@@ -127,7 +128,7 @@ class RulerPipeline:
         source.SetThetaResolution(self._SPHERE_RESOLUTION)
         return source, self._setup_actor(vtkActor(), source, self._PRIMARY_COLOR)
 
-    def update_scale(self, renderer=None) -> None:
+    def update_scale(self, renderer: vtkRenderer | None = None) -> None:
         if self._point1 is None or renderer is None:
             return
         camera_position = renderer.GetActiveCamera().GetPosition()
@@ -160,7 +161,7 @@ class RulerPipeline:
         self,
         point1: tuple[float, float, float],
         point2: tuple[float, float, float] | None,
-        renderer=None,
+        renderer: vtkRenderer | None = None,
     ) -> float:
         self._point1 = point1
         self._point2 = point2
