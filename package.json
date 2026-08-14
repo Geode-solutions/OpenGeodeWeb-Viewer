@@ -2,6 +2,16 @@
   "name": "@geode/opengeodeweb-viewer",
   "version": "0.0.0",
   "description": "",
+  "homepage": "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer",
+  "bugs": {
+    "url": "https://github.com/Geode-solutions/OpenGeodeWeb-Viewer/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Geode-solutions",
+    "email": "contact@geode-solutions.com",
+    "url": "https://geode-solutions.com/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Geode-solutions/OpenGeodeWeb-Viewer.git"
