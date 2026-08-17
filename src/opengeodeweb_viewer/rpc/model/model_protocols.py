@@ -82,7 +82,7 @@ class VtkModelView(VtkObjectView):
                 pipeline.get_block_style(block_id)["name"] = ""
                 if color_mode == "random":
                     geode_id = pipeline.blockGeodeIds[block_id]
-                    red, green, blue = deterministic_color(str(geode_id))
+                    red, green, blue = deterministic_color(f"{geode_id}_{block_id}")
                     attr.SetBlockColor(block_dataset, [red, green, blue])
                     attr.SetBlockOpacity(block_dataset, 1.0)
                     colors.append(
@@ -112,19 +112,43 @@ class VtkModelView(VtkObjectView):
 
     def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
         active_attrs: dict[str, BlockStyle] = {}
-        for style in pipeline.block_styles.values():
-            if style and style.get("name"):
-                active_attrs[style["name"]] = style
+        for block_id, style in pipeline.block_styles.items():
+            if style and style["name"]:
+                name = style["name"]
+                item = style["item"]
+                minimum = style["minimum"]
+                maximum = style["maximum"]
+                points = style["points"]
+                attr_key = name
+                if attr_key in active_attrs and (
+                    active_attrs[attr_key]["item"] != item
+                    or active_attrs[attr_key]["minimum"] != minimum
+                    or active_attrs[attr_key]["maximum"] != maximum
+                    or active_attrs[attr_key]["points"] != points
+                ):
+                    attr_key = f"{name} (Item {item + 1})" if item > 0 else name
+                    if attr_key in active_attrs and (
+                        active_attrs[attr_key]["minimum"] != minimum
+                        or active_attrs[attr_key]["maximum"] != maximum
+                        or active_attrs[attr_key]["points"] != points
+                    ):
+                        attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
+                        if (
+                            attr_key in active_attrs
+                            and active_attrs[attr_key]["points"] != points
+                        ):
+                            attr_key = f"{attr_key} (Block {block_id})"
+                active_attrs[attr_key] = style
         for name, style in active_attrs.items():
             if name not in pipeline.scalar_bars:
                 bar = vtkScalarBarActor()
                 self.get_renderer().AddActor2D(bar)
                 pipeline.scalar_bars[name] = bar
             bar = pipeline.scalar_bars[name]
-            item = style.get("item", 0)
-            minimum = style.get("minimum", 0.0)
-            maximum = style.get("maximum", 1.0)
-            points = style.get("points", [])
+            item = style["item"]
+            minimum = style["minimum"]
+            maximum = style["maximum"]
+            points = style["points"]
             lut = create_color_transfer_function(points, minimum, maximum, item)
             bar.SetLookupTable(lut)
             bar.SetVisibility(True)

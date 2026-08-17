@@ -1,11 +1,12 @@
 from dataclasses_json import DataClassJsonMixin
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
-class VertexAttribute(DataClassJsonMixin):
+class Shrink(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 
-    id: str
-    name: str
+    ids: List[str]
+    shrink_factor: float

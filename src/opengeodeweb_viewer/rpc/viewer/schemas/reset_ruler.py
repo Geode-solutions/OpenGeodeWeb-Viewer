@@ -3,10 +3,8 @@ from dataclasses import dataclass
 
 
 @dataclass
-class VertexScalarRange(DataClassJsonMixin):
+class ResetRuler(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 
-    id: str
-    maximum: float
-    minimum: float
+    pass

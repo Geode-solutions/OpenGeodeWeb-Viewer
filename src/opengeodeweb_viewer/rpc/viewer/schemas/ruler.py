@@ -4,12 +4,8 @@ from typing import List
 
 
 @dataclass
-class VertexColorMap(DataClassJsonMixin):
+class Ruler(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print(self, flush=True)
 
-    id: str
-    maximum: float
-    minimum: float
-    points: List[float]
-    """Flat array of [value, r, g, b, ...]"""
+    points: List[List[float]]
