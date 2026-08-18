@@ -4,7 +4,6 @@ import os
 from typing import cast, Any
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
 from vtkmodules.vtkRenderingCore import (
@@ -27,6 +26,7 @@ from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import (
+    exportRpc,
     validate_schema,
     RpcParams,
 )

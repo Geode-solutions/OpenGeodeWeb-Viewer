@@ -2,12 +2,33 @@
 
 # Third party imports
 import fastjsonschema  # type: ignore
+import functools
 import math
+from typing import Any, Callable, TypeVar
+from wslink import register  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
 from opengeodeweb_microservice.schemas import SchemaDict
 
 type RpcParams = dict[str, str]
+
+R = TypeVar("R")
+
+
+def exportRpc(rpc_id: str) -> Callable[[Callable[..., R]], Callable[..., R]]:
+    def decorator(function: Callable[..., R]) -> Callable[..., R]:
+        def wrapper(self: Any, *args: Any, **kwargs: Any) -> R:
+            do_stream = bool(kwargs.pop("stream", False))
+            print("do_stream", do_stream, flush=True)
+            result = function(self, *args, **kwargs)
+            if do_stream:
+                rpc_params = args[0] if args else None
+                self.publish(rpc_id, rpc_params)
+            return result
+
+        return register(rpc_id)(wrapper)  # type: ignore[no-any-return]
+
+    return decorator
 
 
 def validate_schema(
