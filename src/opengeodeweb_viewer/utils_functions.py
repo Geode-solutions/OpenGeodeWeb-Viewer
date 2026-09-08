@@ -80,12 +80,18 @@ def deterministic_color(identifier: str) -> tuple[float, float, float]:
 
 
 def create_color_transfer_function(
-    points: list[float], minimum: float, maximum: float, item: int = 0
+    points: list[float],
+    minimum: float,
+    maximum: float,
+    item: int = 0,
+    no_data: bool = False,
 ) -> vtkColorTransferFunction:
     lut = vtkColorTransferFunction()
     lut.SetVectorModeToComponent()
     lut.SetVectorComponent(item)
     lut.SetRange(minimum, maximum)
+    lut.SetNanColor(0.5, 0.5, 0.5)
+    lut.SetNanOpacity(0.5)
     if points:
         x_min, x_max = points[0], points[-4]
         span = x_max - x_min

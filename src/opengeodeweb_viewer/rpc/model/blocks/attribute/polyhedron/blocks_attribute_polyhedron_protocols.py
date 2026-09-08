@@ -44,4 +44,5 @@ class VtkModelBlocksAttributePolyhedronView(VtkModelView):
             params.points,
             params.minimum,
             params.maximum,
+            params.no_data,
         )

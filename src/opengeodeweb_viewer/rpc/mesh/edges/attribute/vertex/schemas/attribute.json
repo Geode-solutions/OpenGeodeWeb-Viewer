@@ -27,8 +27,11 @@
     },
     "maximum": {
       "type": "number"
+    },
+    "no_data": {
+      "type": "boolean"
     }
   },
-  "required": ["id", "name", "item", "points", "minimum", "maximum"],
+  "required": ["id", "name", "item", "points", "minimum", "maximum", "no_data"],
   "additionalProperties": false
 }

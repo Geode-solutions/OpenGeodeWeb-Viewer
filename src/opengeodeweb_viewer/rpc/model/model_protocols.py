@@ -149,7 +149,9 @@ class VtkModelView(VtkObjectView):
             minimum = style["minimum"]
             maximum = style["maximum"]
             points = style["points"]
-            lut = create_color_transfer_function(points, minimum, maximum, item)
+            lut = create_color_transfer_function(
+                points, minimum, maximum, item, style.get("no_data", False)
+            )
             bar.SetLookupTable(lut)
             bar.SetVisibility(True)
         for name, bar in pipeline.scalar_bars.items():
@@ -167,7 +169,12 @@ class VtkModelView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
+        no_data: bool = False,
     ) -> None:
+        print(
+            f"[DEBUG model displayAttributeOnVertices] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
+            flush=True,
+        )
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = pipeline.get_block_style(block_id)
@@ -177,6 +184,7 @@ class VtkModelView(VtkObjectView):
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
+            style["no_data"] = no_data
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 
@@ -189,7 +197,12 @@ class VtkModelView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
+        no_data: bool = False,
     ) -> None:
+        print(
+            f"[DEBUG model displayAttributeOnCells] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
+            flush=True,
+        )
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = pipeline.get_block_style(block_id)
@@ -199,6 +212,7 @@ class VtkModelView(VtkObjectView):
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
+            style["no_data"] = no_data
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 

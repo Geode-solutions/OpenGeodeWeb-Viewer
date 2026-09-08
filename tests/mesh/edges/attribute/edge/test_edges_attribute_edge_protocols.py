@@ -57,6 +57,7 @@ def test_edges_edge_color_map(
                 ],
                 "minimum": 0.0,
                 "maximum": 8.0,
+                "no_data": False,
             }
         ],
     )
@@ -93,6 +94,7 @@ def test_edges_edge_color_map_range_update(
                 ],
                 "minimum": 0.0,
                 "maximum": 8.0,
+                "no_data": False,
             }
         ],
     )
@@ -122,6 +124,7 @@ def test_edges_edge_color_map_range_update(
                 ],
                 "minimum": 4.0,
                 "maximum": 8.0,
+                "no_data": False,
             }
         ],
     )
@@ -182,6 +185,7 @@ def test_edges_edge_color_map_rainbow(
                 ],
                 "minimum": 0.0,
                 "maximum": 8.0,
+                "no_data": False,
             }
         ],
     )
@@ -237,6 +241,7 @@ def test_edges_edge_color_map_rainbow(
                 ],
                 "minimum": 2.0,
                 "maximum": 6.0,
+                "no_data": False,
             }
         ],
     )
@@ -272,6 +277,7 @@ def test_edges_edge_attribute_item(
                 ],
                 "minimum": 0.0,
                 "maximum": 8.0,
+                "no_data": False,
             }
         ],
     )

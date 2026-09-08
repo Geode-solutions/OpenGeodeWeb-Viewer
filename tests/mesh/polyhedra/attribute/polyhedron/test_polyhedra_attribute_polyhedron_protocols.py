@@ -59,6 +59,7 @@ def test_polyhedra_polyhedron_color_map(
                 ],
                 "minimum": 3.0,
                 "maximum": 6.0,
+                "no_data": False,
             }
         ],
     )
@@ -97,6 +98,7 @@ def test_polyhedra_polyhedron_color_map_range_update(
                 ],
                 "minimum": 3.0,
                 "maximum": 6.0,
+                "no_data": False,
             }
         ],
     )
@@ -128,6 +130,7 @@ def test_polyhedra_polyhedron_color_map_range_update(
                 ],
                 "minimum": 5.0,
                 "maximum": 6.0,
+                "no_data": False,
             }
         ],
     )
@@ -169,6 +172,7 @@ def test_polyhedra_polyhedron_color_map_red_shift(
                 ],
                 "minimum": 3.0,
                 "maximum": 6.0,
+                "no_data": False,
             }
         ],
     )
@@ -200,6 +204,7 @@ def test_polyhedra_polyhedron_color_map_red_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data": False,
             }
         ],
     )
@@ -265,6 +270,7 @@ def test_polyhedra_polyhedron_color_map_rainbow(
                 ],
                 "minimum": 3.0,
                 "maximum": 6.0,
+                "no_data": False,
             }
         ],
     )
@@ -323,6 +329,7 @@ def test_polyhedra_polyhedron_color_map_rainbow(
                 ],
                 "minimum": 3.5,
                 "maximum": 5.5,
+                "no_data": False,
             }
         ],
     )
@@ -362,6 +369,7 @@ def test_polyhedra_polyhedron_attribute_item(
                 ],
                 "minimum": 3.0,
                 "maximum": 6.0,
+                "no_data": False,
             }
         ],
     )

@@ -195,6 +195,7 @@ class BlockStyle(TypedDict):
     minimum: float
     maximum: float
     item: int
+    no_data: bool
 
 
 @dataclass
@@ -260,15 +261,29 @@ class VtkPipeline:
                 minimum=0.0,
                 maximum=1.0,
                 item=0,
+                no_data=False,
             )
             self.block_styles[block_id] = style
         return self.block_styles[block_id]
 
     def update_block_colors(self, block_id: int) -> None:
+        if block_id >= len(self.blockDataSets):
+            print(
+                f"[DEBUG update_block_colors] block_id={block_id} out of range (total={len(self.blockDataSets)})",
+                flush=True,
+            )
+            return
         block = self.blockDataSets[block_id]
         if not isinstance(block, vtkDataSet):
+            print(
+                f"[DEBUG update_block_colors] block_id={block_id} is not vtkDataSet ({type(block)})",
+                flush=True,
+            )
             return
         style = self.get_block_style(block_id)
+        print(
+            f"[DEBUG update_block_colors] block_id={block_id} style={style}", flush=True
+        )
         if not style["name"]:
             block.GetPointData().SetActiveScalars("")
             block.GetCellData().SetActiveScalars("")
@@ -278,12 +293,37 @@ class VtkPipeline:
         other_field_data = block.GetCellData() if is_point else block.GetPointData()
         scalar_array = field_data.GetArray(style["name"])
         if not scalar_array:
+            avail = [
+                field_data.GetArrayName(i)
+                for i in range(field_data.GetNumberOfArrays())
+            ]
+            print(
+                f"[DEBUG update_block_colors] scalar_array '{style['name']}' NOT FOUND! Available arrays in {'point' if is_point else 'cell'} data: {avail}",
+                flush=True,
+            )
             return
         item = style.get("item", 0)
+        no_data = style.get("no_data", False)
+        print(
+            f"[DEBUG update_block_colors] Mapping '{style['name']}' item={item} tuples={scalar_array.GetNumberOfTuples()} comps={scalar_array.GetNumberOfComponents()} no_data={no_data}",
+            flush=True,
+        )
         lut = create_color_transfer_function(
-            style["points"], style["minimum"], style["maximum"], item
+            style["points"], style["minimum"], style["maximum"], item, no_data
         )
         rgba_colors = lut.MapScalars(scalar_array, 1, item)
+        if no_data:
+            num_tuples = scalar_array.GetNumberOfTuples()
+            nan_count = 0
+            for t in range(num_tuples):
+                val = scalar_array.GetComponent(t, item)
+                if math.isnan(val):
+                    rgba_colors.SetTuple(t, (128, 128, 128, 128))
+                    nan_count += 1
+            print(
+                f"[DEBUG update_block_colors] no_data=True, nan_count={nan_count}",
+                flush=True,
+            )
         rgba_colors.SetName(f"__colors_{style['name']}")
         field_data.AddArray(rgba_colors)
         field_data.SetActiveScalars(rgba_colors.GetName())

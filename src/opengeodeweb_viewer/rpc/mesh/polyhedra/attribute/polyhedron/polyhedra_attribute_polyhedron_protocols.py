@@ -43,4 +43,5 @@ class VtkMeshPolyhedraAttributePolyhedronView(VtkMeshView):
             params.points,
             params.minimum,
             params.maximum,
+            params.no_data,
         )

@@ -59,6 +59,7 @@ def test_polygons_polygon_color_map(
                 ],
                 "minimum": 0.0,
                 "maximum": 50.0,
+                "no_data": False,
             }
         ],
     )
@@ -97,6 +98,7 @@ def test_polygons_polygon_color_map_range_update(
                 ],
                 "minimum": 0.0,
                 "maximum": 50.0,
+                "no_data": False,
             }
         ],
     )
@@ -128,6 +130,7 @@ def test_polygons_polygon_color_map_range_update(
                 ],
                 "minimum": 40.0,
                 "maximum": 45.0,
+                "no_data": False,
             }
         ],
     )
@@ -169,6 +172,7 @@ def test_polygons_polygon_color_map_red_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 50.0,
+                "no_data": False,
             }
         ],
     )
@@ -200,6 +204,7 @@ def test_polygons_polygon_color_map_red_shift(
                 ],
                 "minimum": 3.0,
                 "maximum": 4.0,
+                "no_data": False,
             }
         ],
     )
@@ -264,6 +269,7 @@ def test_polygons_polygon_color_map_rainbow(
                 ],
                 "minimum": 0.0,
                 "maximum": 50.0,
+                "no_data": False,
             }
         ],
     )
@@ -322,6 +328,7 @@ def test_polygons_polygon_color_map_rainbow(
                 ],
                 "minimum": 5.0,
                 "maximum": 15.0,
+                "no_data": False,
             }
         ],
     )
@@ -359,8 +366,10 @@ def test_polygons_polygon_attribute_item(
                 ],
                 "minimum": 0.0,
                 "maximum": 50.0,
+                "no_data": False,
             }
         ],
     )
 
     assert server.compare_image("mesh/polygons/polygon_attribute_item.jpeg") == True
+

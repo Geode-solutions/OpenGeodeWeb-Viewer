@@ -55,6 +55,7 @@ def test_cells_cell_color_map(
                 ],
                 "minimum": 0.0,
                 "maximum": 255.0,
+                "no_data": False,
             }
         ],
     )
@@ -91,6 +92,7 @@ def test_cells_cell_color_map_range_update(
                 ],
                 "minimum": 0.0,
                 "maximum": 255.0,
+                "no_data": False,
             }
         ],
     )
@@ -120,6 +122,7 @@ def test_cells_cell_color_map_range_update(
                 ],
                 "minimum": 100.0,
                 "maximum": 150.0,
+                "no_data": False,
             }
         ],
     )
@@ -156,6 +159,7 @@ def test_cells_cell_color_map_red_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 255.0,
+                "no_data": False,
             }
         ],
     )
@@ -185,6 +189,7 @@ def test_cells_cell_color_map_red_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 20.0,
+                "no_data": False,
             }
         ],
     )
@@ -245,6 +250,7 @@ def test_cells_cell_color_map_rainbow(
                 ],
                 "minimum": 0.0,
                 "maximum": 255.0,
+                "no_data": False,
             }
         ],
     )
@@ -300,6 +306,7 @@ def test_cells_cell_color_map_rainbow(
                 ],
                 "minimum": 50.0,
                 "maximum": 100.0,
+                "no_data": False,
             }
         ],
     )
@@ -335,6 +342,7 @@ def test_cells_cell_attribute_item(
                 ],
                 "minimum": 0.0,
                 "maximum": 255.0,
+                "no_data": False,
             }
         ],
     )

@@ -32,8 +32,11 @@
     },
     "maximum": {
       "type": "number"
+    },
+    "no_data": {
+      "type": "boolean"
     }
   },
-  "required": ["id", "block_ids", "name", "item", "points", "minimum", "maximum"],
+  "required": ["id", "block_ids", "name", "item", "points", "minimum", "maximum", "no_data"],
   "additionalProperties": false
 }

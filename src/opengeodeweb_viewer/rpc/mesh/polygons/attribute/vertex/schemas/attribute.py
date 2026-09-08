@@ -13,5 +13,6 @@ class Attribute(DataClassJsonMixin):
     maximum: float
     minimum: float
     name: str
+    no_data: bool
     points: List[float]
     """Flat array of [value, r, g, b, ...]"""

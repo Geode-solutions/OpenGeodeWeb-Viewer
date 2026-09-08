@@ -59,6 +59,7 @@ def test_blocks_vertex_attribute(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data": False,
             }
         ],
     )
@@ -108,6 +109,7 @@ def test_blocks_vertex_color_map(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data": False,
             }
         ],
     )
@@ -158,6 +160,7 @@ def test_blocks_vertex_color_map_range_update(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data": False,
             }
         ],
     )
@@ -188,6 +191,7 @@ def test_blocks_vertex_color_map_range_update(
                 ],
                 "minimum": 40.0,
                 "maximum": 45.0,
+                "no_data": False,
             }
         ],
     )
@@ -238,6 +242,7 @@ def test_blocks_vertex_color_map_green_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data": False,
             }
         ],
     )
@@ -268,6 +273,7 @@ def test_blocks_vertex_color_map_green_shift(
                 ],
                 "minimum": 3.0,
                 "maximum": 4.0,
+                "no_data": False,
             }
         ],
     )
@@ -342,6 +348,7 @@ def test_blocks_vertex_color_map_rainbow(
                 ],
                 "minimum": 0.0,
                 "maximum": 50.0,
+                "no_data": False,
             }
         ],
     )
@@ -399,6 +406,7 @@ def test_blocks_vertex_color_map_rainbow(
                 ],
                 "minimum": 5.0,
                 "maximum": 15.0,
+                "no_data": False,
             }
         ],
     )
@@ -448,6 +456,7 @@ def test_blocks_vertex_attribute_item(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data": False,
             }
         ],
     )
