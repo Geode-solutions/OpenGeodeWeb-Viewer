@@ -14,6 +14,7 @@ from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from opengeodeweb_viewer.rpc.mesh.schemas.color import ColorClass
 from opengeodeweb_viewer.utils_functions import (
     create_color_transfer_function,
     RpcParams,
@@ -119,6 +120,7 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
         no_data: bool = False,
+        no_data_color: ColorClass | None = None,
     ) -> None:
         print(
             f"[DEBUG mesh displayAttributeOnVertices] data_id={data_id} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
@@ -141,7 +143,7 @@ class VtkMeshView(VtkObjectView):
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUsePointData()
         pipeline.mapper.ColorByArrayComponent(name, item)
-        self.setupColorMap(data_id, color_map, minimum, maximum, item, no_data)
+        self.setupColorMap(data_id, color_map, minimum, maximum, item, no_data, no_data_color)
 
     def displayAttributeOnCells(
         self,
@@ -152,6 +154,7 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
         no_data: bool = False,
+        no_data_color: ColorClass | None = None,
     ) -> None:
         print(
             f"[DEBUG mesh displayAttributeOnCells] data_id={data_id} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
@@ -174,7 +177,7 @@ class VtkMeshView(VtkObjectView):
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUseCellData()
         pipeline.mapper.ColorByArrayComponent(name, item)
-        self.setupColorMap(data_id, color_map, minimum, maximum, item, no_data)
+        self.setupColorMap(data_id, color_map, minimum, maximum, item, no_data, no_data_color)
 
     def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
         print(
@@ -193,9 +196,10 @@ class VtkMeshView(VtkObjectView):
         maximum: float,
         item: int = 0,
         no_data: bool = False,
+        no_data_color: ColorClass | None = None,
     ) -> None:
         data = self.get_vtk_pipeline(data_id)
-        lut = create_color_transfer_function(points, minimum, maximum, item, no_data)
+        lut = create_color_transfer_function(points, minimum, maximum, item, no_data, no_data_color)
         data.mapper.SetLookupTable(lut)
 
         data.mapper.SetScalarRange(minimum, maximum)

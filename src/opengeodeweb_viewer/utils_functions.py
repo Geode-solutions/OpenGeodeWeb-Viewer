@@ -9,6 +9,7 @@ from wslink import register  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
 from opengeodeweb_microservice.schemas import SchemaDict
+from opengeodeweb_viewer.rpc.mesh.schemas.color import ColorClass
 
 type RpcParams = dict[str, str]
 
@@ -85,13 +86,19 @@ def create_color_transfer_function(
     maximum: float,
     item: int = 0,
     no_data: bool = False,
+    no_data_color: ColorClass | None = None,
 ) -> vtkColorTransferFunction:
     lut = vtkColorTransferFunction()
     lut.SetVectorModeToComponent()
     lut.SetVectorComponent(item)
     lut.SetRange(minimum, maximum)
-    lut.SetNanColor(0.5, 0.5, 0.5)
-    lut.SetNanOpacity(0.5)
+    if no_data_color:
+        lut.SetNanColor(
+            no_data_color.red / 255,
+            no_data_color.green / 255,
+            no_data_color.blue / 255,
+        )
+        lut.SetNanOpacity(float(no_data_color.alpha))
     if points:
         x_min, x_max = points[0], points[-4]
         span = x_max - x_min

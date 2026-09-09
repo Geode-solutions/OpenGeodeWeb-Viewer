@@ -44,4 +44,5 @@ class VtkMeshPointsAttributeVertexView(VtkMeshView):
             params.minimum,
             params.maximum,
             params.no_data,
+            params.no_data_color,
         )

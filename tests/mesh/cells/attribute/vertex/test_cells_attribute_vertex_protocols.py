@@ -56,6 +56,7 @@ def test_cells_vertex_color_map(
                 "minimum": 2.0,
                 "maximum": 498.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -93,6 +94,7 @@ def test_cells_vertex_color_map_range_update(
                 "minimum": 2.0,
                 "maximum": 498.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -123,6 +125,7 @@ def test_cells_vertex_color_map_range_update(
                 "minimum": 200.0,
                 "maximum": 300.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -160,6 +163,7 @@ def test_cells_vertex_color_map_red_shift(
                 "minimum": 2.0,
                 "maximum": 498.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -190,6 +194,7 @@ def test_cells_vertex_color_map_red_shift(
                 "minimum": 0.0,
                 "maximum": 50.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -251,6 +256,7 @@ def test_cells_vertex_color_map_rainbow(
                 "minimum": 2.0,
                 "maximum": 498.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -307,6 +313,7 @@ def test_cells_vertex_color_map_rainbow(
                 "minimum": 50.0,
                 "maximum": 200.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -343,6 +350,7 @@ def test_cells_vertex_attribute_item(
                 "minimum": 2.0,
                 "maximum": 498.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )

@@ -22,6 +22,7 @@ from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from opengeodeweb_viewer.rpc.mesh.schemas.color import ColorClass
 from opengeodeweb_viewer.utils_functions import (
     create_color_transfer_function,
     deterministic_color,
@@ -149,8 +150,10 @@ class VtkModelView(VtkObjectView):
             minimum = style["minimum"]
             maximum = style["maximum"]
             points = style["points"]
+            no_data = style["no_data"]
+            no_data_color = style["no_data_color"]
             lut = create_color_transfer_function(
-                points, minimum, maximum, item, style.get("no_data", False)
+                points, minimum, maximum, item, no_data, no_data_color
             )
             bar.SetLookupTable(lut)
             bar.SetVisibility(True)
@@ -170,6 +173,7 @@ class VtkModelView(VtkObjectView):
         minimum: float,
         maximum: float,
         no_data: bool = False,
+        no_data_color: ColorClass | None = None,
     ) -> None:
         print(
             f"[DEBUG model displayAttributeOnVertices] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
@@ -185,6 +189,8 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             style["no_data"] = no_data
+            if no_data_color:
+                style["no_data_color"] = no_data_color
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 
@@ -198,6 +204,7 @@ class VtkModelView(VtkObjectView):
         minimum: float,
         maximum: float,
         no_data: bool = False,
+        no_data_color: ColorClass | None = None,
     ) -> None:
         print(
             f"[DEBUG model displayAttributeOnCells] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
@@ -213,6 +220,8 @@ class VtkModelView(VtkObjectView):
             style["minimum"] = minimum
             style["maximum"] = maximum
             style["no_data"] = no_data
+            if no_data_color:
+                style["no_data_color"] = no_data_color
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 

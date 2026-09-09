@@ -41,6 +41,7 @@ from opengeodeweb_microservice.database.data_types import (
     ViewerElementsType,
     ViewerType,
 )
+from opengeodeweb_viewer.rpc.mesh.schemas.color import ColorClass
 from opengeodeweb_viewer.utils_functions import create_color_transfer_function
 
 
@@ -196,6 +197,7 @@ class BlockStyle(TypedDict):
     maximum: float
     item: int
     no_data: bool
+    no_data_color: ColorClass | None
 
 
 @dataclass
@@ -262,6 +264,7 @@ class VtkPipeline:
                 maximum=1.0,
                 item=0,
                 no_data=False,
+                no_data_color=None,
             )
             self.block_styles[block_id] = style
         return self.block_styles[block_id]
@@ -304,26 +307,26 @@ class VtkPipeline:
             return
         item = style.get("item", 0)
         no_data = style.get("no_data", False)
+        no_data_color = style.get("no_data_color")
         print(
             f"[DEBUG update_block_colors] Mapping '{style['name']}' item={item} tuples={scalar_array.GetNumberOfTuples()} comps={scalar_array.GetNumberOfComponents()} no_data={no_data}",
             flush=True,
         )
         lut = create_color_transfer_function(
-            style["points"], style["minimum"], style["maximum"], item, no_data
+            style["points"], style["minimum"], style["maximum"], item, no_data, no_data_color
         )
         rgba_colors = lut.MapScalars(scalar_array, 1, item)
-        if no_data:
+        if no_data_color:
+            no_data_r = int(no_data_color.red)
+            no_data_g = int(no_data_color.green)
+            no_data_b = int(no_data_color.blue)
+            no_data_a = int(float(no_data_color.alpha) * 255)
             num_tuples = scalar_array.GetNumberOfTuples()
-            nan_count = 0
             for t in range(num_tuples):
                 val = scalar_array.GetComponent(t, item)
                 if math.isnan(val):
-                    rgba_colors.SetTuple(t, (128, 128, 128, 128))
-                    nan_count += 1
-            print(
-                f"[DEBUG update_block_colors] no_data=True, nan_count={nan_count}",
-                flush=True,
-            )
+                    rgba_colors.SetTuple(t, (no_data_r, no_data_g, no_data_b, no_data_a))
+            rgba_colors.Modified()
         rgba_colors.SetName(f"__colors_{style['name']}")
         field_data.AddArray(rgba_colors)
         field_data.SetActiveScalars(rgba_colors.GetName())

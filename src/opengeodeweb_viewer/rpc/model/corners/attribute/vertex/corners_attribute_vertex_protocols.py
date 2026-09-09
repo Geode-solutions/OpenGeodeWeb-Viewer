@@ -45,4 +45,5 @@ class VtkModelCornersAttributeVertexView(VtkModelView):
             params.minimum,
             params.maximum,
             params.no_data,
+            params.no_data_color,
         )

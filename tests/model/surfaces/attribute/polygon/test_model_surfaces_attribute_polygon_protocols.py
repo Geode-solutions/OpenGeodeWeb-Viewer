@@ -104,6 +104,7 @@ def test_surfaces_polygon_attribute(
                 "minimum": 0.0,
                 "maximum": 1.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -156,6 +157,7 @@ def test_surfaces_polygon_color_map(
                 "minimum": 0.0,
                 "maximum": 1.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -209,6 +211,7 @@ def test_surfaces_polygon_color_map_range_update(
                 "minimum": 0.0,
                 "maximum": 1.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -242,6 +245,7 @@ def test_surfaces_polygon_color_map_range_update(
                 "minimum": 40.0,
                 "maximum": 45.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -295,6 +299,7 @@ def test_surfaces_polygon_color_map_red_shift(
                 "minimum": 0.0,
                 "maximum": 1.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -328,6 +333,7 @@ def test_surfaces_polygon_color_map_red_shift(
                 "minimum": 3.0,
                 "maximum": 4.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -405,6 +411,7 @@ def test_surfaces_polygon_color_map_rainbow(
                 "minimum": 0.0,
                 "maximum": 50.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -462,6 +469,7 @@ def test_surfaces_polygon_color_map_rainbow(
                 "minimum": 5.0,
                 "maximum": 15.0,
                 "no_data": False,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
