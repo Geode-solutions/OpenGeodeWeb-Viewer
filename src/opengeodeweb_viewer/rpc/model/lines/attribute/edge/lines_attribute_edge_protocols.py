@@ -38,7 +38,7 @@ class VtkModelLinesAttributeEdgeView(VtkModelView):
         params = schemas.Attribute.from_dict(rpc_params)
         self.displayAttributeOnCells(
             params.id,
-            params.line_ids,
+            params.block_ids,
             params.name,
             params.item,
             params.points,
