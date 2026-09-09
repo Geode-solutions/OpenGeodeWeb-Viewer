@@ -315,19 +315,6 @@ class VtkPipeline:
             style["points"], style["minimum"], style["maximum"], item, no_data_color
         )
         rgba_colors = lut.MapScalars(scalar_array, 1, item)
-        if no_data_color:
-            no_data_r = int(no_data_color.red)
-            no_data_g = int(no_data_color.green)
-            no_data_b = int(no_data_color.blue)
-            no_data_a = int(float(no_data_color.alpha) * 255)
-            num_tuples = scalar_array.GetNumberOfTuples()
-            for t in range(num_tuples):
-                val = scalar_array.GetComponent(t, item)
-                if math.isnan(val):
-                    rgba_colors.SetTuple(
-                        t, (no_data_r, no_data_g, no_data_b, no_data_a)
-                    )
-            rgba_colors.Modified()
         rgba_colors.SetName(f"__colors_{style['name']}")
         field_data.AddArray(rgba_colors)
         field_data.SetActiveScalars(rgba_colors.GetName())
