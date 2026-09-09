@@ -44,4 +44,5 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
             params.points,
             params.minimum,
             params.maximum,
+            params.no_data_color,
         )

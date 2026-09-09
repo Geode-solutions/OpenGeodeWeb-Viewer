@@ -70,6 +70,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -114,6 +146,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -229,6 +293,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -273,6 +369,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -407,6 +535,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -541,6 +701,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -585,6 +777,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -700,6 +924,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -744,6 +1000,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -1026,6 +1314,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -1078,6 +1398,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -1224,6 +1576,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -1391,6 +1775,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -1443,6 +1859,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -1730,6 +2178,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -1782,6 +2262,38 @@
                 },
                 "maximum": {
                   "type": "number"
+                },
+                "no_data_color": {
+                  "type": "object",
+                  "properties": {
+                    "red": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "green": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "blue": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 255
+                    },
+                    "alpha": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "red",
+                    "green",
+                    "blue",
+                    "alpha"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [

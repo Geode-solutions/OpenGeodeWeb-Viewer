@@ -23,6 +23,7 @@ from wslink import register as exportRpc  # type: ignore
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.utils_functions import (
+    ColorClassProtocol,
     create_color_transfer_function,
     deterministic_color,
     RpcParams,
@@ -149,7 +150,10 @@ class VtkModelView(VtkObjectView):
             minimum = style["minimum"]
             maximum = style["maximum"]
             points = style["points"]
-            lut = create_color_transfer_function(points, minimum, maximum, item)
+            no_data_color = style["no_data_color"]
+            lut = create_color_transfer_function(
+                points, minimum, maximum, item, no_data_color
+            )
             bar.SetLookupTable(lut)
             bar.SetVisibility(True)
         for name, bar in pipeline.scalar_bars.items():
@@ -167,6 +171,7 @@ class VtkModelView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
+        no_data_color: ColorClassProtocol | None = None,
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
@@ -177,6 +182,7 @@ class VtkModelView(VtkObjectView):
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
+            style["no_data_color"] = no_data_color
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 
@@ -189,6 +195,7 @@ class VtkModelView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
+        no_data_color: ColorClassProtocol | None = None,
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
@@ -199,6 +206,7 @@ class VtkModelView(VtkObjectView):
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
+            style["no_data_color"] = no_data_color
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 

@@ -4,11 +4,19 @@
 import fastjsonschema  # type: ignore
 import functools
 import math
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, TypeVar, Protocol
 from wslink import register  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
 from opengeodeweb_microservice.schemas import SchemaDict
+
+
+class ColorClassProtocol(Protocol):
+    alpha: float
+    blue: int
+    green: int
+    red: int
+
 
 type RpcParams = dict[str, str]
 
@@ -80,12 +88,23 @@ def deterministic_color(identifier: str) -> tuple[float, float, float]:
 
 
 def create_color_transfer_function(
-    points: list[float], minimum: float, maximum: float, item: int = 0
+    points: list[float],
+    minimum: float,
+    maximum: float,
+    item: int = 0,
+    no_data_color: ColorClassProtocol | None = None,
 ) -> vtkColorTransferFunction:
     lut = vtkColorTransferFunction()
     lut.SetVectorModeToComponent()
     lut.SetVectorComponent(item)
     lut.SetRange(minimum, maximum)
+    if no_data_color:
+        lut.SetNanColor(
+            no_data_color.red / 255,
+            no_data_color.green / 255,
+            no_data_color.blue / 255,
+        )
+        lut.SetNanOpacity(float(no_data_color.alpha))
     if points:
         x_min, x_max = points[0], points[-4]
         span = x_max - x_min

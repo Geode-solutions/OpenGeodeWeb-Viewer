@@ -41,7 +41,10 @@ from opengeodeweb_microservice.database.data_types import (
     ViewerElementsType,
     ViewerType,
 )
-from opengeodeweb_viewer.utils_functions import create_color_transfer_function
+from opengeodeweb_viewer.utils_functions import (
+    ColorClassProtocol,
+    create_color_transfer_function,
+)
 
 
 @dataclass
@@ -195,6 +198,7 @@ class BlockStyle(TypedDict):
     minimum: float
     maximum: float
     item: int
+    no_data_color: ColorClassProtocol | None
 
 
 @dataclass
@@ -260,11 +264,14 @@ class VtkPipeline:
                 minimum=0.0,
                 maximum=1.0,
                 item=0,
+                no_data_color=None,
             )
             self.block_styles[block_id] = style
         return self.block_styles[block_id]
 
     def update_block_colors(self, block_id: int) -> None:
+        if block_id >= len(self.blockDataSets):
+            return
         block = self.blockDataSets[block_id]
         if not isinstance(block, vtkDataSet):
             return
@@ -280,8 +287,9 @@ class VtkPipeline:
         if not scalar_array:
             return
         item = style.get("item", 0)
+        no_data_color = style.get("no_data_color")
         lut = create_color_transfer_function(
-            style["points"], style["minimum"], style["maximum"], item
+            style["points"], style["minimum"], style["maximum"], item, no_data_color
         )
         rgba_colors = lut.MapScalars(scalar_array, 1, item)
         rgba_colors.SetName(f"__colors_{style['name']}")

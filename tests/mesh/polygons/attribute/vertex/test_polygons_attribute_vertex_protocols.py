@@ -57,6 +57,7 @@ def test_polygons_vertex_color_map(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -95,6 +96,7 @@ def test_polygons_vertex_color_map_range_update(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -126,6 +128,7 @@ def test_polygons_vertex_color_map_range_update(
                 ],
                 "minimum": 0.8,
                 "maximum": 1.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -166,6 +169,7 @@ def test_polygons_vertex_color_map_red_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -197,6 +201,7 @@ def test_polygons_vertex_color_map_red_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 0.1,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -259,6 +264,7 @@ def test_polygons_vertex_color_map_rainbow(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -317,6 +323,7 @@ def test_polygons_vertex_color_map_rainbow(
                 ],
                 "minimum": 0.1,
                 "maximum": 0.4,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
@@ -353,8 +360,55 @@ def test_polygons_vertex_attribute_item(
                 ],
                 "minimum": 2.0,
                 "maximum": 498.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
     )
 
     assert server.compare_image("mesh/polygons/vertex_attribute_item.jpeg") == True
+
+
+def test_polygons_vertex_no_data(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    dataset_factory(
+        id=mesh_id,
+        viewable_file="polygon_attribute.vtp",
+        viewer_elements_type="polygons",
+    )
+
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": mesh_id, "name": "polygon_attribute.vtp"}],
+    )
+
+    server.call(
+        VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
+        + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
+            "attribute"
+        ][
+            "rpc"
+        ],
+        [
+            {
+                "id": mesh_id,
+                "name": "gradient_3d_attribute",
+                "item": 0,
+                "points": [
+                    0.0,
+                    0,
+                    0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0,
+                    0,
+                ],
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
+            }
+        ],
+    )
+
+    assert server.compare_image("mesh/polygons/vertex_no_data.jpeg") == True
