@@ -372,4 +372,3 @@ def test_polygons_polygon_attribute_item(
     )
 
     assert server.compare_image("mesh/polygons/polygon_attribute_item.jpeg") == True
-

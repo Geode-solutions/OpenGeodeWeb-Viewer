@@ -196,7 +196,9 @@ class VtkMeshView(VtkObjectView):
         no_data_color: ColorClass | None = None,
     ) -> None:
         data = self.get_vtk_pipeline(data_id)
-        lut = create_color_transfer_function(points, minimum, maximum, item, no_data_color)
+        lut = create_color_transfer_function(
+            points, minimum, maximum, item, no_data_color
+        )
         data.mapper.SetLookupTable(lut)
 
         data.mapper.SetScalarRange(minimum, maximum)

@@ -322,7 +322,9 @@ class VtkPipeline:
             for t in range(num_tuples):
                 val = scalar_array.GetComponent(t, item)
                 if math.isnan(val):
-                    rgba_colors.SetTuple(t, (no_data_r, no_data_g, no_data_b, no_data_a))
+                    rgba_colors.SetTuple(
+                        t, (no_data_r, no_data_g, no_data_b, no_data_a)
+                    )
             rgba_colors.Modified()
         rgba_colors.SetName(f"__colors_{style['name']}")
         field_data.AddArray(rgba_colors)
