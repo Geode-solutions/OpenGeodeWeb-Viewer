@@ -14,8 +14,8 @@ from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
-from opengeodeweb_viewer.rpc.mesh.schemas.color import ColorClass
 from opengeodeweb_viewer.utils_functions import (
+    ColorClassProtocol,
     create_color_transfer_function,
     RpcParams,
     validate_schema,
@@ -119,7 +119,7 @@ class VtkMeshView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
-        no_data_color: ColorClass | None = None,
+        no_data_color: ColorClassProtocol | None = None,
     ) -> None:
         print(
             f"[DEBUG mesh displayAttributeOnVertices] data_id={data_id} name={name} item={item} min={minimum} max={maximum}",
@@ -152,7 +152,7 @@ class VtkMeshView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
-        no_data_color: ColorClass | None = None,
+        no_data_color: ColorClassProtocol | None = None,
     ) -> None:
         print(
             f"[DEBUG mesh displayAttributeOnCells] data_id={data_id} name={name} item={item} min={minimum} max={maximum}",
@@ -193,7 +193,7 @@ class VtkMeshView(VtkObjectView):
         minimum: float,
         maximum: float,
         item: int = 0,
-        no_data_color: ColorClass | None = None,
+        no_data_color: ColorClassProtocol | None = None,
     ) -> None:
         data = self.get_vtk_pipeline(data_id)
         lut = create_color_transfer_function(

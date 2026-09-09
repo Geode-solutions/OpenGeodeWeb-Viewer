@@ -4,12 +4,19 @@
 import fastjsonschema  # type: ignore
 import functools
 import math
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, TypeVar, Protocol
 from wslink import register  # type: ignore
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
 from opengeodeweb_microservice.schemas import SchemaDict
-from opengeodeweb_viewer.rpc.mesh.schemas.color import ColorClass
+
+
+class ColorClassProtocol(Protocol):
+    alpha: float
+    blue: int
+    green: int
+    red: int
+
 
 type RpcParams = dict[str, str]
 
@@ -85,7 +92,7 @@ def create_color_transfer_function(
     minimum: float,
     maximum: float,
     item: int = 0,
-    no_data_color: ColorClass | None = None,
+    no_data_color: ColorClassProtocol | None = None,
 ) -> vtkColorTransferFunction:
     lut = vtkColorTransferFunction()
     lut.SetVectorModeToComponent()

@@ -41,8 +41,10 @@ from opengeodeweb_microservice.database.data_types import (
     ViewerElementsType,
     ViewerType,
 )
-from opengeodeweb_viewer.rpc.mesh.schemas.color import ColorClass
-from opengeodeweb_viewer.utils_functions import create_color_transfer_function
+from opengeodeweb_viewer.utils_functions import (
+    ColorClassProtocol,
+    create_color_transfer_function,
+)
 
 
 @dataclass
@@ -196,7 +198,7 @@ class BlockStyle(TypedDict):
     minimum: float
     maximum: float
     item: int
-    no_data_color: ColorClass | None
+    no_data_color: ColorClassProtocol | None
 
 
 @dataclass
