@@ -271,22 +271,11 @@ class VtkPipeline:
 
     def update_block_colors(self, block_id: int) -> None:
         if block_id >= len(self.blockDataSets):
-            print(
-                f"[DEBUG update_block_colors] block_id={block_id} out of range (total={len(self.blockDataSets)})",
-                flush=True,
-            )
             return
         block = self.blockDataSets[block_id]
         if not isinstance(block, vtkDataSet):
-            print(
-                f"[DEBUG update_block_colors] block_id={block_id} is not vtkDataSet ({type(block)})",
-                flush=True,
-            )
             return
         style = self.get_block_style(block_id)
-        print(
-            f"[DEBUG update_block_colors] block_id={block_id} style={style}", flush=True
-        )
         if not style["name"]:
             block.GetPointData().SetActiveScalars("")
             block.GetCellData().SetActiveScalars("")
@@ -296,21 +285,9 @@ class VtkPipeline:
         other_field_data = block.GetCellData() if is_point else block.GetPointData()
         scalar_array = field_data.GetArray(style["name"])
         if not scalar_array:
-            avail = [
-                field_data.GetArrayName(i)
-                for i in range(field_data.GetNumberOfArrays())
-            ]
-            print(
-                f"[DEBUG update_block_colors] scalar_array '{style['name']}' NOT FOUND! Available arrays in {'point' if is_point else 'cell'} data: {avail}",
-                flush=True,
-            )
             return
         item = style.get("item", 0)
         no_data_color = style.get("no_data_color")
-        print(
-            f"[DEBUG update_block_colors] Mapping '{style['name']}' item={item} tuples={scalar_array.GetNumberOfTuples()} comps={scalar_array.GetNumberOfComponents()}",
-            flush=True,
-        )
         lut = create_color_transfer_function(
             style["points"], style["minimum"], style["maximum"], item, no_data_color
         )

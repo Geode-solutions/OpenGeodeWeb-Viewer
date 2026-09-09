@@ -173,10 +173,6 @@ class VtkModelView(VtkObjectView):
         maximum: float,
         no_data_color: ColorClassProtocol | None = None,
     ) -> None:
-        print(
-            f"[DEBUG model displayAttributeOnVertices] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum}",
-            flush=True,
-        )
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = pipeline.get_block_style(block_id)
@@ -201,10 +197,6 @@ class VtkModelView(VtkObjectView):
         maximum: float,
         no_data_color: ColorClassProtocol | None = None,
     ) -> None:
-        print(
-            f"[DEBUG model displayAttributeOnCells] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum}",
-            flush=True,
-        )
         pipeline = self.get_vtk_pipeline(data_id)
         for block_id in block_ids:
             style = pipeline.get_block_style(block_id)

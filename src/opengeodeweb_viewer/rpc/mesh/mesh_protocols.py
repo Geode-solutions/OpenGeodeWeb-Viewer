@@ -121,23 +121,10 @@ class VtkMeshView(VtkObjectView):
         maximum: float,
         no_data_color: ColorClassProtocol | None = None,
     ) -> None:
-        print(
-            f"[DEBUG mesh displayAttributeOnVertices] data_id={data_id} name={name} item={item} min={minimum} max={maximum}",
-            flush=True,
-        )
         pipeline = self.get_vtk_pipeline(data_id)
-        pt_data = pipeline.reader.GetOutputAsDataSet().GetPointData()
-        print(
-            f"[DEBUG mesh displayAttributeOnVertices] Reader PointData arrays: {[pt_data.GetArrayName(i) for i in range(pt_data.GetNumberOfArrays())]}",
-            flush=True,
-        )
         pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
         pipeline.filter.Update()
         if active_ds := pipeline.mapper.GetInputDataObject(0, 0):
-            print(
-                f"[DEBUG mesh displayAttributeOnVertices] Mapper input dataset: {type(active_ds).__name__}",
-                flush=True,
-            )
             active_ds.GetPointData().SetActiveScalars(name)
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUsePointData()
@@ -154,23 +141,10 @@ class VtkMeshView(VtkObjectView):
         maximum: float,
         no_data_color: ColorClassProtocol | None = None,
     ) -> None:
-        print(
-            f"[DEBUG mesh displayAttributeOnCells] data_id={data_id} name={name} item={item} min={minimum} max={maximum}",
-            flush=True,
-        )
         pipeline = self.get_vtk_pipeline(data_id)
-        cell_data = pipeline.reader.GetOutputAsDataSet().GetCellData()
-        print(
-            f"[DEBUG mesh displayAttributeOnCells] Reader CellData arrays: {[cell_data.GetArrayName(i) for i in range(cell_data.GetNumberOfArrays())]}",
-            flush=True,
-        )
         pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
         pipeline.filter.Update()
         if active_ds := pipeline.mapper.GetInputDataObject(0, 0):
-            print(
-                f"[DEBUG mesh displayAttributeOnCells] Mapper input dataset: {type(active_ds).__name__}",
-                flush=True,
-            )
             active_ds.GetCellData().SetActiveScalars(name)
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUseCellData()
