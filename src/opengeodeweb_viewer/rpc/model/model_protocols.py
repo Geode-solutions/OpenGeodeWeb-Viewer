@@ -150,10 +150,9 @@ class VtkModelView(VtkObjectView):
             minimum = style["minimum"]
             maximum = style["maximum"]
             points = style["points"]
-            no_data = style["no_data"]
             no_data_color = style["no_data_color"]
             lut = create_color_transfer_function(
-                points, minimum, maximum, item, no_data, no_data_color
+                points, minimum, maximum, item, no_data_color
             )
             bar.SetLookupTable(lut)
             bar.SetVisibility(True)
@@ -172,11 +171,10 @@ class VtkModelView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
-        no_data: bool = False,
         no_data_color: ColorClass | None = None,
     ) -> None:
         print(
-            f"[DEBUG model displayAttributeOnVertices] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
+            f"[DEBUG model displayAttributeOnVertices] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum}",
             flush=True,
         )
         pipeline = self.get_vtk_pipeline(data_id)
@@ -188,9 +186,7 @@ class VtkModelView(VtkObjectView):
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
-            style["no_data"] = no_data
-            if no_data_color:
-                style["no_data_color"] = no_data_color
+            style["no_data_color"] = no_data_color
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 
@@ -203,11 +199,10 @@ class VtkModelView(VtkObjectView):
         color_map: list[float],
         minimum: float,
         maximum: float,
-        no_data: bool = False,
         no_data_color: ColorClass | None = None,
     ) -> None:
         print(
-            f"[DEBUG model displayAttributeOnCells] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum} no_data={no_data}",
+            f"[DEBUG model displayAttributeOnCells] data_id={data_id} block_ids={block_ids} name={name} item={item} min={minimum} max={maximum}",
             flush=True,
         )
         pipeline = self.get_vtk_pipeline(data_id)
@@ -219,9 +214,7 @@ class VtkModelView(VtkObjectView):
             style["points"] = color_map
             style["minimum"] = minimum
             style["maximum"] = maximum
-            style["no_data"] = no_data
-            if no_data_color:
-                style["no_data_color"] = no_data_color
+            style["no_data_color"] = no_data_color
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 

@@ -59,7 +59,6 @@ def test_polyhedra_vertex_color_map(
                 ],
                 "minimum": 1.0,
                 "maximum": 11.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
@@ -99,7 +98,6 @@ def test_polyhedra_vertex_color_map_range_update(
                 ],
                 "minimum": 1.0,
                 "maximum": 11.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
@@ -132,7 +130,6 @@ def test_polyhedra_vertex_color_map_range_update(
                 ],
                 "minimum": 10.0,
                 "maximum": 11.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
@@ -175,7 +172,6 @@ def test_polyhedra_vertex_color_map_red_shift(
                 ],
                 "minimum": 1.0,
                 "maximum": 11.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
@@ -208,7 +204,6 @@ def test_polyhedra_vertex_color_map_red_shift(
                 ],
                 "minimum": 0.0,
                 "maximum": 1.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
@@ -274,7 +269,6 @@ def test_polyhedra_vertex_color_map_rainbow(
                 ],
                 "minimum": 1.0,
                 "maximum": 11.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
@@ -334,7 +328,6 @@ def test_polyhedra_vertex_color_map_rainbow(
                 ],
                 "minimum": 2.0,
                 "maximum": 8.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],
@@ -373,7 +366,6 @@ def test_polyhedra_vertex_attribute_item(
                 ],
                 "minimum": 0.0,
                 "maximum": 10.0,
-                "no_data": False,
                 "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
             }
         ],

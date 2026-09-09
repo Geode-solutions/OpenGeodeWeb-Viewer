@@ -196,7 +196,6 @@ class BlockStyle(TypedDict):
     minimum: float
     maximum: float
     item: int
-    no_data: bool
     no_data_color: ColorClass | None
 
 
@@ -263,7 +262,6 @@ class VtkPipeline:
                 minimum=0.0,
                 maximum=1.0,
                 item=0,
-                no_data=False,
                 no_data_color=None,
             )
             self.block_styles[block_id] = style
@@ -306,14 +304,13 @@ class VtkPipeline:
             )
             return
         item = style.get("item", 0)
-        no_data = style.get("no_data", False)
         no_data_color = style.get("no_data_color")
         print(
-            f"[DEBUG update_block_colors] Mapping '{style['name']}' item={item} tuples={scalar_array.GetNumberOfTuples()} comps={scalar_array.GetNumberOfComponents()} no_data={no_data}",
+            f"[DEBUG update_block_colors] Mapping '{style['name']}' item={item} tuples={scalar_array.GetNumberOfTuples()} comps={scalar_array.GetNumberOfComponents()}",
             flush=True,
         )
         lut = create_color_transfer_function(
-            style["points"], style["minimum"], style["maximum"], item, no_data, no_data_color
+            style["points"], style["minimum"], style["maximum"], item, no_data_color
         )
         rgba_colors = lut.MapScalars(scalar_array, 1, item)
         if no_data_color:

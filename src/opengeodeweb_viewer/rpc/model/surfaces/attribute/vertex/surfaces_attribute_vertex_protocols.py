@@ -38,12 +38,11 @@ class VtkModelSurfacesAttributeVertexView(VtkModelView):
         params = schemas.Attribute.from_dict(rpc_params)
         self.displayAttributeOnVertices(
             params.id,
-            params.block_ids,
+            params.surface_ids,
             params.name,
             params.item,
             params.points,
             params.minimum,
             params.maximum,
-            params.no_data,
             params.no_data_color,
         )

@@ -35,9 +35,6 @@
     "maximum": {
       "type": "number"
     },
-    "no_data": {
-      "type": "boolean"
-    },
     "no_data_color": {
       "type": "object",
       "properties": {
@@ -78,9 +75,7 @@
     "item",
     "points",
     "minimum",
-    "maximum",
-    "no_data",
-    "no_data_color"
+    "maximum"
   ],
   "additionalProperties": false
 }

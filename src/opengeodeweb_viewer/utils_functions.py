@@ -85,7 +85,6 @@ def create_color_transfer_function(
     minimum: float,
     maximum: float,
     item: int = 0,
-    no_data: bool = False,
     no_data_color: ColorClass | None = None,
 ) -> vtkColorTransferFunction:
     lut = vtkColorTransferFunction()
