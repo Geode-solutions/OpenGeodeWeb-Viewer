@@ -30,6 +30,18 @@ def test_register_model_cube(
     assert server.compare_image("model/cube_register.jpeg") == True
 
 
+def test_register_model_implicit_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    dataset_factory(id=model_id, viewable_file="implicit_attribute.vtm")
+    server.call(
+        VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
+        [{"id": model_id, "name": "implicit_attribute.vtm"}],
+    )
+    assert server.compare_image("model/implicit_attribute_register.jpeg") == True
+
+
 def test_visibility_model(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
