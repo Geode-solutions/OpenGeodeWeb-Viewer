@@ -102,6 +102,5 @@ def test_surfaces_vertex_attribute_interpolates_through_colormap(
     )
 
     assert (
-        server.compare_image("model/surfaces/implicit_attribute_color_map.jpeg")
-        == True
+        server.compare_image("model/surfaces/implicit_attribute_color_map.jpeg") == True
     )
