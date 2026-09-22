@@ -316,9 +316,11 @@ class VtkPipeline:
             )
             attributes.SetBlockScalarMode(
                 block,
-                VTK_SCALAR_MODE_USE_POINT_DATA
-                if is_point
-                else VTK_SCALAR_MODE_USE_CELL_DATA,
+                (
+                    VTK_SCALAR_MODE_USE_POINT_DATA
+                    if is_point
+                    else VTK_SCALAR_MODE_USE_CELL_DATA
+                ),
             )
             attributes.SetBlockInterpolateScalarsBeforeMapping(block, True)
             attributes.SetBlockScalarVisibility(block, True)
