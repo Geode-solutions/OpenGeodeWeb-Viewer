@@ -177,6 +177,8 @@ class VtkObjectView(VtkView):
                 blocks[block_id], [red / 255, green / 255, blue / 255]
             )
             attributes.SetBlockOpacity(blocks[block_id], alpha)
+            attributes.SetBlockScalarVisibility(blocks[block_id], False)
+            attributes.RemoveBlockLookupTable(blocks[block_id])
 
     def clearColors(self, data_id: str) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
@@ -187,11 +189,14 @@ class VtkObjectView(VtkView):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         elif isinstance(mapper, vtkCompositePolyDataMapper):
+            attributes = mapper.GetCompositeDataDisplayAttributes()
             pipeline.block_styles.clear()
             for block in pipeline.blockDataSets:
                 if isinstance(block, vtkDataSet):
                     block.GetPointData().SetActiveScalars("")
                     block.GetCellData().SetActiveScalars("")
+                    attributes.SetBlockScalarVisibility(block, False)
+                    attributes.RemoveBlockLookupTable(block)
         mapper.ScalarVisibilityOff()
         pipeline.scalarBar.SetVisibility(False)
         for bar in pipeline.scalar_bars.values():
