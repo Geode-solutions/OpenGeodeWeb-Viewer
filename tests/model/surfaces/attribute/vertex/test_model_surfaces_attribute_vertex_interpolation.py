@@ -21,19 +21,11 @@ surface_ids = [18, 19, 20]
 def test_surfaces_vertex_attribute_interpolates_through_colormap(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    # Regression test for a bug where the color of a point-attribute-colored
-    # surface was interpolated by blending per-vertex colors linearly in RGB
-    # space instead of interpolating the scalar and mapping it through the
-    # colormap. With a colormap that has a light color in the middle of the
-    # range, the buggy behavior never shows that light color between two
-    # differently colored vertices.
     dataset_factory(id=model_id, viewable_file="implicit_attribute.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": model_id, "name": "implicit_attribute.vtm"}],
     )
-
-    # Hide everything to ensure visibility of the surfaces only
     server.call(
         VtkModelSurfacesView.model_surfaces_prefix
         + VtkModelSurfacesView.model_surfaces_schemas_dict["visibility"]["rpc"],
@@ -45,8 +37,6 @@ def test_surfaces_vertex_attribute_interpolates_through_colormap(
         [{"id": model_id, "block_ids": surface_ids, "visibility": True}],
     )
 
-    # "geode_implicit_attribute" is the real point attribute from the
-    # reported bug, ranging roughly from -1.67 to 6.79 on this dataset.
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
