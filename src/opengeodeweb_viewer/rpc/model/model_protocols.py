@@ -76,13 +76,9 @@ class VtkModelView(VtkObjectView):
         print(f"{attr=}", flush=True)
         colors: list[ColorResult] = []
         for block_id in block_ids:
+            pipeline.clear_block_scalars(block_id)
             block_dataset = pipeline.blockDataSets[block_id]
             if isinstance(block_dataset, vtkDataSet):
-                block_dataset.GetPointData().SetActiveScalars("")
-                block_dataset.GetCellData().SetActiveScalars("")
-                pipeline.get_block_style(block_id)["name"] = ""
-                attr.SetBlockScalarVisibility(block_dataset, False)
-                attr.RemoveBlockLookupTable(block_dataset)
                 if color_mode == "random":
                     geode_id = pipeline.blockGeodeIds[block_id]
                     red, green, blue = deterministic_color(f"{geode_id}_{block_id}")

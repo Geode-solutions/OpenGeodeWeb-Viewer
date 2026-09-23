@@ -272,6 +272,31 @@ class VtkPipeline:
             self.block_styles[block_id] = style
         return self.block_styles[block_id]
 
+    def clear_block_scalars(self, block_id: int) -> None:
+        if block_id in self.block_styles:
+            self.block_styles[block_id]["name"] = ""
+        if block_id >= len(self.blockDataSets):
+            return
+        block = self.blockDataSets[block_id]
+        if not isinstance(block, vtkDataSet):
+            return
+        block.GetPointData().SetActiveScalars("")
+        block.GetCellData().SetActiveScalars("")
+        if isinstance(self.mapper, vtkCompositePolyDataMapper):
+            attributes = self.mapper.GetCompositeDataDisplayAttributes()
+            attributes.SetBlockScalarVisibility(block, False)
+            attributes.RemoveBlockLookupTable(block)
+            attributes.RemoveBlockArrayName(block)
+            attributes.RemoveBlockArrayComponent(block)
+            attributes.RemoveBlockScalarRange(block)
+            attributes.RemoveBlockScalarMode(block)
+            attributes.RemoveBlockInterpolateScalarsBeforeMapping(block)
+
+    def clear_blocks_scalars(self) -> None:
+        self.block_styles.clear()
+        for block_id in range(len(self.blockDataSets)):
+            self.clear_block_scalars(block_id)
+
     def update_block_colors(self, block_id: int) -> None:
         if block_id >= len(self.blockDataSets):
             return
@@ -280,17 +305,7 @@ class VtkPipeline:
             return
         style = self.get_block_style(block_id)
         if not style["name"]:
-            block.GetPointData().SetActiveScalars("")
-            block.GetCellData().SetActiveScalars("")
-            if isinstance(self.mapper, vtkCompositePolyDataMapper):
-                attributes = self.mapper.GetCompositeDataDisplayAttributes()
-                attributes.SetBlockScalarVisibility(block, False)
-                attributes.RemoveBlockLookupTable(block)
-                attributes.RemoveBlockArrayName(block)
-                attributes.RemoveBlockArrayComponent(block)
-                attributes.RemoveBlockScalarRange(block)
-                attributes.RemoveBlockScalarMode(block)
-                attributes.RemoveBlockInterpolateScalarsBeforeMapping(block)
+            self.clear_block_scalars(block_id)
             return
         is_point = style["attribute_location"] == "point"
         field_data = block.GetPointData() if is_point else block.GetCellData()
@@ -322,7 +337,7 @@ class VtkPipeline:
                     else VTK_SCALAR_MODE_USE_CELL_DATA
                 ),
             )
-            attributes.SetBlockInterpolateScalarsBeforeMapping(block, True)
+            attributes.SetBlockInterpolateScalarsBeforeMapping(block, is_point)
             attributes.SetBlockScalarVisibility(block, True)
         self.mapper.ScalarVisibilityOn()
         self.mapper.SetColorModeToMapScalars()
