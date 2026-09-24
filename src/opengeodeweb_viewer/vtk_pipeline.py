@@ -5,6 +5,8 @@ from typing import cast, Literal, TypedDict
 
 # Third party imports
 from vtkmodules.vtkRenderingCore import (
+    VTK_SCALAR_MODE_USE_CELL_DATA,
+    VTK_SCALAR_MODE_USE_POINT_DATA,
     vtkActor,
     vtkDataSetMapper,
     vtkFollower,
@@ -26,6 +28,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkMultiBlockDataSet,
     vtkSelection,
     vtkSelectionNode,
+    vtkVector2d,
 )
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from vtkmodules.vtkFiltersExtraction import (
@@ -269,6 +272,31 @@ class VtkPipeline:
             self.block_styles[block_id] = style
         return self.block_styles[block_id]
 
+    def clear_block_scalars(self, block_id: int) -> None:
+        if block_id in self.block_styles:
+            self.block_styles[block_id]["name"] = ""
+        if block_id >= len(self.blockDataSets):
+            return
+        block = self.blockDataSets[block_id]
+        if not isinstance(block, vtkDataSet):
+            return
+        block.GetPointData().SetActiveScalars("")
+        block.GetCellData().SetActiveScalars("")
+        if isinstance(self.mapper, vtkCompositePolyDataMapper):
+            attributes = self.mapper.GetCompositeDataDisplayAttributes()
+            attributes.SetBlockScalarVisibility(block, False)
+            attributes.RemoveBlockLookupTable(block)
+            attributes.RemoveBlockArrayName(block)
+            attributes.RemoveBlockArrayComponent(block)
+            attributes.RemoveBlockScalarRange(block)
+            attributes.RemoveBlockScalarMode(block)
+            attributes.RemoveBlockInterpolateScalarsBeforeMapping(block)
+
+    def clear_blocks_scalars(self) -> None:
+        self.block_styles.clear()
+        for block_id in range(len(self.blockDataSets)):
+            self.clear_block_scalars(block_id)
+
     def update_block_colors(self, block_id: int) -> None:
         if block_id >= len(self.blockDataSets):
             return
@@ -277,8 +305,7 @@ class VtkPipeline:
             return
         style = self.get_block_style(block_id)
         if not style["name"]:
-            block.GetPointData().SetActiveScalars("")
-            block.GetCellData().SetActiveScalars("")
+            self.clear_block_scalars(block_id)
             return
         is_point = style["attribute_location"] == "point"
         field_data = block.GetPointData() if is_point else block.GetCellData()
@@ -291,17 +318,30 @@ class VtkPipeline:
         lut = create_color_transfer_function(
             style["points"], style["minimum"], style["maximum"], item, no_data_color
         )
-        rgba_colors = lut.MapScalars(scalar_array, 1, item)
-        rgba_colors.SetName(f"__colors_{style['name']}")
-        field_data.AddArray(rgba_colors)
-        field_data.SetActiveScalars(rgba_colors.GetName())
+        field_data.SetActiveScalars(style["name"])
         other_field_data.SetActiveScalars("")
         if isinstance(self.mapper, vtkCompositePolyDataMapper):
-            if attributes := self.mapper.GetCompositeDataDisplayAttributes():
-                attributes.RemoveBlockColor(block)
+            attributes = self.mapper.GetCompositeDataDisplayAttributes()
+            attributes.RemoveBlockColor(block)
+            attributes.SetBlockLookupTable(block, lut)
+            attributes.SetBlockArrayName(block, style["name"])
+            attributes.SetBlockArrayComponent(block, item)
+            attributes.SetBlockScalarRange(
+                block, vtkVector2d(style["minimum"], style["maximum"])
+            )
+            attributes.SetBlockScalarMode(
+                block,
+                (
+                    VTK_SCALAR_MODE_USE_POINT_DATA
+                    if is_point
+                    else VTK_SCALAR_MODE_USE_CELL_DATA
+                ),
+            )
+            attributes.SetBlockInterpolateScalarsBeforeMapping(block, is_point)
+            attributes.SetBlockScalarVisibility(block, True)
         self.mapper.ScalarVisibilityOn()
-        self.mapper.SetColorModeToDirectScalars()
-        self.mapper.SetScalarModeToDefault()
+        self.mapper.SetColorModeToMapScalars()
+        self.mapper.InterpolateScalarsBeforeMappingOn()
         self.mapper.Modified()
 
     def sync_block_display_attributes(
