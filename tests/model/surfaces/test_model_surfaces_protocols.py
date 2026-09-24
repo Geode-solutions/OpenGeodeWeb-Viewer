@@ -84,7 +84,7 @@ def test_surfaces_polygons_random_color(
     assert server.compare_image("model/surfaces/random_color.jpeg") == True
 
 
-def test_surfaces_polygons_random_color_id(
+def test_surfaces_polygons_random_collection_id(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
 
@@ -98,7 +98,7 @@ def test_surfaces_polygons_random_color_id(
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
                 "color_mode": "random",
-                "color_id": "collection",
+                "collection_id": "collection",
             }
         ],
     )
