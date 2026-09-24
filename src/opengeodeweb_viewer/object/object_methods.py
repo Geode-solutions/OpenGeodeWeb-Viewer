@@ -187,11 +187,7 @@ class VtkObjectView(VtkView):
             output.GetPointData().SetActiveScalars("")
             output.GetCellData().SetActiveScalars("")
         elif isinstance(mapper, vtkCompositePolyDataMapper):
-            pipeline.block_styles.clear()
-            for block in pipeline.blockDataSets:
-                if isinstance(block, vtkDataSet):
-                    block.GetPointData().SetActiveScalars("")
-                    block.GetCellData().SetActiveScalars("")
+            pipeline.clear_blocks_scalars()
         mapper.ScalarVisibilityOff()
         pipeline.scalarBar.SetVisibility(False)
         for bar in pipeline.scalar_bars.values():
