@@ -15,7 +15,7 @@
       "type": "string",
       "enum": ["constant", "random"]
     },
-    "color_id": {
+    "collection_id": {
       "type": "string",
       "minLength": 1
     },

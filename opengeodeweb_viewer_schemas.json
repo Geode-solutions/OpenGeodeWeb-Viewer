@@ -1495,7 +1495,7 @@
                 "random"
               ]
             },
-            "color_id": {
+            "collection_id": {
               "type": "string",
               "minLength": 1
             },
@@ -1677,7 +1677,7 @@
                 "random"
               ]
             },
-            "color_id": {
+            "collection_id": {
               "type": "string",
               "minLength": 1
             },
@@ -1964,7 +1964,7 @@
                 "random"
               ]
             },
-            "color_id": {
+            "collection_id": {
               "type": "string",
               "minLength": 1
             },
@@ -2371,7 +2371,7 @@
                 "random"
               ]
             },
-            "color_id": {
+            "collection_id": {
               "type": "string",
               "minLength": 1
             },

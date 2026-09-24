@@ -44,5 +44,5 @@ class VtkModelSurfacesView(VtkModelView):
             params.block_ids,
             params.color_mode.value,
             params.color,
-            params.color_id,
+            params.collection_id,
         )
