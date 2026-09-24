@@ -1495,6 +1495,10 @@
                 "random"
               ]
             },
+            "color_id": {
+              "type": "string",
+              "minLength": 1
+            },
             "color": {
               "type": "object",
               "properties": {
@@ -1672,6 +1676,10 @@
                 "constant",
                 "random"
               ]
+            },
+            "color_id": {
+              "type": "string",
+              "minLength": 1
             },
             "color": {
               "type": "object",
@@ -1955,6 +1963,10 @@
                 "constant",
                 "random"
               ]
+            },
+            "color_id": {
+              "type": "string",
+              "minLength": 1
             },
             "color": {
               "type": "object",
@@ -2358,6 +2370,10 @@
                 "constant",
                 "random"
               ]
+            },
+            "color_id": {
+              "type": "string",
+              "minLength": 1
             },
             "color": {
               "type": "object",

@@ -84,6 +84,31 @@ def test_surfaces_polygons_random_color(
     assert server.compare_image("model/surfaces/random_color.jpeg") == True
 
 
+def test_surfaces_polygons_random_color_id(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_surfaces_polygons_visibility(server, dataset_factory)
+
+    server.call(
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(36, 47)),
+                "color_mode": "random",
+                "color_id": "collection",
+            }
+        ],
+    )
+    response = server.get_response()
+    assert isinstance(response, dict)
+    colors = [result["color"] for result in response["result"]]
+    assert len(colors) == 11
+    assert all(color == colors[0] for color in colors)
+
+
 def test_surfaces_clipping_plane(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

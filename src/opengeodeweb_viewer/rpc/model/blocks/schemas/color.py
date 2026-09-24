@@ -29,3 +29,4 @@ class Color(DataClassJsonMixin):
     color_mode: ColorMode
     id: str
     color: Optional[ColorClass] = None
+    color_id: Optional[str] = None
