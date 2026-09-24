@@ -76,6 +76,7 @@ class VtkModelView(VtkObjectView):
         print(f"{attr=}", flush=True)
         colors: list[ColorResult] = []
         for block_id in block_ids:
+            pipeline.get_block_style(block_id)
             pipeline.clear_block_scalars(block_id)
             block_dataset = pipeline.blockDataSets[block_id]
             if isinstance(block_dataset, vtkDataSet):
