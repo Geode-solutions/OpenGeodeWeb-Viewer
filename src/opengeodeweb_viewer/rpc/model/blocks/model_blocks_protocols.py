@@ -40,5 +40,9 @@ class VtkModelBlocksView(VtkModelView):
         params = schemas.Color.from_dict(rpc_params)
         pipeline = self.get_vtk_pipeline(params.id)
         return self.apply_color(
-            pipeline, params.block_ids, params.color_mode.value, params.color
+            pipeline,
+            params.block_ids,
+            params.color_mode.value,
+            params.color,
+            params.collection_id,
         )
