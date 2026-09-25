@@ -225,9 +225,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.clipping_filter = None
             self.update_pipeline_filter(pipeline)
 
-    def set_threshold(
-        self, data_ids: list[str], attribute: Attribute | None
-    ) -> None:
+    def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             if attribute:
