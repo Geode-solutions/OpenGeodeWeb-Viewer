@@ -2528,6 +2528,59 @@
           "camera_options"
         ]
       },
+      "threshold": {
+        "$id": "opengeodeweb_viewer.viewer.threshold",
+        "rpc": "threshold",
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            }
+          },
+          "attribute": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "location": {
+                "type": "string",
+                "enum": [
+                  "point",
+                  "cell"
+                ]
+              },
+              "item": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "minimum": {
+                "type": "number"
+              },
+              "maximum": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "item",
+              "minimum",
+              "maximum"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      },
       "take_screenshot": {
         "$id": "opengeodeweb_viewer.viewer.take_screenshot",
         "rpc": "take_screenshot",
