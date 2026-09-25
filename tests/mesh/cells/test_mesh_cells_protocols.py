@@ -96,3 +96,35 @@ def test_cells_shrink(
         ],
     )
     assert server.compare_image("mesh/cells/shrink.jpeg") == True
+
+
+def test_cells_threshold(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "attribute": {
+                    "name": "RGB_data",
+                    "location": "cell",
+                    "item": 0,
+                    "minimum": 0.0,
+                    "maximum": 128.0,
+                },
+            }
+        ],
+    )
+    assert server.compare_image("mesh/cells/threshold.jpeg") == True
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
+        [{"ids": [mesh_id]}],
+    )
+    assert server.compare_image("mesh/cells/register.jpeg") == True

@@ -23,6 +23,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkPlane,
     vtkSelectionNode,
 )
+from vtkmodules.vtkFiltersCore import vtkThreshold
 from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
@@ -37,6 +38,7 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
+from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
 from opengeodeweb_viewer.vtk_pipeline import (
     RulerPipeline,
     ViewerData,
@@ -179,7 +181,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         current_input_port = pipeline.reader.GetOutputPort()
         active_filters = [
             filter_obj
-            for filter_obj in (pipeline.clipping_filter, pipeline.shrink_filter)
+            for filter_obj in (
+                pipeline.clipping_filter,
+                pipeline.threshold_filter,
+                pipeline.shrink_filter,
+            )
             if filter_obj is not None
         ]
         for filter_obj in active_filters:
@@ -217,6 +223,30 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.clipping_filter = clipping_filter
             else:
                 pipeline.clipping_filter = None
+            self.update_pipeline_filter(pipeline)
+
+    def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
+        for data_id in data_ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            if attribute:
+                threshold_filter = vtkThreshold()
+                threshold_filter.SetInputArrayToProcess(
+                    0,
+                    0,
+                    0,
+                    (
+                        vtkDataObject.FIELD_ASSOCIATION_POINTS
+                        if attribute.location == Location.POINT
+                        else vtkDataObject.FIELD_ASSOCIATION_CELLS
+                    ),
+                    attribute.name,
+                )
+                threshold_filter.SetSelectedComponent(attribute.item)
+                threshold_filter.SetLowerThreshold(attribute.minimum)
+                threshold_filter.SetUpperThreshold(attribute.maximum)
+                pipeline.threshold_filter = threshold_filter
+            else:
+                pipeline.threshold_filter = None
             self.update_pipeline_filter(pipeline)
 
     def set_shrink(self, data_ids: list[str], shrink_factor: float) -> None:
