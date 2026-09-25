@@ -28,4 +28,5 @@ class Color(DataClassJsonMixin):
     block_ids: List[int]
     color_mode: ColorMode
     id: str
+    collection_id: Optional[str] = None
     color: Optional[ColorClass] = None

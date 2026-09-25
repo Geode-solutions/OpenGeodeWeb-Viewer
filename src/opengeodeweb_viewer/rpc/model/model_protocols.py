@@ -68,6 +68,7 @@ class VtkModelView(VtkObjectView):
         block_ids: list[int],
         color_mode: str,
         color: Optional[ColorProtocol] = None,
+        collection_id: Optional[str] = None,
     ) -> list[ColorResult]:
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
@@ -82,7 +83,9 @@ class VtkModelView(VtkObjectView):
             if isinstance(block_dataset, vtkDataSet):
                 if color_mode == "random":
                     geode_id = pipeline.blockGeodeIds[block_id]
-                    red, green, blue = deterministic_color(f"{geode_id}_{block_id}")
+                    red, green, blue = deterministic_color(
+                        collection_id or f"{geode_id}_{block_id}"
+                    )
                     attr.SetBlockColor(block_dataset, [red, green, blue])
                     attr.SetBlockOpacity(block_dataset, 1.0)
                     colors.append(
