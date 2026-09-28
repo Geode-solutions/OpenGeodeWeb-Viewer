@@ -20,12 +20,14 @@ from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
     vtkDataSet,
     vtkImplicitBoolean,
+    vtkImageData,
     vtkPlane,
     vtkSelectionNode,
 )
 from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from vtkmodules.vtkImagingCore import vtkExtractVOI
 from vtkmodules.vtkCommonCore import vtkIdTypeArray, vtkStringArray
 from vtkmodules.vtkRenderingAnnotation import (
     vtkAxesActor,
@@ -179,7 +181,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         current_input_port = pipeline.reader.GetOutputPort()
         active_filters = [
             filter_obj
-            for filter_obj in (pipeline.clipping_filter, pipeline.shrink_filter)
+            for filter_obj in (
+                pipeline.slice_filter,
+                pipeline.clipping_filter,
+                pipeline.shrink_filter,
+            )
             if filter_obj is not None
         ]
         for filter_obj in active_filters:
@@ -229,6 +235,25 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             else:
                 pipeline.shrink_filter = None
             self.update_pipeline_filter(pipeline)
+
+    def set_slice(self, data_ids: list[str], axis: int | None, index: int) -> int:
+        max_index = 0
+        for data_id in data_ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            if axis is None:
+                pipeline.slice_filter = None
+            else:
+                image = cast(vtkImageData, pipeline.reader.GetOutputAsDataSet())
+                voi = list(image.GetExtent())
+                last_index = voi[2 * axis + 1] - voi[2 * axis]
+                max_index = max(max_index, last_index)
+                voi[2 * axis] += min(index, last_index)
+                voi[2 * axis + 1] = voi[2 * axis]
+                slice_filter = vtkExtractVOI()
+                slice_filter.SetVOI(voi)
+                pipeline.slice_filter = slice_filter
+            self.update_pipeline_filter(pipeline)
+        return max_index
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).

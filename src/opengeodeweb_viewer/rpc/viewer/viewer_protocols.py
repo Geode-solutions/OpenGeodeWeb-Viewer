@@ -385,6 +385,14 @@ class VtkViewerView(VtkView):
         params = schemas.Shrink.from_dict(rpc_params)
         self.set_shrink(params.ids, params.shrink_factor)
 
+    @exportRpc(viewer_prefix + viewer_schemas_dict["slice"]["rpc"])
+    def setSlice(self, rpc_params: RpcParams) -> dict[str, int]:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["slice"], self.viewer_prefix
+        )
+        params = schemas.Slice.from_dict(rpc_params)
+        return {"max_index": self.set_slice(params.ids, params.axis, params.index)}
+
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:
         validate_schema(
