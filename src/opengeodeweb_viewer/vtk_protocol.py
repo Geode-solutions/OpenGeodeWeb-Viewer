@@ -238,9 +238,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.shrink_filter = None
             self.update_pipeline_filter(pipeline)
 
-    def set_slice(
-        self, data_ids: list[str], slices: list[SliceElement]
-    ) -> list[int]:
+    def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:
         max_indices = [0, 0, 0]
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
