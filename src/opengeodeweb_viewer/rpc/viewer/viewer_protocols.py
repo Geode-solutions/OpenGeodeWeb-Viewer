@@ -385,6 +385,14 @@ class VtkViewerView(VtkView):
         params = schemas.Shrink.from_dict(rpc_params)
         self.set_shrink(params.ids, params.shrink_factor)
 
+    @exportRpc(viewer_prefix + viewer_schemas_dict["threshold"]["rpc"])
+    def setThreshold(self, rpc_params: RpcParams) -> None:
+        validate_schema(
+            rpc_params, self.viewer_schemas_dict["threshold"], self.viewer_prefix
+        )
+        params = schemas.Threshold.from_dict(rpc_params)
+        self.set_threshold(params.ids, params.attribute)
+
     @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
     def setZScaling(self, rpc_params: RpcParams) -> None:
         validate_schema(

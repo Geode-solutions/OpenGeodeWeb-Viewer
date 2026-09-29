@@ -112,3 +112,28 @@ def test_blocks_shrink(
         ],
     )
     assert server.compare_image("model/blocks/shrink.jpeg") == True
+
+
+def test_blocks_threshold(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_model_cube(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
+        [
+            {
+                "ids": [model_id],
+                "attribute": {
+                    "name": "tetrahedron_vertices",
+                    "location": "cell",
+                    "item": 0,
+                    "minimum": 0.0,
+                    "maximum": 300.0,
+                },
+            }
+        ],
+    )
+    assert server.compare_image("model/blocks/threshold.jpeg") == True
