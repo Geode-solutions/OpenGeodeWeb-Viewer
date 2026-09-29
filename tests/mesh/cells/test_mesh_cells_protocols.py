@@ -121,9 +121,9 @@ def register_grid_3d(
 
 
 def call_slice(
-    server: ServerMonitor, ids: list[str], axis: int | None, index: int
+    server: ServerMonitor, ids: list[str], slices: list[dict[str, int]]
 ) -> object:
-    server.call(slice_rpc, [{"ids": ids, "axis": axis, "index": index}])
+    server.call(slice_rpc, [{"ids": ids, "slices": slices}])
     response = server.get_response()
     assert isinstance(response, dict), f"Unexpected response: {response!r}"
     return response["result"]
@@ -132,8 +132,8 @@ def call_slice(
 def test_slice(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     register_grid_3d(server, dataset_factory)
 
-    result = call_slice(server, [grid_3d_id], 2, 3)
-    assert result == {"max_index": 6}
+    result = call_slice(server, [grid_3d_id], [{"axis": 2, "index": 3}])
+    assert result == {"max_indices": [10, 8, 6]}
     assert server.compare_image("mesh/cells/slice_grid_3d.jpeg") == True
 
 
@@ -142,11 +142,11 @@ def test_slice_clamped(
 ) -> None:
     test_register(server, dataset_factory)
 
-    result = call_slice(server, [mesh_id], 0, 10000)
-    assert result == {"max_index": 524}
+    result = call_slice(server, [mesh_id], [{"axis": 0, "index": 10000}])
+    assert result == {"max_indices": [524, 774, 0]}
     assert server.compare_image("mesh/cells/slice_grid_2d_last.jpeg") == True
 
-    call_slice(server, [mesh_id], 0, 524)
+    call_slice(server, [mesh_id], [{"axis": 0, "index": 524}])
     assert server.compare_image("mesh/cells/slice_grid_2d_last.jpeg") == True
 
 
@@ -154,10 +154,10 @@ def test_slice_removed(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     register_grid_3d(server, dataset_factory)
-    call_slice(server, [grid_3d_id], 2, 3)
+    call_slice(server, [grid_3d_id], [{"axis": 2, "index": 3}])
 
-    result = call_slice(server, [grid_3d_id], None, 0)
-    assert result == {"max_index": 0}
+    result = call_slice(server, [grid_3d_id], [])
+    assert result == {"max_indices": [0, 0, 0]}
     assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg") == True
 
 
@@ -165,7 +165,7 @@ def test_slice_then_clipping(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     register_grid_3d(server, dataset_factory)
-    call_slice(server, [grid_3d_id], 2, 3)
+    call_slice(server, [grid_3d_id], [{"axis": 2, "index": 3}])
 
     server.call(
         VtkViewerView.viewer_prefix
@@ -185,8 +185,8 @@ def test_slice_grid_2d(
 ) -> None:
     test_register(server, dataset_factory)
 
-    result = call_slice(server, [mesh_id], 0, 262)
-    assert result == {"max_index": 524}
+    result = call_slice(server, [mesh_id], [{"axis": 0, "index": 262}])
+    assert result == {"max_indices": [524, 774, 0]}
     assert server.compare_image("mesh/cells/slice_grid_2d.jpeg") == True
 
 
@@ -202,5 +202,23 @@ def test_slice_on_non_grid_removed(
     )
     server.get_response()
 
-    result = call_slice(server, [other_mesh_id], None, 0)
-    assert result == {"max_index": 0}
+    result = call_slice(server, [other_mesh_id], [])
+    assert result == {"max_indices": [0, 0, 0]}
+
+
+def test_multiple_slices(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register(server, dataset_factory)
+
+    result = call_slice(
+        server,
+        [mesh_id],
+        [
+            {"axis": 0, "index": 100},
+            {"axis": 0, "index": 400},
+            {"axis": 1, "index": 387},
+        ],
+    )
+    assert result == {"max_indices": [524, 774, 0]}
+    assert server.compare_image("mesh/cells/slice_grid_2d_multiple.jpeg") == True

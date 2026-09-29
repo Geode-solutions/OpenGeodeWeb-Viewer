@@ -27,6 +27,7 @@ from vtkmodules.vtkCommonDataModel import (
 from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from vtkmodules.vtkFiltersCore import vtkAppendFilter
 from vtkmodules.vtkImagingCore import vtkExtractVOI
 from vtkmodules.vtkCommonCore import vtkIdTypeArray, vtkStringArray
 from vtkmodules.vtkRenderingAnnotation import (
@@ -39,6 +40,7 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
+from opengeodeweb_viewer.rpc.viewer.schemas.slice import SliceElement
 from opengeodeweb_viewer.vtk_pipeline import (
     RulerPipeline,
     ViewerData,
@@ -178,14 +180,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline.highlight.actor.VisibilityOff()
 
     def update_pipeline_filter(self, pipeline: VtkPipeline) -> None:
-        current_input_port = pipeline.reader.GetOutputPort()
+        current_input_port = (
+            pipeline.slice_filter.GetOutputPort()
+            if pipeline.slice_filter is not None
+            else pipeline.reader.GetOutputPort()
+        )
         active_filters = [
             filter_obj
-            for filter_obj in (
-                pipeline.slice_filter,
-                pipeline.clipping_filter,
-                pipeline.shrink_filter,
-            )
+            for filter_obj in (pipeline.clipping_filter, pipeline.shrink_filter)
             if filter_obj is not None
         ]
         for filter_obj in active_filters:
@@ -200,7 +202,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
         target_dataset = (
             cast(vtkDataSet, filtered_dataset)
-            if active_filters
+            if active_filters or pipeline.slice_filter is not None
             else pipeline.reader.GetOutputAsDataSet()
         )
         pipeline.restore_active_scalars(target_dataset)
@@ -236,24 +238,37 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.shrink_filter = None
             self.update_pipeline_filter(pipeline)
 
-    def set_slice(self, data_ids: list[str], axis: int | None, index: int) -> int:
-        max_index = 0
+    def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:
+        max_indices = [0, 0, 0]
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
-            if axis is None:
+            if not slices:
                 pipeline.slice_filter = None
             else:
-                image = cast(vtkImageData, pipeline.reader.GetOutputAsDataSet())
-                voi = list(image.GetExtent())
-                last_index = voi[2 * axis + 1] - voi[2 * axis]
-                max_index = max(max_index, last_index)
-                voi[2 * axis] += min(index, last_index)
-                voi[2 * axis + 1] = voi[2 * axis]
-                slice_filter = vtkExtractVOI()
-                slice_filter.SetVOI(voi)
+                extent = cast(
+                    vtkImageData, pipeline.reader.GetOutputAsDataSet()
+                ).GetExtent()
+                last_indices = [
+                    extent[2 * axis + 1] - extent[2 * axis] for axis in range(3)
+                ]
+                max_indices = [
+                    max(current, last)
+                    for current, last in zip(max_indices, last_indices)
+                ]
+                slice_filter = vtkAppendFilter()
+                for slice_item in slices:
+                    voi = list(extent)
+                    voi[2 * slice_item.axis] += min(
+                        slice_item.index, last_indices[slice_item.axis]
+                    )
+                    voi[2 * slice_item.axis + 1] = voi[2 * slice_item.axis]
+                    extract_voi = vtkExtractVOI()
+                    extract_voi.SetInputConnection(pipeline.reader.GetOutputPort())
+                    extract_voi.SetVOI(voi)
+                    slice_filter.AddInputConnection(extract_voi.GetOutputPort())
                 pipeline.slice_filter = slice_filter
             self.update_pipeline_filter(pipeline)
-        return max_index
+        return max_indices
 
     def swap_pick_mappers(self, data_ids: list[str], use_pick_mapper: bool) -> None:
         # Swap actor mappers between the default and the pick_mapper (where hidden blocks are pruned).

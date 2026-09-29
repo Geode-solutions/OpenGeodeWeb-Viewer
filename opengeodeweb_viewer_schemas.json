@@ -2585,23 +2585,32 @@
               "maxLength": 32
             }
           },
-          "axis": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "minimum": 0,
-            "maximum": 2
-          },
-          "index": {
-            "type": "integer",
-            "minimum": 0
+          "slices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "axis": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2
+                },
+                "index": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "axis",
+                "index"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
           "ids",
-          "axis",
-          "index"
+          "slices"
         ],
         "additionalProperties": false
       },
