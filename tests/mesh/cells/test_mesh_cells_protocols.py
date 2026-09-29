@@ -157,7 +157,7 @@ def test_slice_removed(
     call_slice(server, [grid_3d_id], [{"axis": 2, "index": 3}])
 
     result = call_slice(server, [grid_3d_id], [])
-    assert result == {"max_indices": [0, 0, 0]}
+    assert result == {"max_indices": [10, 8, 6]}
     assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg") == True
 
 
@@ -204,6 +204,23 @@ def test_slice_on_non_grid_removed(
 
     result = call_slice(server, [other_mesh_id], [])
     assert result == {"max_indices": [0, 0, 0]}
+
+
+def test_slice_on_non_grid_ignored(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    register_grid_3d(server, dataset_factory)
+    dataset_factory(
+        id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+    )
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": other_mesh_id, "name": "hat.vtp"}],
+    )
+    server.get_response()
+
+    result = call_slice(server, [other_mesh_id, grid_3d_id], [{"axis": 2, "index": 3}])
+    assert result == {"max_indices": [10, 8, 6]}
 
 
 def test_multiple_slices(

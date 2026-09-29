@@ -238,23 +238,25 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.shrink_filter = None
             self.update_pipeline_filter(pipeline)
 
-    def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:
+    def set_slice(
+        self, data_ids: list[str], slices: list[SliceElement]
+    ) -> list[int]:
         max_indices = [0, 0, 0]
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
+            image = pipeline.reader.GetOutputAsDataSet()
+            if not isinstance(image, vtkImageData):
+                continue
+            extent = image.GetExtent()
+            last_indices = [
+                extent[2 * axis + 1] - extent[2 * axis] for axis in range(3)
+            ]
+            max_indices = [
+                max(current, last) for current, last in zip(max_indices, last_indices)
+            ]
             if not slices:
                 pipeline.slice_filter = None
             else:
-                extent = cast(
-                    vtkImageData, pipeline.reader.GetOutputAsDataSet()
-                ).GetExtent()
-                last_indices = [
-                    extent[2 * axis + 1] - extent[2 * axis] for axis in range(3)
-                ]
-                max_indices = [
-                    max(current, last)
-                    for current, last in zip(max_indices, last_indices)
-                ]
                 slice_filter = vtkAppendFilter()
                 for slice_item in slices:
                     voi = list(extent)
