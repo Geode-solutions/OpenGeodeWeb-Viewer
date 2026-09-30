@@ -283,6 +283,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 max(current, last) for current, last in zip(max_indices, last_indices)
             ]
             if not slices:
+                if pipeline.slice_filter is None:
+                    continue
                 pipeline.slice_filter = None
             else:
                 slice_filter = vtkAppendFilter()
