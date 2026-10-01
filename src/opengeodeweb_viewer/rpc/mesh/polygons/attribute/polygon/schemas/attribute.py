@@ -1,4 +1,5 @@
 from dataclasses_json import DataClassJsonMixin
+from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -6,7 +7,7 @@ from typing import List, Optional
 @dataclass
 class NoDataColor(DataClassJsonMixin):
     def __post_init__(self) -> None:
-        print(self, flush=True)
+        print_dataclass(self)
 
     alpha: float
     blue: int
@@ -17,7 +18,7 @@ class NoDataColor(DataClassJsonMixin):
 @dataclass
 class Attribute(DataClassJsonMixin):
     def __post_init__(self) -> None:
-        print(self, flush=True)
+        print_dataclass(self)
 
     id: str
     item: int
