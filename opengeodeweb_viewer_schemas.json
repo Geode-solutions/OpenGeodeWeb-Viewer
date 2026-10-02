@@ -3601,8 +3601,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "minLength": 32,
-              "maxLength": 32
+              "minLength": 1
             }
           }
         },
