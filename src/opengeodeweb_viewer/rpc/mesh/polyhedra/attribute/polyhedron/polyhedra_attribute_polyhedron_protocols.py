@@ -2,15 +2,11 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -25,17 +21,10 @@ class VtkMeshPolyhedraAttributePolyhedronView(VtkMeshView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(
-        mesh_polyhedra_attribute_polyhedron_prefix
-        + mesh_polyhedra_attribute_polyhedron_schemas_dict["attribute"]["rpc"]
-    )
-    def setMeshPolyhedraPolyhedronAttribute(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_polyhedra_attribute_polyhedron_schemas_dict["attribute"],
-            self.mesh_polyhedra_attribute_polyhedron_prefix,
-        )
-        params = schemas.Attribute.from_dict(rpc_params)
+    @typed_rpc(mesh_polyhedra_attribute_polyhedron_prefix, schemas.attribute_route)
+    def setMeshPolyhedraPolyhedronAttribute(
+        self, params: schemas.Attribute
+    ) -> schemas.AttributeResponse:
         self.displayAttributeOnCells(
             params.id,
             params.name,
@@ -45,3 +34,4 @@ class VtkMeshPolyhedraAttributePolyhedronView(VtkMeshView):
             params.maximum,
             params.no_data_color,
         )
+        return schemas.AttributeResponse()

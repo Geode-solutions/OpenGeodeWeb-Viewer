@@ -14,5 +14,21 @@
     "id",
     "visibility"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "visibility": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "visibility"
+    ],
+    "additionalProperties": false
+  }
 }

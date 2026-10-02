@@ -2,15 +2,11 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -25,17 +21,10 @@ class VtkModelLinesAttributeVertexView(VtkModelView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(
-        model_lines_attribute_vertex_prefix
-        + model_lines_attribute_vertex_schemas_dict["attribute"]["rpc"]
-    )
-    def setModelLinesVertexAttribute(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.model_lines_attribute_vertex_schemas_dict["attribute"],
-            self.model_lines_attribute_vertex_prefix,
-        )
-        params = schemas.Attribute.from_dict(rpc_params)
+    @typed_rpc(model_lines_attribute_vertex_prefix, schemas.attribute_route)
+    def setModelLinesVertexAttribute(
+        self, params: schemas.Attribute
+    ) -> schemas.AttributeResponse:
         self.displayAttributeOnVertices(
             params.id,
             params.block_ids,
@@ -46,3 +35,4 @@ class VtkModelLinesAttributeVertexView(VtkModelView):
             params.maximum,
             params.no_data_color,
         )
+        return schemas.AttributeResponse()

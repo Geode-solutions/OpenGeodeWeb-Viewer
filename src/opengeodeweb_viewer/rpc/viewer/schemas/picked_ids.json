@@ -1,25 +1,43 @@
 {
-	"rpc": "picked_ids",
-	"type": "object",
-	"properties": {
-		"x": {
-			"type": "number"
-		},
-		"y": {
-			"type": "number"
-		},
-		"ids": {
-			"type": "array",
-			"items": {
-				"type": "string",
-				"minLength": 1
-			}
-		}
-	},
-	"required": [
-		"x",
-		"y",
-		"ids"
-	],
-	"additionalProperties": false
+  "rpc": "picked_ids",
+  "type": "object",
+  "properties": {
+    "x": {
+      "type": "number"
+    },
+    "y": {
+      "type": "number"
+    },
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "x",
+    "y",
+    "ids"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "array_ids": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "viewer_id": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "array_ids"
+    ],
+    "additionalProperties": false
+  }
 }

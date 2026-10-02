@@ -8,12 +8,24 @@
     },
     "block_ids": {
       "type": "array",
-      "items": { "type": "integer" }
+      "items": {
+        "type": "integer"
+      }
     },
     "visibility": {
       "type": "boolean"
     }
   },
-  "required": ["id", "block_ids", "visibility"],
-  "additionalProperties": false
+  "required": [
+    "id",
+    "block_ids",
+    "visibility"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
 }

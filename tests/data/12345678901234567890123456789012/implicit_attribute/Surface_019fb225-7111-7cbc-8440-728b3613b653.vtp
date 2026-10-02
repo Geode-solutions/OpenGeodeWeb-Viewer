@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<VTKFile type="PolyData" version="1.0" byte_order="LittleEndian" header_type="UInt32" compressor="vtkZLibDataCompressor">
+	<PolyData>
+		<Piece NumberOfPoints="7" NumberOfPolys="5">
+			<PointData>
+				<DataArray type="Float64" Name="geode_implicit_attribute" format="ascii" NumberOfComponents="1" RangeMin="1.95642877" RangeMax="6.41454697">1.95643 3.03552 5.07605 6.41455 6.1797 5.2826 2.61316 </DataArray>
+				<DataArray type="Float64" Name="geode_implicit_attribute" format="ascii" NumberOfComponents="1" RangeMin="1.95642877" RangeMax="6.41454697">1.95643 3.03552 5.07605 6.41455 6.1797 5.2826 2.61316 </DataArray>
+			</PointData>
+			<Points>
+				<DataArray type="Float64" Name="Points" format="ascii" NumberOfComponents="3" RangeMin="5.9000000000000004" RangeMax="10.6">6.1 7 0 8 7.5 0 10.6 8.5 0 10.5 9.8 0 9.5 10 0 7 10 0 5.9 7.7 0 </DataArray>
+			</Points>
+			<CellData />
+			<Polys>
+				<DataArray type="Int64" Name="connectivity" format="ascii" RangeMin="0" RangeMax="6">0 1 5 1 2 5 2 3 4 2 4 5 0 5 6 </DataArray>
+				<DataArray type="Int64" Name="offsets" format="ascii" RangeMin="0" RangeMax="7">3 6 9 12 15 </DataArray>
+			</Polys>
+		</Piece>
+	</PolyData>
+</VTKFile>

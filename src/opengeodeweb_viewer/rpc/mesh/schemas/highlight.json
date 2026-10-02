@@ -10,6 +10,15 @@
       "type": "boolean"
     }
   },
-  "required": ["id", "visibility"],
-  "additionalProperties": false
+  "required": [
+    "id",
+    "visibility"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
 }

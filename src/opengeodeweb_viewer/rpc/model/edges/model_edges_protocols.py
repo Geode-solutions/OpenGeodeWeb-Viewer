@@ -2,15 +2,11 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -23,12 +19,9 @@ class VtkModelEdgesView(VtkModelView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(model_edges_prefix + model_edges_schemas_dict["visibility"]["rpc"])
-    def setModelEdgesVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.model_edges_schemas_dict["visibility"],
-            self.model_edges_prefix,
-        )
-        params = schemas.Visibility.from_dict(rpc_params)
+    @typed_rpc(model_edges_prefix, schemas.visibility_route)
+    def setModelEdgesVisibility(
+        self, params: schemas.Visibility
+    ) -> schemas.VisibilityResponse:
         self.SetEdgesVisibility(params.id, params.visibility)
+        return schemas.VisibilityResponse()

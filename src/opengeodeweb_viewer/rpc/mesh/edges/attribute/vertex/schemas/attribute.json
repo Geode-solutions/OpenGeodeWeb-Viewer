@@ -69,5 +69,11 @@
     "minimum",
     "maximum"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
 }

@@ -1,0 +1,13 @@
+{
+  "rpc": "release_database",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

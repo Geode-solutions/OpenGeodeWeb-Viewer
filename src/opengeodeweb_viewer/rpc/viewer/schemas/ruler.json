@@ -19,5 +19,30 @@
   "required": [
     "points"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "distance": {
+        "type": "number"
+      },
+      "point1": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "point2": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "required": [
+      "distance",
+      "point1"
+    ],
+    "additionalProperties": false
+  }
 }

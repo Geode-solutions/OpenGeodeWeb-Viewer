@@ -1,17 +1,12 @@
 # Standard library imports
-from typing import Any
 import os
 
 # Third party imports
-from opengeodeweb_viewer.utils_functions import exportRpc
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -24,30 +19,20 @@ class VtkMeshPointsView(VtkMeshView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["visibility"]["rpc"])
-    def setMeshPointsVisibility(self, rpc_params: RpcParams) -> dict[str, Any]:
-        validate_schema(
-            rpc_params,
-            self.mesh_points_schemas_dict["visibility"],
-            self.mesh_points_prefix,
-        )
-        params = schemas.Visibility.from_dict(rpc_params)
+    @typed_rpc(mesh_points_prefix, schemas.visibility_route)
+    def setMeshPointsVisibility(
+        self, params: schemas.Visibility
+    ) -> schemas.VisibilityResponse:
         self.SetPointsVisibility(params.id, params.visibility)
-        return params.to_dict()
+        return schemas.VisibilityResponse(id=params.id, visibility=params.visibility)
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["color"]["rpc"])
-    def setMeshPointsColor(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.mesh_points_schemas_dict["color"], self.mesh_points_prefix
-        )
-        params = schemas.Color.from_dict(rpc_params)
+    @typed_rpc(mesh_points_prefix, schemas.color_route)
+    def setMeshPointsColor(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
         self.SetPointsColor(params.id, color.red, color.green, color.blue, color.alpha)
+        return schemas.ColorResponse()
 
-    @exportRpc(mesh_points_prefix + mesh_points_schemas_dict["size"]["rpc"])
-    def setMeshPointsSize(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.mesh_points_schemas_dict["size"], self.mesh_points_prefix
-        )
-        params = schemas.Size.from_dict(rpc_params)
+    @typed_rpc(mesh_points_prefix, schemas.size_route)
+    def setMeshPointsSize(self, params: schemas.Size) -> schemas.SizeResponse:
         self.SetPointsSize(params.id, params.size)
+        return schemas.SizeResponse()

@@ -12,13 +12,19 @@
     },
     "shrink_factor": {
       "type": "number",
-      "minimum": 0.0,
-      "maximum": 1.0
+      "minimum": 0,
+      "maximum": 1
     }
   },
   "required": [
     "ids",
     "shrink_factor"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
 }

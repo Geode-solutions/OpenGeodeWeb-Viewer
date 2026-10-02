@@ -2,15 +2,11 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -23,29 +19,20 @@ class VtkMeshEdgesView(VtkMeshView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["visibility"]["rpc"])
-    def setMeshEdgesVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_edges_schemas_dict["visibility"],
-            self.mesh_edges_prefix,
-        )
-        params = schemas.Visibility.from_dict(rpc_params)
+    @typed_rpc(mesh_edges_prefix, schemas.visibility_route)
+    def setMeshEdgesVisibility(
+        self, params: schemas.Visibility
+    ) -> schemas.VisibilityResponse:
         self.SetEdgesVisibility(params.id, params.visibility)
+        return schemas.VisibilityResponse()
 
-    @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["color"]["rpc"])
-    def setMeshEdgesColor(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.mesh_edges_schemas_dict["color"], self.mesh_edges_prefix
-        )
-        params = schemas.Color.from_dict(rpc_params)
+    @typed_rpc(mesh_edges_prefix, schemas.color_route)
+    def setMeshEdgesColor(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
         self.SetEdgesColor(params.id, color.red, color.green, color.blue, color.alpha)
+        return schemas.ColorResponse()
 
-    @exportRpc(mesh_edges_prefix + mesh_edges_schemas_dict["width"]["rpc"])
-    def setMeshEdgesWidth(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.mesh_edges_schemas_dict["width"], self.mesh_edges_prefix
-        )
-        params = schemas.Width.from_dict(rpc_params)
+    @typed_rpc(mesh_edges_prefix, schemas.width_route)
+    def setMeshEdgesWidth(self, params: schemas.Width) -> schemas.WidthResponse:
         self.SetEdgesWidth(params.id, params.width)
+        return schemas.WidthResponse()
