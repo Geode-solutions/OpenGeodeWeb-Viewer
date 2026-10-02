@@ -4,7 +4,8 @@
   "properties": {
     "id": {
       "type": "string",
-      "minLength": 1
+      "minLength": 32,
+      "maxLength": 32
     },
     "textures": {
       "type": "array",
@@ -17,7 +18,8 @@
           },
           "id": {
             "type": "string",
-            "minLength": 1
+            "minLength": 32,
+            "maxLength": 32
           }
         },
         "required": [

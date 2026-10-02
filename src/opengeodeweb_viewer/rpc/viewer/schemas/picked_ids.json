@@ -16,11 +16,7 @@
       }
     }
   },
-  "required": [
-    "x",
-    "y",
-    "ids"
-  ],
+  "required": ["x", "y", "ids"],
   "additionalProperties": false,
   "response": {
     "type": "object",
@@ -35,9 +31,7 @@
         "type": "integer"
       }
     },
-    "required": [
-      "array_ids"
-    ],
+    "required": ["array_ids"],
     "additionalProperties": false
   }
 }

@@ -98,7 +98,7 @@ def test_surfaces_polygons_random_collection_id(
                 "id": model_id,
                 "block_ids": list(range(36, 47)),
                 "color_mode": "random",
-                "collection_id": "collection",
+                "collection_id": "00000000-0000-0000-0000-000000000001",
             }
         ],
     )
