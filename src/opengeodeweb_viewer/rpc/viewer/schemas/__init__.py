@@ -2,6 +2,7 @@ from .update_data import *
 from .update_camera import *
 from .threshold import *
 from .take_screenshot import *
+from .slice import *
 from .shrink import *
 from .set_z_scaling import *
 from .set_background_color import *

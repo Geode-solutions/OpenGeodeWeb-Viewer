@@ -1,4 +1,5 @@
 from dataclasses_json import DataClassJsonMixin
+from opengeodeweb_microservice.schemas import print_dataclass
 from enum import Enum
 from dataclasses import dataclass
 from typing import List, Optional
@@ -12,7 +13,7 @@ class Location(Enum):
 @dataclass
 class Attribute(DataClassJsonMixin):
     def __post_init__(self) -> None:
-        print(self, flush=True)
+        print_dataclass(self)
 
     item: int
     location: Location
@@ -24,7 +25,7 @@ class Attribute(DataClassJsonMixin):
 @dataclass
 class Threshold(DataClassJsonMixin):
     def __post_init__(self) -> None:
-        print(self, flush=True)
+        print_dataclass(self)
 
     ids: List[str]
     attribute: Optional[Attribute] = None

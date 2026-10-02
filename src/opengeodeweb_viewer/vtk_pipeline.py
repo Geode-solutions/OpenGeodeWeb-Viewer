@@ -37,6 +37,7 @@ from vtkmodules.vtkFiltersExtraction import (
 )
 from vtkmodules.vtkFiltersCore import vtkThreshold
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
+from vtkmodules.vtkFiltersCore import vtkAppendFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkIOXML import vtkXMLReader
 
@@ -211,6 +212,7 @@ class VtkPipeline:
     mapper: vtkMapper
     filter: vtkGeometryFilter = field(default_factory=vtkGeometryFilter)
     actor: vtkActor = field(default_factory=vtkActor)
+    slice_filter: vtkAppendFilter | None = None
     clipping_filter: vtkExtractGeometry | None = None
     threshold_filter: vtkThreshold | None = None
     shrink_filter: vtkShrinkFilter | None = None

@@ -1,23 +1,22 @@
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
-class ColorClass(DataClassJsonMixin):
+class SliceElement(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    alpha: float
-    blue: int
-    green: int
-    red: int
+    axis: int
+    index: int
 
 
 @dataclass
-class Color(DataClassJsonMixin):
+class Slice(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    color: ColorClass
-    id: str
+    ids: List[str]
+    slices: List[SliceElement]
