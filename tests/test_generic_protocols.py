@@ -6,7 +6,7 @@ from tests.conftest import ServerMonitor
 def test_register_mesh(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    data_id = "123456789"
+    data_id = "00000000000000000000000123456789"
     dataset_factory(
         id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
@@ -22,7 +22,7 @@ def test_register_mesh(
 def test_register_model(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    data_id = "123456789"
+    data_id = "00000000000000000000000123456789"
     dataset_factory(id=data_id, viewable_file="CrossSection.vtm")
 
     server.call(
@@ -41,7 +41,7 @@ def test_deregister_mesh(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "00000000000000000000000123456789"}],
     )
     assert server.compare_image("mesh/deregister.jpeg") == True
 
@@ -54,6 +54,6 @@ def test_deregister_model(
     server.call(
         VtkGenericView.generic_prefix
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
-        [{"id": "123456789"}],
+        [{"id": "00000000000000000000000123456789"}],
     )
     assert server.compare_image("model/deregister.jpeg") == True
