@@ -170,7 +170,7 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["picked_ids"]["rpc"],
-        [{"x": 0, "y": 0, "ids": ["123456789"]}],
+        [{"x": 0, "y": 0, "ids": ["00000000000000000000000123456789"]}],
     )
     response = server.get_response()
     print(f"picked_ids response: {response!r}", flush=True)
@@ -195,7 +195,7 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
 
 
 def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
-    data_id = "123456789"
+    data_id = "00000000000000000000000123456789"
     dataset_factory(
         id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
@@ -288,25 +288,25 @@ def test_set_z_scaling(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     dataset_factory(
-        id="123456789",
+        id="00000000000000000000000123456789",
         viewable_file="polygon_attribute.vtp",
         viewer_elements_type="polygons",
     )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "123456789", "name": "hat.vtp"}],
+        [{"id": "00000000000000000000000123456789", "name": "hat.vtp"}],
     )
     assert server.compare_image("viewer/polygon_attribute.jpeg") == True
 
     dataset_factory(
-        id="987654321",
+        id="00000000000000000000000987654321",
         viewable_file="vertex_attribute.vtp",
         viewer_elements_type="polygons",
     )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
-        [{"id": "987654321", "name": "vertex_attribute.vtp"}],
+        [{"id": "00000000000000000000000987654321", "name": "vertex_attribute.vtp"}],
     )
     assert server.compare_image("viewer/vertex_and_polygon_attribute.jpeg") == True
 
