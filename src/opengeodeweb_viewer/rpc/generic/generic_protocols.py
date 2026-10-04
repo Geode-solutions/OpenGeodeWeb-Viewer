@@ -2,18 +2,14 @@
 import os
 
 # Third party imports
-from vtkmodules.web import protocols as vtk_protocols
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
+from vtkmodules.web import protocols as vtk_protocols
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -30,12 +26,8 @@ class VtkGenericView(VtkView):
         self.mesh_protocols = mesh_protocols
         self.model_protocols = model_protocols
 
-    @exportRpc(generic_prefix + generic_schemas_dict["register"]["rpc"])
-    def register(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.generic_schemas_dict["register"], self.generic_prefix
-        )
-        params = schemas.Register.from_dict(rpc_params)
+    @typed_rpc(generic_prefix, schemas.register_route)
+    def register(self, params: schemas.Register) -> schemas.RegisterResponse:
         data_id = params.id
         specific_params = {"id": data_id, "name": params.name}
         viewer_object = self.get_viewer_data(data_id).viewer_object
@@ -43,13 +35,10 @@ class VtkGenericView(VtkView):
             self.mesh_protocols.registerMesh(specific_params)
         elif viewer_object == "model":
             self.model_protocols.registerModel(specific_params)
+        return schemas.RegisterResponse()
 
-    @exportRpc(generic_prefix + generic_schemas_dict["deregister"]["rpc"])
-    def deregister(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.generic_schemas_dict["deregister"], self.generic_prefix
-        )
-        params = schemas.Deregister.from_dict(rpc_params)
+    @typed_rpc(generic_prefix, schemas.deregister_route)
+    def deregister(self, params: schemas.Deregister) -> schemas.DeregisterResponse:
         data_id = params.id
         specific_params = {"id": data_id}
         viewer_object = self.get_viewer_data(data_id).viewer_object
@@ -57,3 +46,4 @@ class VtkGenericView(VtkView):
             self.mesh_protocols.deregisterMesh(specific_params)
         elif viewer_object == "model":
             self.model_protocols.deregisterModel(specific_params)
+        return schemas.DeregisterResponse()

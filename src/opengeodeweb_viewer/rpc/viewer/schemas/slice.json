@@ -37,5 +37,22 @@
     "ids",
     "slices"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "max_indices": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "minItems": 3,
+        "maxItems": 3
+      }
+    },
+    "required": [
+      "max_indices"
+    ],
+    "additionalProperties": false
+  }
 }

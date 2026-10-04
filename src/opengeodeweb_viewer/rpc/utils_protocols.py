@@ -1,17 +1,15 @@
 # Standard library imports
 import os
 from threading import Timer
-from typing import cast
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
 from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_microservice.database import connection
-from opengeodeweb_viewer.utils_functions import validate_schema, RpcParams
-from opengeodeweb_viewer.rpc.schemas.import_project import ImportProject
+from opengeodeweb_viewer.typed_rpc import typed_rpc
+from . import schemas
 
 
 class VtkUtilsView(VtkView):
@@ -23,26 +21,16 @@ class VtkUtilsView(VtkView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(utils_prefix + utils_schemas_dict["kill"]["rpc"])
-    def kill(self) -> None:
-        print(
-            f"{self.utils_prefix + self.utils_schemas_dict['kill']['rpc']}", flush=True
-        )
+    @typed_rpc(utils_prefix, schemas.kill_route)
+    def kill(self, params: schemas.Kill) -> schemas.KillResponse:
         print("Manual viewer kill, shutting down...", flush=True)
         Timer(0.5, os._exit, [0]).start()
+        return schemas.KillResponse()
 
-    @exportRpc(utils_prefix + utils_schemas_dict["import_project"]["rpc"])
-    def importProject(self, rpc_params: RpcParams) -> None:
-        print(
-            f"{self.utils_prefix + self.utils_schemas_dict['import_project']['rpc']}",
-            flush=True,
-        )
-        validate_schema(
-            rpc_params,
-            self.utils_schemas_dict["import_project"],
-            self.utils_prefix,
-        )
-
+    @typed_rpc(utils_prefix, schemas.import_project_route)
+    def importProject(
+        self, params: schemas.ImportProject
+    ) -> schemas.ImportProjectResponse:
         widget = self.get_widget()
         if widget is not None:
             try:
@@ -59,10 +47,14 @@ class VtkUtilsView(VtkView):
 
         db_full_path = os.path.join(self.DATA_FOLDER_PATH, "project.db")
         connection.init_database(db_full_path, create_tables=False)
+        return schemas.ImportProjectResponse()
 
-    @exportRpc(utils_prefix + "release_database")
-    def releaseDatabase(self, rpc_params: RpcParams) -> None:
+    @typed_rpc(utils_prefix, schemas.release_database_route)
+    def releaseDatabase(
+        self, params: schemas.ReleaseDatabase
+    ) -> schemas.ReleaseDatabaseResponse:
         self._release_database()
+        return schemas.ReleaseDatabaseResponse()
 
     def _release_database(self) -> None:
         if connection.scoped_session_registry is not None:

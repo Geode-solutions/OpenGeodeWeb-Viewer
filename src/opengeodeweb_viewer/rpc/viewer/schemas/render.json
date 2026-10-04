@@ -1,7 +1,13 @@
 {
-    "rpc": "render",
+  "rpc": "render",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false,
+  "response": {
     "type": "object",
     "properties": {},
     "required": [],
     "additionalProperties": false
+  }
 }

@@ -17,19 +17,25 @@
     "url": "git+https://github.com/Geode-solutions/OpenGeodeWeb-Viewer.git"
   },
   "files": [
-    "opengeodeweb_viewer_schemas.json"
+    "opengeodeweb_viewer_schemas.json",
+    "opengeodeweb_viewer_typed_schemas.js",
+    "opengeodeweb_viewer_typed_schemas.d.ts"
   ],
   "exports": {
     "./opengeodeweb_viewer_schemas.json": {
       "import": "./opengeodeweb_viewer_schemas.json",
       "require": "./opengeodeweb_viewer_schemas.json"
+    },
+    "./opengeodeweb_viewer_typed_schemas.js": {
+      "types": "./opengeodeweb_viewer_typed_schemas.d.ts",
+      "default": "./opengeodeweb_viewer_typed_schemas.js"
     }
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "json": "npx opengeodeweb-microservice-generate --startDir src/opengeodeweb_viewer/rpc --key rpc --separator .",
+    "json": "npx opengeodeweb-microservice-generate --startDir src/opengeodeweb_viewer/rpc --key rpc --separator . --requireResponse",
     "test": "npm run json",
     "build": "npm run json"
   },

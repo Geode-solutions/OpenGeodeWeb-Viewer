@@ -9,7 +9,10 @@
       "type": "number"
     },
     "field_type": {
-      "enum": ["CELL", "POINT"]
+      "enum": [
+        "CELL",
+        "POINT"
+      ]
     },
     "ids": {
       "type": "array",
@@ -20,6 +23,50 @@
       }
     }
   },
-  "required": ["x", "y", "field_type", "ids"],
-  "additionalProperties": false
+  "required": [
+    "x",
+    "y",
+    "field_type",
+    "ids"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "picked_id": {
+        "type": "integer"
+      },
+      "field_type": {
+        "title": "PickedFieldType",
+        "enum": [
+          "CELL",
+          "POINT"
+        ]
+      },
+      "geode_id": {
+        "type": "string"
+      },
+      "attributes": {
+        "type": "object",
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  }
 }

@@ -25,13 +25,9 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    exportRpc,
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.vtk_pipeline import RulerPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.rpc.viewer import schemas
 
 
@@ -45,13 +41,10 @@ class VtkViewerView(VtkView):
         super().__init__()
         self._preview_actor: vtkActor | None = None
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["reset_visualization"]["rpc"])
-    def resetVisualization(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.viewer_schemas_dict["reset_visualization"],
-            self.viewer_prefix,
-        )
+    @typed_rpc(viewer_prefix, schemas.reset_visualization_route)
+    def resetVisualization(
+        self, params: schemas.ResetVisualization
+    ) -> schemas.ResetVisualizationResponse:
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveAllViewProps()
@@ -106,35 +99,29 @@ class VtkViewerView(VtkView):
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 
         renderer.ResetCamera()
+        return schemas.ResetVisualizationResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["set_background_color"]["rpc"])
-    def setBackgroundColor(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.viewer_schemas_dict["set_background_color"],
-            self.viewer_prefix,
-        )
-        params = schemas.SetBackgroundColor.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.set_background_color_route)
+    def setBackgroundColor(
+        self, params: schemas.SetBackgroundColor
+    ) -> schemas.SetBackgroundColorResponse:
         color = params.color
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
 
         renderer.SetBackground([color.r / 255, color.g / 255, color.b / 255])
+        return schemas.SetBackgroundColorResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["reset_camera"]["rpc"])
-    def resetCamera(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["reset_camera"], self.viewer_prefix
-        )
+    @typed_rpc(viewer_prefix, schemas.reset_camera_route)
+    def resetCamera(self, params: schemas.ResetCamera) -> schemas.ResetCameraResponse:
         renderWindow = self.getView("-1")
         renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
+        return schemas.ResetCameraResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["take_screenshot"]["rpc"])
-    def takeScreenshot(self, rpc_params: RpcParams) -> dict[str, str | bytes]:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["take_screenshot"], self.viewer_prefix
-        )
-        params = schemas.TakeScreenshot.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.take_screenshot_route)
+    def takeScreenshot(
+        self, params: schemas.TakeScreenshot
+    ) -> schemas.TakeScreenshotResponse:
         renderWindow = self.getView("-1")
         renderer = self.get_renderer()
 
@@ -154,9 +141,9 @@ class VtkViewerView(VtkView):
         w2if.Update()
         output_extension = params.output_extension
         writer: vtkPNGWriter | vtkJPEGWriter
-        if output_extension == schemas.OutputExtension.PNG:
+        if output_extension == schemas.take_screenshot.OutputExtension.PNG:
             writer = vtkPNGWriter()
-        elif output_extension == schemas.OutputExtension.JPG:
+        elif output_extension == schemas.take_screenshot.OutputExtension.JPG:
             if not include_background:
                 raise Exception("output_extension not supported with background")
             writer = vtkJPEGWriter()
@@ -172,14 +159,10 @@ class VtkViewerView(VtkView):
         with open(file_path, "rb") as file:
             file_content = file.read()
 
-        return {"blob": self.addAttachment(file_content)}
+        return schemas.TakeScreenshotResponse(blob=self.addAttachment(file_content))
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["update_data"]["rpc"])
-    def updateData(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["update_data"], self.viewer_prefix
-        )
-        params = schemas.UpdateData.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.update_data_route)
+    def updateData(self, params: schemas.UpdateData) -> schemas.UpdateDataResponse:
         data = self.get_vtk_pipeline(params.id)
         reader = data.reader
         reader.Update()
@@ -198,33 +181,28 @@ class VtkViewerView(VtkView):
             tag,
         )
         mapper.SetScalarRange(scalars.GetRange())
+        return schemas.UpdateDataResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["get_point_position"]["rpc"])
-    def getPointPosition(self, rpc_params: RpcParams) -> dict[str, float]:
-        validate_schema(
-            rpc_params,
-            self.viewer_schemas_dict["get_point_position"],
-            self.viewer_prefix,
-        )
-        params = schemas.GetPointPosition.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.get_point_position_route)
+    def getPointPosition(
+        self, params: schemas.GetPointPosition
+    ) -> schemas.GetPointPositionResponse:
         renderer = self.get_renderer()
         # If clicking on an object
         prop_picker = vtkPropPicker()
         if prop_picker.Pick(params.x, params.y, 0.0, renderer):
             ppos = prop_picker.GetPickPosition()
-            return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
+            return schemas.GetPointPositionResponse(x=ppos[0], y=ppos[1], z=ppos[2])
         # WorldPicker if notclicking on an object
         world_picker = vtkWorldPointPicker()
         world_picker.Pick([params.x, params.y, 0.0], renderer)
         ppos = world_picker.GetPickPosition()
-        return {"x": ppos[0], "y": ppos[1], "z": ppos[2]}
+        return schemas.GetPointPositionResponse(x=ppos[0], y=ppos[1], z=ppos[2])
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["pick_colormap"]["rpc"])
-    def pickColormap(self, rpc_params: RpcParams) -> dict[str, str | None]:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["pick_colormap"], self.viewer_prefix
-        )
-        params = schemas.PickColormap.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.pick_colormap_route)
+    def pickColormap(
+        self, params: schemas.PickColormap
+    ) -> schemas.PickColormapResponse:
 
         renderWindow = self.getView("-1")
         size = renderWindow.GetSize()
@@ -240,9 +218,9 @@ class VtkViewerView(VtkView):
 
                 # Check if click falls within the scalar bar bounding box
                 if bx <= nx <= bx + w and by <= ny <= by + h:
-                    return {"data_id": data_id}
+                    return schemas.PickColormapResponse(data_id=data_id)
 
-        return {"data_id": None}
+        return schemas.PickColormapResponse()
 
     def computeEpsilon(self, renderer: vtkRenderer, z: float) -> float:
         renderer.SetDisplayPoint(0, 0, z)
@@ -259,12 +237,8 @@ class VtkViewerView(VtkView):
             )
         return math.sqrt(epsilon) * 0.0125
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["picked_ids"]["rpc"])
-    def pickedIds(self, rpc_params: RpcParams) -> dict[str, list[str] | int | None]:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["picked_ids"], self.viewer_prefix
-        )
-        params = schemas.PickedIDS.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.picked_ids_route)
+    def pickedIds(self, params: schemas.PickedIDS) -> schemas.PickedIDSResponse:
         picker = vtkCellPicker(tolerance=0.005)
         # Retrieve all actors under the clicked coordinates
         actors, flat_index = self.pick_actors_under_coordinate(
@@ -277,42 +251,28 @@ class VtkViewerView(VtkView):
             if self.get_vtk_pipeline(data_id).actor in actors
         ]
         if not array_ids:
-            return {"array_ids": [], "viewer_id": None}
+            return schemas.PickedIDSResponse(array_ids=[])
         viewer_id = flat_index if flat_index != -1 else None
-        if viewer_id is not None:
-            pipeline = self.get_vtk_pipeline(array_ids[0])
-            dataset, geode_id = self.get_composite_block_info(pipeline, picker)
-        return {
-            "array_ids": array_ids,
-            "viewer_id": viewer_id,
-        }
+        return schemas.PickedIDSResponse(array_ids=array_ids, viewer_id=viewer_id)
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["grid_scale"]["rpc"])
-    def toggleGridScale(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["grid_scale"], self.viewer_prefix
-        )
-        params = schemas.GridScale.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.grid_scale_route)
+    def toggleGridScale(self, params: schemas.GridScale) -> schemas.GridScaleResponse:
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
             grid_scale.SetVisibility(params.visibility)
+        return schemas.GridScaleResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["axes"]["rpc"])
-    def toggleAxes(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["axes"], self.viewer_prefix
-        )
-        params = schemas.Axes.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.axes_route)
+    def toggleAxes(self, params: schemas.Axes) -> schemas.AxesResponse:
         axes = self.get_axes()
         if axes is not None:
             axes.SetVisibility(params.visibility)
+        return schemas.AxesResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["update_camera"]["rpc"])
-    def updateCamera(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["update_camera"], self.viewer_prefix
-        )
-        params = schemas.UpdateCamera.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.update_camera_route)
+    def updateCamera(
+        self, params: schemas.UpdateCamera
+    ) -> schemas.UpdateCameraResponse:
         camera_options = params.camera_options
 
         renderWindow = self.getView("-1")
@@ -326,22 +286,15 @@ class VtkViewerView(VtkView):
         ruler = self.get_ruler()
         if ruler is not None:
             ruler.update_scale(self.get_renderer())
+        return schemas.UpdateCameraResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["render"]["rpc"])
-    def renderNow(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["render"], self.viewer_prefix
-        )
+    @typed_rpc(viewer_prefix, schemas.render_route)
+    def renderNow(self, params: schemas.Render) -> schemas.RenderResponse:
         self.render()
+        return schemas.RenderResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["highlight"]["rpc"])
-    def setHighlight(
-        self, rpc_params: RpcParams
-    ) -> dict[str, str | int | None | dict[str, list[float] | float]]:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["highlight"], self.viewer_prefix
-        )
-        params = schemas.Highlight.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.highlight_route)
+    def setHighlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
         # Clear previous highlights
         self.clear_highlights(params.ids)
         picker = vtkCellPicker(tolerance=0.005)
@@ -351,7 +304,7 @@ class VtkViewerView(VtkView):
         )
         if not data_id or id_to_select == -1:
             self.render(-1)
-            return {}
+            return schemas.HighlightResponse()
         # Retrieve picked composite block information
         pipeline = self.get_vtk_pipeline(data_id)
         dataset, geode_id = self.get_composite_block_info(pipeline, picker)
@@ -361,52 +314,39 @@ class VtkViewerView(VtkView):
         data_attributes = self.extract_picked_attributes(
             pipeline, id_to_select, params.field_type.value, dataset
         )
-        return {
-            "id": data_id,
-            "picked_id": id_to_select,
-            "field_type": params.field_type.value,
-            "geode_id": geode_id,
-            "attributes": data_attributes,
-        }
-
-    @exportRpc(viewer_prefix + viewer_schemas_dict["clipping_planes"]["rpc"])
-    def setClippingPlanes(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["clipping_planes"], self.viewer_prefix
+        return schemas.HighlightResponse(
+            id=data_id,
+            picked_id=id_to_select,
+            field_type=schemas.highlight.PickedFieldType(params.field_type.value),
+            geode_id=geode_id,
+            attributes=data_attributes,
         )
-        params = schemas.ClippingPlanes.from_dict(rpc_params)
+
+    @typed_rpc(viewer_prefix, schemas.clipping_planes_route)
+    def setClippingPlanes(
+        self, params: schemas.ClippingPlanes
+    ) -> schemas.ClippingPlanesResponse:
         self.set_clipping_planes(params.ids, params.planes)
+        return schemas.ClippingPlanesResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["shrink"]["rpc"])
-    def setShrink(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["shrink"], self.viewer_prefix
-        )
-        params = schemas.Shrink.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.shrink_route)
+    def setShrink(self, params: schemas.Shrink) -> schemas.ShrinkResponse:
         self.set_shrink(params.ids, params.shrink_factor)
+        return schemas.ShrinkResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["slice"]["rpc"])
-    def setSlice(self, rpc_params: RpcParams) -> dict[str, list[int]]:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["slice"], self.viewer_prefix
+    @typed_rpc(viewer_prefix, schemas.slice_route)
+    def setSlice(self, params: schemas.Slice) -> schemas.SliceResponse:
+        return schemas.SliceResponse(
+            max_indices=self.set_slice(params.ids, params.slices)
         )
-        params = schemas.Slice.from_dict(rpc_params)
-        return {"max_indices": self.set_slice(params.ids, params.slices)}
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["threshold"]["rpc"])
-    def setThreshold(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["threshold"], self.viewer_prefix
-        )
-        params = schemas.Threshold.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.threshold_route)
+    def setThreshold(self, params: schemas.Threshold) -> schemas.ThresholdResponse:
         self.set_threshold(params.ids, params.attribute)
+        return schemas.ThresholdResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["set_z_scaling"]["rpc"])
-    def setZScaling(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["set_z_scaling"], self.viewer_prefix
-        )
-        params = schemas.SetZScaling.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.set_z_scaling_route)
+    def setZScaling(self, params: schemas.SetZScaling) -> schemas.SetZScalingResponse:
         renderWindow = self.getView("-1")
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         cam = renderer.GetActiveCamera()
@@ -416,13 +356,12 @@ class VtkViewerView(VtkView):
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
             grid_scale.SetUse2DMode(True)
+        return schemas.SetZScalingResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["preview_points"]["rpc"])
-    def previewPoints(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["preview_points"], self.viewer_prefix
-        )
-        params = schemas.PreviewPoints.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.preview_points_route)
+    def previewPoints(
+        self, params: schemas.PreviewPoints
+    ) -> schemas.PreviewPointsResponse:
         points_data = params.points
         style_name = (
             params.style.value if hasattr(params.style, "value") else params.style
@@ -433,8 +372,7 @@ class VtkViewerView(VtkView):
                 self.get_renderer().RemoveActor(self._preview_actor)
                 self._preview_actor = None
                 self.render(-1)
-            return
-
+            return schemas.PreviewPointsResponse()
         if self._preview_actor is None:
             self._preview_points = vtkPoints()
             self._preview_verts = vtkCellArray()
@@ -488,29 +426,20 @@ class VtkViewerView(VtkView):
         self._preview_polydata.SetPolys(polys)
         self._preview_polydata.Modified()
         self.render(-1)
+        return schemas.PreviewPointsResponse()
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["ruler"]["rpc"])
-    def setRuler(self, rpc_params: RpcParams) -> dict[str, float | list[float] | None]:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["ruler"], self.viewer_prefix
-        )
-        params = schemas.Ruler.from_dict(rpc_params)
+    @typed_rpc(viewer_prefix, schemas.ruler_route)
+    def setRuler(self, params: schemas.Ruler) -> schemas.RulerResponse:
         ruler = self.get_ruler()
         assert ruler is not None
         point1 = params.points[0]
         point2 = params.points[1] if len(params.points) > 1 else None
         distance = ruler.set_endpoints(point1, point2, renderer=self.get_renderer())
-        return {
-            "distance": distance,
-            "point1": point1,
-            "point2": point2,
-        }
+        return schemas.RulerResponse(distance=distance, point1=point1, point2=point2)
 
-    @exportRpc(viewer_prefix + viewer_schemas_dict["reset_ruler"]["rpc"])
-    def resetRuler(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.viewer_schemas_dict["reset_ruler"], self.viewer_prefix
-        )
+    @typed_rpc(viewer_prefix, schemas.reset_ruler_route)
+    def resetRuler(self, params: schemas.ResetRuler) -> schemas.ResetRulerResponse:
         ruler = self.get_ruler()
         assert ruler is not None
         ruler.reset()
+        return schemas.ResetRulerResponse()

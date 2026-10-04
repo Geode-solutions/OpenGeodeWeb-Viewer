@@ -2,15 +2,11 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -23,23 +19,15 @@ class VtkMeshPolygonsView(VtkMeshView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["visibility"]["rpc"])
-    def setMeshPolygonsVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_polygons_schemas_dict["visibility"],
-            self.mesh_polygons_prefix,
-        )
-        params = schemas.Visibility.from_dict(rpc_params)
+    @typed_rpc(mesh_polygons_prefix, schemas.visibility_route)
+    def setMeshPolygonsVisibility(
+        self, params: schemas.Visibility
+    ) -> schemas.VisibilityResponse:
         self.SetVisibility(params.id, params.visibility)
+        return schemas.VisibilityResponse()
 
-    @exportRpc(mesh_polygons_prefix + mesh_polygons_schemas_dict["color"]["rpc"])
-    def setMeshPolygonsColor(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.mesh_polygons_schemas_dict["color"],
-            self.mesh_polygons_prefix,
-        )
-        params = schemas.Color.from_dict(rpc_params)
+    @typed_rpc(mesh_polygons_prefix, schemas.color_route)
+    def setMeshPolygonsColor(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
         self.SetColor(params.id, color.red, color.green, color.blue, color.alpha)
+        return schemas.ColorResponse()

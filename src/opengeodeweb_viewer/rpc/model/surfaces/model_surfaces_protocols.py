@@ -2,12 +2,11 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import validate_schema, RpcParams
-from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView, ColorResult
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -20,29 +19,21 @@ class VtkModelSurfacesView(VtkModelView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["visibility"]["rpc"])
-    def setModelSurfacesPolygonsVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.model_surfaces_schemas_dict["visibility"],
-            self.model_surfaces_prefix,
-        )
-        params = schemas.Visibility.from_dict(rpc_params)
+    @typed_rpc(model_surfaces_prefix, schemas.visibility_route)
+    def setModelSurfacesPolygonsVisibility(
+        self, params: schemas.Visibility
+    ) -> schemas.VisibilityResponse:
         self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
+        return schemas.VisibilityResponse()
 
-    @exportRpc(model_surfaces_prefix + model_surfaces_schemas_dict["color"]["rpc"])
-    def setModelSurfacesColor(self, rpc_params: RpcParams) -> list[ColorResult]:
-        validate_schema(
-            rpc_params,
-            self.model_surfaces_schemas_dict["color"],
-            self.model_surfaces_prefix,
-        )
-        params = schemas.Color.from_dict(rpc_params)
+    @typed_rpc(model_surfaces_prefix, schemas.color_route)
+    def setModelSurfacesColor(self, params: schemas.Color) -> schemas.ColorResponse:
         pipeline = self.get_vtk_pipeline(params.id)
-        return self.apply_color(
+        colors = self.apply_color(
             pipeline,
             params.block_ids,
             params.color_mode.value,
             params.color,
             params.collection_id,
         )
+        return schemas.ColorResponse.from_dict({"colors": colors})
