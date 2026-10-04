@@ -6,8 +6,14 @@ export interface GenericRegisterParams {
     name: string;
 }
 
+export interface GenericRegisterResponse {
+}
+
 export interface GenericDeregisterParams {
     id: string;
+}
+
+export interface GenericDeregisterResponse {
 }
 
 export interface MeshCellsAttributeCellAttributeParams {
@@ -30,6 +36,9 @@ export interface MeshCellsAttributeCellAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshCellsAttributeCellAttributeResponse {
+}
+
 export interface MeshCellsAttributeVertexAttributeParams {
     id:             string;
     item:           number;
@@ -50,9 +59,15 @@ export interface MeshCellsAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshCellsAttributeVertexAttributeResponse {
+}
+
 export interface MeshCellsVisibilityParams {
     id:         string;
     visibility: boolean;
+}
+
+export interface MeshCellsVisibilityResponse {
 }
 
 export interface MeshCellsColorParams {
@@ -65,6 +80,9 @@ export interface MeshCellsColorParamsColor {
     blue:  number;
     green: number;
     red:   number;
+}
+
+export interface MeshCellsColorResponse {
 }
 
 export interface MeshEdgesAttributeEdgeAttributeParams {
@@ -87,6 +105,9 @@ export interface MeshEdgesAttributeEdgeAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshEdgesAttributeEdgeAttributeResponse {
+}
+
 export interface MeshEdgesAttributeVertexAttributeParams {
     id:             string;
     item:           number;
@@ -107,14 +128,23 @@ export interface MeshEdgesAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshEdgesAttributeVertexAttributeResponse {
+}
+
 export interface MeshEdgesWidthParams {
     id:    string;
     width: number;
 }
 
+export interface MeshEdgesWidthResponse {
+}
+
 export interface MeshEdgesVisibilityParams {
     id:         string;
     visibility: boolean;
+}
+
+export interface MeshEdgesVisibilityResponse {
 }
 
 export interface MeshEdgesColorParams {
@@ -127,6 +157,9 @@ export interface MeshEdgesColorParamsColor {
     blue:  number;
     green: number;
     red:   number;
+}
+
+export interface MeshEdgesColorResponse {
 }
 
 export interface MeshPointsAttributeVertexAttributeParams {
@@ -149,7 +182,15 @@ export interface MeshPointsAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshPointsAttributeVertexAttributeResponse {
+}
+
 export interface MeshPointsVisibilityParams {
+    id:         string;
+    visibility: boolean;
+}
+
+export interface MeshPointsVisibilityResponse {
     id:         string;
     visibility: boolean;
 }
@@ -157,6 +198,9 @@ export interface MeshPointsVisibilityParams {
 export interface MeshPointsSizeParams {
     id:   string;
     size: number;
+}
+
+export interface MeshPointsSizeResponse {
 }
 
 export interface MeshPointsColorParams {
@@ -169,6 +213,9 @@ export interface MeshPointsColorParamsColor {
     blue:  number;
     green: number;
     red:   number;
+}
+
+export interface MeshPointsColorResponse {
 }
 
 export interface MeshPolygonsAttributePolygonAttributeParams {
@@ -191,6 +238,9 @@ export interface MeshPolygonsAttributePolygonAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshPolygonsAttributePolygonAttributeResponse {
+}
+
 export interface MeshPolygonsAttributeVertexAttributeParams {
     id:             string;
     item:           number;
@@ -211,9 +261,15 @@ export interface MeshPolygonsAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshPolygonsAttributeVertexAttributeResponse {
+}
+
 export interface MeshPolygonsVisibilityParams {
     id:         string;
     visibility: boolean;
+}
+
+export interface MeshPolygonsVisibilityResponse {
 }
 
 export interface MeshPolygonsColorParams {
@@ -226,6 +282,9 @@ export interface MeshPolygonsColorParamsColor {
     blue:  number;
     green: number;
     red:   number;
+}
+
+export interface MeshPolygonsColorResponse {
 }
 
 export interface MeshPolyhedraAttributePolyhedronAttributeParams {
@@ -248,6 +307,9 @@ export interface MeshPolyhedraAttributePolyhedronAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshPolyhedraAttributePolyhedronAttributeResponse {
+}
+
 export interface MeshPolyhedraAttributeVertexAttributeParams {
     id:             string;
     item:           number;
@@ -268,9 +330,15 @@ export interface MeshPolyhedraAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface MeshPolyhedraAttributeVertexAttributeResponse {
+}
+
 export interface MeshPolyhedraVisibilityParams {
     id:         string;
     visibility: boolean;
+}
+
+export interface MeshPolyhedraVisibilityResponse {
 }
 
 export interface MeshPolyhedraColorParams {
@@ -285,9 +353,15 @@ export interface MeshPolyhedraColorParamsColor {
     red:   number;
 }
 
+export interface MeshPolyhedraColorResponse {
+}
+
 export interface MeshVisibilityParams {
     id:         string;
     visibility: boolean;
+}
+
+export interface MeshVisibilityResponse {
 }
 
 export interface MeshRegisterParams {
@@ -295,13 +369,22 @@ export interface MeshRegisterParams {
     name: string;
 }
 
+export interface MeshRegisterResponse {
+}
+
 export interface MeshHighlightParams {
     id:         string;
     visibility: boolean;
 }
 
+export interface MeshHighlightResponse {
+}
+
 export interface MeshDeregisterParams {
     id: string;
+}
+
+export interface MeshDeregisterResponse {
 }
 
 export interface MeshColorParams {
@@ -316,6 +399,9 @@ export interface MeshColorParamsColor {
     red:   number;
 }
 
+export interface MeshColorResponse {
+}
+
 export interface MeshApplyTexturesParams {
     id:       string;
     textures: MeshApplyTexturesParamsTexture[];
@@ -324,6 +410,9 @@ export interface MeshApplyTexturesParams {
 export interface MeshApplyTexturesParamsTexture {
     id:           string;
     texture_name: string;
+}
+
+export interface MeshApplyTexturesResponse {
 }
 
 export interface ModelBlocksAttributePolyhedronAttributeParams {
@@ -347,6 +436,9 @@ export interface ModelBlocksAttributePolyhedronAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface ModelBlocksAttributePolyhedronAttributeResponse {
+}
+
 export interface ModelBlocksAttributeVertexAttributeParams {
     block_ids:      number[];
     id:             string;
@@ -368,10 +460,16 @@ export interface ModelBlocksAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface ModelBlocksAttributeVertexAttributeResponse {
+}
+
 export interface ModelBlocksVisibilityParams {
     block_ids:  number[];
     id:         string;
     visibility: boolean;
+}
+
+export interface ModelBlocksVisibilityResponse {
 }
 
 export interface ModelBlocksColorParams {
@@ -389,9 +487,23 @@ export interface ModelBlocksColorParamsColor {
     red:   number;
 }
 
-export enum ColorMode {
-    Constant = "constant",
-    Random = "random",
+export type ColorMode = "constant" | "random";
+
+export interface ModelBlocksColorResponse {
+    colors: ModelBlocksColorResponseColor[];
+}
+
+export interface ModelBlocksColorResponseColor {
+    color:     PurpleColorRGBA;
+    geode_id:  string;
+    viewer_id: number;
+}
+
+export interface PurpleColorRGBA {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
 }
 
 export interface ModelCornersAttributeVertexAttributeParams {
@@ -415,10 +527,16 @@ export interface ModelCornersAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface ModelCornersAttributeVertexAttributeResponse {
+}
+
 export interface ModelCornersVisibilityParams {
     block_ids:  number[];
     id:         string;
     visibility: boolean;
+}
+
+export interface ModelCornersVisibilityResponse {
 }
 
 export interface ModelCornersColorParams {
@@ -436,9 +554,29 @@ export interface ModelCornersColorParamsColor {
     red:   number;
 }
 
+export interface ModelCornersColorResponse {
+    colors: ModelCornersColorResponseColor[];
+}
+
+export interface ModelCornersColorResponseColor {
+    color:     FluffyColorRGBA;
+    geode_id:  string;
+    viewer_id: number;
+}
+
+export interface FluffyColorRGBA {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
 export interface ModelEdgesVisibilityParams {
     id:         string;
     visibility: boolean;
+}
+
+export interface ModelEdgesVisibilityResponse {
 }
 
 export interface ModelLinesAttributeEdgeAttributeParams {
@@ -462,6 +600,9 @@ export interface ModelLinesAttributeEdgeAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface ModelLinesAttributeEdgeAttributeResponse {
+}
+
 export interface ModelLinesAttributeVertexAttributeParams {
     block_ids:      number[];
     id:             string;
@@ -483,10 +624,16 @@ export interface ModelLinesAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface ModelLinesAttributeVertexAttributeResponse {
+}
+
 export interface ModelLinesVisibilityParams {
     block_ids:  number[];
     id:         string;
     visibility: boolean;
+}
+
+export interface ModelLinesVisibilityResponse {
 }
 
 export interface ModelLinesColorParams {
@@ -504,9 +651,29 @@ export interface ModelLinesColorParamsColor {
     red:   number;
 }
 
+export interface ModelLinesColorResponse {
+    colors: ModelLinesColorResponseColor[];
+}
+
+export interface ModelLinesColorResponseColor {
+    color:     TentacledColorRGBA;
+    geode_id:  string;
+    viewer_id: number;
+}
+
+export interface TentacledColorRGBA {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
 export interface ModelPointsVisibilityParams {
     id:         string;
     visibility: boolean;
+}
+
+export interface ModelPointsVisibilityResponse {
 }
 
 export interface ModelPointsSizeParams {
@@ -514,14 +681,23 @@ export interface ModelPointsSizeParams {
     size: number;
 }
 
+export interface ModelPointsSizeResponse {
+}
+
 export interface ModelVisibilityParams {
     id:         string;
     visibility: boolean;
 }
 
+export interface ModelVisibilityResponse {
+}
+
 export interface ModelRegisterParams {
     id:   string;
     name: string;
+}
+
+export interface ModelRegisterResponse {
 }
 
 export interface ModelHighlightParams {
@@ -530,13 +706,23 @@ export interface ModelHighlightParams {
     visibility: boolean;
 }
 
+export interface ModelHighlightResponse {
+}
+
 export interface ModelGetBlocksBoundsParams {
     block_ids: number[];
     id:        string;
 }
 
+export interface ModelGetBlocksBoundsResponse {
+    bounds: number[];
+}
+
 export interface ModelDeregisterParams {
     id: string;
+}
+
+export interface ModelDeregisterResponse {
 }
 
 export interface ModelSurfacesAttributePolygonAttributeParams {
@@ -560,6 +746,9 @@ export interface ModelSurfacesAttributePolygonAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface ModelSurfacesAttributePolygonAttributeResponse {
+}
+
 export interface ModelSurfacesAttributeVertexAttributeParams {
     block_ids:      number[];
     id:             string;
@@ -581,10 +770,16 @@ export interface ModelSurfacesAttributeVertexAttributeParamsNoDataColor {
     red:   number;
 }
 
+export interface ModelSurfacesAttributeVertexAttributeResponse {
+}
+
 export interface ModelSurfacesVisibilityParams {
     block_ids:  number[];
     id:         string;
     visibility: boolean;
+}
+
+export interface ModelSurfacesVisibilityResponse {
 }
 
 export interface ModelSurfacesColorParams {
@@ -602,6 +797,23 @@ export interface ModelSurfacesColorParamsColor {
     red:   number;
 }
 
+export interface ModelSurfacesColorResponse {
+    colors: ModelSurfacesColorResponseColor[];
+}
+
+export interface ModelSurfacesColorResponseColor {
+    color:     StickyColorRGBA;
+    geode_id:  string;
+    viewer_id: number;
+}
+
+export interface StickyColorRGBA {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
 export interface ModelSurfacesApplyTexturesParams {
     id:       string;
     textures: ModelSurfacesApplyTexturesParamsTexture[];
@@ -612,14 +824,32 @@ export interface ModelSurfacesApplyTexturesParamsTexture {
     texture_name:      string;
 }
 
+export interface ModelSurfacesApplyTexturesResponse {
+}
+
+export interface ReleaseDatabaseParams {
+}
+
+export interface ReleaseDatabaseResponse {
+}
+
 export interface KillParams {
+}
+
+export interface KillResponse {
 }
 
 export interface ImportProjectParams {
 }
 
+export interface ImportProjectResponse {
+}
+
 export interface ViewerUpdateDataParams {
     id: string;
+}
+
+export interface ViewerUpdateDataResponse {
 }
 
 export interface ViewerUpdateCameraParams {
@@ -636,12 +866,15 @@ export interface CameraOptions {
     [property: string]: any;
 }
 
+export interface ViewerUpdateCameraResponse {
+}
+
 export interface ViewerThresholdParams {
-    attribute?: Attribute;
+    attribute?: AttributeClass;
     ids:        string[];
 }
 
-export interface Attribute {
+export interface AttributeClass {
     item:     number;
     location: Location;
     maximum:  number;
@@ -649,9 +882,9 @@ export interface Attribute {
     name:     string;
 }
 
-export enum Location {
-    Cell = "cell",
-    Point = "point",
+export type Location = "point" | "cell";
+
+export interface ViewerThresholdResponse {
 }
 
 export interface ViewerTakeScreenshotParams {
@@ -660,9 +893,10 @@ export interface ViewerTakeScreenshotParams {
     output_extension:   OutputExtension;
 }
 
-export enum OutputExtension {
-    Jpg = "jpg",
-    PNG = "png",
+export type OutputExtension = "png" | "jpg";
+
+export interface ViewerTakeScreenshotResponse {
+    blob: string;
 }
 
 export interface ViewerSliceParams {
@@ -675,13 +909,23 @@ export interface Slice {
     index: number;
 }
 
+export interface ViewerSliceResponse {
+    max_indices: number[];
+}
+
 export interface ViewerShrinkParams {
     ids:           string[];
     shrink_factor: number;
 }
 
+export interface ViewerShrinkResponse {
+}
+
 export interface ViewerSetZScalingParams {
     z_scale: number;
+}
+
+export interface ViewerSetZScalingResponse {
 }
 
 export interface ViewerSetBackgroundColorParams {
@@ -694,20 +938,41 @@ export interface ViewerSetBackgroundColorParamsColor {
     r: number;
 }
 
+export interface ViewerSetBackgroundColorResponse {
+}
+
 export interface ViewerRulerParams {
     points: Array<number[]>;
+}
+
+export interface ViewerRulerResponse {
+    distance: number;
+    point1:   number[];
+    point2?:  number[];
 }
 
 export interface ViewerResetVisualizationParams {
 }
 
+export interface ViewerResetVisualizationResponse {
+}
+
 export interface ViewerResetRulerParams {
+}
+
+export interface ViewerResetRulerResponse {
 }
 
 export interface ViewerResetCameraParams {
 }
 
+export interface ViewerResetCameraResponse {
+}
+
 export interface ViewerRenderParams {
+}
+
+export interface ViewerRenderResponse {
 }
 
 export interface ViewerPreviewPointsParams {
@@ -722,10 +987,9 @@ export interface Point {
     z: number;
 }
 
-export enum Style {
-    Curve = "curve",
-    Points = "points",
-    Surface = "surface",
+export type Style = "points" | "curve" | "surface";
+
+export interface ViewerPreviewPointsResponse {
 }
 
 export interface ViewerPickedIDSParams {
@@ -734,31 +998,54 @@ export interface ViewerPickedIDSParams {
     y:   number;
 }
 
+export interface ViewerPickedIDSResponse {
+    array_ids:  string[];
+    viewer_id?: number;
+}
+
 export interface ViewerPickColormapParams {
     x: number;
     y: number;
     [property: string]: any;
 }
 
+export interface ViewerPickColormapResponse {
+    data_id?: string;
+}
+
 export interface ViewerHighlightParams {
-    field_type: FieldType;
+    field_type: PickedFieldType;
     ids:        string[];
     x:          number;
     y:          number;
 }
 
-export enum FieldType {
-    Cell = "CELL",
-    Point = "POINT",
+export type PickedFieldType = "CELL" | "POINT";
+
+export interface ViewerHighlightResponse {
+    attributes?: { [key: string]: number[] | number };
+    field_type?: PickedFieldType;
+    geode_id?:   string;
+    id?:         string;
+    picked_id?:  number;
 }
 
 export interface ViewerGridScaleParams {
     visibility: boolean;
 }
 
+export interface ViewerGridScaleResponse {
+}
+
 export interface ViewerGetPointPositionParams {
     x: number;
     y: number;
+}
+
+export interface ViewerGetPointPositionResponse {
+    x: number;
+    y: number;
+    z: number;
 }
 
 export interface ViewerClippingPlanesParams {
@@ -771,8 +1058,14 @@ export interface Plane {
     origin: number[];
 }
 
+export interface ViewerClippingPlanesResponse {
+}
+
 export interface ViewerAxesParams {
     visibility: boolean;
+}
+
+export interface ViewerAxesResponse {
 }
 
 export interface ErrorResponse {
@@ -791,160 +1084,161 @@ export type TypedSchema<Params, Response> = {
 export interface Schemas {
   readonly opengeodeweb_viewer: {
     readonly generic: {
-      readonly register: (typeof json)["opengeodeweb_viewer"]["generic"]["register"] & TypedSchema<GenericRegisterParams, unknown>;
-      readonly deregister: (typeof json)["opengeodeweb_viewer"]["generic"]["deregister"] & TypedSchema<GenericDeregisterParams, unknown>;
+      readonly register: (typeof json)["opengeodeweb_viewer"]["generic"]["register"] & TypedSchema<GenericRegisterParams, GenericRegisterResponse>;
+      readonly deregister: (typeof json)["opengeodeweb_viewer"]["generic"]["deregister"] & TypedSchema<GenericDeregisterParams, GenericDeregisterResponse>;
     };
     readonly mesh: {
       readonly cells: {
         readonly attribute: {
           readonly cell: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["attribute"]["cell"]["attribute"] & TypedSchema<MeshCellsAttributeCellAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["attribute"]["cell"]["attribute"] & TypedSchema<MeshCellsAttributeCellAttributeParams, MeshCellsAttributeCellAttributeResponse>;
           };
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshCellsAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshCellsAttributeVertexAttributeParams, MeshCellsAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["visibility"] & TypedSchema<MeshCellsVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["color"] & TypedSchema<MeshCellsColorParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["visibility"] & TypedSchema<MeshCellsVisibilityParams, MeshCellsVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["color"] & TypedSchema<MeshCellsColorParams, MeshCellsColorResponse>;
       };
       readonly edges: {
         readonly attribute: {
           readonly edge: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["attribute"]["edge"]["attribute"] & TypedSchema<MeshEdgesAttributeEdgeAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["attribute"]["edge"]["attribute"] & TypedSchema<MeshEdgesAttributeEdgeAttributeParams, MeshEdgesAttributeEdgeAttributeResponse>;
           };
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshEdgesAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshEdgesAttributeVertexAttributeParams, MeshEdgesAttributeVertexAttributeResponse>;
           };
         };
-        readonly width: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["width"] & TypedSchema<MeshEdgesWidthParams, unknown>;
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["visibility"] & TypedSchema<MeshEdgesVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["color"] & TypedSchema<MeshEdgesColorParams, unknown>;
+        readonly width: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["width"] & TypedSchema<MeshEdgesWidthParams, MeshEdgesWidthResponse>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["visibility"] & TypedSchema<MeshEdgesVisibilityParams, MeshEdgesVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["color"] & TypedSchema<MeshEdgesColorParams, MeshEdgesColorResponse>;
       };
       readonly points: {
         readonly attribute: {
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshPointsAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshPointsAttributeVertexAttributeParams, MeshPointsAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["visibility"] & TypedSchema<MeshPointsVisibilityParams, unknown>;
-        readonly size: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["size"] & TypedSchema<MeshPointsSizeParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["color"] & TypedSchema<MeshPointsColorParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["visibility"] & TypedSchema<MeshPointsVisibilityParams, MeshPointsVisibilityResponse>;
+        readonly size: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["size"] & TypedSchema<MeshPointsSizeParams, MeshPointsSizeResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["color"] & TypedSchema<MeshPointsColorParams, MeshPointsColorResponse>;
       };
       readonly polygons: {
         readonly attribute: {
           readonly polygon: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["attribute"]["polygon"]["attribute"] & TypedSchema<MeshPolygonsAttributePolygonAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["attribute"]["polygon"]["attribute"] & TypedSchema<MeshPolygonsAttributePolygonAttributeParams, MeshPolygonsAttributePolygonAttributeResponse>;
           };
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshPolygonsAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshPolygonsAttributeVertexAttributeParams, MeshPolygonsAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["visibility"] & TypedSchema<MeshPolygonsVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["color"] & TypedSchema<MeshPolygonsColorParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["visibility"] & TypedSchema<MeshPolygonsVisibilityParams, MeshPolygonsVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["color"] & TypedSchema<MeshPolygonsColorParams, MeshPolygonsColorResponse>;
       };
       readonly polyhedra: {
         readonly attribute: {
           readonly polyhedron: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["attribute"]["polyhedron"]["attribute"] & TypedSchema<MeshPolyhedraAttributePolyhedronAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["attribute"]["polyhedron"]["attribute"] & TypedSchema<MeshPolyhedraAttributePolyhedronAttributeParams, MeshPolyhedraAttributePolyhedronAttributeResponse>;
           };
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshPolyhedraAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["attribute"]["vertex"]["attribute"] & TypedSchema<MeshPolyhedraAttributeVertexAttributeParams, MeshPolyhedraAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["visibility"] & TypedSchema<MeshPolyhedraVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["color"] & TypedSchema<MeshPolyhedraColorParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["visibility"] & TypedSchema<MeshPolyhedraVisibilityParams, MeshPolyhedraVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["color"] & TypedSchema<MeshPolyhedraColorParams, MeshPolyhedraColorResponse>;
       };
-      readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["visibility"] & TypedSchema<MeshVisibilityParams, unknown>;
-      readonly register: (typeof json)["opengeodeweb_viewer"]["mesh"]["register"] & TypedSchema<MeshRegisterParams, unknown>;
-      readonly highlight: (typeof json)["opengeodeweb_viewer"]["mesh"]["highlight"] & TypedSchema<MeshHighlightParams, unknown>;
-      readonly deregister: (typeof json)["opengeodeweb_viewer"]["mesh"]["deregister"] & TypedSchema<MeshDeregisterParams, unknown>;
-      readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["color"] & TypedSchema<MeshColorParams, unknown>;
-      readonly apply_textures: (typeof json)["opengeodeweb_viewer"]["mesh"]["apply_textures"] & TypedSchema<MeshApplyTexturesParams, unknown>;
+      readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["visibility"] & TypedSchema<MeshVisibilityParams, MeshVisibilityResponse>;
+      readonly register: (typeof json)["opengeodeweb_viewer"]["mesh"]["register"] & TypedSchema<MeshRegisterParams, MeshRegisterResponse>;
+      readonly highlight: (typeof json)["opengeodeweb_viewer"]["mesh"]["highlight"] & TypedSchema<MeshHighlightParams, MeshHighlightResponse>;
+      readonly deregister: (typeof json)["opengeodeweb_viewer"]["mesh"]["deregister"] & TypedSchema<MeshDeregisterParams, MeshDeregisterResponse>;
+      readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["color"] & TypedSchema<MeshColorParams, MeshColorResponse>;
+      readonly apply_textures: (typeof json)["opengeodeweb_viewer"]["mesh"]["apply_textures"] & TypedSchema<MeshApplyTexturesParams, MeshApplyTexturesResponse>;
     };
     readonly model: {
       readonly blocks: {
         readonly attribute: {
           readonly polyhedron: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["attribute"]["polyhedron"]["attribute"] & TypedSchema<ModelBlocksAttributePolyhedronAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["attribute"]["polyhedron"]["attribute"] & TypedSchema<ModelBlocksAttributePolyhedronAttributeParams, ModelBlocksAttributePolyhedronAttributeResponse>;
           };
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelBlocksAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelBlocksAttributeVertexAttributeParams, ModelBlocksAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["visibility"] & TypedSchema<ModelBlocksVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["color"] & TypedSchema<ModelBlocksColorParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["visibility"] & TypedSchema<ModelBlocksVisibilityParams, ModelBlocksVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["color"] & TypedSchema<ModelBlocksColorParams, ModelBlocksColorResponse>;
       };
       readonly corners: {
         readonly attribute: {
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["corners"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelCornersAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["corners"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelCornersAttributeVertexAttributeParams, ModelCornersAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["corners"]["visibility"] & TypedSchema<ModelCornersVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["corners"]["color"] & TypedSchema<ModelCornersColorParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["corners"]["visibility"] & TypedSchema<ModelCornersVisibilityParams, ModelCornersVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["corners"]["color"] & TypedSchema<ModelCornersColorParams, ModelCornersColorResponse>;
       };
       readonly edges: {
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["edges"]["visibility"] & TypedSchema<ModelEdgesVisibilityParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["edges"]["visibility"] & TypedSchema<ModelEdgesVisibilityParams, ModelEdgesVisibilityResponse>;
       };
       readonly lines: {
         readonly attribute: {
           readonly edge: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["attribute"]["edge"]["attribute"] & TypedSchema<ModelLinesAttributeEdgeAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["attribute"]["edge"]["attribute"] & TypedSchema<ModelLinesAttributeEdgeAttributeParams, ModelLinesAttributeEdgeAttributeResponse>;
           };
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelLinesAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelLinesAttributeVertexAttributeParams, ModelLinesAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["visibility"] & TypedSchema<ModelLinesVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["color"] & TypedSchema<ModelLinesColorParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["visibility"] & TypedSchema<ModelLinesVisibilityParams, ModelLinesVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["color"] & TypedSchema<ModelLinesColorParams, ModelLinesColorResponse>;
       };
       readonly points: {
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["points"]["visibility"] & TypedSchema<ModelPointsVisibilityParams, unknown>;
-        readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["points"]["size"] & TypedSchema<ModelPointsSizeParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["points"]["visibility"] & TypedSchema<ModelPointsVisibilityParams, ModelPointsVisibilityResponse>;
+        readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["points"]["size"] & TypedSchema<ModelPointsSizeParams, ModelPointsSizeResponse>;
       };
-      readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["visibility"] & TypedSchema<ModelVisibilityParams, unknown>;
-      readonly register: (typeof json)["opengeodeweb_viewer"]["model"]["register"] & TypedSchema<ModelRegisterParams, unknown>;
-      readonly highlight: (typeof json)["opengeodeweb_viewer"]["model"]["highlight"] & TypedSchema<ModelHighlightParams, unknown>;
-      readonly get_blocks_bounds: (typeof json)["opengeodeweb_viewer"]["model"]["get_blocks_bounds"] & TypedSchema<ModelGetBlocksBoundsParams, unknown>;
-      readonly deregister: (typeof json)["opengeodeweb_viewer"]["model"]["deregister"] & TypedSchema<ModelDeregisterParams, unknown>;
+      readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["visibility"] & TypedSchema<ModelVisibilityParams, ModelVisibilityResponse>;
+      readonly register: (typeof json)["opengeodeweb_viewer"]["model"]["register"] & TypedSchema<ModelRegisterParams, ModelRegisterResponse>;
+      readonly highlight: (typeof json)["opengeodeweb_viewer"]["model"]["highlight"] & TypedSchema<ModelHighlightParams, ModelHighlightResponse>;
+      readonly get_blocks_bounds: (typeof json)["opengeodeweb_viewer"]["model"]["get_blocks_bounds"] & TypedSchema<ModelGetBlocksBoundsParams, ModelGetBlocksBoundsResponse>;
+      readonly deregister: (typeof json)["opengeodeweb_viewer"]["model"]["deregister"] & TypedSchema<ModelDeregisterParams, ModelDeregisterResponse>;
       readonly surfaces: {
         readonly attribute: {
           readonly polygon: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["attribute"]["polygon"]["attribute"] & TypedSchema<ModelSurfacesAttributePolygonAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["attribute"]["polygon"]["attribute"] & TypedSchema<ModelSurfacesAttributePolygonAttributeParams, ModelSurfacesAttributePolygonAttributeResponse>;
           };
           readonly vertex: {
-            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelSurfacesAttributeVertexAttributeParams, unknown>;
+            readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelSurfacesAttributeVertexAttributeParams, ModelSurfacesAttributeVertexAttributeResponse>;
           };
         };
-        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["visibility"] & TypedSchema<ModelSurfacesVisibilityParams, unknown>;
-        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["color"] & TypedSchema<ModelSurfacesColorParams, unknown>;
-        readonly apply_textures: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["apply_textures"] & TypedSchema<ModelSurfacesApplyTexturesParams, unknown>;
+        readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["visibility"] & TypedSchema<ModelSurfacesVisibilityParams, ModelSurfacesVisibilityResponse>;
+        readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["color"] & TypedSchema<ModelSurfacesColorParams, ModelSurfacesColorResponse>;
+        readonly apply_textures: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["apply_textures"] & TypedSchema<ModelSurfacesApplyTexturesParams, ModelSurfacesApplyTexturesResponse>;
       };
     };
-    readonly kill: (typeof json)["opengeodeweb_viewer"]["kill"] & TypedSchema<KillParams, unknown>;
-    readonly import_project: (typeof json)["opengeodeweb_viewer"]["import_project"] & TypedSchema<ImportProjectParams, unknown>;
+    readonly release_database: (typeof json)["opengeodeweb_viewer"]["release_database"] & TypedSchema<ReleaseDatabaseParams, ReleaseDatabaseResponse>;
+    readonly kill: (typeof json)["opengeodeweb_viewer"]["kill"] & TypedSchema<KillParams, KillResponse>;
+    readonly import_project: (typeof json)["opengeodeweb_viewer"]["import_project"] & TypedSchema<ImportProjectParams, ImportProjectResponse>;
     readonly viewer: {
-      readonly update_data: (typeof json)["opengeodeweb_viewer"]["viewer"]["update_data"] & TypedSchema<ViewerUpdateDataParams, unknown>;
-      readonly update_camera: (typeof json)["opengeodeweb_viewer"]["viewer"]["update_camera"] & TypedSchema<ViewerUpdateCameraParams, unknown>;
-      readonly threshold: (typeof json)["opengeodeweb_viewer"]["viewer"]["threshold"] & TypedSchema<ViewerThresholdParams, unknown>;
-      readonly take_screenshot: (typeof json)["opengeodeweb_viewer"]["viewer"]["take_screenshot"] & TypedSchema<ViewerTakeScreenshotParams, unknown>;
-      readonly slice: (typeof json)["opengeodeweb_viewer"]["viewer"]["slice"] & TypedSchema<ViewerSliceParams, unknown>;
-      readonly shrink: (typeof json)["opengeodeweb_viewer"]["viewer"]["shrink"] & TypedSchema<ViewerShrinkParams, unknown>;
-      readonly set_z_scaling: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_z_scaling"] & TypedSchema<ViewerSetZScalingParams, unknown>;
-      readonly set_background_color: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_background_color"] & TypedSchema<ViewerSetBackgroundColorParams, unknown>;
-      readonly ruler: (typeof json)["opengeodeweb_viewer"]["viewer"]["ruler"] & TypedSchema<ViewerRulerParams, unknown>;
-      readonly reset_visualization: (typeof json)["opengeodeweb_viewer"]["viewer"]["reset_visualization"] & TypedSchema<ViewerResetVisualizationParams, unknown>;
-      readonly reset_ruler: (typeof json)["opengeodeweb_viewer"]["viewer"]["reset_ruler"] & TypedSchema<ViewerResetRulerParams, unknown>;
-      readonly reset_camera: (typeof json)["opengeodeweb_viewer"]["viewer"]["reset_camera"] & TypedSchema<ViewerResetCameraParams, unknown>;
-      readonly render: (typeof json)["opengeodeweb_viewer"]["viewer"]["render"] & TypedSchema<ViewerRenderParams, unknown>;
-      readonly preview_points: (typeof json)["opengeodeweb_viewer"]["viewer"]["preview_points"] & TypedSchema<ViewerPreviewPointsParams, unknown>;
-      readonly picked_ids: (typeof json)["opengeodeweb_viewer"]["viewer"]["picked_ids"] & TypedSchema<ViewerPickedIDSParams, unknown>;
-      readonly pick_colormap: (typeof json)["opengeodeweb_viewer"]["viewer"]["pick_colormap"] & TypedSchema<ViewerPickColormapParams, unknown>;
-      readonly highlight: (typeof json)["opengeodeweb_viewer"]["viewer"]["highlight"] & TypedSchema<ViewerHighlightParams, unknown>;
-      readonly grid_scale: (typeof json)["opengeodeweb_viewer"]["viewer"]["grid_scale"] & TypedSchema<ViewerGridScaleParams, unknown>;
-      readonly get_point_position: (typeof json)["opengeodeweb_viewer"]["viewer"]["get_point_position"] & TypedSchema<ViewerGetPointPositionParams, unknown>;
-      readonly clipping_planes: (typeof json)["opengeodeweb_viewer"]["viewer"]["clipping_planes"] & TypedSchema<ViewerClippingPlanesParams, unknown>;
-      readonly axes: (typeof json)["opengeodeweb_viewer"]["viewer"]["axes"] & TypedSchema<ViewerAxesParams, unknown>;
+      readonly update_data: (typeof json)["opengeodeweb_viewer"]["viewer"]["update_data"] & TypedSchema<ViewerUpdateDataParams, ViewerUpdateDataResponse>;
+      readonly update_camera: (typeof json)["opengeodeweb_viewer"]["viewer"]["update_camera"] & TypedSchema<ViewerUpdateCameraParams, ViewerUpdateCameraResponse>;
+      readonly threshold: (typeof json)["opengeodeweb_viewer"]["viewer"]["threshold"] & TypedSchema<ViewerThresholdParams, ViewerThresholdResponse>;
+      readonly take_screenshot: (typeof json)["opengeodeweb_viewer"]["viewer"]["take_screenshot"] & TypedSchema<ViewerTakeScreenshotParams, ViewerTakeScreenshotResponse>;
+      readonly slice: (typeof json)["opengeodeweb_viewer"]["viewer"]["slice"] & TypedSchema<ViewerSliceParams, ViewerSliceResponse>;
+      readonly shrink: (typeof json)["opengeodeweb_viewer"]["viewer"]["shrink"] & TypedSchema<ViewerShrinkParams, ViewerShrinkResponse>;
+      readonly set_z_scaling: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_z_scaling"] & TypedSchema<ViewerSetZScalingParams, ViewerSetZScalingResponse>;
+      readonly set_background_color: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_background_color"] & TypedSchema<ViewerSetBackgroundColorParams, ViewerSetBackgroundColorResponse>;
+      readonly ruler: (typeof json)["opengeodeweb_viewer"]["viewer"]["ruler"] & TypedSchema<ViewerRulerParams, ViewerRulerResponse>;
+      readonly reset_visualization: (typeof json)["opengeodeweb_viewer"]["viewer"]["reset_visualization"] & TypedSchema<ViewerResetVisualizationParams, ViewerResetVisualizationResponse>;
+      readonly reset_ruler: (typeof json)["opengeodeweb_viewer"]["viewer"]["reset_ruler"] & TypedSchema<ViewerResetRulerParams, ViewerResetRulerResponse>;
+      readonly reset_camera: (typeof json)["opengeodeweb_viewer"]["viewer"]["reset_camera"] & TypedSchema<ViewerResetCameraParams, ViewerResetCameraResponse>;
+      readonly render: (typeof json)["opengeodeweb_viewer"]["viewer"]["render"] & TypedSchema<ViewerRenderParams, ViewerRenderResponse>;
+      readonly preview_points: (typeof json)["opengeodeweb_viewer"]["viewer"]["preview_points"] & TypedSchema<ViewerPreviewPointsParams, ViewerPreviewPointsResponse>;
+      readonly picked_ids: (typeof json)["opengeodeweb_viewer"]["viewer"]["picked_ids"] & TypedSchema<ViewerPickedIDSParams, ViewerPickedIDSResponse>;
+      readonly pick_colormap: (typeof json)["opengeodeweb_viewer"]["viewer"]["pick_colormap"] & TypedSchema<ViewerPickColormapParams, ViewerPickColormapResponse>;
+      readonly highlight: (typeof json)["opengeodeweb_viewer"]["viewer"]["highlight"] & TypedSchema<ViewerHighlightParams, ViewerHighlightResponse>;
+      readonly grid_scale: (typeof json)["opengeodeweb_viewer"]["viewer"]["grid_scale"] & TypedSchema<ViewerGridScaleParams, ViewerGridScaleResponse>;
+      readonly get_point_position: (typeof json)["opengeodeweb_viewer"]["viewer"]["get_point_position"] & TypedSchema<ViewerGetPointPositionParams, ViewerGetPointPositionResponse>;
+      readonly clipping_planes: (typeof json)["opengeodeweb_viewer"]["viewer"]["clipping_planes"] & TypedSchema<ViewerClippingPlanesParams, ViewerClippingPlanesResponse>;
+      readonly axes: (typeof json)["opengeodeweb_viewer"]["viewer"]["axes"] & TypedSchema<ViewerAxesParams, ViewerAxesResponse>;
     };
   };
 }

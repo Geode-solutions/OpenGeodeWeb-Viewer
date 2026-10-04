@@ -83,4 +83,4 @@ def test_get_blocks_bounds(
     while isinstance(response, bytes) or response.get("id") != f"rpc:{rpc}":
         response = server.get_response()
 
-    assert response.get("result") == [4.9, 4.9, 3.1, 3.1, 0.0, 0.0]
+    assert response.get("result") == {"bounds": [4.9, 4.9, 3.1, 3.1, 0.0, 0.0]}

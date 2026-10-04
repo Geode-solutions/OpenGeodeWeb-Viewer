@@ -104,7 +104,7 @@ def test_surfaces_polygons_random_collection_id(
     )
     response = server.get_response()
     assert isinstance(response, dict)
-    colors = [result["color"] for result in response["result"]]
+    colors = [result["color"] for result in response["result"]["colors"]]
     assert len(colors) == 11
     assert all(color == colors[0] for color in colors)
 

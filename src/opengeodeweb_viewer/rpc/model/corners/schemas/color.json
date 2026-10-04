@@ -9,12 +9,17 @@
     },
     "block_ids": {
       "type": "array",
-      "items": { "type": "integer" },
+      "items": {
+        "type": "integer"
+      },
       "minItems": 1
     },
     "color_mode": {
       "type": "string",
-      "enum": ["constant", "random"]
+      "enum": [
+        "constant",
+        "random"
+      ]
     },
     "collection_id": {
       "type": "string",
@@ -24,15 +29,95 @@
     "color": {
       "type": "object",
       "properties": {
-        "red": { "type": "integer", "minimum": 0, "maximum": 255 },
-        "green": { "type": "integer", "minimum": 0, "maximum": 255 },
-        "blue": { "type": "integer", "minimum": 0, "maximum": 255 },
-        "alpha": { "type": "number", "minimum": 0, "maximum": 1 }
+        "red": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "green": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "blue": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "alpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
       },
-      "required": ["red", "green", "blue", "alpha"],
+      "required": [
+        "red",
+        "green",
+        "blue",
+        "alpha"
+      ],
       "additionalProperties": false
     }
   },
-  "required": ["id", "block_ids", "color_mode"],
-  "additionalProperties": false
+  "required": [
+    "id",
+    "block_ids",
+    "color_mode"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "colors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "title": "ColorResult",
+          "properties": {
+            "viewer_id": {
+              "type": "integer"
+            },
+            "geode_id": {
+              "type": "string"
+            },
+            "color": {
+              "type": "object",
+              "title": "ColorRGBA",
+              "properties": {
+                "red": {
+                  "type": "integer"
+                },
+                "green": {
+                  "type": "integer"
+                },
+                "blue": {
+                  "type": "integer"
+                },
+                "alpha": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "red",
+                "green",
+                "blue",
+                "alpha"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "viewer_id",
+            "geode_id",
+            "color"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "colors"
+    ],
+    "additionalProperties": false
+  }
 }

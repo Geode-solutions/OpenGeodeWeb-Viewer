@@ -31,10 +31,24 @@
           "maximum": 1
         }
       },
-      "required": ["red", "green", "blue", "alpha"],
+      "required": [
+        "red",
+        "green",
+        "blue",
+        "alpha"
+      ],
       "additionalProperties": false
     }
   },
-  "required": ["id", "color"],
-  "additionalProperties": false
+  "required": [
+    "id",
+    "color"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
 }

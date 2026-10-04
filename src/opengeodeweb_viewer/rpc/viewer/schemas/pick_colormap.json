@@ -13,5 +13,15 @@
   "required": [
     "x",
     "y"
-  ]
+  ],
+  "response": {
+    "type": "object",
+    "properties": {
+      "data_id": {
+        "type": "string"
+      }
+    },
+    "required": [],
+    "additionalProperties": false
+  }
 }

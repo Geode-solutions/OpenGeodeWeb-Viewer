@@ -18,7 +18,6 @@ from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
 )
-from wslink import register as exportRpc  # type: ignore
 
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
@@ -26,10 +25,9 @@ from opengeodeweb_viewer.utils_functions import (
     ColorClassProtocol,
     create_color_transfer_function,
     deterministic_color,
-    RpcParams,
-    validate_schema,
 )
 from opengeodeweb_viewer.vtk_pipeline import BlockStyle, VtkPipeline
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -228,12 +226,8 @@ class VtkModelView(VtkObjectView):
             pipeline.update_block_colors(block_id)
         self.setup_model_color_map(pipeline)
 
-    @exportRpc(model_prefix + model_schemas_dict["register"]["rpc"])
-    def registerModel(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.model_schemas_dict["register"], self.model_prefix
-        )
-        params = schemas.Register.from_dict(rpc_params)
+    @typed_rpc(model_prefix, schemas.register_route)
+    def registerModel(self, params: schemas.Register) -> schemas.RegisterResponse:
         data_id = params.id
         try:
             viewer_data = self.get_viewer_data(data_id)
@@ -268,29 +262,22 @@ class VtkModelView(VtkObjectView):
         except Exception as e:
             print(f"Error registering model {data_id}: {str(e)}", flush=True)
             raise
+        return schemas.RegisterResponse()
 
-    @exportRpc(model_prefix + model_schemas_dict["deregister"]["rpc"])
-    def deregisterModel(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.model_schemas_dict["deregister"], self.model_prefix
-        )
-        params = schemas.Deregister.from_dict(rpc_params)
+    @typed_rpc(model_prefix, schemas.deregister_route)
+    def deregisterModel(self, params: schemas.Deregister) -> schemas.DeregisterResponse:
         self.deregisterObject(params.id)
+        return schemas.DeregisterResponse()
 
-    @exportRpc(model_prefix + model_schemas_dict["visibility"]["rpc"])
-    def setModelVisibility(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.model_schemas_dict["visibility"], self.model_prefix
-        )
-        params = schemas.Visibility.from_dict(rpc_params)
+    @typed_rpc(model_prefix, schemas.visibility_route)
+    def setModelVisibility(
+        self, params: schemas.Visibility
+    ) -> schemas.VisibilityResponse:
         self.SetVisibility(params.id, params.visibility)
+        return schemas.VisibilityResponse()
 
-    @exportRpc(model_prefix + model_schemas_dict["highlight"]["rpc"])
-    def setModelhighlight(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params, self.model_schemas_dict["highlight"], self.model_prefix
-        )
-        params = schemas.Highlight.from_dict(rpc_params)
+    @typed_rpc(model_prefix, schemas.highlight_route)
+    def setModelhighlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         if params.visibility and params.block_ids:
             append = vtkAppendDataSets()
@@ -310,13 +297,12 @@ class VtkModelView(VtkObjectView):
             )
         pipeline.highlight.actor.SetVisibility(params.visibility)
         self.render(-1)
+        return schemas.HighlightResponse()
 
-    @exportRpc(model_prefix + model_schemas_dict["get_blocks_bounds"]["rpc"])
-    def getBlocksBounds(self, rpc_params: RpcParams) -> list[float]:
-        validate_schema(
-            rpc_params, self.model_schemas_dict["get_blocks_bounds"], self.model_prefix
-        )
-        params = schemas.GetBlocksBounds.from_dict(rpc_params)
+    @typed_rpc(model_prefix, schemas.get_blocks_bounds_route)
+    def getBlocksBounds(
+        self, params: schemas.GetBlocksBounds
+    ) -> schemas.GetBlocksBoundsResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         bbox = vtkBoundingBox()
         for block_id in params.block_ids:
@@ -325,4 +311,4 @@ class VtkModelView(VtkObjectView):
 
         bounds = [0.0] * 6
         bbox.GetBounds(bounds)
-        return bounds
+        return schemas.GetBlocksBoundsResponse(bounds=bounds)

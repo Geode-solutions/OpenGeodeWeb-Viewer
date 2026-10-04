@@ -9,9 +9,31 @@
     },
     "block_ids": {
       "type": "array",
-      "items": { "type": "integer" }
+      "items": {
+        "type": "integer"
+      }
     }
   },
-  "required": ["id", "block_ids"],
-  "additionalProperties": false
+  "required": [
+    "id",
+    "block_ids"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "bounds": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 6,
+        "maxItems": 6
+      }
+    },
+    "required": [
+      "bounds"
+    ],
+    "additionalProperties": false
+  }
 }

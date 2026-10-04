@@ -23,5 +23,17 @@
     "output_extension",
     "include_background"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "blob": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "blob"
+    ],
+    "additionalProperties": false
+  }
 }

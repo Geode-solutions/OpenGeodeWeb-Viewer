@@ -2,15 +2,11 @@
 import os
 
 # Third party imports
-from wslink import register as exportRpc  # type: ignore
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import (
-    validate_schema,
-    RpcParams,
-)
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from . import schemas
 
 
@@ -25,17 +21,10 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
     def __init__(self) -> None:
         super().__init__()
 
-    @exportRpc(
-        model_surfaces_attribute_polygon_prefix
-        + model_surfaces_attribute_polygon_schemas_dict["attribute"]["rpc"]
-    )
-    def setModelSurfacesPolygonAttribute(self, rpc_params: RpcParams) -> None:
-        validate_schema(
-            rpc_params,
-            self.model_surfaces_attribute_polygon_schemas_dict["attribute"],
-            self.model_surfaces_attribute_polygon_prefix,
-        )
-        params = schemas.Attribute.from_dict(rpc_params)
+    @typed_rpc(model_surfaces_attribute_polygon_prefix, schemas.attribute_route)
+    def setModelSurfacesPolygonAttribute(
+        self, params: schemas.Attribute
+    ) -> schemas.AttributeResponse:
         self.displayAttributeOnCells(
             params.id,
             params.block_ids,
@@ -46,3 +35,4 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
             params.maximum,
             params.no_data_color,
         )
+        return schemas.AttributeResponse()
