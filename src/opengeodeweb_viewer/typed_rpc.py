@@ -58,7 +58,7 @@ def typed_rpc(prefix: str, route: Route[ParamsT, ResponseT]) -> Callable[
                 raise TypeError(
                     f"{handler.__name__} returned {type(result).__name__}, expected {route.response.__name__}"
                 )
-            payload: dict[str, Any] = _drop_none(result.to_dict())
+            payload: dict[str, Any] = _drop_none(result.to_dict(encode_json=True))
             if _validate_responses():
                 validate_response(payload)
             if do_stream:

@@ -1,6 +1,7 @@
 # Standard library imports
 import importlib
 import inspect
+import json
 import pkgutil
 from typing import Any
 
@@ -61,9 +62,25 @@ class _Protocol:
     ) -> schemas.GetPointPositionResponse:
         return schemas.GetPointPositionResponse(x="a", y=0, z=0)  # type: ignore[arg-type]
 
+    @typed_rpc(PREFIX, schemas.highlight_route)
+    def highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
+        return schemas.HighlightResponse(
+            id="data",
+            picked_id=0,
+            field_type=schemas.highlight.PickedFieldType.POINT,
+        )
+
 
 def test_typed_rpc_returns_dict_without_none() -> None:
     assert _Protocol().pick({"x": 1, "y": 2}) == {}
+
+
+def test_typed_rpc_returns_json_serializable_enum() -> None:
+    payload = _Protocol().highlight(
+        {"field_type": "POINT", "ids": ["0" * 32], "x": 1, "y": 2}
+    )
+    assert payload["field_type"] == "POINT"
+    json.dumps(payload)
 
 
 def test_typed_rpc_stream_publishes() -> None:
