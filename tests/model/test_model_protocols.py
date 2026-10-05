@@ -160,9 +160,7 @@ def test_model_explode_blocks_visibility(
             {
                 "id": model_id,
                 "block_ids": [
-                    block_id
-                    for block_id in range(1, 50)
-                    if block_id not in visible_ids
+                    block_id for block_id in range(1, 50) if block_id not in visible_ids
                 ],
                 "visibility": False,
             }
