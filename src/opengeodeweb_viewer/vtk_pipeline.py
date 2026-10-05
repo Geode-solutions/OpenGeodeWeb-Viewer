@@ -23,6 +23,7 @@ from vtkmodules.vtkRenderingAnnotation import (
 from vtkmodules.vtkRenderingFreeType import vtkVectorText
 from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkCommonDataModel import (
+    vtkBoundingBox,
     vtkDataObject,
     vtkDataSet,
     vtkMultiBlockDataSet,
@@ -36,7 +37,8 @@ from vtkmodules.vtkFiltersExtraction import (
     vtkExtractSelection,
 )
 from vtkmodules.vtkFiltersCore import vtkThreshold
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
+from vtkmodules.vtkCommonTransforms import vtkTransform
+from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTransformFilter
 from vtkmodules.vtkFiltersCore import vtkAppendFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkIOXML import vtkXMLReader
@@ -216,6 +218,7 @@ class VtkPipeline:
     clipping_filter: vtkExtractGeometry | None = None
     threshold_filter: vtkThreshold | None = None
     shrink_filter: vtkShrinkFilter | None = None
+    explode_factor: float = 0.0
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
@@ -261,6 +264,50 @@ class VtkPipeline:
                 )
                 pruned.SetBlock(index, child)
         return pruned
+
+    def explode_blocks(self, dataset: vtkMultiBlockDataSet) -> vtkMultiBlockDataSet:
+        attributes = cast(
+            vtkCompositePolyDataMapper, self.mapper
+        ).GetCompositeDataDisplayAttributes()
+        visible_bbox = vtkBoundingBox()
+        for source_block, block in zip(
+            self.blockDataSets, self.extract_blocks(dataset)
+        ):
+            if (
+                isinstance(source_block, vtkDataSet)
+                and isinstance(block, vtkDataSet)
+                and attributes.GetBlockVisibility(source_block)
+            ):
+                visible_bbox.AddBounds(block.GetBounds())
+        if not visible_bbox.IsValid():
+            return dataset
+        model_center = [0.0, 0.0, 0.0]
+        visible_bbox.GetCenter(model_center)
+        exploded_dataset = vtkMultiBlockDataSet()
+        exploded_dataset.CopyStructure(dataset)
+        iterator = dataset.NewTreeIterator()
+        iterator.InitTraversal()
+        while not iterator.IsDoneWithTraversal():
+            block = iterator.GetCurrentDataObject()
+            if isinstance(block, vtkDataSet):
+                block_center = block.GetCenter()
+                translation = vtkTransform()
+                translation.Translate(
+                    [
+                        (block_coordinate - model_coordinate) * self.explode_factor
+                        for block_coordinate, model_coordinate in zip(
+                            block_center, model_center
+                        )
+                    ]
+                )
+                transform_filter = vtkTransformFilter()
+                transform_filter.SetInputData(block)
+                transform_filter.SetTransform(translation)
+                transform_filter.Update()
+                exploded_dataset.SetDataSet(iterator, transform_filter.GetOutput())
+            iterator.GoToNextItem()
+        exploded_dataset.SetObjectName(dataset.GetObjectName())
+        return exploded_dataset
 
     def get_block_style(self, block_id: int) -> BlockStyle:
         if block_id not in self.block_styles:
@@ -353,22 +400,22 @@ class VtkPipeline:
     ) -> None:
         mapper = cast(vtkCompositePolyDataMapper, self.mapper)
         attributes = mapper.GetCompositeDataDisplayAttributes()
+        synced_attributes = vtkCompositeDataDisplayAttributes()
         color_rgb = [0.0, 0.0, 0.0]
         for source_block, destination_block in zip(self.blockDataSets, new_blocks):
             if source_block and destination_block:
                 if attributes.HasBlockColor(source_block):
                     attributes.GetBlockColor(source_block, color_rgb)
-                    attributes.SetBlockColor(destination_block, color_rgb)
-                else:
-                    attributes.RemoveBlockColor(destination_block)
+                    synced_attributes.SetBlockColor(destination_block, color_rgb)
                 if attributes.HasBlockVisibility(source_block):
-                    attributes.SetBlockVisibility(
+                    synced_attributes.SetBlockVisibility(
                         destination_block, attributes.GetBlockVisibility(source_block)
                     )
                 if attributes.HasBlockOpacity(source_block):
-                    attributes.SetBlockOpacity(
+                    synced_attributes.SetBlockOpacity(
                         destination_block, attributes.GetBlockOpacity(source_block)
                     )
+        mapper.SetCompositeDataDisplayAttributes(synced_attributes)
         self.blockDataSets = new_blocks
         for block_id in self.block_styles:
             self.update_block_colors(block_id)
