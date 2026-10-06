@@ -143,7 +143,7 @@ class VtkModelView(VtkObjectView):
         for name, style in active_attrs.items():
             if name not in pipeline.scalar_bars:
                 bar = vtkScalarBarActor()
-                self.get_renderer().AddActor2D(bar)
+                self.get_renderer().AddViewProp(bar)
                 pipeline.scalar_bars[name] = bar
             bar = pipeline.scalar_bars[name]
             item = style["item"]
