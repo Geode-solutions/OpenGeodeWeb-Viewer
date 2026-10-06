@@ -42,7 +42,7 @@ class VtkObjectView(VtkView):
                 resetCamara = False
         renderer.AddActor(data.actor)
         renderer.AddActor(data.highlight.actor)
-        renderer.AddActor2D(data.scalarBar)
+        renderer.AddViewProp(data.scalarBar)
         if resetCamara:
             renderer.ResetCamera()
 
@@ -52,9 +52,9 @@ class VtkObjectView(VtkView):
         renderer = renderWindow.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
         renderer.RemoveActor(pipeline.highlight.actor)
-        renderer.RemoveActor2D(pipeline.scalarBar)
+        renderer.RemoveViewProp(pipeline.scalarBar)
         for bar in pipeline.scalar_bars.values():
-            renderer.RemoveActor2D(bar)
+            renderer.RemoveViewProp(bar)
         self.deregister_object(data_id)
         self.update_scalar_bars_layout()
 
