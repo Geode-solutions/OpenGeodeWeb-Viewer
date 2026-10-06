@@ -152,3 +152,30 @@ def test_explode_blocks_keeps_components_on_their_block_after_shrink() -> None:
     gap = 0.05 * 10
     assert upper_block[0] > 7 + gap - 0.1
     assert upper_side_surface[0] > 7 + gap - 0.1
+
+
+def test_explode_blocks_keeps_unshifted_block_inside_shifted_one() -> None:
+    model = vtkMultiBlockDataSet()
+    blocks = component_group(
+        "blocks",
+        [
+            solid([0, 10, 0, 10, 0, 10]),
+            solid([0, 10, 0, 10, 0, 4]),
+        ],
+    )
+    model.SetBlock(0, blocks)
+    model.GetMetaData(0).Set(vtkCompositeDataSet.NAME(), "blocks")
+    model_source = vtkTrivialProducer()
+    model_source.SetOutput(model)
+    mapper = vtkCompositePolyDataMapper()
+    mapper.SetCompositeDataDisplayAttributes(vtkCompositeDataDisplayAttributes())
+    pipeline = VtkPipeline(model_source, mapper)  # type: ignore[arg-type]
+    pipeline.blockDataSets = pipeline.extract_blocks(model)
+    pipeline.explode_factor = 1.0
+    outer_block, inner_block = (
+        block
+        for block in pipeline.extract_blocks(pipeline.explode_blocks(model))
+        if isinstance(block, vtkDataSet)
+    )
+    assert outer_block.GetBounds()[4] == pytest.approx(0)
+    assert inner_block.GetBounds()[4] > 10
