@@ -142,6 +142,11 @@ def test_model_explode_blocks_color(
     test_model_explode(server, dataset_factory)
     server.call(
         VtkModelBlocksView.model_blocks_prefix
+        + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
+        [{"id": model_id, "block_ids": list(range(1, 48)), "visibility": False}],
+    )
+    server.call(
+        VtkModelBlocksView.model_blocks_prefix
         + VtkModelBlocksView.model_blocks_schemas_dict["color"]["rpc"],
         [
             {
