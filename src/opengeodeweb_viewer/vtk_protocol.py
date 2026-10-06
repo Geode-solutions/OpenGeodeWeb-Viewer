@@ -21,6 +21,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
     vtkImplicitBoolean,
     vtkImageData,
+    vtkMultiBlockDataSet,
     vtkPlane,
     vtkSelectionNode,
 )
@@ -203,6 +204,10 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         pipeline.filter.Update()
         filtered_dataset = pipeline.filter.GetOutputDataObject(0)
         if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+            if pipeline.explode_factor > 0 and isinstance(
+                filtered_dataset, vtkMultiBlockDataSet
+            ):
+                filtered_dataset = pipeline.explode_blocks(filtered_dataset)
             pipeline.sync_composite_pipeline(filtered_dataset)
             return
         pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
@@ -266,6 +271,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.shrink_filter = shrink_filter
             else:
                 pipeline.shrink_filter = None
+            self.update_pipeline_filter(pipeline)
+
+    def set_explode(self, data_ids: list[str], explode_factor: float) -> None:
+        for data_id in data_ids:
+            pipeline = self.get_vtk_pipeline(data_id)
+            if not isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+                continue
+            pipeline.explode_factor = explode_factor
             self.update_pipeline_filter(pipeline)
 
     def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:

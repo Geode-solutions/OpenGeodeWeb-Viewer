@@ -3789,6 +3789,37 @@
           "additionalProperties": false
         }
       },
+      "explode": {
+        "$id": "opengeodeweb_viewer.viewer.explode",
+        "rpc": "explode",
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            }
+          },
+          "explode_factor": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "ids",
+          "explode_factor"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
       "clipping_planes": {
         "$id": "opengeodeweb_viewer.viewer.clipping_planes",
         "rpc": "clipping_planes",

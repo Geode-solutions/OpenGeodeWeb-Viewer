@@ -334,6 +334,11 @@ class VtkViewerView(VtkView):
         self.set_shrink(params.ids, params.shrink_factor)
         return schemas.ShrinkResponse()
 
+    @typed_rpc(viewer_prefix, schemas.explode_route)
+    def setExplode(self, params: schemas.Explode) -> schemas.ExplodeResponse:
+        self.set_explode(params.ids, params.explode_factor)
+        return schemas.ExplodeResponse()
+
     @typed_rpc(viewer_prefix, schemas.slice_route)
     def setSlice(self, params: schemas.Slice) -> schemas.SliceResponse:
         return schemas.SliceResponse(

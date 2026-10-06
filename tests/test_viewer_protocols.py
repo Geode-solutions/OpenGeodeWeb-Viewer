@@ -402,6 +402,18 @@ def test_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> N
     assert server.compare_image("viewer/shrink.jpeg") == True
 
 
+def test_explode_mesh(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
+        [{"ids": [mesh_id], "explode_factor": 0.5}],
+    )
+    assert server.compare_image("mesh/register.jpeg") == True
+
+
 def test_clipping_then_shrink(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

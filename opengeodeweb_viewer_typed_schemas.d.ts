@@ -1048,6 +1048,14 @@ export interface ViewerGetPointPositionResponse {
     z: number;
 }
 
+export interface ViewerExplodeParams {
+    explode_factor: number;
+    ids:            string[];
+}
+
+export interface ViewerExplodeResponse {
+}
+
 export interface ViewerClippingPlanesParams {
     ids:    string[];
     planes: Plane[];
@@ -1237,6 +1245,7 @@ export interface Schemas {
       readonly highlight: (typeof json)["opengeodeweb_viewer"]["viewer"]["highlight"] & TypedSchema<ViewerHighlightParams, ViewerHighlightResponse>;
       readonly grid_scale: (typeof json)["opengeodeweb_viewer"]["viewer"]["grid_scale"] & TypedSchema<ViewerGridScaleParams, ViewerGridScaleResponse>;
       readonly get_point_position: (typeof json)["opengeodeweb_viewer"]["viewer"]["get_point_position"] & TypedSchema<ViewerGetPointPositionParams, ViewerGetPointPositionResponse>;
+      readonly explode: (typeof json)["opengeodeweb_viewer"]["viewer"]["explode"] & TypedSchema<ViewerExplodeParams, ViewerExplodeResponse>;
       readonly clipping_planes: (typeof json)["opengeodeweb_viewer"]["viewer"]["clipping_planes"] & TypedSchema<ViewerClippingPlanesParams, ViewerClippingPlanesResponse>;
       readonly axes: (typeof json)["opengeodeweb_viewer"]["viewer"]["axes"] & TypedSchema<ViewerAxesParams, ViewerAxesResponse>;
     };

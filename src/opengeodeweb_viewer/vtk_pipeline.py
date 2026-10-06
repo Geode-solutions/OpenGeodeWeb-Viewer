@@ -23,6 +23,8 @@ from vtkmodules.vtkRenderingAnnotation import (
 from vtkmodules.vtkRenderingFreeType import vtkVectorText
 from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkCommonDataModel import (
+    vtkBoundingBox,
+    vtkCompositeDataSet,
     vtkDataObject,
     vtkDataSet,
     vtkMultiBlockDataSet,
@@ -36,7 +38,8 @@ from vtkmodules.vtkFiltersExtraction import (
     vtkExtractSelection,
 )
 from vtkmodules.vtkFiltersCore import vtkThreshold
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
+from vtkmodules.vtkCommonTransforms import vtkTransform
+from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTransformFilter
 from vtkmodules.vtkFiltersCore import vtkAppendFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkIOXML import vtkXMLReader
@@ -50,6 +53,8 @@ from opengeodeweb_viewer.utils_functions import (
     ColorClassProtocol,
     create_color_transfer_function,
 )
+
+STACKING_GAP_RATIO = 0.05
 
 
 @dataclass
@@ -216,6 +221,7 @@ class VtkPipeline:
     clipping_filter: vtkExtractGeometry | None = None
     threshold_filter: vtkThreshold | None = None
     shrink_filter: vtkShrinkFilter | None = None
+    explode_factor: float = 0.0
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
     blockGeodeIds: list[str] = field(default_factory=list)
@@ -261,6 +267,126 @@ class VtkPipeline:
                 )
                 pruned.SetBlock(index, child)
         return pruned
+
+    def source_components(self) -> dict[int, tuple[str, vtkBoundingBox]]:
+        components: dict[int, tuple[str, vtkBoundingBox]] = {}
+        component_type = ""
+        iterator = self.reader.GetOutputDataObject(0).NewTreeIterator()
+        iterator.VisitOnlyLeavesOff()
+        iterator.InitTraversal()
+        while not iterator.IsDoneWithTraversal():
+            component = iterator.GetCurrentDataObject()
+            if isinstance(component, vtkMultiBlockDataSet):
+                component_type = iterator.GetCurrentMetaData().Get(
+                    vtkCompositeDataSet.NAME()
+                )
+            elif isinstance(component, vtkDataSet):
+                bbox = vtkBoundingBox(component.GetBounds())
+                if bbox.IsValid():
+                    components[iterator.GetCurrentFlatIndex()] = (component_type, bbox)
+            iterator.GoToNextItem()
+        return components
+
+    @staticmethod
+    def overlaps_in_xy(bbox: vtkBoundingBox, other_bbox: vtkBoundingBox) -> bool:
+        return all(
+            bbox.GetBound(2 * axis) < other_bbox.GetBound(2 * axis + 1)
+            and other_bbox.GetBound(2 * axis) < bbox.GetBound(2 * axis + 1)
+            for axis in (0, 1)
+        )
+
+    @staticmethod
+    def stacking_shifts(
+        stacked_blocks: dict[int, vtkBoundingBox],
+    ) -> dict[int, float]:
+        stacked_bbox = vtkBoundingBox()
+        for bbox in stacked_blocks.values():
+            stacked_bbox.AddBox(bbox)
+        vertical_gap = STACKING_GAP_RATIO * stacked_bbox.GetLength(2)
+        shifts: dict[int, float] = {}
+        for flat_index, bbox in sorted(
+            stacked_blocks.items(), key=lambda item: item[1].GetBound(4)
+        ):
+            shifts[flat_index] = max(
+                [0.0]
+                + [
+                    placed_bbox.GetBound(5)
+                    + shifts[placed_index]
+                    + vertical_gap
+                    - bbox.GetBound(4)
+                    for placed_index, placed_bbox in stacked_blocks.items()
+                    if placed_index in shifts
+                    and VtkPipeline.overlaps_in_xy(bbox, placed_bbox)
+                ]
+            )
+        return shifts
+
+    @staticmethod
+    def followed_shift(
+        component_bbox: vtkBoundingBox,
+        stacked_blocks: dict[int, vtkBoundingBox],
+        stacked_shifts: dict[int, float],
+    ) -> float:
+        center = [0.0, 0.0, 0.0]
+        component_bbox.GetCenter(center)
+        containing_ids = [
+            flat_index
+            for flat_index, bbox in stacked_blocks.items()
+            if bbox.Contains(component_bbox)
+        ] or [
+            flat_index
+            for flat_index, bbox in stacked_blocks.items()
+            if bbox.ContainsPoint(center)
+        ]
+        if not containing_ids:
+            return 0.0
+        lowest_id = min(
+            containing_ids,
+            key=lambda flat_index: stacked_blocks[flat_index].GetBound(4),
+        )
+        return stacked_shifts[lowest_id]
+
+    def explode_blocks(self, dataset: vtkMultiBlockDataSet) -> vtkMultiBlockDataSet:
+        components = self.source_components()
+        stacked_blocks = {
+            flat_index: bbox
+            for flat_index, (component_type, bbox) in components.items()
+            if component_type == "blocks"
+        }
+        stacked_shifts = self.stacking_shifts(stacked_blocks)
+        z_shifts = {
+            flat_index: (
+                stacked_shifts[flat_index]
+                if flat_index in stacked_shifts
+                else self.followed_shift(bbox, stacked_blocks, stacked_shifts)
+            )
+            for flat_index, (_, bbox) in components.items()
+        }
+        return self.translate_blocks(dataset, z_shifts)
+
+    def translate_blocks(
+        self, dataset: vtkMultiBlockDataSet, z_shifts: dict[int, float]
+    ) -> vtkMultiBlockDataSet:
+        translated_dataset = vtkMultiBlockDataSet()
+        translated_dataset.CopyStructure(dataset)
+        iterator = dataset.NewTreeIterator()
+        iterator.InitTraversal()
+        while not iterator.IsDoneWithTraversal():
+            block = iterator.GetCurrentDataObject()
+            z_shift = z_shifts.get(iterator.GetCurrentFlatIndex(), 0.0)
+            if isinstance(block, vtkDataSet) and z_shift != 0.0:
+                translation = vtkTransform()
+                translation.Translate(0.0, 0.0, z_shift * self.explode_factor)
+                transform_filter = vtkTransformFilter()
+                transform_filter.SetInputData(block)
+                transform_filter.SetTransform(translation)
+                transform_filter.Update()
+                translated_dataset.SetDataSet(iterator, transform_filter.GetOutput())
+            elif block is not None:
+                translated_dataset.SetDataSet(iterator, block)
+            iterator.GoToNextItem()
+        translated_dataset.SetObjectName(dataset.GetObjectName())
+        return translated_dataset
 
     def get_block_style(self, block_id: int) -> BlockStyle:
         if block_id not in self.block_styles:
@@ -353,22 +479,22 @@ class VtkPipeline:
     ) -> None:
         mapper = cast(vtkCompositePolyDataMapper, self.mapper)
         attributes = mapper.GetCompositeDataDisplayAttributes()
+        synced_attributes = vtkCompositeDataDisplayAttributes()
         color_rgb = [0.0, 0.0, 0.0]
         for source_block, destination_block in zip(self.blockDataSets, new_blocks):
             if source_block and destination_block:
                 if attributes.HasBlockColor(source_block):
                     attributes.GetBlockColor(source_block, color_rgb)
-                    attributes.SetBlockColor(destination_block, color_rgb)
-                else:
-                    attributes.RemoveBlockColor(destination_block)
+                    synced_attributes.SetBlockColor(destination_block, color_rgb)
                 if attributes.HasBlockVisibility(source_block):
-                    attributes.SetBlockVisibility(
+                    synced_attributes.SetBlockVisibility(
                         destination_block, attributes.GetBlockVisibility(source_block)
                     )
                 if attributes.HasBlockOpacity(source_block):
-                    attributes.SetBlockOpacity(
+                    synced_attributes.SetBlockOpacity(
                         destination_block, attributes.GetBlockOpacity(source_block)
                     )
+        mapper.SetCompositeDataDisplayAttributes(synced_attributes)
         self.blockDataSets = new_blocks
         for block_id in self.block_styles:
             self.update_block_colors(block_id)
