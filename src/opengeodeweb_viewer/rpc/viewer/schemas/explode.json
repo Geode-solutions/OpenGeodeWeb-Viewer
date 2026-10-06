@@ -12,7 +12,8 @@
     },
     "explode_factor": {
       "type": "number",
-      "minimum": 0
+      "minimum": 0,
+      "maximum": 1
     }
   },
   "required": [

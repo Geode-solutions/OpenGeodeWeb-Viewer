@@ -3,9 +3,6 @@ from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
-from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
-    VtkModelSurfacesView,
-)
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from tests.conftest import ServerMonitor
 
@@ -93,14 +90,36 @@ def test_get_blocks_bounds(
     assert response.get("result") == {"bounds": [4.9, 4.9, 3.1, 3.1, 0.0, 0.0]}
 
 
-def test_model_explode(
+def test_model_cube_side_view(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_register_model_cube(server, dataset_factory)
     server.call(
         VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        [
+            {
+                "camera_options": {
+                    "focal_point": [5.0, 5.0, 7.5],
+                    "view_up": [0.0, 0.0, 1.0],
+                    "position": [40.0, -30.0, 20.0],
+                    "view_angle": 30.0,
+                    "clipping_range": [1.0, 100.0],
+                }
+            }
+        ],
+    )
+    assert server.compare_image("model/cube_side_view.jpeg") == True
+
+
+def test_model_explode(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_model_cube_side_view(server, dataset_factory)
+    server.call(
+        VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
-        [{"ids": [model_id], "explode_factor": 0.5}],
+        [{"ids": [model_id], "explode_factor": 1.0}],
     )
     assert server.compare_image("model/explode.jpeg") == True
 
@@ -114,26 +133,26 @@ def test_model_explode_removed(
         + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
         [{"ids": [model_id], "explode_factor": 0.0}],
     )
-    assert server.compare_image("model/cube_register.jpeg") == True
+    assert server.compare_image("model/cube_side_view.jpeg") == True
 
 
-def test_model_explode_surfaces_color(
+def test_model_explode_blocks_color(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_model_explode(server, dataset_factory)
     server.call(
-        VtkModelSurfacesView.model_surfaces_prefix
-        + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"],
+        VtkModelBlocksView.model_blocks_prefix
+        + VtkModelBlocksView.model_blocks_schemas_dict["color"]["rpc"],
         [
             {
                 "id": model_id,
-                "block_ids": list(range(36, 47)),
+                "block_ids": [48],
                 "color_mode": "constant",
                 "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1.0},
             }
         ],
     )
-    assert server.compare_image("model/explode_surfaces_color.jpeg") == True
+    assert server.compare_image("model/explode_blocks_color.jpeg") == True
 
 
 def test_model_explode_then_shrink(
@@ -152,19 +171,10 @@ def test_model_explode_blocks_visibility(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_model_explode(server, dataset_factory)
-    visible_ids = [46]
     server.call(
         VtkModelBlocksView.model_blocks_prefix
         + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
-        [
-            {
-                "id": model_id,
-                "block_ids": [
-                    block_id for block_id in range(1, 50) if block_id not in visible_ids
-                ],
-                "visibility": False,
-            }
-        ],
+        [{"id": model_id, "block_ids": [49], "visibility": False}],
     )
     assert server.compare_image("model/explode_blocks_visibility.jpeg") == True
 
@@ -184,4 +194,4 @@ def test_model_explode_all_hidden(
             }
         ],
     )
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/explode_all_hidden.jpeg") == True

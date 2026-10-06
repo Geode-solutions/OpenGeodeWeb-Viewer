@@ -24,6 +24,7 @@ from vtkmodules.vtkRenderingFreeType import vtkVectorText
 from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkCommonDataModel import (
     vtkBoundingBox,
+    vtkCompositeDataSet,
     vtkDataObject,
     vtkDataSet,
     vtkMultiBlockDataSet,
@@ -52,6 +53,8 @@ from opengeodeweb_viewer.utils_functions import (
     ColorClassProtocol,
     create_color_transfer_function,
 )
+
+STACKING_GAP_RATIO = 0.05
 
 
 @dataclass
@@ -265,24 +268,75 @@ class VtkPipeline:
                 pruned.SetBlock(index, child)
         return pruned
 
+    def extract_component_types(self, dataset: vtkMultiBlockDataSet) -> dict[int, str]:
+        component_types: dict[int, str] = {}
+        component_type = ""
+        iterator = dataset.NewTreeIterator()
+        iterator.VisitOnlyLeavesOff()
+        iterator.InitTraversal()
+        while not iterator.IsDoneWithTraversal():
+            if isinstance(iterator.GetCurrentDataObject(), vtkMultiBlockDataSet):
+                component_type = iterator.GetCurrentMetaData().Get(
+                    vtkCompositeDataSet.NAME()
+                )
+            else:
+                component_types[iterator.GetCurrentFlatIndex()] = component_type
+            iterator.GoToNextItem()
+        return component_types
+
+    @staticmethod
+    def stacking_shifts(stacked_bounds: list[list[float]]) -> list[float]:
+        stacked_bbox = vtkBoundingBox()
+        for bounds in stacked_bounds:
+            stacked_bbox.AddBounds(bounds)
+        vertical_gap = STACKING_GAP_RATIO * stacked_bbox.GetLength(2)
+        shifts = [0.0] * len(stacked_bounds)
+        placed: list[int] = []
+        for index in sorted(
+            range(len(stacked_bounds)), key=lambda index: stacked_bounds[index][4]
+        ):
+            bounds = stacked_bounds[index]
+            for placed_index in placed:
+                placed_bounds = stacked_bounds[placed_index]
+                overlaps_in_xy = all(
+                    bounds[2 * axis] < placed_bounds[2 * axis + 1]
+                    and placed_bounds[2 * axis] < bounds[2 * axis + 1]
+                    for axis in (0, 1)
+                )
+                if overlaps_in_xy:
+                    shifts[index] = max(
+                        shifts[index],
+                        placed_bounds[5]
+                        + shifts[placed_index]
+                        + vertical_gap
+                        - bounds[4],
+                    )
+            placed.append(index)
+        return shifts
+
     def explode_blocks(self, dataset: vtkMultiBlockDataSet) -> vtkMultiBlockDataSet:
         attributes = cast(
             vtkCompositePolyDataMapper, self.mapper
         ).GetCompositeDataDisplayAttributes()
-        visible_bbox = vtkBoundingBox()
-        for source_block, block in zip(
-            self.blockDataSets, self.extract_blocks(dataset)
-        ):
-            if (
-                isinstance(source_block, vtkDataSet)
-                and isinstance(block, vtkDataSet)
-                and attributes.GetBlockVisibility(source_block)
-            ):
-                visible_bbox.AddBounds(block.GetBounds())
-        if not visible_bbox.IsValid():
+        source_dataset = cast(vtkMultiBlockDataSet, self.reader.GetOutputDataObject(0))
+        source_blocks = self.extract_blocks(source_dataset)
+        component_types = self.extract_component_types(source_dataset)
+        stacked_type = "blocks" if "blocks" in component_types.values() else "surfaces"
+        stacked_ids = [
+            flat_index
+            for flat_index, component_type in component_types.items()
+            if component_type == stacked_type
+            and isinstance(source_blocks[flat_index], vtkDataSet)
+            and flat_index < len(self.blockDataSets)
+            and attributes.GetBlockVisibility(self.blockDataSets[flat_index])
+        ]
+        if not stacked_ids:
             return dataset
-        model_center = [0.0, 0.0, 0.0]
-        visible_bbox.GetCenter(model_center)
+        stacked_bounds = [
+            list(cast(vtkDataSet, source_blocks[flat_index]).GetBounds())
+            for flat_index in stacked_ids
+        ]
+        stacked_shifts = dict(zip(stacked_ids, self.stacking_shifts(stacked_bounds)))
         exploded_dataset = vtkMultiBlockDataSet()
         exploded_dataset.CopyStructure(dataset)
         iterator = dataset.NewTreeIterator()
@@ -290,16 +344,16 @@ class VtkPipeline:
         while not iterator.IsDoneWithTraversal():
             block = iterator.GetCurrentDataObject()
             if isinstance(block, vtkDataSet):
-                block_center = block.GetCenter()
+                flat_index = iterator.GetCurrentFlatIndex()
+                shift = stacked_shifts.get(flat_index)
+                if shift is None:
+                    shift = self.followed_shift(
+                        cast(vtkDataSet, source_blocks[flat_index]).GetBounds(),
+                        stacked_bounds,
+                        list(stacked_shifts.values()),
+                    )
                 translation = vtkTransform()
-                translation.Translate(
-                    [
-                        (block_coordinate - model_coordinate) * self.explode_factor
-                        for block_coordinate, model_coordinate in zip(
-                            block_center, model_center
-                        )
-                    ]
-                )
+                translation.Translate(0.0, 0.0, shift * self.explode_factor)
                 transform_filter = vtkTransformFilter()
                 transform_filter.SetInputData(block)
                 transform_filter.SetTransform(translation)
@@ -308,6 +362,29 @@ class VtkPipeline:
             iterator.GoToNextItem()
         exploded_dataset.SetObjectName(dataset.GetObjectName())
         return exploded_dataset
+
+    @staticmethod
+    def followed_shift(
+        component_bounds: tuple[float, float, float, float, float, float],
+        stacked_bounds: list[list[float]],
+        stacked_shifts: list[float],
+    ) -> float:
+        component_bbox = vtkBoundingBox(component_bounds)
+        center = [0.0, 0.0, 0.0]
+        component_bbox.GetCenter(center)
+        stacked = list(zip(stacked_bounds, stacked_shifts))
+        containing_blocks = [
+            (bounds[4], shift)
+            for bounds, shift in stacked
+            if vtkBoundingBox(bounds).Contains(component_bbox)
+        ] or [
+            (bounds[4], shift)
+            for bounds, shift in stacked
+            if vtkBoundingBox(bounds).ContainsPoint(center)
+        ]
+        if not containing_blocks:
+            return 0.0
+        return min(containing_blocks)[1]
 
     def get_block_style(self, block_id: int) -> BlockStyle:
         if block_id not in self.block_styles:
