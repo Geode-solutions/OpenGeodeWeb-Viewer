@@ -54,7 +54,7 @@ typing-extensions==4.*
     # via
     #   aiohttp
     #   aiosignal
-vtk==9.7.1
+vtk==9.6.2
     # via -r requirements.in
 websocket-client==1.8.0
     # via -r requirements.in
