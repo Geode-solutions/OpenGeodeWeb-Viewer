@@ -11,7 +11,6 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkCommonExecutionModel import vtkTrivialProducer
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
-from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkCubeSource
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkRenderingCore import (
@@ -20,7 +19,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 
 # Local application imports
-from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
+from opengeodeweb_viewer.vtk_pipeline import STACKING_GAP_RATIO, VtkPipeline
 
 
 def test_sync_block_display_attributes_drops_replaced_blocks() -> None:
@@ -73,6 +72,14 @@ def component_group(
     return group
 
 
+def model_of(*groups: vtkMultiBlockDataSet) -> vtkMultiBlockDataSet:
+    model = vtkMultiBlockDataSet()
+    for index, group in enumerate(groups):
+        model.SetBlock(index, group)
+        model.GetMetaData(index).Set(vtkCompositeDataSet.NAME(), group.GetObjectName())
+    return model
+
+
 def stacked_model() -> vtkMultiBlockDataSet:
     surfaces = component_group(
         "surfaces",
@@ -90,18 +97,22 @@ def stacked_model() -> vtkMultiBlockDataSet:
             solid([20, 30, 0, 10, 0, 10]),
         ],
     )
-    model = vtkMultiBlockDataSet()
-    for index, group in enumerate((surfaces, blocks)):
-        model.SetBlock(index, group)
-        model.GetMetaData(index).Set(vtkCompositeDataSet.NAME(), group.GetObjectName())
-    return model
+    return model_of(surfaces, blocks)
 
 
-def exploded_z_ranges(
-    explode_factor: float, shrink_factor: float = 1.0
-) -> list[tuple[float, float]]:
+UPPER_BLOCK_ID = 7
+STACKED_HEIGHT = 10
+GAP = STACKING_GAP_RATIO * STACKED_HEIGHT
+
+
+def explode(
+    model: vtkMultiBlockDataSet,
+    explode_factor: float,
+    shrink_factor: float = 1.0,
+    hidden_block_ids: tuple[int, ...] = (),
+) -> tuple[list[vtkDataSet], list[vtkDataSet]]:
     model_source = vtkTrivialProducer()
-    model_source.SetOutput(stacked_model())
+    model_source.SetOutput(model)
     mapper = vtkCompositePolyDataMapper()
     mapper.SetCompositeDataDisplayAttributes(vtkCompositeDataDisplayAttributes())
     pipeline = VtkPipeline(model_source, mapper)  # type: ignore[arg-type]
@@ -112,13 +123,28 @@ def exploded_z_ranges(
     pipeline.filter.Update()
     filtered_model = pipeline.filter.GetOutputDataObject(0)
     pipeline.blockDataSets = pipeline.extract_blocks(filtered_model)
+    for block_id in hidden_block_ids:
+        mapper.GetCompositeDataDisplayAttributes().SetBlockVisibility(
+            pipeline.blockDataSets[block_id], False
+        )
     pipeline.explode_factor = explode_factor
-    exploded_blocks = pipeline.extract_blocks(pipeline.explode_blocks(filtered_model))
-    return [
-        (block.GetBounds()[4], block.GetBounds()[5])
-        for block in exploded_blocks
-        if isinstance(block, vtkDataSet)
-    ]
+    exploded_model = pipeline.explode_blocks(filtered_model)
+    return (
+        [
+            block
+            for block in pipeline.extract_blocks(filtered_model)
+            if isinstance(block, vtkDataSet)
+        ],
+        [
+            block
+            for block in pipeline.extract_blocks(exploded_model)
+            if isinstance(block, vtkDataSet)
+        ],
+    )
+
+
+def z_ranges(blocks: list[vtkDataSet]) -> list[tuple[float, float]]:
+    return [(block.GetBounds()[4], block.GetBounds()[5]) for block in blocks]
 
 
 def test_explode_blocks_stacks_overlapping_blocks_along_z() -> None:
@@ -129,53 +155,52 @@ def test_explode_blocks_stacks_overlapping_blocks_along_z() -> None:
         lower_block,
         upper_block,
         side_block,
-    ) = exploded_z_ranges(1.0)
-    gap = 0.05 * 10
+    ) = z_ranges(explode(stacked_model(), 1.0)[1])
     assert lower_block == pytest.approx((0, 7))
-    assert upper_block == pytest.approx((7 + gap, 14 + gap))
+    assert upper_block == pytest.approx((7 + GAP, 14 + GAP))
     assert side_block == pytest.approx((0, 10))
     assert interface == pytest.approx((5, 5))
-    assert upper_surface == pytest.approx((13 + gap, 13 + gap))
-    assert upper_side_surface == pytest.approx((7 + gap, 14 + gap))
+    assert upper_surface == pytest.approx((13 + GAP, 13 + GAP))
+    assert upper_side_surface == pytest.approx((7 + GAP, 14 + GAP))
 
 
 def test_explode_blocks_interpolates_with_factor() -> None:
-    upper_block = exploded_z_ranges(0.5)[4]
-    gap = 0.05 * 10
-    assert upper_block == pytest.approx((3 + (4 + gap) / 2, 10 + (4 + gap) / 2))
+    upper_block = z_ranges(explode(stacked_model(), 0.5)[1])[4]
+    assert upper_block == pytest.approx((3 + (4 + GAP) / 2, 10 + (4 + GAP) / 2))
 
 
 def test_explode_blocks_keeps_components_on_their_block_after_shrink() -> None:
-    upper_side_surface, upper_block = (
-        exploded_z_ranges(1.0, shrink_factor=0.8)[index] for index in (2, 4)
-    )
-    gap = 0.05 * 10
-    assert upper_block[0] > 7 + gap - 0.1
-    assert upper_side_surface[0] > 7 + gap - 0.1
+    filtered_blocks, exploded_blocks = explode(stacked_model(), 1.0, shrink_factor=0.8)
+    shifts = [
+        exploded[0] - filtered[0]
+        for filtered, exploded in zip(
+            z_ranges(filtered_blocks), z_ranges(exploded_blocks)
+        )
+    ]
+    upper_side_surface, upper_block = shifts[2], shifts[4]
+    assert upper_block == pytest.approx(4 + GAP)
+    assert upper_side_surface == pytest.approx(4 + GAP)
 
 
-def test_explode_blocks_keeps_unshifted_block_inside_shifted_one() -> None:
-    model = vtkMultiBlockDataSet()
+def test_explode_blocks_stacks_hidden_blocks() -> None:
+    upper_block = z_ranges(
+        explode(stacked_model(), 1.0, hidden_block_ids=(UPPER_BLOCK_ID,))[1]
+    )[4]
+    assert upper_block == pytest.approx((7 + GAP, 14 + GAP))
+
+
+def test_explode_blocks_reuses_unshifted_blocks() -> None:
+    filtered_blocks, exploded_blocks = explode(stacked_model(), 1.0)
+    lower_block, upper_block = 3, 4
+    assert exploded_blocks[lower_block] is filtered_blocks[lower_block]
+    assert exploded_blocks[upper_block] is not filtered_blocks[upper_block]
+
+
+def test_explode_blocks_stacks_block_nested_in_another() -> None:
     blocks = component_group(
         "blocks",
-        [
-            solid([0, 10, 0, 10, 0, 10]),
-            solid([0, 10, 0, 10, 0, 4]),
-        ],
+        [solid([0, 10, 0, 10, 0, 10]), solid([0, 10, 0, 10, 0, 4])],
     )
-    model.SetBlock(0, blocks)
-    model.GetMetaData(0).Set(vtkCompositeDataSet.NAME(), "blocks")
-    model_source = vtkTrivialProducer()
-    model_source.SetOutput(model)
-    mapper = vtkCompositePolyDataMapper()
-    mapper.SetCompositeDataDisplayAttributes(vtkCompositeDataDisplayAttributes())
-    pipeline = VtkPipeline(model_source, mapper)  # type: ignore[arg-type]
-    pipeline.blockDataSets = pipeline.extract_blocks(model)
-    pipeline.explode_factor = 1.0
-    outer_block, inner_block = (
-        block
-        for block in pipeline.extract_blocks(pipeline.explode_blocks(model))
-        if isinstance(block, vtkDataSet)
-    )
-    assert outer_block.GetBounds()[4] == pytest.approx(0)
-    assert inner_block.GetBounds()[4] > 10
+    outer_block, inner_block = z_ranges(explode(model_of(blocks), 1.0)[1])
+    assert outer_block[0] == pytest.approx(0)
+    assert inner_block[0] == pytest.approx(10 + GAP)

@@ -57,14 +57,6 @@ from opengeodeweb_viewer.utils_functions import (
 STACKING_GAP_RATIO = 0.05
 
 
-def overlaps_in_xy(bbox: vtkBoundingBox, other_bbox: vtkBoundingBox) -> bool:
-    return all(
-        bbox.GetBound(2 * axis) < other_bbox.GetBound(2 * axis + 1)
-        and other_bbox.GetBound(2 * axis) < bbox.GetBound(2 * axis + 1)
-        for axis in (0, 1)
-    )
-
-
 @dataclass
 class ViewerData:
     id: str
@@ -296,14 +288,24 @@ class VtkPipeline:
         return components
 
     @staticmethod
-    def stacking_shifts(stacked: dict[int, vtkBoundingBox]) -> dict[int, float]:
+    def overlaps_in_xy(bbox: vtkBoundingBox, other_bbox: vtkBoundingBox) -> bool:
+        return all(
+            bbox.GetBound(2 * axis) < other_bbox.GetBound(2 * axis + 1)
+            and other_bbox.GetBound(2 * axis) < bbox.GetBound(2 * axis + 1)
+            for axis in (0, 1)
+        )
+
+    @staticmethod
+    def stacking_shifts(
+        stacked_blocks: dict[int, vtkBoundingBox],
+    ) -> dict[int, float]:
         stacked_bbox = vtkBoundingBox()
-        for bbox in stacked.values():
+        for bbox in stacked_blocks.values():
             stacked_bbox.AddBox(bbox)
         vertical_gap = STACKING_GAP_RATIO * stacked_bbox.GetLength(2)
         shifts: dict[int, float] = {}
         for flat_index, bbox in sorted(
-            stacked.items(), key=lambda item: item[1].GetBound(4)
+            stacked_blocks.items(), key=lambda item: item[1].GetBound(4)
         ):
             shifts[flat_index] = max(
                 [0.0]
@@ -312,8 +314,9 @@ class VtkPipeline:
                     + shifts[placed_index]
                     + vertical_gap
                     - bbox.GetBound(4)
-                    for placed_index, placed_bbox in stacked.items()
-                    if placed_index in shifts and overlaps_in_xy(bbox, placed_bbox)
+                    for placed_index, placed_bbox in stacked_blocks.items()
+                    if placed_index in shifts
+                    and VtkPipeline.overlaps_in_xy(bbox, placed_bbox)
                 ]
             )
         return shifts
@@ -321,46 +324,41 @@ class VtkPipeline:
     @staticmethod
     def followed_shift(
         component_bbox: vtkBoundingBox,
-        stacked: dict[int, vtkBoundingBox],
+        stacked_blocks: dict[int, vtkBoundingBox],
         stacked_shifts: dict[int, float],
     ) -> float:
         center = [0.0, 0.0, 0.0]
         component_bbox.GetCenter(center)
         containing_ids = [
             flat_index
-            for flat_index, bbox in stacked.items()
+            for flat_index, bbox in stacked_blocks.items()
             if bbox.Contains(component_bbox)
         ] or [
             flat_index
-            for flat_index, bbox in stacked.items()
+            for flat_index, bbox in stacked_blocks.items()
             if bbox.ContainsPoint(center)
         ]
         if not containing_ids:
             return 0.0
         lowest_id = min(
-            containing_ids, key=lambda flat_index: stacked[flat_index].GetBound(4)
+            containing_ids,
+            key=lambda flat_index: stacked_blocks[flat_index].GetBound(4),
         )
         return stacked_shifts[lowest_id]
 
     def explode_blocks(self, dataset: vtkMultiBlockDataSet) -> vtkMultiBlockDataSet:
-        attributes = cast(
-            vtkCompositePolyDataMapper, self.mapper
-        ).GetCompositeDataDisplayAttributes()
         components = self.source_components()
-        stacked = {
+        stacked_blocks = {
             flat_index: bbox
             for flat_index, (component_type, bbox) in components.items()
             if component_type == "blocks"
-            and attributes.GetBlockVisibility(self.blockDataSets[flat_index])
         }
-        if not stacked:
-            return dataset
-        stacked_shifts = self.stacking_shifts(stacked)
+        stacked_shifts = self.stacking_shifts(stacked_blocks)
         z_shifts = {
             flat_index: (
                 stacked_shifts[flat_index]
                 if flat_index in stacked_shifts
-                else self.followed_shift(bbox, stacked, stacked_shifts)
+                else self.followed_shift(bbox, stacked_blocks, stacked_shifts)
             )
             for flat_index, (_, bbox) in components.items()
         }
@@ -375,19 +373,17 @@ class VtkPipeline:
         iterator.InitTraversal()
         while not iterator.IsDoneWithTraversal():
             block = iterator.GetCurrentDataObject()
-            if isinstance(block, vtkDataSet):
+            z_shift = z_shifts.get(iterator.GetCurrentFlatIndex(), 0.0)
+            if isinstance(block, vtkDataSet) and z_shift != 0.0:
                 translation = vtkTransform()
-                translation.Translate(
-                    0.0,
-                    0.0,
-                    z_shifts.get(iterator.GetCurrentFlatIndex(), 0.0)
-                    * self.explode_factor,
-                )
+                translation.Translate(0.0, 0.0, z_shift * self.explode_factor)
                 transform_filter = vtkTransformFilter()
                 transform_filter.SetInputData(block)
                 transform_filter.SetTransform(translation)
                 transform_filter.Update()
                 translated_dataset.SetDataSet(iterator, transform_filter.GetOutput())
+            elif block is not None:
+                translated_dataset.SetDataSet(iterator, block)
             iterator.GoToNextItem()
         translated_dataset.SetObjectName(dataset.GetObjectName())
         return translated_dataset

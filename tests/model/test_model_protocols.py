@@ -172,31 +172,13 @@ def test_model_explode_then_shrink(
     assert server.compare_image("model/explode_then_shrink.jpeg") == True
 
 
-def test_model_explode_blocks_visibility(
+def test_model_explode_blocks_hidden(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_model_explode(server, dataset_factory)
     server.call(
         VtkModelBlocksView.model_blocks_prefix
         + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
-        [{"id": model_id, "block_ids": [49], "visibility": False}],
+        [{"id": model_id, "block_ids": [48, 49], "visibility": False}],
     )
-    assert server.compare_image("model/explode_blocks_visibility.jpeg") == True
-
-
-def test_model_explode_all_hidden(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-    test_model_explode(server, dataset_factory)
-    server.call(
-        VtkModelBlocksView.model_blocks_prefix
-        + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
-        [
-            {
-                "id": model_id,
-                "block_ids": list(range(1, 50)),
-                "visibility": False,
-            }
-        ],
-    )
-    assert server.compare_image("model/explode_all_hidden.jpeg") == True
+    assert server.compare_image("model/explode_blocks_hidden.jpeg") == True

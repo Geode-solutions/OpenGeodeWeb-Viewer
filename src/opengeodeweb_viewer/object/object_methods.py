@@ -147,15 +147,12 @@ class VtkObjectView(VtkView):
         print(f"{visibility_attributes=}", flush=True)
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
-        if pipeline.pick_mapper is None:
-            pipeline.pick_mapper = vtkCompositePolyDataMapper()
-        if pipeline.explode_factor > 0:
-            self.update_pipeline_filter(pipeline)
-            return
         dataset = mapper.GetInputDataObject(0, 0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return
         # Re-build a pruned dataset for the dedicated pick mapper
+        if pipeline.pick_mapper is None:
+            pipeline.pick_mapper = vtkCompositePolyDataMapper()
         pipeline.pick_mapper.SetInputDataObject(
             pipeline.prune_hidden_blocks(dataset, visibility_attributes)
         )
