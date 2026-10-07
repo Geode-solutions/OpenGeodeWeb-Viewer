@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 from typing import cast
 
+import vtkmodules.vtkRenderingOpenGL2  # noqa: F401 registers the OpenGL render window backend
+
 # Third party imports
 # Local application imports
 from opengeodeweb_microservice.database.connection import get_session
