@@ -2,7 +2,7 @@
 import functools
 import os
 from collections.abc import Callable
-from typing import Any, Concatenate
+from typing import Any, Concatenate, Protocol
 
 # Third party imports
 import fastjsonschema  # type: ignore
@@ -14,6 +14,10 @@ from wslink import register  # type: ignore
 from opengeodeweb_viewer.utils_functions import RpcParams, validate_schema
 
 TYPED_RPC_MARKER = "__typed_rpc__"
+
+
+class Publisher(Protocol):
+    def publish(self, topic: str, data: Any) -> None: ...
 
 
 def _drop_none(value: Any) -> Any:
@@ -31,7 +35,7 @@ def _validate_responses() -> bool:
     return os.environ.get("PYTHON_ENV", "prod").strip().lower() in ("dev", "test")
 
 
-def typed_rpc[SelfT, ParamsT: DataClassJsonMixin, ResponseT: DataClassJsonMixin](
+def typed_rpc[SelfT: Publisher, ParamsT: DataClassJsonMixin, ResponseT: DataClassJsonMixin](
     prefix: str, route: Route[ParamsT, ResponseT]
 ) -> Callable[
     [Callable[[SelfT, ParamsT], ResponseT]],
