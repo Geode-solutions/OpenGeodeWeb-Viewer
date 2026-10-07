@@ -1,5 +1,6 @@
 # Standard library imports
 import argparse
+import asyncio
 import os
 from pathlib import Path
 
@@ -234,6 +235,8 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     print(f"{args=}", flush=True)
     Server.configure(args)
+    # Python 3.14 no longer creates a default event loop, which wslink 1.x expects
+    asyncio.set_event_loop(asyncio.new_event_loop())
     server.start_webserver(options=args, protocol=Server)
 
 
