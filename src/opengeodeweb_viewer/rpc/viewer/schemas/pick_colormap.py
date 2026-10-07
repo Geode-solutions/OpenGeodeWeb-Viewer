@@ -1,8 +1,9 @@
-from dataclasses import dataclass
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
+from typing import Optional
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from dataclasses import dataclass
 
 
 @dataclass
@@ -19,7 +20,7 @@ class PickColormapResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    data_id: str | None = None
+    data_id: Optional[str] = None
 
 
 pick_colormap_route = Route(

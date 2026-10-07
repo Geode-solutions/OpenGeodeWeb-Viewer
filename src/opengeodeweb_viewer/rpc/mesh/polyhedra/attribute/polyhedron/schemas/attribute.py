@@ -1,8 +1,9 @@
-from dataclasses import dataclass
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from dataclasses import dataclass
+from typing import List, Optional
 
 
 @dataclass
@@ -26,10 +27,10 @@ class Attribute(DataClassJsonMixin):
     maximum: float
     minimum: float
     name: str
-    points: list[float]
+    points: List[float]
     """Flat array of [value, r, g, b, ...]"""
 
-    no_data_color: NoDataColor | None = None
+    no_data_color: Optional[NoDataColor] = None
 
 
 @dataclass
@@ -37,6 +38,7 @@ class AttributeResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
+    pass
 
 
 attribute_route = Route(
@@ -45,4 +47,4 @@ attribute_route = Route(
     response=AttributeResponse,
 )
 
-__all__ = ["Attribute", "AttributeResponse", "NoDataColor", "attribute_route"]
+__all__ = ["NoDataColor", "Attribute", "AttributeResponse", "attribute_route"]

@@ -1,8 +1,8 @@
-from dataclasses import dataclass
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from dataclasses import dataclass
 
 
 @dataclass
@@ -30,6 +30,7 @@ class ColorResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
+    pass
 
 
 color_route = Route(
@@ -38,4 +39,4 @@ color_route = Route(
     response=ColorResponse,
 )
 
-__all__ = ["Color", "ColorClass", "ColorResponse", "color_route"]
+__all__ = ["ColorClass", "Color", "ColorResponse", "color_route"]

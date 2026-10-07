@@ -1,8 +1,9 @@
-from dataclasses import dataclass
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -11,7 +12,7 @@ class Explode(DataClassJsonMixin):
         print_dataclass(self)
 
     explode_factor: float
-    ids: list[str]
+    ids: List[str]
 
 
 @dataclass
@@ -19,6 +20,7 @@ class ExplodeResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
+    pass
 
 
 explode_route = Route(

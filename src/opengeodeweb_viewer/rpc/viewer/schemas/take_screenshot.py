@@ -1,9 +1,9 @@
-from dataclasses import dataclass
-from enum import Enum
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from enum import Enum
+from dataclasses import dataclass
 
 
 class OutputExtension(Enum):

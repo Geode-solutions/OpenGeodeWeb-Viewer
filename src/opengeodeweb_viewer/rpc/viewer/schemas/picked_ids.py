@@ -1,8 +1,10 @@
-from dataclasses import dataclass
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
+from typing import List, Optional
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -10,7 +12,7 @@ class PickedIDS(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    ids: list[str]
+    ids: List[str]
     x: float
     y: float
 
@@ -20,8 +22,8 @@ class PickedIDSResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    array_ids: list[str]
-    viewer_id: int | None = None
+    array_ids: List[str]
+    viewer_id: Optional[int] = None
 
 
 picked_ids_route = Route(

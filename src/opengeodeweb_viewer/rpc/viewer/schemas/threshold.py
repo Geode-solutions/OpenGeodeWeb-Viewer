@@ -1,9 +1,10 @@
-from dataclasses import dataclass
-from enum import Enum
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from enum import Enum
+from dataclasses import dataclass
+from typing import List, Optional
 
 
 class Location(Enum):
@@ -28,8 +29,8 @@ class Threshold(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    ids: list[str]
-    attribute: Attribute | None = None
+    ids: List[str]
+    attribute: Optional[Attribute] = None
 
 
 @dataclass
@@ -37,6 +38,7 @@ class ThresholdResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
+    pass
 
 
 threshold_route = Route(

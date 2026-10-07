@@ -1,9 +1,11 @@
+from pathlib import Path
+from opengeodeweb_microservice.schemas import Route, load_schema
+from typing import List
+from dataclasses_json import DataClassJsonMixin
+from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
-
-from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from typing import List, Optional
 
 
 @dataclass
@@ -27,11 +29,11 @@ class Color(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    block_ids: list[int]
+    block_ids: List[int]
     color_mode: ColorMode
     id: str
-    collection_id: str | None = None
-    color: ColorClass | None = None
+    collection_id: Optional[str] = None
+    color: Optional[ColorClass] = None
 
 
 @dataclass
@@ -60,7 +62,7 @@ class ColorResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    colors: list[ColorResult]
+    colors: List[ColorResult]
 
 
 color_route = Route(
@@ -69,4 +71,4 @@ color_route = Route(
     response=ColorResponse,
 )
 
-__all__ = ["Color", "ColorClass", "ColorResponse", "color_route"]
+__all__ = ["ColorClass", "Color", "ColorResponse", "color_route"]

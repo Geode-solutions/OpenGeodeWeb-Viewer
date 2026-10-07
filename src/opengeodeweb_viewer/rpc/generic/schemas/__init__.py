@@ -1,2 +1,2 @@
-from .deregister import *
 from .register import *
+from .deregister import *

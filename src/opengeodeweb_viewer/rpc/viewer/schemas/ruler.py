@@ -1,8 +1,10 @@
-from dataclasses import dataclass
 from pathlib import Path
-
+from opengeodeweb_microservice.schemas import Route, load_schema
+from typing import List, Optional
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
+from opengeodeweb_microservice.schemas import print_dataclass
+from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -10,7 +12,7 @@ class Ruler(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    points: list[list[float]]
+    points: List[List[float]]
 
 
 @dataclass
@@ -19,8 +21,8 @@ class RulerResponse(DataClassJsonMixin):
         print_dataclass(self)
 
     distance: float
-    point1: list[float]
-    point2: list[float] | None = None
+    point1: List[float]
+    point2: Optional[List[float]] = None
 
 
 ruler_route = Route(
