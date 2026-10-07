@@ -1,8 +1,8 @@
-from opengeodeweb_microservice.schemas import Route, load_schema
-from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
-from typing import List
+from pathlib import Path
+
+from dataclasses_json import DataClassJsonMixin
+from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
 
 
 @dataclass
@@ -10,7 +10,7 @@ class GetBlocksBounds(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    block_ids: List[int]
+    block_ids: list[int]
     id: str
 
 
@@ -19,11 +19,11 @@ class GetBlocksBoundsResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    bounds: List[float]
+    bounds: list[float]
 
 
 get_blocks_bounds_route = Route(
-    schema=load_schema(__file__),
+    schema=load_schema(Path(__file__)),
     params=GetBlocksBounds,
     response=GetBlocksBoundsResponse,
 )

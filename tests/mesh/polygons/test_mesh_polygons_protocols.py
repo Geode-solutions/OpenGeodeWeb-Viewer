@@ -1,14 +1,13 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
-from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.mesh.test_mesh_protocols import test_register_mesh
-from tests.conftest import ServerMonitor
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"

@@ -1,4 +1,5 @@
-from typing import Callable
+from collections.abc import Callable
+
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from tests.conftest import ServerMonitor
 
@@ -62,7 +63,7 @@ def test_apply_textures(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     test_register_mesh(server, dataset_factory)
-    texture_entry = dataset_factory(
+    dataset_factory(
         id="00000000000000000000000987654321",
         viewable_file="hat_lambert2SG.vti",
         viewer_elements_type="polygons",

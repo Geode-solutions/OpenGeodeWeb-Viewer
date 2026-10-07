@@ -1,2 +1,2 @@
-from .visibility import *
 from .size import *
+from .visibility import *

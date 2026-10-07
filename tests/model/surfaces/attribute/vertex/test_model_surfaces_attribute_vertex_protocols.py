@@ -1,12 +1,13 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
+
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
+    VtkModelSurfacesAttributeVertexView,
+)
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
-)
-from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
-    VtkModelSurfacesAttributeVertexView,
 )
 
 # Local application imports

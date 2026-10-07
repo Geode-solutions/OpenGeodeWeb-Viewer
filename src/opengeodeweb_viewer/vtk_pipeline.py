@@ -1,27 +1,13 @@
 # Standard library imports
-from dataclasses import dataclass, field
 import math
-from typing import cast, Literal, TypedDict
+from dataclasses import dataclass, field
+from typing import Literal, TypedDict, cast
 
-# Third party imports
-from vtkmodules.vtkRenderingCore import (
-    VTK_SCALAR_MODE_USE_CELL_DATA,
-    VTK_SCALAR_MODE_USE_POINT_DATA,
-    vtkActor,
-    vtkDataSetMapper,
-    vtkFollower,
-    vtkMapper,
-    vtkPolyDataMapper,
-    vtkCompositePolyDataMapper,
-    vtkCompositeDataDisplayAttributes,
-    vtkColorTransferFunction,
-    vtkRenderer,
+# Local application imports
+from opengeodeweb_microservice.database.data_types import (
+    ViewerElementsType,
+    ViewerType,
 )
-from vtkmodules.vtkRenderingAnnotation import (
-    vtkScalarBarActor,
-)
-from vtkmodules.vtkRenderingFreeType import vtkVectorText
-from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkCommonDataModel import (
     vtkBoundingBox,
     vtkCompositeDataSet,
@@ -33,22 +19,35 @@ from vtkmodules.vtkCommonDataModel import (
     vtkVector2d,
 )
 from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
+from vtkmodules.vtkCommonTransforms import vtkTransform
+from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
 from vtkmodules.vtkFiltersExtraction import (
     vtkExtractGeometry,
     vtkExtractSelection,
 )
-from vtkmodules.vtkFiltersCore import vtkThreshold
-from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTransformFilter
-from vtkmodules.vtkFiltersCore import vtkAppendFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkIOXML import vtkXMLReader
-
-# Local application imports
-from opengeodeweb_microservice.database.data_types import (
-    ViewerElementsType,
-    ViewerType,
+from vtkmodules.vtkRenderingAnnotation import (
+    vtkScalarBarActor,
 )
+
+# Third party imports
+from vtkmodules.vtkRenderingCore import (
+    VTK_SCALAR_MODE_USE_CELL_DATA,
+    VTK_SCALAR_MODE_USE_POINT_DATA,
+    vtkActor,
+    vtkCompositeDataDisplayAttributes,
+    vtkCompositePolyDataMapper,
+    vtkDataSetMapper,
+    vtkFollower,
+    vtkMapper,
+    vtkPolyDataMapper,
+    vtkRenderer,
+)
+from vtkmodules.vtkRenderingFreeType import vtkVectorText
+
 from opengeodeweb_viewer.utils_functions import (
     ColorClassProtocol,
     create_color_transfer_function,

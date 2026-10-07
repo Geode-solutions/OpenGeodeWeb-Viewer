@@ -1,5 +1,5 @@
 # Standard library imports
-import os
+from pathlib import Path
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -7,6 +7,7 @@ from opengeodeweb_microservice.schemas import get_schemas_dict
 # Local application imports
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
+
 from . import schemas
 
 
@@ -15,7 +16,7 @@ class VtkModelCornersAttributeVertexView(VtkModelView):
         "opengeodeweb_viewer.model.corners.attribute.vertex."
     )
     model_corners_attribute_vertex_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
+        Path(__file__).parent / "schemas"
     )
 
     def __init__(self) -> None:

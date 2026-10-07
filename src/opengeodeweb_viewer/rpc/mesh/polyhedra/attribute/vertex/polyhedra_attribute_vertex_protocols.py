@@ -1,5 +1,5 @@
 # Standard library imports
-import os
+from pathlib import Path
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -7,6 +7,7 @@ from opengeodeweb_microservice.schemas import get_schemas_dict
 # Local application imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
+
 from . import schemas
 
 
@@ -15,7 +16,7 @@ class VtkMeshPolyhedraAttributeVertexView(VtkMeshView):
         "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex."
     )
     mesh_polyhedra_attribute_vertex_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
+        Path(__file__).parent / "schemas"
     )
 
     def __init__(self) -> None:

@@ -141,7 +141,7 @@ class VtkObjectView(VtkView):
         pipeline = self.get_vtk_pipeline(data_id)
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
-            raise Exception("Mapper is not a vtkCompositePolyDataMapper")
+            raise TypeError("Mapper is not a vtkCompositePolyDataMapper")
         blocks = pipeline.blockDataSets
         visibility_attributes = mapper.GetCompositeDataDisplayAttributes()
         print(f"{visibility_attributes=}", flush=True)
@@ -169,7 +169,7 @@ class VtkObjectView(VtkView):
         pipeline = self.get_vtk_pipeline(data_id)
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
-            raise Exception("Mapper is not a vtkCompositePolyDataMapper")
+            raise TypeError("Mapper is not a vtkCompositePolyDataMapper")
         blocks = pipeline.blockDataSets
         attributes = mapper.GetCompositeDataDisplayAttributes()
         for block_id in block_ids:

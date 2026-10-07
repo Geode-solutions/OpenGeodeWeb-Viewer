@@ -1,6 +1,7 @@
 # Standard library imports
 import os
-from typing import Optional, Protocol, TypedDict, cast
+from pathlib import Path
+from typing import Protocol, TypedDict, cast
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -8,26 +9,26 @@ from vtkmodules.vtkCommonDataModel import (
     vtkBoundingBox,
     vtkCompositeDataSet,
     vtkDataSet,
+    vtkMultiBlockDataSet,
 )
-from vtkmodules.vtkCommonDataModel import vtkMultiBlockDataSet
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
-    vtkColorTransferFunction,
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
 )
 
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.utils_functions import (
     ColorClassProtocol,
     create_color_transfer_function,
     deterministic_color,
 )
 from opengeodeweb_viewer.vtk_pipeline import BlockStyle, VtkPipeline
-from opengeodeweb_viewer.typed_rpc import typed_rpc
+
 from . import schemas
 
 
@@ -53,9 +54,7 @@ class ColorResult(TypedDict):
 
 class VtkModelView(VtkObjectView):
     model_prefix = "opengeodeweb_viewer.model."
-    model_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
-    )
+    model_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()
@@ -65,8 +64,8 @@ class VtkModelView(VtkObjectView):
         pipeline: VtkPipeline,
         block_ids: list[int],
         color_mode: str,
-        color: Optional[ColorProtocol] = None,
-        collection_id: Optional[str] = None,
+        color: ColorProtocol | None = None,
+        collection_id: str | None = None,
     ) -> list[ColorResult]:
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
@@ -260,7 +259,7 @@ class VtkModelView(VtkObjectView):
                 iterator.GoToNextItem()
             self.registerObject(data_id, file_name, data)
         except Exception as e:
-            print(f"Error registering model {data_id}: {str(e)}", flush=True)
+            print(f"Error registering model {data_id}: {e!s}", flush=True)
             raise
         return schemas.RegisterResponse()
 

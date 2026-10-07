@@ -1,17 +1,18 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
+
+from opengeodeweb_viewer.rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
+    VtkModelCornersAttributeVertexView,
+)
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
     VtkModelCornersView,
 )
-from opengeodeweb_viewer.rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
-    VtkModelCornersAttributeVertexView,
-)
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
-from tests.conftest import ServerMonitor
 
 # Local constants
 model_id = "12345678901234567890123456789012"

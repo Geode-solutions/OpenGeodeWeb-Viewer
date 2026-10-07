@@ -1,18 +1,22 @@
-import pytest
-from pathlib import Path
-from websocket import create_connection, WebSocketTimeoutException
+import contextlib
 import json
-from xprocess import ProcessStarter, XProcess  # type: ignore[import-untyped]
-from vtkmodules.vtkIOImage import vtkImageReader2, vtkPNGReader, vtkJPEGReader
-from vtkmodules.vtkImagingCore import vtkImageDifference
 import os
 import shutil
 import tempfile
 import xml.etree.ElementTree as ET
-from typing import Callable, Generator, Any
-from opengeodeweb_viewer.config import TestConfig
+from collections.abc import Callable, Generator
+from pathlib import Path
+from typing import Any, ClassVar
+
+import pytest
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
+from vtkmodules.vtkImagingCore import vtkImageDifference
+from vtkmodules.vtkIOImage import vtkImageReader2, vtkJPEGReader, vtkPNGReader
+from websocket import WebSocketTimeoutException, create_connection
+from xprocess import ProcessStarter, XProcess  # type: ignore[import-untyped]
+
+from opengeodeweb_viewer.config import TestConfig
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 type RpcTestParams = list[dict[str, Any] | int] | None
@@ -66,7 +70,7 @@ class ServerMonitor:
                 return parsed
             else:
                 return str(parsed)
-        except Exception:
+        except json.JSONDecodeError:
             return str(response)
 
     @staticmethod
@@ -74,7 +78,7 @@ class ServerMonitor:
         lower = path.lower()
         if lower.endswith(".png"):
             return vtkPNGReader()
-        if lower.endswith(".jpg") or lower.endswith(".jpeg"):
+        if lower.endswith((".jpg", ".jpeg")):
             return vtkJPEGReader()
         return vtkJPEGReader()
 
@@ -84,7 +88,7 @@ class ServerMonitor:
         elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
             first_reader = vtkJPEGReader()
         else:
-            raise Exception(f"Unsupported image format for file: {first_image_path}")
+            raise ValueError(f"Unsupported image format for file: {first_image_path}")
         first_reader.SetFileName(first_image_path)
 
         if ".png" in second_image_path:
@@ -92,7 +96,7 @@ class ServerMonitor:
         elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
             second_reader = vtkJPEGReader()
         else:
-            raise Exception(f"Unsupported image format for file: {second_image_path}")
+            raise ValueError(f"Unsupported image format for file: {second_image_path}")
         second_reader.SetFileName(second_image_path)
 
         images_diff = vtkImageDifference()
@@ -146,7 +150,7 @@ class ServerMonitor:
         self.ws.settimeout(timeout)
         for i in range(max_messages):
             try:
-                response = self.ws.recv()
+                self.ws.recv()
             except WebSocketTimeoutException:
                 print(
                     f"Timeout on message {i}, but continuing to try remaining messages...",
@@ -166,7 +170,7 @@ class FixtureHelper:
             timeout = 10
 
             # command to start process
-            args = [
+            args: ClassVar[list[str]] = [
                 "opengeodeweb-viewer",
                 "--project_folder_path",
                 project_folder_path,
@@ -188,10 +192,8 @@ def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
     _, log = xprocess.ensure(name, Starter)
     monitor = Monitor(log)
     yield monitor
-    try:
+    with contextlib.suppress(Exception):
         monitor.ws.close()
-    except Exception:
-        pass
     xprocess.getinfo(name).terminate()
     monitor.print_log()
 
@@ -200,7 +202,7 @@ def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
 def configure_test_environment() -> Generator[None, None, None]:
     app_config = TestConfig(TEST_PROJECT_FOLDER_PATH)
     db_path = Path(app_config.DATA_FOLDER_PATH) / "project.db"
-    init_database(db_path=str(db_path))
+    init_database(db_path=db_path)
     os.environ["TEST_DB_PATH"] = str(db_path)
 
     yield

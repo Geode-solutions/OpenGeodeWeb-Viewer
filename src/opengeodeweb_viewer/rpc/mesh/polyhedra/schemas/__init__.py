@@ -1,2 +1,2 @@
-from .visibility import *
 from .color import *
+from .visibility import *

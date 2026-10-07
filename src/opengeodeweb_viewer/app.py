@@ -1,71 +1,60 @@
 # Standard library imports
 import argparse
 import os
-from typing import Any, cast, Protocol, runtime_checkable
+from pathlib import Path
+
+from opengeodeweb_microservice.database import connection
+from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
+from vtkmodules.web import protocols as vtk_protocols
 
 # Third party imports
 from vtkmodules.web.wslink import ServerProtocol
-from vtkmodules.web import protocols as vtk_protocols
 from wslink import server  # type: ignore
-from vtkmodules.vtkWebCore import vtkWebApplication
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
-from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
-from opengeodeweb_microservice.database import connection
 
 # Local application imports
 from opengeodeweb_viewer.config import *
-from opengeodeweb_viewer.vtk_protocol import VtkView, VtkTypingMixin
-from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
-from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
-from opengeodeweb_viewer.rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
-    VtkMeshPointsAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
-from opengeodeweb_viewer.rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
-    VtkMeshEdgesAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
-    VtkMeshEdgesAttributeEdgeView,
-)
-from opengeodeweb_viewer.rpc.mesh.cells.cells_protocols import VtkMeshCellsView
-from opengeodeweb_viewer.rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
-    VtkMeshCellsAttributeVertexView,
-)
+from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
 from opengeodeweb_viewer.rpc.mesh.cells.attribute.cell.cells_attribute_cell_protocols import (
     VtkMeshCellsAttributeCellView,
 )
-from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
-from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
-    VtkMeshPolygonsAttributeVertexView,
+from opengeodeweb_viewer.rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
+    VtkMeshCellsAttributeVertexView,
 )
+from opengeodeweb_viewer.rpc.mesh.cells.cells_protocols import VtkMeshCellsView
+from opengeodeweb_viewer.rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
+    VtkMeshEdgesAttributeEdgeView,
+)
+from opengeodeweb_viewer.rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
+    VtkMeshEdgesAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
+    VtkMeshPointsAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
 from opengeodeweb_viewer.rpc.mesh.polygons.attribute.polygon.polygons_attribute_polygon_protocols import (
     VtkMeshPolygonsAttributePolygonView,
 )
-from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
-    VtkMeshPolyhedraView,
+from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
+    VtkMeshPolygonsAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
+from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.polyhedron.polyhedra_attribute_polyhedron_protocols import (
+    VtkMeshPolyhedraAttributePolyhedronView,
 )
 from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.vertex.polyhedra_attribute_vertex_protocols import (
     VtkMeshPolyhedraAttributeVertexView,
 )
-from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.polyhedron.polyhedra_attribute_polyhedron_protocols import (
-    VtkMeshPolyhedraAttributePolyhedronView,
+from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
+    VtkMeshPolyhedraView,
 )
-from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
-from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
-    VtkModelEdgesView,
+from opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron.blocks_attribute_polyhedron_protocols import (
+    VtkModelBlocksAttributePolyhedronView,
 )
-from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
-    VtkModelPointsView,
-)
-from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
-    VtkModelCornersView,
-)
-from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
-    VtkModelLinesView,
-)
-from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
-    VtkModelSurfacesView,
+from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
+    VtkModelBlocksAttributeVertexView,
 )
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
@@ -73,26 +62,37 @@ from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
 from opengeodeweb_viewer.rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
     VtkModelCornersAttributeVertexView,
 )
-from opengeodeweb_viewer.rpc.model.lines.attribute.vertex.lines_attribute_vertex_protocols import (
-    VtkModelLinesAttributeVertexView,
+from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
+    VtkModelCornersView,
+)
+from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
+    VtkModelEdgesView,
 )
 from opengeodeweb_viewer.rpc.model.lines.attribute.edge.lines_attribute_edge_protocols import (
     VtkModelLinesAttributeEdgeView,
 )
-from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
-    VtkModelSurfacesAttributeVertexView,
+from opengeodeweb_viewer.rpc.model.lines.attribute.vertex.lines_attribute_vertex_protocols import (
+    VtkModelLinesAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
+    VtkModelLinesView,
+)
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
+    VtkModelPointsView,
 )
 from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
     VtkModelSurfacesAttributePolygonView,
 )
-from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
-    VtkModelBlocksAttributeVertexView,
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
+    VtkModelSurfacesAttributeVertexView,
 )
-from opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron.blocks_attribute_polyhedron_protocols import (
-    VtkModelBlocksAttributePolyhedronView,
+from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
+    VtkModelSurfacesView,
 )
-from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
 from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from opengeodeweb_viewer.vtk_protocol import VtkTypingMixin, VtkView
 
 # =============================================================================
 # Server class
@@ -124,7 +124,7 @@ class _Server(VtkTypingMixin, ServerProtocol):
         publisher = vtk_protocols.vtkWebPublishImageDelivery(decode=False)  # type: ignore
         publisher.deltaStaleTimeBeforeRender = 0.1
         self.registerVtkWebProtocol(publisher)
-        self.setSharedObject("db", dict())
+        self.setSharedObject("db", {})
         self.setSharedObject("publisher", publisher)
 
         # Custom API
@@ -228,7 +228,7 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     app_config.sync_env()
 
-    db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
+    db_full_path = Path(os.environ["DATA_FOLDER_PATH"]) / "project.db"
     connection.init_database(db_full_path, create_tables=False)
     print(f"Viewer connected to database at: {db_full_path}", flush=True)
 

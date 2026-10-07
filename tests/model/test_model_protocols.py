@@ -1,8 +1,9 @@
-from typing import Callable
-from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from collections.abc import Callable
+
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from tests.conftest import ServerMonitor
 

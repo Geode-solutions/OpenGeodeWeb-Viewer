@@ -1,18 +1,19 @@
 # Standard library imports
 import glob
 import os
-from typing import Callable
+from collections.abc import Callable
+
+from vtkmodules.vtkCommonCore import vtkDoubleArray
 
 # Third party imports
 from vtkmodules.vtkIOXML import vtkXMLPolyDataReader, vtkXMLPolyDataWriter
-from vtkmodules.vtkCommonCore import vtkDoubleArray
 
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
-from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
-    VtkModelSurfacesView,
-)
 from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
     VtkModelSurfacesAttributePolygonView,
+)
+from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
+    VtkModelSurfacesView,
 )
 
 # Local application imports

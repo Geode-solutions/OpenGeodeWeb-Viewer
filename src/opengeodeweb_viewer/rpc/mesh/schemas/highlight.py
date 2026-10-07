@@ -1,7 +1,8 @@
-from opengeodeweb_microservice.schemas import Route, load_schema
-from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
+from pathlib import Path
+
+from dataclasses_json import DataClassJsonMixin
+from opengeodeweb_microservice.schemas import Route, load_schema, print_dataclass
 
 
 @dataclass
@@ -18,11 +19,10 @@ class HighlightResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    pass
 
 
 highlight_route = Route(
-    schema=load_schema(__file__),
+    schema=load_schema(Path(__file__)),
     params=Highlight,
     response=HighlightResponse,
 )

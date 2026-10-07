@@ -1,41 +1,42 @@
 # Standard library imports
 import math
 import os
-from typing import cast, Any
+from pathlib import Path
+from typing import Any
+
+from opengeodeweb_microservice.schemas import get_schemas_dict
+from vtkmodules.vtkCommonCore import reference, vtkPoints, vtkUnsignedCharArray
+from vtkmodules.vtkCommonDataModel import vtkCellArray, vtkDataSet, vtkPolyData
+from vtkmodules.vtkCommonTransforms import vtkTransform
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
+from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Third party imports
-from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
-from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
+from vtkmodules.vtkIOImage import vtkJPEGWriter, vtkPNGWriter
+from vtkmodules.vtkRenderingAnnotation import vtkAxesActor, vtkCubeAxesActor
 from vtkmodules.vtkRenderingCore import (
-    vtkWindowToImageFilter,
+    vtkAbstractMapper,
+    vtkActor,
+    vtkCellPicker,
+    vtkDataSetMapper,
+    vtkPropPicker,
     vtkRenderer,
     vtkRenderWindowInteractor,
-    vtkAbstractMapper,
+    vtkWindowToImageFilter,
     vtkWorldPointPicker,
-    vtkCellPicker,
-    vtkPropPicker,
-    vtkDataSetMapper,
-    vtkActor,
 )
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
-from vtkmodules.vtkCommonCore import reference, vtkPoints, vtkUnsignedCharArray
-from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkPolyData, vtkCellArray
-from vtkmodules.vtkCommonTransforms import vtkTransform
-from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
-from opengeodeweb_microservice.schemas import get_schemas_dict
+
+from opengeodeweb_viewer.rpc.viewer import schemas
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 
 # Local application imports
 from opengeodeweb_viewer.vtk_pipeline import RulerPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
-from opengeodeweb_viewer.typed_rpc import typed_rpc
-from opengeodeweb_viewer.rpc.viewer import schemas
 
 
 class VtkViewerView(VtkView):
     viewer_prefix = "opengeodeweb_viewer.viewer."
-    viewer_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
-    )
+    viewer_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()
@@ -123,7 +124,6 @@ class VtkViewerView(VtkView):
         self, params: schemas.TakeScreenshot
     ) -> schemas.TakeScreenshotResponse:
         renderWindow = self.getView("-1")
-        renderer = self.get_renderer()
 
         w2if = vtkWindowToImageFilter()
         include_background = params.include_background
@@ -145,10 +145,10 @@ class VtkViewerView(VtkView):
             writer = vtkPNGWriter()
         elif output_extension == schemas.take_screenshot.OutputExtension.JPG:
             if not include_background:
-                raise Exception("output_extension not supported with background")
+                raise ValueError("output_extension not supported with background")
             writer = vtkJPEGWriter()
         else:
-            raise Exception("output_extension not supported")
+            raise ValueError("output_extension not supported")
 
         new_filename = params.filename + "." + output_extension.value
         file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
@@ -170,7 +170,7 @@ class VtkViewerView(VtkView):
         tag: Any = reference(0)
         output = reader.GetOutputDataObject(0)
         if not isinstance(output, vtkDataSet):
-            raise Exception("Output is not a vtkDataSet")
+            raise TypeError("Output is not a vtkDataSet")
 
         scalars = vtkAbstractMapper.GetAbstractScalars(
             output,

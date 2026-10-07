@@ -1,11 +1,12 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
-# Third party imports
-from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
     VtkMeshEdgesAttributeVertexView,
 )
+
+# Third party imports
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 
 # Local application imports
 from tests.conftest import ServerMonitor

@@ -1,14 +1,13 @@
 # Standard library imports
 
 # Third party imports
-import fastjsonschema  # type: ignore
-import functools
-import math
-from typing import Any, Callable, TypeVar, Protocol
-from wslink import register  # type: ignore
-from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
+from collections.abc import Callable
+from typing import Any, Protocol, TypeVar
 
+import fastjsonschema  # type: ignore
 from opengeodeweb_microservice.schemas import SchemaDict
+from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
+from wslink import register  # type: ignore
 
 
 class ColorClassProtocol(Protocol):
@@ -48,7 +47,7 @@ def validate_schema(
         validate(rpc_params)
     except fastjsonschema.JsonSchemaException as e:
         print(f"Validation error: {e.message}", flush=True)
-        raise Exception(
+        raise ValueError(
             {
                 "code": 400,
                 "route": schema["rpc"],

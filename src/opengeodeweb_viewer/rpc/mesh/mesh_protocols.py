@@ -1,32 +1,32 @@
 # Standard library imports
 import os
+from pathlib import Path
+
+from opengeodeweb_microservice.database.data import Data
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
-from opengeodeweb_microservice.database.data import Data
 from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
 from vtkmodules.vtkRenderingCore import (
-    vtkColorTransferFunction,
     vtkDataSetMapper,
     vtkTexture,
 )
 
 # Local application imports
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.utils_functions import (
     ColorClassProtocol,
     create_color_transfer_function,
 )
 from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
-from opengeodeweb_viewer.typed_rpc import typed_rpc
+
 from . import schemas
 
 
 class VtkMeshView(VtkObjectView):
     mesh_prefix = "opengeodeweb_viewer.mesh."
-    mesh_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
-    )
+    mesh_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()
@@ -48,7 +48,7 @@ class VtkMeshView(VtkObjectView):
             self.highlight(data)
             self.registerObject(data_id, file_name, data)
         except Exception as e:
-            print(f"Error registering mesh {data_id}: {str(e)}", flush=True)
+            print(f"Error registering mesh {data_id}: {e!s}", flush=True)
             raise
         return schemas.RegisterResponse()
 

@@ -1,22 +1,24 @@
 # Standard library imports
+import contextlib
 import os
+from pathlib import Path
 from threading import Timer
 
-# Third party imports
+from opengeodeweb_microservice.database import connection
 
+# Third party imports
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
-from opengeodeweb_viewer.vtk_protocol import VtkView
-from opengeodeweb_microservice.database import connection
+
 from opengeodeweb_viewer.typed_rpc import typed_rpc
+from opengeodeweb_viewer.vtk_protocol import VtkView
+
 from . import schemas
 
 
 class VtkUtilsView(VtkView):
     utils_prefix = "opengeodeweb_viewer."
-    utils_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
-    )
+    utils_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()
@@ -33,10 +35,8 @@ class VtkUtilsView(VtkView):
     ) -> schemas.ImportProjectResponse:
         widget = self.get_widget()
         if widget is not None:
-            try:
+            with contextlib.suppress(Exception):
                 widget.EnabledOff()
-            except Exception:
-                pass
         self.coreServer.setSharedObject("widget", None)
         self.coreServer.setSharedObject("grid_scale", None)
         self.coreServer.setSharedObject("axes", None)
@@ -45,7 +45,7 @@ class VtkUtilsView(VtkView):
 
         self._release_database()
 
-        db_full_path = os.path.join(self.DATA_FOLDER_PATH, "project.db")
+        db_full_path = Path(self.DATA_FOLDER_PATH) / "project.db"
         connection.init_database(db_full_path, create_tables=False)
         return schemas.ImportProjectResponse()
 
@@ -57,10 +57,4 @@ class VtkUtilsView(VtkView):
         return schemas.ReleaseDatabaseResponse()
 
     def _release_database(self) -> None:
-        if connection.scoped_session_registry is not None:
-            connection.scoped_session_registry.remove()
-        if connection.engine is not None:
-            connection.engine.dispose()
-        connection.engine = connection.session_factory = (
-            connection.scoped_session_registry
-        ) = None
+        connection.close_database()

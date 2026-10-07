@@ -1,23 +1,22 @@
 # Standard library imports
-import os
+from pathlib import Path
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
-from vtkmodules.web import protocols as vtk_protocols
 
-# Local application imports
-from opengeodeweb_viewer.vtk_protocol import VtkView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
+
+# Local application imports
+from opengeodeweb_viewer.vtk_protocol import VtkView
+
 from . import schemas
 
 
 class VtkGenericView(VtkView):
     generic_prefix = "opengeodeweb_viewer.generic."
-    generic_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
-    )
+    generic_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(
         self, mesh_protocols: VtkMeshView, model_protocols: VtkModelView

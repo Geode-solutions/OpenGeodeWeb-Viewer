@@ -1,13 +1,33 @@
 # Standard library imports
-from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 import math
 import os
 from typing import Any, cast
 
 # Third party imports
-import vtkmodules.vtkRenderingOpenGL2
-from vtkmodules.web import protocols as vtk_protocols
-from vtkmodules.vtkWebCore import vtkWebApplication
+# Local application imports
+from opengeodeweb_microservice.database.connection import get_session
+from opengeodeweb_microservice.database.data import Data
+from vtkmodules.vtkCommonCore import vtkIdTypeArray, vtkStringArray
+from vtkmodules.vtkCommonDataModel import (
+    vtkBoundingBox,
+    vtkDataObject,
+    vtkDataSet,
+    vtkImageData,
+    vtkImplicitBoolean,
+    vtkMultiBlockDataSet,
+    vtkPlane,
+    vtkSelectionNode,
+)
+from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
+from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
+from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
+from vtkmodules.vtkImagingCore import vtkExtractVOI
+from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
+from vtkmodules.vtkRenderingAnnotation import (
+    vtkAxesActor,
+    vtkCubeAxesActor,
+    vtkScalarBarActor,
+)
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkCellPicker,
@@ -15,32 +35,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkRenderWindow,
 )
-from vtkmodules.vtkCommonDataModel import (
-    vtkBoundingBox,
-    vtkDataObject,
-    vtkDataSet,
-    vtkImplicitBoolean,
-    vtkImageData,
-    vtkMultiBlockDataSet,
-    vtkPlane,
-    vtkSelectionNode,
-)
-from vtkmodules.vtkFiltersCore import vtkThreshold
-from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
-from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
-from vtkmodules.vtkFiltersCore import vtkAppendFilter
-from vtkmodules.vtkImagingCore import vtkExtractVOI
-from vtkmodules.vtkCommonCore import vtkIdTypeArray, vtkStringArray
-from vtkmodules.vtkRenderingAnnotation import (
-    vtkAxesActor,
-    vtkCubeAxesActor,
-)
-from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
+from vtkmodules.vtkWebCore import vtkWebApplication
+from vtkmodules.web import protocols as vtk_protocols
 
-# Local application imports
-from opengeodeweb_microservice.database.connection import get_session
-from opengeodeweb_microservice.database.data import Data
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
 from opengeodeweb_viewer.rpc.viewer.schemas.slice import SliceElement
 from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
@@ -99,16 +96,16 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
     def get_viewer_data(self, data_id: str) -> ViewerData:
         if Data is None:
-            raise Exception("Data model not available")
+            raise RuntimeError("Data model not available")
 
         with get_session() as session:
             if not session:
-                raise Exception("No database session available")
+                raise RuntimeError("No database session available")
 
             try:
                 data = session.get(Data, data_id)
                 if not data:
-                    raise Exception(f"Data with id {data_id} not found in database")
+                    raise LookupError(f"Data with id {data_id} not found in database")
                 return ViewerData(
                     id=data.id,
                     viewable_file=data.viewable_file,
@@ -127,7 +124,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
         data_folder_path = self.DATA_FOLDER_PATH
         if data_folder_path is None:
-            raise Exception("DATA_FOLDER_PATH environment variable not set")
+            raise RuntimeError("DATA_FOLDER_PATH environment variable not set")
 
         return os.path.join(data_folder_path, data_id, filename)
 

@@ -1,9 +1,11 @@
-from typing import Callable
-from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
-from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
-from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from collections.abc import Callable
+
 from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
+
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from tests.conftest import ServerMonitor
 
 

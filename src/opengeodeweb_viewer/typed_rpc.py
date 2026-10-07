@@ -2,19 +2,18 @@
 import functools
 import os
 from collections.abc import Callable
-from typing import Any, Concatenate, TypeVar
+from typing import Any, Concatenate
 
 # Third party imports
 import fastjsonschema  # type: ignore
+from dataclasses_json import DataClassJsonMixin
+from opengeodeweb_microservice.schemas import Route
 from wslink import register  # type: ignore
-from opengeodeweb_microservice.schemas import ParamsT, ResponseT, Route
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import RpcParams, validate_schema
 
 TYPED_RPC_MARKER = "__typed_rpc__"
-
-SelfT = TypeVar("SelfT")
 
 
 def _drop_none(value: Any) -> Any:
@@ -32,7 +31,9 @@ def _validate_responses() -> bool:
     return os.environ.get("PYTHON_ENV", "prod").strip().lower() in ("dev", "test")
 
 
-def typed_rpc(prefix: str, route: Route[ParamsT, ResponseT]) -> Callable[
+def typed_rpc[SelfT, ParamsT: DataClassJsonMixin, ResponseT: DataClassJsonMixin](
+    prefix: str, route: Route[ParamsT, ResponseT]
+) -> Callable[
     [Callable[[SelfT, ParamsT], ResponseT]],
     Callable[Concatenate[SelfT, ...], dict[str, Any]],
 ]:
@@ -62,7 +63,7 @@ def typed_rpc(prefix: str, route: Route[ParamsT, ResponseT]) -> Callable[
             if _validate_responses():
                 validate_response(payload)
             if do_stream:
-                getattr(self, "publish")(rpc_id, rpc_params)
+                self.publish(rpc_id, rpc_params)
             return payload
 
         setattr(rpc, TYPED_RPC_MARKER, True)

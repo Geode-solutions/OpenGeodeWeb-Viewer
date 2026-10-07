@@ -1,4 +1,5 @@
-from typing import Callable
+from collections.abc import Callable
+
 from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
 from tests.conftest import ServerMonitor
 

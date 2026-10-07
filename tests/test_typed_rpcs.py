@@ -11,8 +11,8 @@ import pytest
 
 # Local application imports
 from opengeodeweb_viewer import rpc
-from opengeodeweb_viewer.typed_rpc import TYPED_RPC_MARKER, typed_rpc
 from opengeodeweb_viewer.rpc.viewer import schemas
+from opengeodeweb_viewer.typed_rpc import TYPED_RPC_MARKER, typed_rpc
 
 PREFIX = "opengeodeweb_viewer."
 
