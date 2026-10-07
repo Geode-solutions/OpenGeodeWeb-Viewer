@@ -354,9 +354,7 @@ def test_lines_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/lines/vertex_color_map_rainbow_initial.jpeg")
-    )
+    assert server.compare_image("model/lines/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(

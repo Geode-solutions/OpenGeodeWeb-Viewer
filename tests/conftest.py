@@ -138,7 +138,8 @@ class ServerMonitor:
                 self.ws.recv()
             except WebSocketTimeoutException:
                 logger.warning(
-                    "Timeout on message %s, but continuing to try remaining messages...", i
+                    "Timeout on message %s, but continuing to try remaining messages...",
+                    i,
                 )
                 continue
 

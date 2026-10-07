@@ -139,9 +139,7 @@ def test_polygons_polygon_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/polygon_color_map_range_update.jpeg")
-    )
+    assert server.compare_image("mesh/polygons/polygon_color_map_range_update.jpeg")
 
 
 def test_polygons_polygon_color_map_red_shift(
@@ -212,9 +210,7 @@ def test_polygons_polygon_color_map_red_shift(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/polygon_color_map_red_shift.jpeg")
-    )
+    assert server.compare_image("mesh/polygons/polygon_color_map_red_shift.jpeg")
 
 
 def test_polygons_polygon_color_map_rainbow(
@@ -277,9 +273,7 @@ def test_polygons_polygon_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/polygon_color_map_rainbow_initial.jpeg")
-    )
+    assert server.compare_image("mesh/polygons/polygon_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(

@@ -118,9 +118,7 @@ def test_points_vertex_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/points/vertex_color_map_range_update.jpeg")
-    )
+    assert server.compare_image("mesh/points/vertex_color_map_range_update.jpeg")
 
 
 def test_points_vertex_color_map_red_shift(
@@ -248,9 +246,7 @@ def test_points_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/points/vertex_color_map_rainbow_initial.jpeg")
-    )
+    assert server.compare_image("mesh/points/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(

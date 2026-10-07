@@ -139,9 +139,7 @@ def test_polyhedra_polyhedron_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polyhedra/polyhedron_color_map_range_update.jpeg")
-    )
+    assert server.compare_image("mesh/polyhedra/polyhedron_color_map_range_update.jpeg")
 
 
 def test_polyhedra_polyhedron_color_map_red_shift(
@@ -212,9 +210,7 @@ def test_polyhedra_polyhedron_color_map_red_shift(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polyhedra/polyhedron_color_map_red_shift.jpeg")
-    )
+    assert server.compare_image("mesh/polyhedra/polyhedron_color_map_red_shift.jpeg")
 
 
 def test_polyhedra_polyhedron_color_map_rainbow(
@@ -277,8 +273,8 @@ def test_polyhedra_polyhedron_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow_initial.jpeg")
+    assert server.compare_image(
+        "mesh/polyhedra/polyhedron_color_map_rainbow_initial.jpeg"
     )
 
     # Update rainbow range via attribute
@@ -335,9 +331,7 @@ def test_polyhedra_polyhedron_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow.jpeg")
-    )
+    assert server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow.jpeg")
 
 
 def test_polyhedra_polyhedron_attribute_item(

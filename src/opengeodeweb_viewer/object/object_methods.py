@@ -87,7 +87,9 @@ class VtkObjectView(VtkView):
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOff()
         actor = self.get_vtk_pipeline(data_id).actor
-        actor.GetProperty().SetColor([color.red / 255, color.green / 255, color.blue / 255])
+        actor.GetProperty().SetColor(
+            [color.red / 255, color.green / 255, color.blue / 255]
+        )
         actor.GetProperty().SetOpacity(color.alpha)
 
     def set_edges_visibility(self, data_id: str, *, visibility: bool) -> None:
@@ -109,7 +111,9 @@ class VtkObjectView(VtkView):
             self.set_color(data_id, color)
         else:
             actor = self.get_vtk_pipeline(data_id).actor
-            actor.GetProperty().SetEdgeColor([color.red / 255, color.green / 255, color.blue / 255])
+            actor.GetProperty().SetEdgeColor(
+                [color.red / 255, color.green / 255, color.blue / 255]
+            )
 
     def set_points_visibility(self, data_id: str, *, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":

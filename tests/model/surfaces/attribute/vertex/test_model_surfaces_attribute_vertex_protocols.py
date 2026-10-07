@@ -375,9 +375,7 @@ def test_surfaces_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/vertex_color_map_rainbow_initial.jpeg")
-    )
+    assert server.compare_image("model/surfaces/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
@@ -560,6 +558,4 @@ def test_surfaces_vertex_attribute_interpolates_through_colormap(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/implicit_attribute_color_map.jpeg")
-    )
+    assert server.compare_image("model/surfaces/implicit_attribute_color_map.jpeg")
