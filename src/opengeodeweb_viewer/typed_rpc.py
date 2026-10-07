@@ -35,7 +35,9 @@ def _validate_responses() -> bool:
     return os.environ.get("PYTHON_ENV", "prod").strip().lower() in ("dev", "test")
 
 
-def typed_rpc[SelfT: Publisher, ParamsT: DataClassJsonMixin, ResponseT: DataClassJsonMixin](
+def typed_rpc[
+    SelfT: Publisher, ParamsT: DataClassJsonMixin, ResponseT: DataClassJsonMixin
+](
     prefix: str, route: Route[ParamsT, ResponseT]
 ) -> Callable[
     [Callable[[SelfT, ParamsT], ResponseT]],
