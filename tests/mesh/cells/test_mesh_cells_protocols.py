@@ -17,7 +17,9 @@ mesh_id = "12345678901234567890123456789012"
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(
-        data_id=mesh_id, viewable_file="regular_grid_2d.vti", viewer_elements_type="cells"
+        data_id=mesh_id,
+        viewable_file="regular_grid_2d.vti",
+        viewer_elements_type="cells",
     )
 
     server.call(

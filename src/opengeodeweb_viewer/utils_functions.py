@@ -35,6 +35,7 @@ class AttributeProtocol(Protocol):
 
 type RpcParams = dict[str, str]
 
+
 def validate_schema(
     rpc_params: RpcParams, schema: SchemaDict, prefix: str = ""
 ) -> None:

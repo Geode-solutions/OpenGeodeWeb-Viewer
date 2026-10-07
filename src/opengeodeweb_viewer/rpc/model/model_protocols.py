@@ -251,7 +251,9 @@ class VtkModelView(VtkObjectView):
         return schemas.RegisterResponse()
 
     @typed_rpc(model_prefix, schemas.deregister_route)
-    def deregister_model(self, params: schemas.Deregister) -> schemas.DeregisterResponse:
+    def deregister_model(
+        self, params: schemas.Deregister
+    ) -> schemas.DeregisterResponse:
         self.remove_object(params.id)
         return schemas.DeregisterResponse()
 
@@ -263,7 +265,9 @@ class VtkModelView(VtkObjectView):
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_prefix, schemas.highlight_route)
-    def set_model_highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
+    def set_model_highlight(
+        self, params: schemas.Highlight
+    ) -> schemas.HighlightResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         if params.visibility and params.block_ids:
             append = vtkAppendDataSets()

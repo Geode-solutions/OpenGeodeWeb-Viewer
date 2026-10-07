@@ -1,7 +1,9 @@
 # Standard library imports
 from collections.abc import Callable
 
-from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex import blocks_attribute_vertex_protocols
+from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex import (
+    blocks_attribute_vertex_protocols,
+)
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
@@ -356,9 +358,7 @@ def test_blocks_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/blocks/vertex_color_map_rainbow_initial.jpeg")
-    )
+    assert server.compare_image("model/blocks/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(

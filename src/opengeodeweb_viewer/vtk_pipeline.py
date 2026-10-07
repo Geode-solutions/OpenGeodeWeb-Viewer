@@ -161,7 +161,8 @@ class RulerPipeline:
             max(math.dist(self._point2, camera_position) * 0.003, 0.0001)
         )
         midpoint = tuple(
-            (coord1 + coord2) / 2 for coord1, coord2 in zip(self._point1, self._point2, strict=True)
+            (coord1 + coord2) / 2
+            for coord1, coord2 in zip(self._point1, self._point2, strict=True)
         )
         text_scale = max(math.dist(midpoint, camera_position) * 0.008, 0.001)
         self.text_follower.SetPosition(
@@ -251,7 +252,10 @@ class VtkPipeline:
             "[extract_blocks] Total slots=%s (None count=%s): %s",
             len(blocks),
             blocks.count(None),
-            [(index, type(obj).__name__ if obj else None) for index, obj in enumerate(blocks)],
+            [
+                (index, type(obj).__name__ if obj else None)
+                for index, obj in enumerate(blocks)
+            ],
         )
         return blocks
 

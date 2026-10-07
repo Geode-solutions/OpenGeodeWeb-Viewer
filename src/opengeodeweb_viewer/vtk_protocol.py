@@ -61,7 +61,9 @@ class VtkTypingMixin:
     def getView(self, view_id: str) -> vtkRenderWindow:  # noqa: N802 VTK override
         return cast("vtkRenderWindow", super().getView(view_id))  # type: ignore[misc]
 
-    def registerVtkWebProtocol(self, protocol: object) -> None:  # noqa: N802 VTK override
+    def registerVtkWebProtocol(
+        self, protocol: object
+    ) -> None:  # noqa: N802 VTK override
         super().registerVtkWebProtocol(protocol)  # type: ignore[misc]
 
     def getApplication(self) -> vtkWebApplication:  # noqa: N802 VTK override
@@ -442,7 +444,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if final_bounds[0] <= final_bounds[1]:
                 for axis in range(3):
                     dist = self._axis_display_length(renderer, final_bounds, axis)
-                    self._update_grid_scale_axis_labels(grid_scale, final_bounds, axis, dist)
+                    self._update_grid_scale_axis_labels(
+                        grid_scale, final_bounds, axis, dist
+                    )
         self.reset_camera_clipping_range()
 
     @staticmethod

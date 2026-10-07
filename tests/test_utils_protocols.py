@@ -14,7 +14,9 @@ def test_reset_project_after_import(
 ) -> None:
     # Mock
     pre_id = "00000000000000000000000123456789"
-    dataset_factory(data_id=pre_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
+    dataset_factory(
+        data_id=pre_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+    )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": pre_id, "name": "hat.vtp"}],

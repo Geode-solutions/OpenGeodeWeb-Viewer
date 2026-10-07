@@ -69,7 +69,9 @@ def typed_rpc[
                     f"expected {route.response.__name__}"
                 )
                 raise TypeError(msg)
-            payload = cast("dict[str, Any]", _drop_none(result.to_dict(encode_json=True)))
+            payload = cast(
+                "dict[str, Any]", _drop_none(result.to_dict(encode_json=True))
+            )
             if _validate_responses():
                 validate_response(payload)
             if do_stream:

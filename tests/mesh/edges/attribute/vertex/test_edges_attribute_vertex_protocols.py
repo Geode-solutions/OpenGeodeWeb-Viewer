@@ -258,9 +258,7 @@ def test_edges_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/edges/vertex_color_map_rainbow_initial.jpeg")
-    )
+    assert server.compare_image("mesh/edges/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(

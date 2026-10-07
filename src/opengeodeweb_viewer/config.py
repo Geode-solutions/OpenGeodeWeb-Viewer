@@ -42,4 +42,3 @@ class TestConfig(Config):
         super().__init__(project_folder_path)
         Path(self.DATA_FOLDER_PATH).mkdir(parents=True, exist_ok=True)
         (Path(self.DATA_FOLDER_PATH) / self.DATABASE_FILENAME).touch()
-

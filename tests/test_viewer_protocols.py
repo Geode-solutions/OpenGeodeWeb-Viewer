@@ -102,7 +102,9 @@ def test_take_screenshot(
 
     first_image_path = server.test_output_dir / "test.jpg"
     first_image_path.write_bytes(blob)
-    second_image_path = server.images_dir_path / "viewer/take_screenshot_with_background.jpg"
+    second_image_path = (
+        server.images_dir_path / "viewer/take_screenshot_with_background.jpg"
+    )
 
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
@@ -127,7 +129,9 @@ def test_take_screenshot(
 
     first_image_path = server.test_output_dir / "test.png"
     first_image_path.write_bytes(blob)
-    second_image_path = server.images_dir_path / "viewer/take_screenshot_without_background.png"
+    second_image_path = (
+        server.images_dir_path / "viewer/take_screenshot_without_background.png"
+    )
 
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
@@ -152,7 +156,9 @@ def test_take_screenshot(
 
     first_image_path = server.test_output_dir / "test.png"
     first_image_path.write_bytes(blob)
-    second_image_path = server.images_dir_path / "viewer/take_screenshot_with_background.png"
+    second_image_path = (
+        server.images_dir_path / "viewer/take_screenshot_with_background.png"
+    )
 
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
