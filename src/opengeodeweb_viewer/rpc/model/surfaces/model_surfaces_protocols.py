@@ -19,14 +19,14 @@ class VtkModelSurfacesView(VtkModelView):
         super().__init__()
 
     @typed_rpc(model_surfaces_prefix, schemas.visibility_route)
-    def setModelSurfacesPolygonsVisibility(
+    def set_model_surfaces_polygons_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
+        self.set_blocks_visibility(params.id, params.block_ids, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_surfaces_prefix, schemas.color_route)
-    def setModelSurfacesColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_model_surfaces_color(self, params: schemas.Color) -> schemas.ColorResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         colors = self.apply_color(
             pipeline,

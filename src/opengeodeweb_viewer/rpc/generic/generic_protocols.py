@@ -31,9 +31,9 @@ class VtkGenericView(VtkView):
         specific_params = {"id": data_id, "name": params.name}
         viewer_object = self.get_viewer_data(data_id).viewer_object
         if viewer_object == "mesh":
-            self.mesh_protocols.registerMesh(specific_params)
+            self.mesh_protocols.register_mesh(specific_params)
         elif viewer_object == "model":
-            self.model_protocols.registerModel(specific_params)
+            self.model_protocols.register_model(specific_params)
         return schemas.RegisterResponse()
 
     @typed_rpc(generic_prefix, schemas.deregister_route)
@@ -42,7 +42,7 @@ class VtkGenericView(VtkView):
         specific_params = {"id": data_id}
         viewer_object = self.get_viewer_data(data_id).viewer_object
         if viewer_object == "mesh":
-            self.mesh_protocols.deregisterMesh(specific_params)
+            self.mesh_protocols.deregister_mesh(specific_params)
         elif viewer_object == "model":
-            self.model_protocols.deregisterModel(specific_params)
+            self.model_protocols.deregister_model(specific_params)
         return schemas.DeregisterResponse()

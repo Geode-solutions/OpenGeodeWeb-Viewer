@@ -1,5 +1,6 @@
 # Standard library imports
 import contextlib
+import logging
 import os
 from pathlib import Path
 from threading import Timer
@@ -15,6 +16,8 @@ from opengeodeweb_viewer.vtk_protocol import VtkView
 
 from . import schemas
 
+logger = logging.getLogger(__name__)
+
 
 class VtkUtilsView(VtkView):
     utils_prefix = "opengeodeweb_viewer."
@@ -24,14 +27,14 @@ class VtkUtilsView(VtkView):
         super().__init__()
 
     @typed_rpc(utils_prefix, schemas.kill_route)
-    def kill(self, params: schemas.Kill) -> schemas.KillResponse:
-        print("Manual viewer kill, shutting down...", flush=True)
+    def kill(self, _params: schemas.Kill) -> schemas.KillResponse:
+        logger.info("Manual viewer kill, shutting down...")
         Timer(0.5, os._exit, [0]).start()
         return schemas.KillResponse()
 
     @typed_rpc(utils_prefix, schemas.import_project_route)
-    def importProject(
-        self, params: schemas.ImportProject
+    def import_project(
+        self, _params: schemas.ImportProject
     ) -> schemas.ImportProjectResponse:
         widget = self.get_widget()
         if widget is not None:
@@ -50,8 +53,8 @@ class VtkUtilsView(VtkView):
         return schemas.ImportProjectResponse()
 
     @typed_rpc(utils_prefix, schemas.release_database_route)
-    def releaseDatabase(
-        self, params: schemas.ReleaseDatabase
+    def release_database(
+        self, _params: schemas.ReleaseDatabase
     ) -> schemas.ReleaseDatabaseResponse:
         self._release_database()
         return schemas.ReleaseDatabaseResponse()

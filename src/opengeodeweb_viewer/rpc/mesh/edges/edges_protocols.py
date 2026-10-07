@@ -19,19 +19,19 @@ class VtkMeshEdgesView(VtkMeshView):
         super().__init__()
 
     @typed_rpc(mesh_edges_prefix, schemas.visibility_route)
-    def setMeshEdgesVisibility(
+    def set_mesh_edges_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetEdgesVisibility(params.id, params.visibility)
+        self.set_edges_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(mesh_edges_prefix, schemas.color_route)
-    def setMeshEdgesColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_mesh_edges_color(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
-        self.SetEdgesColor(params.id, color.red, color.green, color.blue, color.alpha)
+        self.set_edges_color(params.id, color)
         return schemas.ColorResponse()
 
     @typed_rpc(mesh_edges_prefix, schemas.width_route)
-    def setMeshEdgesWidth(self, params: schemas.Width) -> schemas.WidthResponse:
-        self.SetEdgesWidth(params.id, params.width)
+    def set_mesh_edges_width(self, params: schemas.Width) -> schemas.WidthResponse:
+        self.set_edges_width(params.id, params.width)
         return schemas.WidthResponse()

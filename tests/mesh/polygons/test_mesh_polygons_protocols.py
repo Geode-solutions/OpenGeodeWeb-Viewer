@@ -29,7 +29,7 @@ def test_polygons_color(
             }
         ],
     )
-    assert server.compare_image("mesh/polygons/color.jpeg") == True
+    assert server.compare_image("mesh/polygons/color.jpeg")
 
 
 def test_polygons_visibility(
@@ -43,7 +43,7 @@ def test_polygons_visibility(
         + VtkMeshPolygonsView.mesh_polygons_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": False}],
     )
-    assert server.compare_image("mesh/polygons/visibility.jpeg") == True
+    assert server.compare_image("mesh/polygons/visibility.jpeg")
 
 
 def test_polygons_clipping_plane(
@@ -67,7 +67,7 @@ def test_polygons_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("mesh/polygons/clipping_plane.jpeg") == True
+    assert server.compare_image("mesh/polygons/clipping_plane.jpeg")
 
 
 def test_polygons_shrink(
@@ -86,4 +86,4 @@ def test_polygons_shrink(
             }
         ],
     )
-    assert server.compare_image("mesh/polygons/shrink.jpeg") == True
+    assert server.compare_image("mesh/polygons/shrink.jpeg")

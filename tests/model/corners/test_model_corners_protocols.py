@@ -31,7 +31,7 @@ def test_corners_points_visibility(
             }
         ],
     )
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg")
 
     server.call(
         VtkModelCornersView.model_corners_prefix
@@ -44,7 +44,7 @@ def test_corners_points_visibility(
             }
         ],
     )
-    assert server.compare_image("model/corners/visibility.jpeg") == True
+    assert server.compare_image("model/corners/visibility.jpeg")
 
 
 def test_corners_points_color(
@@ -65,7 +65,7 @@ def test_corners_points_color(
             }
         ],
     )
-    assert server.compare_image("model/corners/color.jpeg") == True
+    assert server.compare_image("model/corners/color.jpeg")
 
 
 def test_corners_points_random_color(
@@ -79,4 +79,4 @@ def test_corners_points_random_color(
         + VtkModelCornersView.model_corners_schemas_dict["color"]["rpc"],
         [{"id": model_id, "block_ids": list(range(1, 13)), "color_mode": "random"}],
     )
-    assert server.compare_image("model/corners/random_color.jpeg") == True
+    assert server.compare_image("model/corners/random_color.jpeg")

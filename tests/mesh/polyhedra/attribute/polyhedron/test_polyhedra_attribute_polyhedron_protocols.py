@@ -3,12 +3,16 @@ from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.polyhedron.polyhedra_attribute_polyhedron_protocols import (
-    VtkMeshPolyhedraAttributePolyhedronView,
+from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.polyhedron import (
+    polyhedra_attribute_polyhedron_protocols,
 )
 
 # Local application imports
 from tests.conftest import ServerMonitor
+
+VtkMeshPolyhedraAttributePolyhedronView = (
+    polyhedra_attribute_polyhedron_protocols.VtkMeshPolyhedraAttributePolyhedronView
+)
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"
@@ -17,7 +21,7 @@ mesh_id = "12345678901234567890123456789012"
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(
-        id=mesh_id,
+        data_id=mesh_id,
         viewable_file="polyhedron_attribute.vtu",
         viewer_elements_type="polyhedra",
     )
@@ -64,7 +68,7 @@ def test_polyhedra_polyhedron_color_map(
         ],
     )
 
-    assert server.compare_image("mesh/polyhedra/polyhedron_color_map.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/polyhedron_color_map.jpeg")
 
 
 def test_polyhedra_polyhedron_color_map_range_update(
@@ -103,7 +107,7 @@ def test_polyhedra_polyhedron_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("mesh/polyhedra/polyhedron_color_map.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/polyhedron_color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -137,7 +141,6 @@ def test_polyhedra_polyhedron_color_map_range_update(
 
     assert (
         server.compare_image("mesh/polyhedra/polyhedron_color_map_range_update.jpeg")
-        == True
     )
 
 
@@ -177,7 +180,7 @@ def test_polyhedra_polyhedron_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/polyhedra/polyhedron_color_map.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/polyhedron_color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -211,7 +214,6 @@ def test_polyhedra_polyhedron_color_map_red_shift(
 
     assert (
         server.compare_image("mesh/polyhedra/polyhedron_color_map_red_shift.jpeg")
-        == True
     )
 
 
@@ -277,7 +279,6 @@ def test_polyhedra_polyhedron_color_map_rainbow(
 
     assert (
         server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow_initial.jpeg")
-        == True
     )
 
     # Update rainbow range via attribute
@@ -335,7 +336,7 @@ def test_polyhedra_polyhedron_color_map_rainbow(
     )
 
     assert (
-        server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow.jpeg") == True
+        server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow.jpeg")
     )
 
 
@@ -374,4 +375,4 @@ def test_polyhedra_polyhedron_attribute_item(
         ],
     )
 
-    assert server.compare_image("mesh/polyhedra/polyhedron_attribute_item.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/polyhedron_attribute_item.jpeg")

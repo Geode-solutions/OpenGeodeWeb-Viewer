@@ -19,19 +19,19 @@ class VtkMeshPointsView(VtkMeshView):
         super().__init__()
 
     @typed_rpc(mesh_points_prefix, schemas.visibility_route)
-    def setMeshPointsVisibility(
+    def set_mesh_points_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetPointsVisibility(params.id, params.visibility)
+        self.set_points_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse(id=params.id, visibility=params.visibility)
 
     @typed_rpc(mesh_points_prefix, schemas.color_route)
-    def setMeshPointsColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_mesh_points_color(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
-        self.SetPointsColor(params.id, color.red, color.green, color.blue, color.alpha)
+        self.set_points_color(params.id, color)
         return schemas.ColorResponse()
 
     @typed_rpc(mesh_points_prefix, schemas.size_route)
-    def setMeshPointsSize(self, params: schemas.Size) -> schemas.SizeResponse:
-        self.SetPointsSize(params.id, params.size)
+    def set_mesh_points_size(self, params: schemas.Size) -> schemas.SizeResponse:
+        self.set_points_size(params.id, params.size)
         return schemas.SizeResponse()

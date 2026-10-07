@@ -1,3 +1,5 @@
+import logging
+
 # Standard library imports
 import math
 from dataclasses import dataclass, field
@@ -53,6 +55,9 @@ from opengeodeweb_viewer.utils_functions import (
     create_color_transfer_function,
 )
 
+logger = logging.getLogger(__name__)
+
+
 STACKING_GAP_RATIO = 0.05
 
 
@@ -68,9 +73,9 @@ class ViewerData:
 class HighlightPipeline:
     actor: vtkActor = field(default_factory=vtkActor)
     mapper: vtkDataSetMapper = field(default_factory=vtkDataSetMapper)
-    selectionNode: vtkSelectionNode = field(default_factory=vtkSelectionNode)
+    selection_node: vtkSelectionNode = field(default_factory=vtkSelectionNode)
     selection: vtkSelection = field(default_factory=vtkSelection)
-    extractSelection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
+    extract_selection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
 
 
 @dataclass
@@ -127,7 +132,7 @@ class RulerPipeline:
         mapper.SetRelativeCoincidentTopologyLineOffsetParameters(offset, offset)
         mapper.SetRelativeCoincidentTopologyPointOffsetParameter(offset)
         actor.SetMapper(mapper)
-        actor.SetPickable(False)
+        actor.PickableOff()
         actor_property = actor.GetProperty()
         actor_property.SetColor(*color)
         actor_property.SetAmbient(1.0)
@@ -156,7 +161,7 @@ class RulerPipeline:
             max(math.dist(self._point2, camera_position) * 0.003, 0.0001)
         )
         midpoint = tuple(
-            (coord1 + coord2) / 2 for coord1, coord2 in zip(self._point1, self._point2)
+            (coord1 + coord2) / 2 for coord1, coord2 in zip(self._point1, self._point2, strict=True)
         )
         text_scale = max(math.dist(midpoint, camera_position) * 0.008, 0.001)
         self.text_follower.SetPosition(
@@ -222,9 +227,9 @@ class VtkPipeline:
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
-    blockDataSets: list[vtkDataObject | None] = field(default_factory=list)
-    blockGeodeIds: list[str] = field(default_factory=list)
-    scalarBar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
+    block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
+    block_geode_ids: list[str] = field(default_factory=list)
+    scalar_bar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
     scalar_bars: dict[str, vtkScalarBarActor] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
@@ -242,10 +247,11 @@ class VtkPipeline:
             blocks.extend([None] * (flat_index + 1 - len(blocks)))
             blocks[flat_index] = iterator.GetCurrentDataObject()
             iterator.GoToNextItem()
-        print(
-            f"[extract_blocks] Total slots={len(blocks)} (None count={blocks.count(None)}): "
-            f"{[(index, type(obj).__name__ if obj else None) for index, obj in enumerate(blocks)]}",
-            flush=True,
+        logger.debug(
+            "[extract_blocks] Total slots=%s (None count=%s): %s",
+            len(blocks),
+            blocks.count(None),
+            [(index, type(obj).__name__ if obj else None) for index, obj in enumerate(blocks)],
         )
         return blocks
 
@@ -404,16 +410,16 @@ class VtkPipeline:
     def clear_block_scalars(self, block_id: int) -> None:
         if block_id in self.block_styles:
             self.block_styles[block_id]["name"] = ""
-        if block_id >= len(self.blockDataSets):
+        if block_id >= len(self.block_data_sets):
             return
-        block = self.blockDataSets[block_id]
+        block = self.block_data_sets[block_id]
         if not isinstance(block, vtkDataSet):
             return
         block.GetPointData().SetActiveScalars("")
         block.GetCellData().SetActiveScalars("")
         if isinstance(self.mapper, vtkCompositePolyDataMapper):
             attributes = self.mapper.GetCompositeDataDisplayAttributes()
-            attributes.SetBlockScalarVisibility(block, False)
+            attributes.SetBlockScalarVisibility(block, False)  # noqa: FBT003 VTK API
             attributes.RemoveBlockLookupTable(block)
             attributes.RemoveBlockArrayName(block)
             attributes.RemoveBlockArrayComponent(block)
@@ -423,13 +429,13 @@ class VtkPipeline:
 
     def clear_blocks_scalars(self) -> None:
         self.block_styles.clear()
-        for block_id in range(len(self.blockDataSets)):
+        for block_id in range(len(self.block_data_sets)):
             self.clear_block_scalars(block_id)
 
     def update_block_colors(self, block_id: int) -> None:
-        if block_id >= len(self.blockDataSets):
+        if block_id >= len(self.block_data_sets):
             return
-        block = self.blockDataSets[block_id]
+        block = self.block_data_sets[block_id]
         if not isinstance(block, vtkDataSet):
             return
         style = self.get_block_style(block_id)
@@ -467,7 +473,7 @@ class VtkPipeline:
                 ),
             )
             attributes.SetBlockInterpolateScalarsBeforeMapping(block, is_point)
-            attributes.SetBlockScalarVisibility(block, True)
+            attributes.SetBlockScalarVisibility(block, True)  # noqa: FBT003 VTK API
         self.mapper.ScalarVisibilityOn()
         self.mapper.SetColorModeToMapScalars()
         self.mapper.InterpolateScalarsBeforeMappingOn()
@@ -476,11 +482,13 @@ class VtkPipeline:
     def sync_block_display_attributes(
         self, new_blocks: list[vtkDataObject | None]
     ) -> None:
-        mapper = cast(vtkCompositePolyDataMapper, self.mapper)
+        mapper = cast("vtkCompositePolyDataMapper", self.mapper)
         attributes = mapper.GetCompositeDataDisplayAttributes()
         synced_attributes = vtkCompositeDataDisplayAttributes()
         color_rgb = [0.0, 0.0, 0.0]
-        for source_block, destination_block in zip(self.blockDataSets, new_blocks):
+        for source_block, destination_block in zip(
+            self.block_data_sets, new_blocks, strict=False
+        ):
             if source_block and destination_block:
                 if attributes.HasBlockColor(source_block):
                     attributes.GetBlockColor(source_block, color_rgb)
@@ -494,7 +502,7 @@ class VtkPipeline:
                         destination_block, attributes.GetBlockOpacity(source_block)
                     )
         mapper.SetCompositeDataDisplayAttributes(synced_attributes)
-        self.blockDataSets = new_blocks
+        self.block_data_sets = new_blocks
         for block_id in self.block_styles:
             self.update_block_colors(block_id)
 
@@ -510,7 +518,7 @@ class VtkPipeline:
         self.sync_block_display_attributes(new_blocks)
         self.mapper.SetInputDataObject(dataset)
         if self.pick_mapper and isinstance(dataset, vtkMultiBlockDataSet):
-            mapper = cast(vtkCompositePolyDataMapper, self.mapper)
+            mapper = cast("vtkCompositePolyDataMapper", self.mapper)
             attributes = mapper.GetCompositeDataDisplayAttributes()
             self.pick_mapper.SetInputDataObject(
                 self.prune_hidden_blocks(dataset, attributes)

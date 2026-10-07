@@ -3,12 +3,16 @@ from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
-    VtkMeshPolygonsAttributeVertexView,
+from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex import (
+    polygons_attribute_vertex_protocols,
 )
 
 # Local application imports
 from tests.conftest import ServerMonitor
+
+VtkMeshPolygonsAttributeVertexView = (
+    polygons_attribute_vertex_protocols.VtkMeshPolygonsAttributeVertexView
+)
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"
@@ -17,7 +21,7 @@ mesh_id = "12345678901234567890123456789012"
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(
-        id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+        data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
 
     server.call(
@@ -62,7 +66,7 @@ def test_polygons_vertex_color_map(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg")
 
 
 def test_polygons_vertex_color_map_range_update(
@@ -101,7 +105,7 @@ def test_polygons_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -134,7 +138,7 @@ def test_polygons_vertex_color_map_range_update(
     )
 
     assert (
-        server.compare_image("mesh/polygons/vertex_color_map_range_update.jpeg") == True
+        server.compare_image("mesh/polygons/vertex_color_map_range_update.jpeg")
     )
 
 
@@ -174,7 +178,7 @@ def test_polygons_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -206,7 +210,7 @@ def test_polygons_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map_red_shift.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map_red_shift.jpeg")
 
 
 def test_polygons_vertex_color_map_rainbow(
@@ -271,7 +275,6 @@ def test_polygons_vertex_color_map_rainbow(
 
     assert (
         server.compare_image("mesh/polygons/vertex_color_map_rainbow_initial.jpeg")
-        == True
     )
 
     # Update rainbow range via attribute
@@ -328,7 +331,7 @@ def test_polygons_vertex_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map_rainbow.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map_rainbow.jpeg")
 
 
 def test_polygons_vertex_attribute_item(
@@ -365,14 +368,14 @@ def test_polygons_vertex_attribute_item(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_attribute_item.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_attribute_item.jpeg")
 
 
 def test_polygons_vertex_no_data(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     dataset_factory(
-        id=mesh_id,
+        data_id=mesh_id,
         viewable_file="polygon_attribute.vtp",
         viewer_elements_type="polygons",
     )
@@ -411,4 +414,4 @@ def test_polygons_vertex_no_data(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_no_data.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_no_data.jpeg")

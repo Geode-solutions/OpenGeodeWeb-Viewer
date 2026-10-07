@@ -64,7 +64,7 @@ def test_lines_edge_attribute(
             }
         ],
     )
-    assert server.compare_image("model/lines/attribute.jpeg") == True
+    assert server.compare_image("model/lines/attribute.jpeg")
 
 
 def test_lines_edge_color_map(
@@ -115,7 +115,7 @@ def test_lines_edge_color_map(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map.jpeg") == True
+    assert server.compare_image("model/lines/color_map.jpeg")
 
 
 def test_lines_edge_color_map_range_update(
@@ -166,7 +166,7 @@ def test_lines_edge_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map.jpeg") == True
+    assert server.compare_image("model/lines/color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -197,7 +197,7 @@ def test_lines_edge_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/lines/updated_color_map.jpeg") == True
+    assert server.compare_image("model/lines/updated_color_map.jpeg")
 
 
 def test_lines_edge_color_map_red_shift(
@@ -248,7 +248,7 @@ def test_lines_edge_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map.jpeg") == True
+    assert server.compare_image("model/lines/color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -279,7 +279,7 @@ def test_lines_edge_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map_red_shift.jpeg") == True
+    assert server.compare_image("model/lines/color_map_red_shift.jpeg")
 
 
 def test_lines_edge_color_map_rainbow(
@@ -354,7 +354,7 @@ def test_lines_edge_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map_rainbow_initial.jpeg") == True
+    assert server.compare_image("model/lines/color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
@@ -409,4 +409,4 @@ def test_lines_edge_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map_rainbow.jpeg") == True
+    assert server.compare_image("model/lines/color_map_rainbow.jpeg")

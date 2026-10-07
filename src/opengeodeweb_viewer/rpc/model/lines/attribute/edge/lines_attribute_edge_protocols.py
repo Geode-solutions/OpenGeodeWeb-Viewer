@@ -23,17 +23,8 @@ class VtkModelLinesAttributeEdgeView(VtkModelView):
         super().__init__()
 
     @typed_rpc(model_lines_attribute_edge_prefix, schemas.attribute_route)
-    def setModelLinesEdgeAttribute(
+    def set_model_lines_edge_attribute(
         self, params: schemas.Attribute
     ) -> schemas.AttributeResponse:
-        self.displayAttributeOnCells(
-            params.id,
-            params.block_ids,
-            params.name,
-            params.item,
-            params.points,
-            params.minimum,
-            params.maximum,
-            params.no_data_color,
-        )
+        self.display_attribute_on_cells(params.id, params.block_ids, params)
         return schemas.AttributeResponse()

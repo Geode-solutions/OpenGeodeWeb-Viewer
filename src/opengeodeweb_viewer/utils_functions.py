@@ -1,13 +1,14 @@
+import logging
+
 # Standard library imports
-
 # Third party imports
-from collections.abc import Callable
-from typing import Any, Protocol, TypeVar
+from typing import Protocol
 
-import fastjsonschema  # type: ignore
+import fastjsonschema  # type: ignore[import-untyped]
 from opengeodeweb_microservice.schemas import SchemaDict
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
-from wslink import register  # type: ignore
+
+logger = logging.getLogger(__name__)
 
 
 class ColorClassProtocol(Protocol):
@@ -17,36 +18,32 @@ class ColorClassProtocol(Protocol):
     red: int
 
 
+class AttributeProtocol(Protocol):
+    @property
+    def name(self) -> str: ...
+    @property
+    def item(self) -> int: ...
+    @property
+    def points(self) -> list[float]: ...
+    @property
+    def minimum(self) -> float: ...
+    @property
+    def maximum(self) -> float: ...
+    @property
+    def no_data_color(self) -> ColorClassProtocol | None: ...
+
+
 type RpcParams = dict[str, str]
-
-R = TypeVar("R")
-
-
-def exportRpc(rpc_id: str) -> Callable[[Callable[..., R]], Callable[..., R]]:
-    def decorator(function: Callable[..., R]) -> Callable[..., R]:
-        def wrapper(self: Any, *args: Any, **kwargs: Any) -> R:
-            do_stream = bool(kwargs.pop("stream", False))
-            print("do_stream", do_stream, flush=True)
-            result = function(self, *args, **kwargs)
-            if do_stream:
-                rpc_params = args[0] if args else None
-                self.publish(rpc_id, rpc_params)
-            return result
-
-        return register(rpc_id)(wrapper)  # type: ignore[no-any-return]
-
-    return decorator
-
 
 def validate_schema(
     rpc_params: RpcParams, schema: SchemaDict, prefix: str = ""
 ) -> None:
-    print(f"{prefix}{schema['rpc']}", f"{rpc_params=}", flush=True)
+    logger.debug("%s%s rpc_params=%s", prefix, schema["rpc"], rpc_params)
     try:
         validate = fastjsonschema.compile(schema)
         validate(rpc_params)
     except fastjsonschema.JsonSchemaException as e:
-        print(f"Validation error: {e.message}", flush=True)
+        logger.warning("Validation error: %s", e.message)
         raise ValueError(
             {
                 "code": 400,
@@ -54,19 +51,20 @@ def validate_schema(
                 "name": "Bad request",
                 "description": e.message,
             }
-        )
+        ) from e
+
+
+CIRCLE_DEGREES = 360
+HASH_PRIME = 31
+DEGREES_PER_STEP = 30
+STEPS_COUNT = 12
+BASE_LIGHTNESS = 0.5
+VIBRANCY_RANGE = 0.35
+MIRROR_MAX = 9
+PHASE_GREEN = 8
 
 
 def deterministic_color(identifier: str) -> tuple[float, float, float]:
-    CIRCLE_DEGREES = 360
-    HASH_PRIME = 31
-    DEGREES_PER_STEP = 30
-    STEPS_COUNT = 12
-    BASE_LIGHTNESS = 0.5
-    VIBRANCY_RANGE = 0.35
-    MIRROR_MAX = 9
-    PHASE_GREEN = 8
-
     if not identifier:
         return (128 / 255, 128 / 255, 128 / 255)
 

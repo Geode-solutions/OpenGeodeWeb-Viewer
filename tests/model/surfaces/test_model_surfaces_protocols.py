@@ -32,7 +32,7 @@ def test_surfaces_polygons_visibility(
             }
         ],
     )
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg")
 
     server.call(
         VtkModelSurfacesView.model_surfaces_prefix
@@ -46,7 +46,7 @@ def test_surfaces_polygons_visibility(
         ],
     )
 
-    assert server.compare_image("model/surfaces/visibility.jpeg") == True
+    assert server.compare_image("model/surfaces/visibility.jpeg")
 
 
 def test_surfaces_polygons_color(
@@ -67,7 +67,7 @@ def test_surfaces_polygons_color(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/color.jpeg") == True
+    assert server.compare_image("model/surfaces/color.jpeg")
 
 
 def test_surfaces_polygons_random_color(
@@ -81,7 +81,7 @@ def test_surfaces_polygons_random_color(
         + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"],
         [{"id": model_id, "block_ids": list(range(36, 47)), "color_mode": "random"}],
     )
-    assert server.compare_image("model/surfaces/random_color.jpeg") == True
+    assert server.compare_image("model/surfaces/random_color.jpeg")
 
 
 def test_surfaces_polygons_random_collection_id(
@@ -130,7 +130,7 @@ def test_surfaces_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/clipping_plane.jpeg") == True
+    assert server.compare_image("model/surfaces/clipping_plane.jpeg")
 
 
 def test_surfaces_shrink(
@@ -149,4 +149,4 @@ def test_surfaces_shrink(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/shrink.jpeg") == True
+    assert server.compare_image("model/surfaces/shrink.jpeg")

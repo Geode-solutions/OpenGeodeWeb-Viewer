@@ -25,7 +25,7 @@ def test_edges_visibility(
         + VtkMeshEdgesView.mesh_edges_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": True}],
     )
-    assert server.compare_image("mesh/edges/visibility.jpeg") == True
+    assert server.compare_image("mesh/edges/visibility.jpeg")
 
 
 def test_edges_color(
@@ -43,35 +43,35 @@ def test_edges_color(
             }
         ],
     )
-    assert server.compare_image("mesh/edges/color.jpeg") == True
+    assert server.compare_image("mesh/edges/color.jpeg")
 
 
 def test_edges_with_edged_curve(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     dataset_factory(
-        id=mesh_id, viewable_file="edged_curve.vtp", viewer_elements_type="edges"
+        data_id=mesh_id, viewable_file="edged_curve.vtp", viewer_elements_type="edges"
     )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": mesh_id, "name": "edged_curve.vtp"}],
     )
-    assert server.compare_image("mesh/edges/register_edged_curve.jpeg") == True
+    assert server.compare_image("mesh/edges/register_edged_curve.jpeg")
 
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["color"]["rpc"],
         [{"id": mesh_id, "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1}}],
     )
-    assert server.compare_image("mesh/edges/edged_curve_color.jpeg") == True
+    assert server.compare_image("mesh/edges/edged_curve_color.jpeg")
 
     server.call(
         VtkMeshEdgesView.mesh_edges_prefix
         + VtkMeshEdgesView.mesh_edges_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": False}],
     )
-    assert server.compare_image("mesh/edges/edged_curve_visibility.jpeg") == True
+    assert server.compare_image("mesh/edges/edged_curve_visibility.jpeg")
 
 
 def test_edges_clipping_plane(
@@ -94,7 +94,7 @@ def test_edges_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("mesh/edges/clipping_plane.jpeg") == True
+    assert server.compare_image("mesh/edges/clipping_plane.jpeg")
 
 
 def test_edges_shrink(
@@ -112,4 +112,4 @@ def test_edges_shrink(
             }
         ],
     )
-    assert server.compare_image("mesh/edges/shrink.jpeg") == True
+    assert server.compare_image("mesh/edges/shrink.jpeg")

@@ -15,36 +15,36 @@ def test_register_model(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
 
-    dataset_factory(id=model_id, viewable_file="CrossSection.vtm")
+    dataset_factory(data_id=model_id, viewable_file="CrossSection.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": model_id, "name": "cube.vtm"}],
     )
-    assert server.compare_image("model/register.jpeg") == True
+    assert server.compare_image("model/register.jpeg")
 
 
 def test_register_model_cube(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
 
-    dataset_factory(id=model_id, viewable_file="cube.vtm")
+    dataset_factory(data_id=model_id, viewable_file="cube.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": model_id, "name": "cube.vtm"}],
     )
-    assert server.compare_image("model/cube_register.jpeg") == True
+    assert server.compare_image("model/cube_register.jpeg")
 
 
 def test_register_model_implicit_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
 
-    dataset_factory(id=model_id, viewable_file="implicit_attribute.vtm")
+    dataset_factory(data_id=model_id, viewable_file="implicit_attribute.vtm")
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": model_id, "name": "implicit_attribute.vtm"}],
     )
-    assert server.compare_image("model/implicit_attribute_register.jpeg") == True
+    assert server.compare_image("model/implicit_attribute_register.jpeg")
 
 
 def test_visibility_model(
@@ -58,7 +58,7 @@ def test_visibility_model(
         + VtkModelView.model_schemas_dict["visibility"]["rpc"],
         [{"id": model_id, "visibility": False}],
     )
-    assert server.compare_image("model/visibility.jpeg") == True
+    assert server.compare_image("model/visibility.jpeg")
 
 
 def test_deregister_model(
@@ -72,7 +72,7 @@ def test_deregister_model(
         + VtkModelView.model_schemas_dict["deregister"]["rpc"],
         [{"id": model_id}],
     )
-    assert server.compare_image("model/deregister.jpeg") == True
+    assert server.compare_image("model/deregister.jpeg")
 
 
 def test_get_blocks_bounds(
@@ -110,7 +110,7 @@ def test_model_cube_side_view(
             }
         ],
     )
-    assert server.compare_image("model/cube_side_view.jpeg") == True
+    assert server.compare_image("model/cube_side_view.jpeg")
 
 
 def test_model_explode(
@@ -122,7 +122,7 @@ def test_model_explode(
         + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
         [{"ids": [model_id], "explode_factor": 1.0}],
     )
-    assert server.compare_image("model/explode.jpeg") == True
+    assert server.compare_image("model/explode.jpeg")
 
 
 def test_model_explode_removed(
@@ -134,7 +134,7 @@ def test_model_explode_removed(
         + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
         [{"ids": [model_id], "explode_factor": 0.0}],
     )
-    assert server.compare_image("model/cube_side_view.jpeg") == True
+    assert server.compare_image("model/cube_side_view.jpeg")
 
 
 def test_model_explode_blocks_color(
@@ -158,7 +158,7 @@ def test_model_explode_blocks_color(
             }
         ],
     )
-    assert server.compare_image("model/explode_blocks_color.jpeg") == True
+    assert server.compare_image("model/explode_blocks_color.jpeg")
 
 
 def test_model_explode_then_shrink(
@@ -170,7 +170,7 @@ def test_model_explode_then_shrink(
         + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [{"ids": [model_id], "shrink_factor": 0.8}],
     )
-    assert server.compare_image("model/explode_then_shrink.jpeg") == True
+    assert server.compare_image("model/explode_then_shrink.jpeg")
 
 
 def test_model_explode_blocks_hidden(
@@ -182,4 +182,4 @@ def test_model_explode_blocks_hidden(
         + VtkModelBlocksView.model_blocks_schemas_dict["visibility"]["rpc"],
         [{"id": model_id, "block_ids": [48, 49], "visibility": False}],
     )
-    assert server.compare_image("model/explode_blocks_hidden.jpeg") == True
+    assert server.compare_image("model/explode_blocks_hidden.jpeg")

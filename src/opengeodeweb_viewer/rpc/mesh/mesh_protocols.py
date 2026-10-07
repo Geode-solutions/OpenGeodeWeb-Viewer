@@ -1,5 +1,6 @@
+import logging
+
 # Standard library imports
-import os
 from pathlib import Path
 
 from opengeodeweb_microservice.database.data import Data
@@ -16,12 +17,14 @@ from vtkmodules.vtkRenderingCore import (
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.utils_functions import (
-    ColorClassProtocol,
+    AttributeProtocol,
     create_color_transfer_function,
 )
 from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 
 from . import schemas
+
+logger = logging.getLogger(__name__)
 
 
 class VtkMeshView(VtkObjectView):
@@ -32,46 +35,46 @@ class VtkMeshView(VtkObjectView):
         super().__init__()
 
     @typed_rpc(mesh_prefix, schemas.register_route)
-    def registerMesh(self, params: schemas.Register) -> schemas.RegisterResponse:
-        print(f"{self.mesh_schemas_dict["register"]}", flush=True)
+    def register_mesh(self, params: schemas.Register) -> schemas.RegisterResponse:
+        logger.debug("%s", self.mesh_schemas_dict["register"])
         data_id = params.id
         try:
             viewer_data = self.get_viewer_data(data_id)
             file_name = str(viewer_data.viewable_file)
 
             reader = vtkXMLGenericDataObjectReader()
-            reader.SetFileName(os.path.join(self.DATA_FOLDER_PATH, data_id, file_name))
+            reader.SetFileName(str(Path(self.DATA_FOLDER_PATH) / data_id / file_name))
             reader.Update()
             mapper = vtkDataSetMapper()
             data = VtkPipeline(reader, mapper)
             self.setup_pipeline(data, params.name)
             self.highlight(data)
-            self.registerObject(data_id, file_name, data)
-        except Exception as e:
-            print(f"Error registering mesh {data_id}: {e!s}", flush=True)
+            self.add_object(data_id, data)
+        except Exception:
+            logger.exception("Error registering mesh %s", data_id)
             raise
         return schemas.RegisterResponse()
 
     @typed_rpc(mesh_prefix, schemas.deregister_route)
-    def deregisterMesh(self, params: schemas.Deregister) -> schemas.DeregisterResponse:
-        self.deregisterObject(params.id)
+    def deregister_mesh(self, params: schemas.Deregister) -> schemas.DeregisterResponse:
+        self.remove_object(params.id)
         return schemas.DeregisterResponse()
 
     @typed_rpc(mesh_prefix, schemas.visibility_route)
-    def SetMeshVisibility(
+    def set_mesh_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetVisibility(params.id, params.visibility)
+        self.set_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(mesh_prefix, schemas.color_route)
-    def setMeshColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_mesh_color(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
-        self.SetColor(params.id, color.red, color.green, color.blue, color.alpha)
+        self.set_color(params.id, color)
         return schemas.ColorResponse()
 
     @typed_rpc(mesh_prefix, schemas.apply_textures_route)
-    def meshApplyTextures(
+    def mesh_apply_textures(
         self, params: schemas.ApplyTextures
     ) -> schemas.ApplyTexturesResponse:
         mesh_id = params.id
@@ -100,88 +103,64 @@ class VtkMeshView(VtkObjectView):
             pipeline.actor.SetTexture(texture)
         return schemas.ApplyTexturesResponse()
 
-    def displayAttributeOnVertices(
-        self,
-        data_id: str,
-        name: str,
-        item: int,
-        color_map: list[float],
-        minimum: float,
-        maximum: float,
-        no_data_color: ColorClassProtocol | None = None,
-    ) -> None:
+    def display_attribute_on_vertices(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
+        name = attribute.name
         pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
         pipeline.filter.Update()
         if active_ds := pipeline.mapper.GetInputDataObject(0, 0):
             active_ds.GetPointData().SetActiveScalars(name)
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUsePointData()
-        pipeline.mapper.ColorByArrayComponent(name, item)
-        self.setupColorMap(data_id, color_map, minimum, maximum, item, no_data_color)
+        pipeline.mapper.ColorByArrayComponent(name, attribute.item)
+        self.setup_color_map(data_id, attribute)
 
-    def displayAttributeOnCells(
-        self,
-        data_id: str,
-        name: str,
-        item: int,
-        color_map: list[float],
-        minimum: float,
-        maximum: float,
-        no_data_color: ColorClassProtocol | None = None,
-    ) -> None:
+    def display_attribute_on_cells(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
+        name = attribute.name
         pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
         pipeline.filter.Update()
         if active_ds := pipeline.mapper.GetInputDataObject(0, 0):
             active_ds.GetCellData().SetActiveScalars(name)
         pipeline.mapper.ScalarVisibilityOn()
         pipeline.mapper.SetScalarModeToUseCellData()
-        pipeline.mapper.ColorByArrayComponent(name, item)
-        self.setupColorMap(data_id, color_map, minimum, maximum, item, no_data_color)
+        pipeline.mapper.ColorByArrayComponent(name, attribute.item)
+        self.setup_color_map(data_id, attribute)
 
-    def displayScalarRange(self, data_id: str, minimum: float, maximum: float) -> None:
-        print(
-            f"Setting scalar range for {data_id} to ({minimum}, {maximum})", flush=True
-        )
+    def display_scalar_range(self, data_id: str, minimum: float, maximum: float) -> None:
+        logger.debug("Setting scalar range for %s to (%s, %s)", data_id, minimum, maximum)
         data = self.get_vtk_pipeline(data_id)
         data.mapper.SetScalarRange(minimum, maximum)
         data.mapper.GetLookupTable().SetRange(minimum, maximum)
-        data.mapper.SetUseLookupTableScalarRange(False)
+        data.mapper.UseLookupTableScalarRangeOff()
 
-    def setupColorMap(
-        self,
-        data_id: str,
-        points: list[float],
-        minimum: float,
-        maximum: float,
-        item: int = 0,
-        no_data_color: ColorClassProtocol | None = None,
-    ) -> None:
+    def setup_color_map(self, data_id: str, attribute: AttributeProtocol) -> None:
         data = self.get_vtk_pipeline(data_id)
+        minimum = attribute.minimum
+        maximum = attribute.maximum
         lut = create_color_transfer_function(
-            points, minimum, maximum, item, no_data_color
+            attribute.points, minimum, maximum, attribute.item, attribute.no_data_color
         )
         data.mapper.SetLookupTable(lut)
 
         data.mapper.SetScalarRange(minimum, maximum)
         lut.SetRange(minimum, maximum)
-        data.mapper.SetUseLookupTableScalarRange(False)
+        data.mapper.UseLookupTableScalarRangeOff()
         data.mapper.InterpolateScalarsBeforeMappingOn()
 
-        data.scalarBar.SetLookupTable(lut)
-        data.scalarBar.SetVisibility(True)
+        data.scalar_bar.SetLookupTable(lut)
+        data.scalar_bar.VisibilityOn()
         self.update_scalar_bars_layout()
 
     @typed_rpc(mesh_prefix, schemas.highlight_route)
-    def setMeshhighlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
+    def set_mesh_highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         if params.visibility:
             dataset = pipeline.reader.GetOutputDataObject(0)
             pipeline.highlight.mapper.SetInputDataObject(dataset)
         else:
             pipeline.highlight.mapper.SetInputConnection(
-                pipeline.highlight.extractSelection.GetOutputPort()
+                pipeline.highlight.extract_selection.GetOutputPort()
             )
         pipeline.highlight.actor.SetVisibility(params.visibility)
         self.render(-1)

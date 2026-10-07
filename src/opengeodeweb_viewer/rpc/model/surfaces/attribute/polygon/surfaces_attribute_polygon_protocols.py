@@ -23,17 +23,8 @@ class VtkModelSurfacesAttributePolygonView(VtkModelView):
         super().__init__()
 
     @typed_rpc(model_surfaces_attribute_polygon_prefix, schemas.attribute_route)
-    def setModelSurfacesPolygonAttribute(
+    def set_model_surfaces_polygon_attribute(
         self, params: schemas.Attribute
     ) -> schemas.AttributeResponse:
-        self.displayAttributeOnCells(
-            params.id,
-            params.block_ids,
-            params.name,
-            params.item,
-            params.points,
-            params.minimum,
-            params.maximum,
-            params.no_data_color,
-        )
+        self.display_attribute_on_cells(params.id, params.block_ids, params)
         return schemas.AttributeResponse()

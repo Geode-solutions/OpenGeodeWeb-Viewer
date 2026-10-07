@@ -1,3 +1,5 @@
+import logging
+
 # Third party imports
 from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
@@ -10,141 +12,136 @@ from vtkmodules.vtkRenderingCore import (
 )
 
 # Local application imports
+from opengeodeweb_viewer.utils_functions import ColorClassProtocol
 from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
+
+logger = logging.getLogger(__name__)
 
 
 class VtkObjectView(VtkView):
     def __init__(self) -> None:
         super().__init__()
 
-    def registerObject(
-        self,
-        id: str,
-        file_name: str,
-        data: VtkPipeline,
-    ) -> None:
-        self.register_object(id, data)
+    def add_object(self, data_id: str, data: VtkPipeline) -> None:
+        self.register_object(data_id, data)
         data.actor.SetMapper(data.mapper)
         data.mapper.SetColorModeToMapScalars()
         data.mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
         data.mapper.SetResolveCoincidentTopologyPolygonOffsetParameters(2, 0)
         data.mapper.SetResolveCoincidentTopologyPointOffsetParameter(-2)
-        data.scalarBar.SetVisibility(False)
+        data.scalar_bar.VisibilityOff()
 
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
-        resetCamara = True
+        render_window = self.getView("-1")
+        renderer = render_window.GetRenderers().GetFirstRenderer()
+        should_reset_camera = True
         actors = renderer.GetActors()
         actors.InitTraversal()
         while actor := actors.GetNextItem():
-            if actor.visibility == True:
-                resetCamara = False
+            if actor.visibility:
+                should_reset_camera = False
         renderer.AddActor(data.actor)
         renderer.AddActor(data.highlight.actor)
-        renderer.AddViewProp(data.scalarBar)
-        if resetCamara:
+        renderer.AddViewProp(data.scalar_bar)
+        if should_reset_camera:
             renderer.ResetCamera()
 
-    def deregisterObject(self, data_id: str) -> None:
+    def remove_object(self, data_id: str) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        render_window = self.getView("-1")
+        renderer = render_window.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
         renderer.RemoveActor(pipeline.highlight.actor)
-        renderer.RemoveViewProp(pipeline.scalarBar)
+        renderer.RemoveViewProp(pipeline.scalar_bar)
         for bar in pipeline.scalar_bars.values():
             renderer.RemoveViewProp(bar)
         self.deregister_object(data_id)
         self.update_scalar_bars_layout()
 
-    def SetVisibility(self, data_id: str, visibility: bool) -> None:
+    def set_visibility(self, data_id: str, *, visibility: bool) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.actor.SetVisibility(visibility)
         if not visibility:
-            pipeline.scalarBar.SetVisibility(False)
+            pipeline.scalar_bar.VisibilityOff()
             for bar in pipeline.scalar_bars.values():
-                bar.SetVisibility(False)
+                bar.VisibilityOff()
         else:
             if (
                 pipeline.mapper.GetScalarVisibility()
                 and pipeline.mapper.GetLookupTable() is not None
             ):
-                pipeline.scalarBar.SetVisibility(True)
+                pipeline.scalar_bar.VisibilityOn()
             for style in pipeline.block_styles.values():
                 if style and style.get("name"):
                     for bar in pipeline.scalar_bars.values():
                         if bar.GetLookupTable() is not None:
-                            bar.SetVisibility(True)
+                            bar.VisibilityOn()
                     break
         self.update_scalar_bars_layout()
 
-    def SetOpacity(self, data_id: str, opacity: float) -> None:
+    def set_opacity(self, data_id: str, opacity: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetOpacity(opacity)
 
-    def SetColor(
-        self, data_id: str, red: int, green: int, blue: int, alpha: float
-    ) -> None:
+    def set_color(self, data_id: str, color: ColorClassProtocol) -> None:
         mapper = self.get_vtk_pipeline(data_id).mapper
         mapper.ScalarVisibilityOff()
         actor = self.get_vtk_pipeline(data_id).actor
-        actor.GetProperty().SetColor([red / 255, green / 255, blue / 255])
-        actor.GetProperty().SetOpacity(alpha)
+        actor.GetProperty().SetColor([color.red / 255, color.green / 255, color.blue / 255])
+        actor.GetProperty().SetOpacity(color.alpha)
 
-    def SetEdgesVisibility(self, data_id: str, visibility: bool) -> None:
+    def set_edges_visibility(self, data_id: str, *, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
-            self.SetVisibility(data_id, visibility)
+            self.set_visibility(data_id, visibility=visibility)
         else:
             actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetEdgeVisibility(visibility)
 
-    def SetEdgesWidth(self, data_id: str, width: float) -> None:
+    def set_edges_width(self, data_id: str, width: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
             actor.GetProperty().SetLineWidth(width)
         else:
             actor.GetProperty().SetEdgeWidth(width)
 
-    def SetEdgesColor(
-        self, data_id: str, red: int, green: int, blue: int, alpha: float
-    ) -> None:
+    def set_edges_color(self, data_id: str, color: ColorClassProtocol) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
-            self.SetColor(data_id, red, green, blue, alpha)
+            self.set_color(data_id, color)
         else:
             actor = self.get_vtk_pipeline(data_id).actor
-            actor.GetProperty().SetEdgeColor([red / 255, green / 255, blue / 255])
+            actor.GetProperty().SetEdgeColor([color.red / 255, color.green / 255, color.blue / 255])
 
-    def SetPointsVisibility(self, data_id: str, visibility: bool) -> None:
+    def set_points_visibility(self, data_id: str, *, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
-            self.SetVisibility(data_id, visibility)
+            self.set_visibility(data_id, visibility=visibility)
         else:
             actor = self.get_vtk_pipeline(data_id).actor
             actor.GetProperty().SetVertexVisibility(visibility)
 
-    def SetPointsSize(self, data_id: str, size: float) -> None:
+    def set_points_size(self, data_id: str, size: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
         actor.GetProperty().SetPointSize(size)
 
-    def SetPointsColor(
-        self, data_id: str, red: int, green: int, blue: int, alpha: float
-    ) -> None:
+    def set_points_color(self, data_id: str, color: ColorClassProtocol) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
-            self.SetColor(data_id, red, green, blue, alpha)
+            self.set_color(data_id, color)
         else:
             actor = self.get_vtk_pipeline(data_id).actor
-            actor.GetProperty().SetVertexColor([red / 255, green / 255, blue / 255])
+            actor.GetProperty().SetVertexColor(
+                [color.red / 255, color.green / 255, color.blue / 255]
+            )
 
-    def SetBlocksVisibility(
-        self, data_id: str, block_ids: list[int], visibility: bool
+    def set_blocks_visibility(
+        self, data_id: str, block_ids: list[int], *, visibility: bool
     ) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         mapper = pipeline.mapper
         if not isinstance(mapper, vtkCompositePolyDataMapper):
-            raise TypeError("Mapper is not a vtkCompositePolyDataMapper")
-        blocks = pipeline.blockDataSets
+            msg = "Mapper is not a vtkCompositePolyDataMapper"
+            raise TypeError(msg)
+        blocks = pipeline.block_data_sets
         visibility_attributes = mapper.GetCompositeDataDisplayAttributes()
-        print(f"{visibility_attributes=}", flush=True)
+        logger.debug("visibility_attributes=%s", visibility_attributes)
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
         dataset = mapper.GetInputDataObject(0, 0)
@@ -157,28 +154,7 @@ class VtkObjectView(VtkView):
             pipeline.prune_hidden_blocks(dataset, visibility_attributes)
         )
 
-    def SetBlocksColor(
-        self,
-        data_id: str,
-        block_ids: list[int],
-        red: int,
-        green: int,
-        blue: int,
-        alpha: float,
-    ) -> None:
-        pipeline = self.get_vtk_pipeline(data_id)
-        mapper = pipeline.mapper
-        if not isinstance(mapper, vtkCompositePolyDataMapper):
-            raise TypeError("Mapper is not a vtkCompositePolyDataMapper")
-        blocks = pipeline.blockDataSets
-        attributes = mapper.GetCompositeDataDisplayAttributes()
-        for block_id in block_ids:
-            attributes.SetBlockColor(
-                blocks[block_id], [red / 255, green / 255, blue / 255]
-            )
-            attributes.SetBlockOpacity(blocks[block_id], alpha)
-
-    def clearColors(self, data_id: str) -> None:
+    def clear_colors(self, data_id: str) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         mapper = pipeline.mapper
         reader = pipeline.reader
@@ -189,9 +165,9 @@ class VtkObjectView(VtkView):
         elif isinstance(mapper, vtkCompositePolyDataMapper):
             pipeline.clear_blocks_scalars()
         mapper.ScalarVisibilityOff()
-        pipeline.scalarBar.SetVisibility(False)
+        pipeline.scalar_bar.VisibilityOff()
         for bar in pipeline.scalar_bars.values():
-            bar.SetVisibility(False)
+            bar.VisibilityOff()
         self.update_scalar_bars_layout()
 
     def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:
@@ -202,13 +178,13 @@ class VtkObjectView(VtkView):
         prop.SetColor(0.235, 0.6, 0.514)
         prop.SetLineWidth(4)
         prop.SetPointSize(15)
-        prop.SetRenderPointsAsSpheres(True)
-        prop.SetLighting(False)
-        prop.SetEdgeVisibility(True)
+        prop.RenderPointsAsSpheresOn()
+        prop.LightingOff()
+        prop.EdgeVisibilityOn()
         prop.SetEdgeColor(0.12, 0.35, 0.30)
         actor.SetMapper(mapper)
         actor.VisibilityOff()
-        actor.SetUseBounds(False)
+        actor.UseBoundsOff()
 
     def highlight(self, pipeline: VtkPipeline) -> None:
         highlight = pipeline.highlight
@@ -216,7 +192,7 @@ class VtkObjectView(VtkView):
         if pipeline.filter.GetNumberOfInputConnections(0) == 0:
             pipeline.filter.SetInputConnection(pipeline.reader.GetOutputPort())
         input_port = pipeline.filter.GetOutputPort()
-        highlight.selection.AddNode(highlight.selectionNode)
-        highlight.extractSelection.SetInputConnection(0, input_port)
-        highlight.extractSelection.SetInputData(1, highlight.selection)
-        highlight.mapper.SetInputConnection(highlight.extractSelection.GetOutputPort())
+        highlight.selection.AddNode(highlight.selection_node)
+        highlight.extract_selection.SetInputConnection(0, input_port)
+        highlight.extract_selection.SetInputData(1, highlight.selection)
+        highlight.mapper.SetInputConnection(highlight.extract_selection.GetOutputPort())

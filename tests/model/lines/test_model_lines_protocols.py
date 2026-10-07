@@ -32,7 +32,7 @@ def test_lines_edges_visibility(
             }
         ],
     )
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg")
 
     server.call(
         VtkModelLinesView.model_lines_prefix
@@ -45,7 +45,7 @@ def test_lines_edges_visibility(
             }
         ],
     )
-    assert server.compare_image("model/lines/visibility.jpeg") == True
+    assert server.compare_image("model/lines/visibility.jpeg")
 
 
 def test_lines_edges_color(
@@ -66,7 +66,7 @@ def test_lines_edges_color(
             }
         ],
     )
-    assert server.compare_image("model/lines/color.jpeg") == True
+    assert server.compare_image("model/lines/color.jpeg")
 
 
 def test_lines_clipping_plane(
@@ -90,7 +90,7 @@ def test_lines_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("model/lines/clipping_plane.jpeg") == True
+    assert server.compare_image("model/lines/clipping_plane.jpeg")
 
 
 def test_lines_shrink(
@@ -109,4 +109,4 @@ def test_lines_shrink(
             }
         ],
     )
-    assert server.compare_image("model/lines/shrink.jpeg") == True
+    assert server.compare_image("model/lines/shrink.jpeg")

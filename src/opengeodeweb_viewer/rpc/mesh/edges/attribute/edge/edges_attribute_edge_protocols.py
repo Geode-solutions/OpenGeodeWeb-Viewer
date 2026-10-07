@@ -21,16 +21,8 @@ class VtkMeshEdgesAttributeEdgeView(VtkMeshView):
         super().__init__()
 
     @typed_rpc(mesh_edges_attribute_edge_prefix, schemas.attribute_route)
-    def setMeshEdgesEdgeAttribute(
+    def set_mesh_edges_edge_attribute(
         self, params: schemas.Attribute
     ) -> schemas.AttributeResponse:
-        self.displayAttributeOnCells(
-            params.id,
-            params.name,
-            params.item,
-            params.points,
-            params.minimum,
-            params.maximum,
-            params.no_data_color,
-        )
+        self.display_attribute_on_cells(params.id, params)
         return schemas.AttributeResponse()

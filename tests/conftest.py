@@ -1,5 +1,6 @@
 import contextlib
 import json
+import logging
 import os
 import shutil
 import tempfile
@@ -19,6 +20,9 @@ from xprocess import ProcessStarter, XProcess  # type: ignore[import-untyped]
 from opengeodeweb_viewer.config import TestConfig
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
+logger = logging.getLogger(__name__)
+
+
 type RpcTestParams = list[dict[str, Any] | int] | None
 
 
@@ -26,14 +30,9 @@ class ServerMonitor:
     def __init__(self, log: str, port: str = "1234") -> None:
         self.log = log
         self.ws = create_connection(f"ws://localhost:{port}/ws")
-        self.images_dir_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "data", "images")
-        )
-        self.test_output_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "tests_output")
-        )
-        if not os.path.exists(self.test_output_dir):
-            os.mkdir(self.test_output_dir)
+        self.images_dir_path = Path(__file__).parent.resolve() / "data" / "images"
+        self.test_output_dir = Path(__file__).parent.resolve() / "tests_output"
+        self.test_output_dir.mkdir(exist_ok=True)
         self._init_ws()
         self._drain_initial_messages()
 
@@ -52,13 +51,13 @@ class ServerMonitor:
 
     def print_log(self) -> None:
         output = ""
-        with open(self.log) as f:
+        with Path(self.log).open() as f:
             for line in f:
                 if "@@__xproc_block_delimiter__@@" in line:
                     output = ""
                     continue
                 output += line
-        print(output)
+        logger.info("%s", output)
 
     def get_response(self) -> bytes | dict[str, object] | str:
         response = self.ws.recv()
@@ -68,43 +67,34 @@ class ServerMonitor:
             parsed = json.loads(response)
             if isinstance(parsed, dict):
                 return parsed
-            else:
-                return str(parsed)
+            return str(parsed)
         except json.JSONDecodeError:
             return str(response)
 
     @staticmethod
-    def _reader_for_file(path: str) -> vtkImageReader2:
-        lower = path.lower()
-        if lower.endswith(".png"):
-            return vtkPNGReader()
-        if lower.endswith((".jpg", ".jpeg")):
-            return vtkJPEGReader()
-        return vtkJPEGReader()
-
-    def images_diff(self, first_image_path: str, second_image_path: str) -> float:
-        if ".png" in first_image_path:
-            first_reader: vtkImageReader2 = vtkPNGReader()
-        elif (".jpg" in first_image_path) or (".jpeg" in first_image_path):
-            first_reader = vtkJPEGReader()
+    def _reader_for_file(path: Path) -> vtkImageReader2:
+        suffix = path.suffix.lower()
+        reader: vtkImageReader2
+        if suffix == ".png":
+            reader = vtkPNGReader()
+        elif suffix in (".jpg", ".jpeg"):
+            reader = vtkJPEGReader()
         else:
-            raise ValueError(f"Unsupported image format for file: {first_image_path}")
-        first_reader.SetFileName(first_image_path)
+            msg = f"Unsupported image format for file: {path}"
+            raise ValueError(msg)
+        reader.SetFileName(str(path))
+        return reader
 
-        if ".png" in second_image_path:
-            second_reader: vtkImageReader2 = vtkPNGReader()
-        elif (".jpg" in second_image_path) or (".jpeg" in second_image_path):
-            second_reader = vtkJPEGReader()
-        else:
-            raise ValueError(f"Unsupported image format for file: {second_image_path}")
-        second_reader.SetFileName(second_image_path)
+    def images_diff(self, first_image_path: Path, second_image_path: Path) -> float:
+        first_reader = self._reader_for_file(first_image_path)
+        second_reader = self._reader_for_file(second_image_path)
 
         images_diff = vtkImageDifference()
         images_diff.SetInputConnection(first_reader.GetOutputPort())
         images_diff.SetImageConnection(second_reader.GetOutputPort())
         images_diff.Update()
 
-        print(f"{images_diff.GetThresholdedError()=}")
+        logger.info("thresholded error=%s", images_diff.GetThresholdedError())
         return images_diff.GetThresholdedError()
 
     def compare_image(self, filename: str) -> bool:
@@ -116,20 +106,15 @@ class ServerMonitor:
             image = self.ws.recv()
             if isinstance(image, bytes):
                 response = self.ws.recv()
-                print(f"{response=}", flush=True)
+                logger.info("response=%s", response)
                 result = json.loads(response)["result"]
                 if result["stale"]:
                     continue
-                test_file_path = os.path.abspath(
-                    os.path.join(self.test_output_dir, f"test.{result["format"]}")
-                )
-                with open(test_file_path, "wb") as f:
-                    f.write(image)
-                    f.close()
-                path_image = os.path.join(self.images_dir_path, filename)
+                test_file_path = self.test_output_dir / f"test.{result['format']}"
+                test_file_path.write_bytes(image)
+                path_image = self.images_dir_path / filename
                 return self.images_diff(test_file_path, path_image) == 0.0
-            else:
-                print("response =", image, flush=True)
+            logger.info("response = %s", image)
         return False
 
     def _init_ws(self) -> None:
@@ -152,9 +137,8 @@ class ServerMonitor:
             try:
                 self.ws.recv()
             except WebSocketTimeoutException:
-                print(
-                    f"Timeout on message {i}, but continuing to try remaining messages...",
-                    flush=True,
+                logger.warning(
+                    "Timeout on message %s, but continuing to try remaining messages...", i
                 )
                 continue
 
@@ -164,7 +148,7 @@ class FixtureHelper:
         self.root_path = Path(root_path)
 
     def get_xprocess_args(self, project_folder_path: str) -> tuple[str, type, type]:
-        class Starter(ProcessStarter):  # type: ignore
+        class Starter(ProcessStarter):  # type: ignore[misc]
             terminate_on_interrupt = True
             pattern = "wslink: Starting factory"
             timeout = 10
@@ -181,16 +165,17 @@ class FixtureHelper:
 
 ROOT_PATH = Path(__file__).parent.parent.absolute()
 HELPER = FixtureHelper(ROOT_PATH)
-# Data generated by the tests (data folders, project.db) lives in a temporary project folder, removed at session end; tests/data only holds the source fixtures.
+# Data generated by the tests (data folders, project.db) lives in a temporary project folder,
+# removed at session end; tests/data only holds the source fixtures.
 TEST_PROJECT_FOLDER_PATH = tempfile.mkdtemp(prefix="ogw_test_data_")
 
 
 @pytest.fixture
 def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
-    name, Starter, Monitor = HELPER.get_xprocess_args(TEST_PROJECT_FOLDER_PATH)
+    name, starter, monitor_class = HELPER.get_xprocess_args(TEST_PROJECT_FOLDER_PATH)
     os.environ["PYTHON_ENV"] = "test"
-    _, log = xprocess.ensure(name, Starter)
-    monitor = Monitor(log)
+    _, log = xprocess.ensure(name, starter)
+    monitor = monitor_class(log)
     yield monitor
     with contextlib.suppress(Exception):
         monitor.ws.close()
@@ -207,22 +192,22 @@ def configure_test_environment() -> Generator[None, None, None]:
 
     yield
     shutil.rmtree(TEST_PROJECT_FOLDER_PATH, ignore_errors=True)
-    print(f"Cleaned up test project folder: {TEST_PROJECT_FOLDER_PATH}", flush=True)
+    logger.info("Cleaned up test project folder: %s", TEST_PROJECT_FOLDER_PATH)
 
 
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
     def create_dataset(
-        *, id: str, viewable_file: str, viewer_elements_type: str = "default"
+        *, data_id: str, viewable_file: str, viewer_elements_type: str = "default"
     ) -> str:
         session = get_session()
         viewer_object = "model" if viewable_file.lower().endswith(".vtm") else "mesh"
 
-        row = session.get(Data, id)
+        row = session.get(Data, data_id)
         if row is None:
             session.add(
                 Data(
-                    id=id,
+                    id=data_id,
                     geode_id="00000000-0000-0000-0000-000000000000",
                     viewable_file=viewable_file,
                     geode_object=viewer_object,
@@ -237,7 +222,7 @@ def dataset_factory() -> Callable[..., str]:
             row.viewer_elements_type = viewer_elements_type
         session.commit()
 
-        data_folder = Path(os.environ["DATA_FOLDER_PATH"]) / id
+        data_folder = Path(os.environ["DATA_FOLDER_PATH"]) / data_id
         data_folder.mkdir(parents=True, exist_ok=True)
 
         src_path = Path(__file__).parent / "data" / viewable_file
@@ -246,7 +231,7 @@ def dataset_factory() -> Callable[..., str]:
             shutil.copy(src_path, dst_path)
 
         if dst_path.suffix.lower() == ".vtm":
-            tree = ET.parse(dst_path)
+            tree = ET.parse(dst_path)  # noqa: S314 trusted test fixture from tests/data
             root = tree.getroot()
             for dataset in root.findall(".//DataSet"):
                 file_attr = dataset.get("file")
@@ -257,6 +242,6 @@ def dataset_factory() -> Callable[..., str]:
                     if src_piece.exists():
                         shutil.copy(src_piece, dst_piece)
 
-        return id
+        return data_id
 
     return create_dataset

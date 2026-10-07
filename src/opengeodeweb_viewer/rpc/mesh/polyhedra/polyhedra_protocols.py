@@ -19,14 +19,14 @@ class VtkMeshPolyhedraView(VtkMeshView):
         super().__init__()
 
     @typed_rpc(mesh_polyhedra_prefix, schemas.visibility_route)
-    def setMeshPolyhedraVisibility(
+    def set_mesh_polyhedra_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetVisibility(params.id, params.visibility)
+        self.set_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(mesh_polyhedra_prefix, schemas.color_route)
-    def setMeshPolyhedraColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_mesh_polyhedra_color(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
-        self.SetColor(params.id, color.red, color.green, color.blue, color.alpha)
+        self.set_color(params.id, color)
         return schemas.ColorResponse()

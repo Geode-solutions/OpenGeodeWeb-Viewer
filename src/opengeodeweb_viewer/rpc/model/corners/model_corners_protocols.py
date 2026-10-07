@@ -19,14 +19,14 @@ class VtkModelCornersView(VtkModelView):
         super().__init__()
 
     @typed_rpc(model_corners_prefix, schemas.visibility_route)
-    def setModelCornersPointsVisibility(
+    def set_model_corners_points_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
+        self.set_blocks_visibility(params.id, params.block_ids, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_corners_prefix, schemas.color_route)
-    def setModelCornersColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_model_corners_color(self, params: schemas.Color) -> schemas.ColorResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         colors = self.apply_color(
             pipeline,

@@ -23,17 +23,8 @@ class VtkModelLinesAttributeVertexView(VtkModelView):
         super().__init__()
 
     @typed_rpc(model_lines_attribute_vertex_prefix, schemas.attribute_route)
-    def setModelLinesVertexAttribute(
+    def set_model_lines_vertex_attribute(
         self, params: schemas.Attribute
     ) -> schemas.AttributeResponse:
-        self.displayAttributeOnVertices(
-            params.id,
-            params.block_ids,
-            params.name,
-            params.item,
-            params.points,
-            params.minimum,
-            params.maximum,
-            params.no_data_color,
-        )
+        self.display_attribute_on_vertices(params.id, params.block_ids, params)
         return schemas.AttributeResponse()

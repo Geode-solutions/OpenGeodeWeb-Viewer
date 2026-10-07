@@ -9,7 +9,7 @@ def test_register_mesh(
 ) -> None:
     data_id = "00000000000000000000000123456789"
     dataset_factory(
-        id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+        data_id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
 
     server.call(
@@ -24,7 +24,7 @@ def test_register_model(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     data_id = "00000000000000000000000123456789"
-    dataset_factory(id=data_id, viewable_file="CrossSection.vtm")
+    dataset_factory(data_id=data_id, viewable_file="CrossSection.vtm")
 
     server.call(
         VtkGenericView.generic_prefix
@@ -44,7 +44,7 @@ def test_deregister_mesh(
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
         [{"id": "00000000000000000000000123456789"}],
     )
-    assert server.compare_image("mesh/deregister.jpeg") == True
+    assert server.compare_image("mesh/deregister.jpeg")
 
 
 def test_deregister_model(
@@ -57,4 +57,4 @@ def test_deregister_model(
         + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
         [{"id": "00000000000000000000000123456789"}],
     )
-    assert server.compare_image("model/deregister.jpeg") == True
+    assert server.compare_image("model/deregister.jpeg")

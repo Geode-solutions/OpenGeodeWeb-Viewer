@@ -33,7 +33,7 @@ def test_blocks_polyhedra_visibility(
         ],
     )
 
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg")
 
     server.call(
         VtkModelBlocksView.model_blocks_prefix
@@ -47,7 +47,7 @@ def test_blocks_polyhedra_visibility(
         ],
     )
 
-    assert server.compare_image("model/blocks/visibility.jpeg") == True
+    assert server.compare_image("model/blocks/visibility.jpeg")
 
 
 def test_blocks_polyhedra_color(
@@ -68,7 +68,7 @@ def test_blocks_polyhedra_color(
             }
         ],
     )
-    assert server.compare_image("model/blocks/color.jpeg") == True
+    assert server.compare_image("model/blocks/color.jpeg")
 
 
 def test_blocks_clipping_plane(
@@ -92,7 +92,7 @@ def test_blocks_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("model/blocks/clipping_plane.jpeg") == True
+    assert server.compare_image("model/blocks/clipping_plane.jpeg")
 
 
 def test_blocks_shrink(
@@ -111,7 +111,7 @@ def test_blocks_shrink(
             }
         ],
     )
-    assert server.compare_image("model/blocks/shrink.jpeg") == True
+    assert server.compare_image("model/blocks/shrink.jpeg")
 
 
 def test_blocks_threshold(
@@ -136,4 +136,4 @@ def test_blocks_threshold(
             }
         ],
     )
-    assert server.compare_image("model/blocks/threshold.jpeg") == True
+    assert server.compare_image("model/blocks/threshold.jpeg")

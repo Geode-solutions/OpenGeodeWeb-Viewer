@@ -17,14 +17,14 @@ mesh_id = "12345678901234567890123456789012"
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(
-        id=mesh_id, viewable_file="regular_grid_2d.vti", viewer_elements_type="cells"
+        data_id=mesh_id, viewable_file="regular_grid_2d.vti", viewer_elements_type="cells"
     )
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": mesh_id, "name": "regular_grid_2d.vti"}],
     )
-    assert server.compare_image("mesh/cells/register.jpeg") == True
+    assert server.compare_image("mesh/cells/register.jpeg")
 
 
 def test_cells_color(
@@ -38,7 +38,7 @@ def test_cells_color(
         + VtkMeshCellsView.mesh_cells_schemas_dict["color"]["rpc"],
         [{"id": mesh_id, "color": {"red": 255, "green": 0, "blue": 0, "alpha": 0.5}}],
     )
-    assert server.compare_image("mesh/cells/color.jpeg") == True
+    assert server.compare_image("mesh/cells/color.jpeg")
 
 
 def test_cells_visibility(
@@ -52,7 +52,7 @@ def test_cells_visibility(
         + VtkMeshCellsView.mesh_cells_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": False}],
     )
-    assert server.compare_image("mesh/cells/visibility.jpeg") == True
+    assert server.compare_image("mesh/cells/visibility.jpeg")
 
 
 def test_cells_clipping_plane(
@@ -76,7 +76,7 @@ def test_cells_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("mesh/cells/clipping_plane.jpeg") == True
+    assert server.compare_image("mesh/cells/clipping_plane.jpeg")
 
 
 def test_cells_shrink(
@@ -95,7 +95,7 @@ def test_cells_shrink(
             }
         ],
     )
-    assert server.compare_image("mesh/cells/shrink.jpeg") == True
+    assert server.compare_image("mesh/cells/shrink.jpeg")
 
 
 grid_3d_id = "22345678901234567890123456789012"
@@ -109,7 +109,7 @@ def register_grid_3d(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     dataset_factory(
-        id=grid_3d_id,
+        data_id=grid_3d_id,
         viewable_file="regular_grid_3d.vti",
         viewer_elements_type="cells",
     )
@@ -117,7 +117,7 @@ def register_grid_3d(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": grid_3d_id, "name": "regular_grid_3d.vti"}],
     )
-    assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg")
 
 
 def call_slice(
@@ -134,7 +134,7 @@ def test_slice(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
 
     result = call_slice(server, [grid_3d_id], [{"axis": 2, "index": 3}])
     assert result == {"max_indices": [10, 8, 6]}
-    assert server.compare_image("mesh/cells/slice_grid_3d.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_3d.jpeg")
 
 
 def test_slice_clamped(
@@ -144,10 +144,10 @@ def test_slice_clamped(
 
     result = call_slice(server, [mesh_id], [{"axis": 0, "index": 10000}])
     assert result == {"max_indices": [524, 774, 0]}
-    assert server.compare_image("mesh/cells/slice_grid_2d_last.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_2d_last.jpeg")
 
     call_slice(server, [mesh_id], [{"axis": 0, "index": 524}])
-    assert server.compare_image("mesh/cells/slice_grid_2d_last.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_2d_last.jpeg")
 
 
 def test_slice_removed(
@@ -158,7 +158,7 @@ def test_slice_removed(
 
     result = call_slice(server, [grid_3d_id], [])
     assert result == {"max_indices": [10, 8, 6]}
-    assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg")
 
 
 def test_slice_then_clipping(
@@ -177,7 +177,7 @@ def test_slice_then_clipping(
             }
         ],
     )
-    assert server.compare_image("mesh/cells/slice_grid_3d_clipping.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_3d_clipping.jpeg")
 
 
 def test_slice_grid_2d(
@@ -187,14 +187,14 @@ def test_slice_grid_2d(
 
     result = call_slice(server, [mesh_id], [{"axis": 0, "index": 262}])
     assert result == {"max_indices": [524, 774, 0]}
-    assert server.compare_image("mesh/cells/slice_grid_2d.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_2d.jpeg")
 
 
 def test_slice_on_non_grid_removed(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     dataset_factory(
-        id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+        data_id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -211,7 +211,7 @@ def test_slice_on_non_grid_ignored(
 ) -> None:
     register_grid_3d(server, dataset_factory)
     dataset_factory(
-        id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
+        data_id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
     )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -238,7 +238,7 @@ def test_multiple_slices(
         ],
     )
     assert result == {"max_indices": [524, 774, 0]}
-    assert server.compare_image("mesh/cells/slice_grid_2d_multiple.jpeg") == True
+    assert server.compare_image("mesh/cells/slice_grid_2d_multiple.jpeg")
 
 
 def test_cells_threshold(
@@ -263,11 +263,11 @@ def test_cells_threshold(
             }
         ],
     )
-    assert server.compare_image("mesh/cells/threshold.jpeg") == True
+    assert server.compare_image("mesh/cells/threshold.jpeg")
 
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
         [{"ids": [mesh_id]}],
     )
-    assert server.compare_image("mesh/cells/register.jpeg") == True
+    assert server.compare_image("mesh/cells/register.jpeg")

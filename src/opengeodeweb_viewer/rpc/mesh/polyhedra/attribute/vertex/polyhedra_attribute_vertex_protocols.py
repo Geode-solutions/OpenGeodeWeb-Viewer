@@ -23,16 +23,8 @@ class VtkMeshPolyhedraAttributeVertexView(VtkMeshView):
         super().__init__()
 
     @typed_rpc(mesh_polyhedra_attribute_vertex_prefix, schemas.attribute_route)
-    def setMeshPolyhedraVertexAttribute(
+    def set_mesh_polyhedra_vertex_attribute(
         self, params: schemas.Attribute
     ) -> schemas.AttributeResponse:
-        self.displayAttributeOnVertices(
-            params.id,
-            params.name,
-            params.item,
-            params.points,
-            params.minimum,
-            params.maximum,
-            params.no_data_color,
-        )
+        self.display_attribute_on_vertices(params.id, params)
         return schemas.AttributeResponse()

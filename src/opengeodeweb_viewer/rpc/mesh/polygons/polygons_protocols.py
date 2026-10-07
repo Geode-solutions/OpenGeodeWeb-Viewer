@@ -19,14 +19,14 @@ class VtkMeshPolygonsView(VtkMeshView):
         super().__init__()
 
     @typed_rpc(mesh_polygons_prefix, schemas.visibility_route)
-    def setMeshPolygonsVisibility(
+    def set_mesh_polygons_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetVisibility(params.id, params.visibility)
+        self.set_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(mesh_polygons_prefix, schemas.color_route)
-    def setMeshPolygonsColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_mesh_polygons_color(self, params: schemas.Color) -> schemas.ColorResponse:
         color = params.color
-        self.SetColor(params.id, color.red, color.green, color.blue, color.alpha)
+        self.set_color(params.id, color)
         return schemas.ColorResponse()

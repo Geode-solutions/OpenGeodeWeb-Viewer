@@ -63,3 +63,6 @@ where = ["src"]
 "opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.schemas" = ["*.json"]
 "opengeodeweb_viewer.rpc.viewer.schemas" = ["*.json"]
+
+[tool.pytest.ini_options]
+log_level = "INFO"

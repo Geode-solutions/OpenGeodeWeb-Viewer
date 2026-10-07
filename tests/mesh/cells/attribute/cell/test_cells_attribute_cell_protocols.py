@@ -18,7 +18,7 @@ mesh_id = "12345678901234567890123456789012"
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(
-        id=mesh_id, viewable_file="regular_grid_2d.vti", viewer_elements_type="cells"
+        data_id=mesh_id, viewable_file="regular_grid_2d.vti", viewer_elements_type="cells"
     )
 
     server.call(
@@ -61,7 +61,7 @@ def test_cells_cell_color_map(
         ],
     )
 
-    assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
+    assert server.compare_image("mesh/cells/cell_color_map.jpeg")
 
 
 def test_cells_cell_color_map_range_update(
@@ -98,7 +98,7 @@ def test_cells_cell_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
+    assert server.compare_image("mesh/cells/cell_color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -128,7 +128,7 @@ def test_cells_cell_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("mesh/cells/cell_color_map_range_update.jpeg") == True
+    assert server.compare_image("mesh/cells/cell_color_map_range_update.jpeg")
 
 
 def test_cells_cell_color_map_red_shift(
@@ -165,7 +165,7 @@ def test_cells_cell_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/cells/cell_color_map.jpeg") == True
+    assert server.compare_image("mesh/cells/cell_color_map.jpeg")
 
     # Update range via attribute
     server.call(
@@ -195,7 +195,7 @@ def test_cells_cell_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/cells/cell_color_map_red_shift.jpeg") == True
+    assert server.compare_image("mesh/cells/cell_color_map_red_shift.jpeg")
 
 
 def test_cells_cell_color_map_rainbow(
@@ -257,7 +257,7 @@ def test_cells_cell_color_map_rainbow(
     )
 
     assert (
-        server.compare_image("mesh/cells/cell_color_map_rainbow_initial.jpeg") == True
+        server.compare_image("mesh/cells/cell_color_map_rainbow_initial.jpeg")
     )
 
     # Update range via attribute
@@ -312,7 +312,7 @@ def test_cells_cell_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("mesh/cells/cell_color_map_rainbow.jpeg") == True
+    assert server.compare_image("mesh/cells/cell_color_map_rainbow.jpeg")
 
 
 def test_cells_cell_attribute_item(
@@ -348,4 +348,4 @@ def test_cells_cell_attribute_item(
         ],
     )
 
-    assert server.compare_image("mesh/cells/cell_color_map_item.jpeg") == True
+    assert server.compare_image("mesh/cells/cell_color_map_item.jpeg")

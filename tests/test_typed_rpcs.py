@@ -6,7 +6,7 @@ import pkgutil
 from typing import Any
 
 # Third party imports
-import fastjsonschema  # type: ignore
+import fastjsonschema  # type: ignore[import-untyped]
 import pytest
 
 # Local application imports
@@ -41,29 +41,29 @@ def test_every_rpc_is_typed() -> None:
 
 class _Protocol:
     def __init__(self) -> None:
-        self.published: list[tuple[str, Any]] = []
+        self.published: list[tuple[str, object]] = []
 
-    def publish(self, rpc_id: str, params: Any) -> None:
+    def publish(self, rpc_id: str, params: object) -> None:
         self.published.append((rpc_id, params))
 
     @typed_rpc(PREFIX, schemas.pick_colormap_route)
-    def pick(self, params: schemas.PickColormap) -> schemas.PickColormapResponse:
+    def pick(self, _params: schemas.PickColormap) -> schemas.PickColormapResponse:
         return schemas.PickColormapResponse(data_id=None)
 
     @typed_rpc(PREFIX, schemas.get_point_position_route)
     def wrong_type(
-        self, params: schemas.GetPointPosition
+        self, _params: schemas.GetPointPosition
     ) -> schemas.GetPointPositionResponse:
         return schemas.PickColormapResponse()  # type: ignore[return-value]
 
     @typed_rpc(PREFIX, schemas.get_point_position_route)
     def invalid_payload(
-        self, params: schemas.GetPointPosition
+        self, _params: schemas.GetPointPosition
     ) -> schemas.GetPointPositionResponse:
         return schemas.GetPointPositionResponse(x="a", y=0, z=0)  # type: ignore[arg-type]
 
     @typed_rpc(PREFIX, schemas.highlight_route)
-    def highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
+    def highlight(self, _params: schemas.Highlight) -> schemas.HighlightResponse:
         return schemas.HighlightResponse(
             id="data",
             picked_id=0,
