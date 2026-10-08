@@ -16,86 +16,86 @@ from vtkmodules.web.wslink import ServerProtocol
 from wslink import server  # type: ignore[import-untyped]
 
 # Local application imports
-from .config import Config, DevConfig, ProdConfig, TestConfig
-from .rpc.generic.generic_protocols import VtkGenericView
-from .rpc.mesh.cells.attribute.cell.cells_attribute_cell_protocols import (
+from opengeodeweb_viewer.config import Config, DevConfig, ProdConfig, TestConfig
+from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
+from opengeodeweb_viewer.rpc.mesh.cells.attribute.cell.cells_attribute_cell_protocols import (
     VtkMeshCellsAttributeCellView,
 )
-from .rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
     VtkMeshCellsAttributeVertexView,
 )
-from .rpc.mesh.cells.cells_protocols import VtkMeshCellsView
-from .rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
+from opengeodeweb_viewer.rpc.mesh.cells.cells_protocols import VtkMeshCellsView
+from opengeodeweb_viewer.rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
     VtkMeshEdgesAttributeEdgeView,
 )
-from .rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
     VtkMeshEdgesAttributeVertexView,
 )
-from .rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
-from .rpc.mesh.mesh_protocols import VtkMeshView
-from .rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
     VtkMeshPointsAttributeVertexView,
 )
-from .rpc.mesh.points.points_protocols import VtkMeshPointsView
-from .rpc.mesh.polygons.attribute.polygon.polygons_attribute_polygon_protocols import (
+from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
+from opengeodeweb_viewer.rpc.mesh.polygons.attribute.polygon.polygons_attribute_polygon_protocols import (
     VtkMeshPolygonsAttributePolygonView,
 )
-from .rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
     VtkMeshPolygonsAttributeVertexView,
 )
-from .rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
-from .rpc.mesh.polyhedra.attribute.polyhedron.polyhedra_attribute_polyhedron_protocols import (
+from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
+from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.polyhedron.polyhedra_attribute_polyhedron_protocols import (
     VtkMeshPolyhedraAttributePolyhedronView,
 )
-from .rpc.mesh.polyhedra.attribute.vertex.polyhedra_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.vertex.polyhedra_attribute_vertex_protocols import (
     VtkMeshPolyhedraAttributeVertexView,
 )
-from .rpc.mesh.polyhedra.polyhedra_protocols import (
+from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
     VtkMeshPolyhedraView,
 )
-from .rpc.model.blocks.attribute.polyhedron.blocks_attribute_polyhedron_protocols import (
+from opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron.blocks_attribute_polyhedron_protocols import (
     VtkModelBlocksAttributePolyhedronView,
 )
-from .rpc.model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
     VtkModelBlocksAttributeVertexView,
 )
-from .rpc.model.blocks.model_blocks_protocols import (
+from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
-from .rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
     VtkModelCornersAttributeVertexView,
 )
-from .rpc.model.corners.model_corners_protocols import (
+from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
     VtkModelCornersView,
 )
-from .rpc.model.edges.model_edges_protocols import (
+from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
     VtkModelEdgesView,
 )
-from .rpc.model.lines.attribute.edge.lines_attribute_edge_protocols import (
+from opengeodeweb_viewer.rpc.model.lines.attribute.edge.lines_attribute_edge_protocols import (
     VtkModelLinesAttributeEdgeView,
 )
-from .rpc.model.lines.attribute.vertex.lines_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.model.lines.attribute.vertex.lines_attribute_vertex_protocols import (
     VtkModelLinesAttributeVertexView,
 )
-from .rpc.model.lines.model_lines_protocols import (
+from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
     VtkModelLinesView,
 )
-from .rpc.model.model_protocols import VtkModelView
-from .rpc.model.points.model_points_protocols import (
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
     VtkModelPointsView,
 )
-from .rpc.model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
     VtkModelSurfacesAttributePolygonView,
 )
-from .rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
     VtkModelSurfacesAttributeVertexView,
 )
-from .rpc.model.surfaces.model_surfaces_protocols import (
+from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
 )
-from .rpc.utils_protocols import VtkUtilsView
-from .rpc.viewer.viewer_protocols import VtkViewerView
-from .vtk_protocol import VtkTypingMixin, VtkView
+from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from opengeodeweb_viewer.vtk_protocol import VtkTypingMixin, VtkView
 
 # =============================================================================
 # Server class
