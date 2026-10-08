@@ -43,9 +43,7 @@ def test_polygons_polygon_color_map(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -82,9 +80,7 @@ def test_polygons_polygon_color_map_range_update(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -114,9 +110,7 @@ def test_polygons_polygon_color_map_range_update(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -153,9 +147,7 @@ def test_polygons_polygon_color_map_red_shift(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -185,9 +177,7 @@ def test_polygons_polygon_color_map_red_shift(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -224,9 +214,7 @@ def test_polygons_polygon_color_map_rainbow(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -280,9 +268,7 @@ def test_polygons_polygon_color_map_rainbow(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -342,9 +328,7 @@ def test_polygons_polygon_attribute_item(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,

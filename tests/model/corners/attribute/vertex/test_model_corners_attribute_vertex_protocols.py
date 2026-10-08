@@ -45,9 +45,7 @@ def test_corners_vertex_attribute(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -97,9 +95,7 @@ def test_corners_vertex_color_map(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -150,9 +146,7 @@ def test_corners_vertex_color_map_range_update(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -183,9 +177,7 @@ def test_corners_vertex_color_map_range_update(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -236,9 +228,7 @@ def test_corners_vertex_color_map_red_shift(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -269,9 +259,7 @@ def test_corners_vertex_color_map_red_shift(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -322,9 +310,7 @@ def test_corners_vertex_color_map_rainbow(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -379,9 +365,7 @@ def test_corners_vertex_color_map_rainbow(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,

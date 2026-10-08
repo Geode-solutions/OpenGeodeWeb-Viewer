@@ -61,9 +61,7 @@ class VtkMeshView(VtkObjectView):
         return schemas.DeregisterResponse()
 
     @typed_rpc(mesh_prefix, schemas.visibility_route)
-    def set_mesh_visibility(
-        self, params: schemas.Visibility
-    ) -> schemas.VisibilityResponse:
+    def set_mesh_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
         self.set_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
@@ -74,9 +72,7 @@ class VtkMeshView(VtkObjectView):
         return schemas.ColorResponse()
 
     @typed_rpc(mesh_prefix, schemas.apply_textures_route)
-    def mesh_apply_textures(
-        self, params: schemas.ApplyTextures
-    ) -> schemas.ApplyTexturesResponse:
+    def mesh_apply_textures(self, params: schemas.ApplyTextures) -> schemas.ApplyTexturesResponse:
         mesh_id = params.id
         for tex_info in params.textures:
             texture_id = tex_info.id
@@ -103,9 +99,7 @@ class VtkMeshView(VtkObjectView):
             pipeline.actor.SetTexture(texture)
         return schemas.ApplyTexturesResponse()
 
-    def display_attribute_on_vertices(
-        self, data_id: str, attribute: AttributeProtocol
-    ) -> None:
+    def display_attribute_on_vertices(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         name = attribute.name
         pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
@@ -117,9 +111,7 @@ class VtkMeshView(VtkObjectView):
         pipeline.mapper.ColorByArrayComponent(name, attribute.item)
         self.setup_color_map(data_id, attribute)
 
-    def display_attribute_on_cells(
-        self, data_id: str, attribute: AttributeProtocol
-    ) -> None:
+    def display_attribute_on_cells(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         name = attribute.name
         pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
@@ -131,12 +123,8 @@ class VtkMeshView(VtkObjectView):
         pipeline.mapper.ColorByArrayComponent(name, attribute.item)
         self.setup_color_map(data_id, attribute)
 
-    def display_scalar_range(
-        self, data_id: str, minimum: float, maximum: float
-    ) -> None:
-        logger.debug(
-            "Setting scalar range for %s to (%s, %s)", data_id, minimum, maximum
-        )
+    def display_scalar_range(self, data_id: str, minimum: float, maximum: float) -> None:
+        logger.debug("Setting scalar range for %s to (%s, %s)", data_id, minimum, maximum)
         data = self.get_vtk_pipeline(data_id)
         data.mapper.SetScalarRange(minimum, maximum)
         data.mapper.GetLookupTable().SetRange(minimum, maximum)
@@ -161,9 +149,7 @@ class VtkMeshView(VtkObjectView):
         self.update_scalar_bars_layout()
 
     @typed_rpc(mesh_prefix, schemas.highlight_route)
-    def set_mesh_highlight(
-        self, params: schemas.Highlight
-    ) -> schemas.HighlightResponse:
+    def set_mesh_highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         if params.visibility:
             dataset = pipeline.reader.GetOutputDataObject(0)

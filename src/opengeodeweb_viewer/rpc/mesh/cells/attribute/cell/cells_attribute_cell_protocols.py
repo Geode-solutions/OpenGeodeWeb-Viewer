@@ -13,16 +13,12 @@ from . import schemas
 
 class VtkMeshCellsAttributeCellView(VtkMeshView):
     mesh_cells_attribute_cell_prefix = "opengeodeweb_viewer.mesh.cells.attribute.cell."
-    mesh_cells_attribute_cell_schemas_dict = get_schemas_dict(
-        Path(__file__).parent / "schemas"
-    )
+    mesh_cells_attribute_cell_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()
 
     @typed_rpc(mesh_cells_attribute_cell_prefix, schemas.attribute_route)
-    def set_mesh_cells_cell_attribute(
-        self, params: schemas.Attribute
-    ) -> schemas.AttributeResponse:
+    def set_mesh_cells_cell_attribute(self, params: schemas.Attribute) -> schemas.AttributeResponse:
         self.display_attribute_on_cells(params.id, params)
         return schemas.AttributeResponse()

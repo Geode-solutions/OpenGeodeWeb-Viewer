@@ -12,12 +12,8 @@ from . import schemas
 
 
 class VtkMeshEdgesAttributeVertexView(VtkMeshView):
-    mesh_edges_attribute_vertex_prefix = (
-        "opengeodeweb_viewer.mesh.edges.attribute.vertex."
-    )
-    mesh_edges_attribute_vertex_schemas_dict = get_schemas_dict(
-        Path(__file__).parent / "schemas"
-    )
+    mesh_edges_attribute_vertex_prefix = "opengeodeweb_viewer.mesh.edges.attribute.vertex."
+    mesh_edges_attribute_vertex_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()

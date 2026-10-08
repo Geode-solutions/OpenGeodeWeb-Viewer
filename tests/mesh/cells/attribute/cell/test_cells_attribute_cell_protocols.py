@@ -29,18 +29,14 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_cells_cell_color_map(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_cells_cell_color_map(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -75,9 +71,7 @@ def test_cells_cell_color_map_range_update(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -105,9 +99,7 @@ def test_cells_cell_color_map_range_update(
     # Update range via attribute
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -142,9 +134,7 @@ def test_cells_cell_color_map_red_shift(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -172,9 +162,7 @@ def test_cells_cell_color_map_red_shift(
     # Update range via attribute
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -209,9 +197,7 @@ def test_cells_cell_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -263,9 +249,7 @@ def test_cells_cell_color_map_rainbow(
     # Update range via attribute
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -323,9 +307,7 @@ def test_cells_cell_attribute_item(
 
     server.call(
         VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_prefix
-        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeCellView.mesh_cells_attribute_cell_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,

@@ -32,8 +32,7 @@ def test_reset_visualization(server: ServerMonitor) -> None:
 
 def test_reset_camera(server: ServerMonitor) -> None:
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["reset_camera"]["rpc"]
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["reset_camera"]["rpc"]
     )
     assert server.compare_image("viewer/reset_camera.jpeg")
 
@@ -47,9 +46,7 @@ def test_set_viewer_background_color(server: ServerMonitor) -> None:
     assert server.compare_image("viewer/set_background_color.jpeg")
 
 
-def test_get_point_position(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_get_point_position(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -78,15 +75,12 @@ def test_get_point_position(
     assert type(z) is float
 
 
-def test_take_screenshot(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_take_screenshot(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     # Take a screenshot with background jpg
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
         [
             {
                 "filename": "take_screenshot_with_background",
@@ -102,16 +96,13 @@ def test_take_screenshot(
 
     first_image_path = server.test_output_dir / "test.jpg"
     first_image_path.write_bytes(blob)
-    second_image_path = (
-        server.images_dir_path / "viewer/take_screenshot_with_background.jpg"
-    )
+    second_image_path = server.images_dir_path / "viewer/take_screenshot_with_background.jpg"
 
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
     # Take a screenshot without background png
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
         [
             {
                 "filename": "take_screenshot_without_background",
@@ -129,16 +120,13 @@ def test_take_screenshot(
 
     first_image_path = server.test_output_dir / "test.png"
     first_image_path.write_bytes(blob)
-    second_image_path = (
-        server.images_dir_path / "viewer/take_screenshot_without_background.png"
-    )
+    second_image_path = server.images_dir_path / "viewer/take_screenshot_without_background.png"
 
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
     # Take a screenshot with background png
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"],
         [
             {
                 "filename": "take_screenshot_with_background",
@@ -156,9 +144,7 @@ def test_take_screenshot(
 
     first_image_path = server.test_output_dir / "test.png"
     first_image_path.write_bytes(blob)
-    second_image_path = (
-        server.images_dir_path / "viewer/take_screenshot_with_background.png"
-    )
+    second_image_path = server.images_dir_path / "viewer/take_screenshot_with_background.png"
 
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
@@ -168,8 +154,7 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
     test_register_mesh(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["picked_ids"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["picked_ids"]["rpc"],
         [{"x": 0, "y": 0, "ids": ["00000000000000000000000123456789"]}],
     )
     response = server.get_response()
@@ -194,9 +179,7 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
 
 def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     data_id = "00000000000000000000000123456789"
-    dataset_factory(
-        data_id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+    dataset_factory(data_id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
@@ -209,8 +192,7 @@ def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) 
     assert server.compare_image("viewer/register_hat.jpeg")
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
     assert server.compare_image("viewer/grid_scale_on.jpeg")
@@ -228,9 +210,7 @@ def test_axes(server: ServerMonitor) -> None:
     assert server.compare_image("viewer/axes_off.jpeg")
 
 
-def test_update_camera(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_update_camera(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     camera_options = {
@@ -242,8 +222,7 @@ def test_update_camera(
     }
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
         [
             {
                 "camera_options": camera_options,
@@ -265,8 +244,7 @@ def test_render(server: ServerMonitor, dataset_factory: Callable[..., str]) -> N
     }
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
         [
             {
                 "camera_options": camera_options,
@@ -275,16 +253,13 @@ def test_render(server: ServerMonitor, dataset_factory: Callable[..., str]) -> N
     )
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["render"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["render"]["rpc"],
     )
 
     assert server.compare_image("viewer/render.jpeg")
 
 
-def test_set_z_scaling(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_set_z_scaling(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     dataset_factory(
         data_id="00000000000000000000000123456789",
         viewable_file="polygon_attribute.vtp",
@@ -317,8 +292,7 @@ def test_set_z_scaling(
     }
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
         [
             {
                 "camera_options": camera_options,
@@ -327,8 +301,7 @@ def test_set_z_scaling(
     )
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
         [{"z_scale": 2.5}],
     )
     assert server.compare_image("viewer/set_z_scaling.jpeg")
@@ -342,35 +315,28 @@ def test_combined_scaling_and_grid(
         + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
     )
     assert server.compare_image("viewer/reset_visualization.jpeg")
-    dataset_factory(
-        data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+    dataset_factory(data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": mesh_id, "name": "hat.vtp"}],
     )
     assert server.compare_image("viewer/register_hat.jpeg")
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
         [{"visibility": True}],
     )
     assert server.compare_image("viewer/grid_scale_on.jpeg")
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_z_scaling"]["rpc"],
         [{"z_scale": 2.5}],
     )
     assert server.compare_image("viewer/combined_scaling_and_grid.jpeg")
 
 
-def test_clipping_planes(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_clipping_planes(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -388,8 +354,7 @@ def test_clipping_planes(
 def test_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -400,25 +365,19 @@ def test_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> N
     assert server.compare_image("viewer/shrink.jpeg")
 
 
-def test_explode_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_explode_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
         [{"ids": [mesh_id], "explode_factor": 0.5}],
     )
     assert server.compare_image("mesh/register.jpeg")
 
 
-def test_clipping_then_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_clipping_then_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -432,8 +391,7 @@ def test_clipping_then_shrink(
         ],
     )
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -444,13 +402,10 @@ def test_clipping_then_shrink(
     assert server.compare_image("viewer/clipping_then_shrink.jpeg")
 
 
-def test_shrink_then_clipping(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_shrink_then_clipping(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -459,8 +414,7 @@ def test_shrink_then_clipping(
         ],
     )
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [mesh_id],

@@ -12,12 +12,8 @@ from . import schemas
 
 
 class VtkMeshPointsAttributeVertexView(VtkMeshView):
-    mesh_points_attribute_vertex_prefix = (
-        "opengeodeweb_viewer.mesh.points.attribute.vertex."
-    )
-    mesh_points_attribute_vertex_schemas_dict = get_schemas_dict(
-        Path(__file__).parent / "schemas"
-    )
+    mesh_points_attribute_vertex_prefix = "opengeodeweb_viewer.mesh.points.attribute.vertex."
+    mesh_points_attribute_vertex_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()

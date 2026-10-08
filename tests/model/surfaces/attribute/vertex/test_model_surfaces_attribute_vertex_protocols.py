@@ -48,9 +48,7 @@ def test_surfaces_vertex_attribute(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -100,9 +98,7 @@ def test_surfaces_vertex_color_map(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -153,9 +149,7 @@ def test_surfaces_vertex_color_map_range_update(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -186,9 +180,7 @@ def test_surfaces_vertex_color_map_range_update(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -239,9 +231,7 @@ def test_surfaces_vertex_color_map_red_shift(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -272,9 +262,7 @@ def test_surfaces_vertex_color_map_red_shift(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -325,9 +313,7 @@ def test_surfaces_vertex_color_map_rainbow(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -382,9 +368,7 @@ def test_surfaces_vertex_color_map_rainbow(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -458,9 +442,7 @@ def test_surfaces_vertex_attribute_item(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -508,9 +490,7 @@ def test_surfaces_vertex_attribute_interpolates_through_colormap(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,

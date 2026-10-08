@@ -15,9 +15,7 @@ from tests.conftest import ServerMonitor
 mesh_id = "12345678901234567890123456789012"
 
 
-def test_register_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     dataset_factory(
         data_id=mesh_id,
         viewable_file="polyhedron_attribute.vtu",
@@ -31,9 +29,7 @@ def test_register_mesh(
     assert server.compare_image("mesh/polyhedra/register.jpeg")
 
 
-def test_polyhedra_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_polyhedra_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -49,9 +45,7 @@ def test_polyhedra_color(
     assert server.compare_image("mesh/polyhedra/color.jpeg")
 
 
-def test_polyhedra_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_polyhedra_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -69,8 +63,7 @@ def test_polyhedra_clipping_plane(
     test_register_mesh(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [mesh_id],

@@ -36,9 +36,9 @@ def test_points_vertex_attribute(
 
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -63,9 +63,9 @@ def test_points_vertex_color_map_range_update(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -93,9 +93,9 @@ def test_points_vertex_color_map_range_update(
     # Update range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -130,9 +130,9 @@ def test_points_vertex_color_map_red_shift(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -160,9 +160,9 @@ def test_points_vertex_color_map_red_shift(
     # Update range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -197,9 +197,9 @@ def test_points_vertex_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -251,9 +251,9 @@ def test_points_vertex_color_map_rainbow(
     # Update rainbow range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -311,9 +311,9 @@ def test_points_vertex_attribute_item(
 
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,

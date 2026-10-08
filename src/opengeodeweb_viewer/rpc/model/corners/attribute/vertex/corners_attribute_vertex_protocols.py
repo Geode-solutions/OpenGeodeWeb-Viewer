@@ -12,9 +12,7 @@ from . import schemas
 
 
 class VtkModelCornersAttributeVertexView(VtkModelView):
-    model_corners_attribute_vertex_prefix = (
-        "opengeodeweb_viewer.model.corners.attribute.vertex."
-    )
+    model_corners_attribute_vertex_prefix = "opengeodeweb_viewer.model.corners.attribute.vertex."
     model_corners_attribute_vertex_schemas_dict = get_schemas_dict(
         Path(__file__).parent / "schemas"
     )

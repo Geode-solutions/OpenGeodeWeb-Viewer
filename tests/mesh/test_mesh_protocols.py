@@ -7,12 +7,8 @@ from tests.conftest import ServerMonitor
 mesh_id = "12345678901234567890123456789012"
 
 
-def test_register_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-    dataset_factory(
-        data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    dataset_factory(data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -21,9 +17,7 @@ def test_register_mesh(
     assert server.compare_image("mesh/register.jpeg")
 
 
-def test_deregister_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_deregister_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -59,9 +53,7 @@ def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
     assert server.compare_image("mesh/color.jpeg")
 
 
-def test_apply_textures(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_apply_textures(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     dataset_factory(
         data_id="00000000000000000000000987654321",
@@ -70,8 +62,7 @@ def test_apply_textures(
     )
 
     server.call(
-        VtkMeshView.mesh_prefix
-        + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
         [
             {
                 "id": mesh_id,

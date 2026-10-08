@@ -12,9 +12,7 @@ from . import schemas
 
 
 class VtkMeshPolyhedraAttributeVertexView(VtkMeshView):
-    mesh_polyhedra_attribute_vertex_prefix = (
-        "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex."
-    )
+    mesh_polyhedra_attribute_vertex_prefix = "opengeodeweb_viewer.mesh.polyhedra.attribute.vertex."
     mesh_polyhedra_attribute_vertex_schemas_dict = get_schemas_dict(
         Path(__file__).parent / "schemas"
     )

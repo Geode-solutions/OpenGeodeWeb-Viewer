@@ -29,18 +29,14 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_edges_edge_color_map(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_edges_edge_color_map(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -75,9 +71,7 @@ def test_edges_edge_color_map_range_update(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -105,9 +99,7 @@ def test_edges_edge_color_map_range_update(
     # Update range via attribute
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -142,9 +134,7 @@ def test_edges_edge_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -196,9 +186,7 @@ def test_edges_edge_color_map_rainbow(
     # Update rainbow range via attribute
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -256,9 +244,7 @@ def test_edges_edge_attribute_item(
 
     server.call(
         VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_prefix
-        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshEdgesAttributeEdgeView.mesh_edges_attribute_edge_schemas_dict["attribute"]["rpc"],
         [
             {
                 "id": mesh_id,

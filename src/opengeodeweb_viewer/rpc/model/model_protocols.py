@@ -136,10 +136,7 @@ class VtkModelView(VtkObjectView):
                         or active_attrs[attr_key]["points"] != points
                     ):
                         attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
-                        if (
-                            attr_key in active_attrs
-                            and active_attrs[attr_key]["points"] != points
-                        ):
+                        if attr_key in active_attrs and active_attrs[attr_key]["points"] != points:
                             attr_key = f"{attr_key} (Block {block_id})"
                 active_attrs[attr_key] = style
         for name, style in active_attrs.items():
@@ -153,9 +150,7 @@ class VtkModelView(VtkObjectView):
             maximum = style["maximum"]
             points = style["points"]
             no_data_color = style["no_data_color"]
-            lut = create_color_transfer_function(
-                points, minimum, maximum, item, no_data_color
-            )
+            lut = create_color_transfer_function(points, minimum, maximum, item, no_data_color)
             bar.SetLookupTable(lut)
             bar.VisibilityOn()
         for name, bar in pipeline.scalar_bars.items():
@@ -226,9 +221,7 @@ class VtkModelView(VtkObjectView):
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
             data = VtkPipeline(reader, mapper)
-            geometry_output = cast(
-                "vtkMultiBlockDataSet", self.setup_pipeline(data, params.name)
-            )
+            geometry_output = cast("vtkMultiBlockDataSet", self.setup_pipeline(data, params.name))
             self.highlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()
@@ -251,32 +244,22 @@ class VtkModelView(VtkObjectView):
         return schemas.RegisterResponse()
 
     @typed_rpc(model_prefix, schemas.deregister_route)
-    def deregister_model(
-        self, params: schemas.Deregister
-    ) -> schemas.DeregisterResponse:
+    def deregister_model(self, params: schemas.Deregister) -> schemas.DeregisterResponse:
         self.remove_object(params.id)
         return schemas.DeregisterResponse()
 
     @typed_rpc(model_prefix, schemas.visibility_route)
-    def set_model_visibility(
-        self, params: schemas.Visibility
-    ) -> schemas.VisibilityResponse:
+    def set_model_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
         self.set_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_prefix, schemas.highlight_route)
-    def set_model_highlight(
-        self, params: schemas.Highlight
-    ) -> schemas.HighlightResponse:
+    def set_model_highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         if params.visibility and params.block_ids:
             append = vtkAppendDataSets()
             for i in params.block_ids:
-                block = (
-                    pipeline.block_data_sets[i]
-                    if i < len(pipeline.block_data_sets)
-                    else None
-                )
+                block = pipeline.block_data_sets[i] if i < len(pipeline.block_data_sets) else None
                 if isinstance(block, vtkDataSet):
                     append.AddInputData(block)
             append.Update()
@@ -290,9 +273,7 @@ class VtkModelView(VtkObjectView):
         return schemas.HighlightResponse()
 
     @typed_rpc(model_prefix, schemas.get_blocks_bounds_route)
-    def get_blocks_bounds(
-        self, params: schemas.GetBlocksBounds
-    ) -> schemas.GetBlocksBoundsResponse:
+    def get_blocks_bounds(self, params: schemas.GetBlocksBounds) -> schemas.GetBlocksBoundsResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         bbox = vtkBoundingBox()
         for block_id in params.block_ids:

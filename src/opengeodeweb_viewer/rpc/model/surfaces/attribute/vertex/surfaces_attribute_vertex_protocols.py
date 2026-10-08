@@ -12,9 +12,7 @@ from . import schemas
 
 
 class VtkModelSurfacesAttributeVertexView(VtkModelView):
-    model_surfaces_attribute_vertex_prefix = (
-        "opengeodeweb_viewer.model.surfaces.attribute.vertex."
-    )
+    model_surfaces_attribute_vertex_prefix = "opengeodeweb_viewer.model.surfaces.attribute.vertex."
     model_surfaces_attribute_vertex_schemas_dict = get_schemas_dict(
         Path(__file__).parent / "schemas"
     )

@@ -22,9 +22,7 @@ class VtkModelCornersView(VtkModelView):
     def set_model_corners_points_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.set_blocks_visibility(
-            params.id, params.block_ids, visibility=params.visibility
-        )
+        self.set_blocks_visibility(params.id, params.block_ids, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_corners_prefix, schemas.color_route)

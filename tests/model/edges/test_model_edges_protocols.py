@@ -14,9 +14,7 @@ from tests.model.test_model_protocols import test_register_model
 model_id = "12345678901234567890123456789012"
 
 
-def test_edges_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 

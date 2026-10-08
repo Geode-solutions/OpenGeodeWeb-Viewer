@@ -198,9 +198,7 @@ class _Server(VtkTypingMixin, ServerProtocol):
             render_window = vtkRenderWindow()
             render_window.AddRenderer(renderer)
             self.setSharedObject("renderer", renderer)
-            self.getApplication().GetObjectIdMap().SetActiveObject(
-                "VIEW", render_window
-            )
+            self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", render_window)
 
             render_window.SetOffScreenRendering(not _Server.debug)
 
@@ -216,9 +214,7 @@ def _configure_logging(python_env: str) -> None:
     package_logger = logging.getLogger("opengeodeweb_viewer")
     package_logger.addHandler(handler)
     package_logger.propagate = False
-    package_logger.setLevel(
-        logging.DEBUG if python_env in ("dev", "test") else logging.INFO
-    )
+    package_logger.setLevel(logging.DEBUG if python_env in ("dev", "test") else logging.INFO)
 
 
 def run_server(server_protocol: type[ServerProtocol] = _Server) -> None:

@@ -86,9 +86,7 @@ def test_surfaces_polygon_attribute(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -138,9 +136,7 @@ def test_surfaces_polygon_color_map(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -191,9 +187,7 @@ def test_surfaces_polygon_color_map_range_update(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -224,9 +218,7 @@ def test_surfaces_polygon_color_map_range_update(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -277,9 +269,7 @@ def test_surfaces_polygon_color_map_red_shift(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -310,9 +300,7 @@ def test_surfaces_polygon_color_map_red_shift(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -363,9 +351,7 @@ def test_surfaces_polygon_color_map_rainbow(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -420,9 +406,7 @@ def test_surfaces_polygon_color_map_rainbow(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,

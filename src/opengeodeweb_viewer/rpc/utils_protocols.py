@@ -33,9 +33,7 @@ class VtkUtilsView(VtkView):
         return schemas.KillResponse()
 
     @typed_rpc(utils_prefix, schemas.import_project_route)
-    def import_project(
-        self, _params: schemas.ImportProject
-    ) -> schemas.ImportProjectResponse:
+    def import_project(self, _params: schemas.ImportProject) -> schemas.ImportProjectResponse:
         widget = self.get_widget()
         if widget is not None:
             with contextlib.suppress(Exception):
@@ -53,9 +51,7 @@ class VtkUtilsView(VtkView):
         return schemas.ImportProjectResponse()
 
     @typed_rpc(utils_prefix, schemas.release_database_route)
-    def release_database(
-        self, _params: schemas.ReleaseDatabase
-    ) -> schemas.ReleaseDatabaseResponse:
+    def release_database(self, _params: schemas.ReleaseDatabase) -> schemas.ReleaseDatabaseResponse:
         self._release_database()
         return schemas.ReleaseDatabaseResponse()
 

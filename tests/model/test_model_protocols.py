@@ -11,9 +11,7 @@ from tests.conftest import ServerMonitor
 model_id = "12345678901234567890123456789012"
 
 
-def test_register_model(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_register_model(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(data_id=model_id, viewable_file="CrossSection.vtm")
     server.call(
@@ -23,9 +21,7 @@ def test_register_model(
     assert server.compare_image("model/register.jpeg")
 
 
-def test_register_model_cube(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_register_model_cube(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(data_id=model_id, viewable_file="cube.vtm")
     server.call(
@@ -47,37 +43,29 @@ def test_register_model_implicit_attribute(
     assert server.compare_image("model/implicit_attribute_register.jpeg")
 
 
-def test_visibility_model(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_visibility_model(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 
     server.call(
-        VtkModelView.model_prefix
-        + VtkModelView.model_schemas_dict["visibility"]["rpc"],
+        VtkModelView.model_prefix + VtkModelView.model_schemas_dict["visibility"]["rpc"],
         [{"id": model_id, "visibility": False}],
     )
     assert server.compare_image("model/visibility.jpeg")
 
 
-def test_deregister_model(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_deregister_model(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 
     server.call(
-        VtkModelView.model_prefix
-        + VtkModelView.model_schemas_dict["deregister"]["rpc"],
+        VtkModelView.model_prefix + VtkModelView.model_schemas_dict["deregister"]["rpc"],
         [{"id": model_id}],
     )
     assert server.compare_image("model/deregister.jpeg")
 
 
-def test_get_blocks_bounds(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_get_blocks_bounds(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 
@@ -91,13 +79,10 @@ def test_get_blocks_bounds(
     assert response.get("result") == {"bounds": [4.9, 4.9, 3.1, 3.1, 0.0, 0.0]}
 
 
-def test_model_cube_side_view(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_model_cube_side_view(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_model_cube(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
         [
             {
                 "camera_options": {
@@ -113,25 +98,19 @@ def test_model_cube_side_view(
     assert server.compare_image("model/cube_side_view.jpeg")
 
 
-def test_model_explode(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_model_explode(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_model_cube_side_view(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
         [{"ids": [model_id], "explode_factor": 1.0}],
     )
     assert server.compare_image("model/explode.jpeg")
 
 
-def test_model_explode_removed(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_model_explode_removed(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_model_explode(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["explode"]["rpc"],
         [{"ids": [model_id], "explode_factor": 0.0}],
     )
     assert server.compare_image("model/cube_side_view.jpeg")
@@ -166,8 +145,7 @@ def test_model_explode_then_shrink(
 ) -> None:
     test_model_explode(server, dataset_factory)
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [{"ids": [model_id], "shrink_factor": 0.8}],
     )
     assert server.compare_image("model/explode_then_shrink.jpeg")

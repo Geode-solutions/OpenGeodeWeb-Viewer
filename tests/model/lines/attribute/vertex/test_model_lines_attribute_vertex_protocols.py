@@ -18,9 +18,7 @@ from tests.model.test_model_protocols import test_register_model_cube
 model_id = "12345678901234567890123456789012"
 
 
-def test_lines_vertex_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_vertex_attribute(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -39,9 +37,9 @@ def test_lines_vertex_attribute(
 
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -67,9 +65,7 @@ def test_lines_vertex_attribute(
     assert server.compare_image("model/lines/vertex_attribute.jpeg")
 
 
-def test_lines_vertex_color_map(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_vertex_color_map(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -89,9 +85,9 @@ def test_lines_vertex_color_map(
     # Set active vertex attribute, item, color map & range
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -140,9 +136,9 @@ def test_lines_vertex_color_map_range_update(
     # Set active vertex attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -171,9 +167,9 @@ def test_lines_vertex_color_map_range_update(
     # Update range via attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -222,9 +218,9 @@ def test_lines_vertex_color_map_red_shift(
     # Set active vertex attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -253,9 +249,9 @@ def test_lines_vertex_color_map_red_shift(
     # Update range via attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -304,9 +300,9 @@ def test_lines_vertex_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -359,9 +355,9 @@ def test_lines_vertex_color_map_rainbow(
     # Update rainbow range via attribute
     server.call(
         VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_prefix
-        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeVertexView.model_lines_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,

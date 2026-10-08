@@ -19,9 +19,7 @@ class VtkModelPointsView(VtkModelView):
         super().__init__()
 
     @typed_rpc(model_points_prefix, schemas.visibility_route)
-    def set_model_points_visibility(
-        self, params: schemas.Visibility
-    ) -> schemas.VisibilityResponse:
+    def set_model_points_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
         self.set_points_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 

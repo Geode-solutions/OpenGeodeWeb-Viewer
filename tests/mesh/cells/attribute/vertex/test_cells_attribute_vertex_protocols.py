@@ -29,18 +29,16 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     )
 
 
-def test_cells_vertex_color_map(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_cells_vertex_color_map(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
     # Set active attribute, item, range and color map in a single call
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -75,9 +73,9 @@ def test_cells_vertex_color_map_range_update(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -105,9 +103,9 @@ def test_cells_vertex_color_map_range_update(
     # Update range via color map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -142,9 +140,9 @@ def test_cells_vertex_color_map_red_shift(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -172,9 +170,9 @@ def test_cells_vertex_color_map_red_shift(
     # Update range via color map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -209,9 +207,9 @@ def test_cells_vertex_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -263,9 +261,9 @@ def test_cells_vertex_color_map_rainbow(
     # Set scalar range via color map
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -323,9 +321,9 @@ def test_cells_vertex_attribute_item(
     # Set active attribute with a vector component (points, item 1)
     server.call(
         VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_prefix
-        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshCellsAttributeVertexView.mesh_cells_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,

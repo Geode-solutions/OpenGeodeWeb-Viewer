@@ -43,9 +43,7 @@ def test_polyhedra_polyhedron_color_map(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -82,9 +80,7 @@ def test_polyhedra_polyhedron_color_map_range_update(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -114,9 +110,7 @@ def test_polyhedra_polyhedron_color_map_range_update(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -153,9 +147,7 @@ def test_polyhedra_polyhedron_color_map_red_shift(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -185,9 +177,7 @@ def test_polyhedra_polyhedron_color_map_red_shift(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -224,9 +214,7 @@ def test_polyhedra_polyhedron_color_map_rainbow(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -273,18 +261,14 @@ def test_polyhedra_polyhedron_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image(
-        "mesh/polyhedra/polyhedron_color_map_rainbow_initial.jpeg"
-    )
+    assert server.compare_image("mesh/polyhedra/polyhedron_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -344,9 +328,7 @@ def test_polyhedra_polyhedron_attribute_item(
         VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_prefix
         + VtkMeshPolyhedraAttributePolyhedronView.mesh_polyhedra_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,

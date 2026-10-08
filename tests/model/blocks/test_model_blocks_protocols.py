@@ -50,9 +50,7 @@ def test_blocks_polyhedra_visibility(
     assert server.compare_image("model/blocks/visibility.jpeg")
 
 
-def test_blocks_polyhedra_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_blocks_polyhedra_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_blocks_polyhedra_visibility(server, dataset_factory)
 
@@ -71,15 +69,12 @@ def test_blocks_polyhedra_color(
     assert server.compare_image("model/blocks/color.jpeg")
 
 
-def test_blocks_clipping_plane(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_blocks_clipping_plane(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [model_id],
@@ -95,15 +90,12 @@ def test_blocks_clipping_plane(
     assert server.compare_image("model/blocks/clipping_plane.jpeg")
 
 
-def test_blocks_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_blocks_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [model_id],
@@ -114,15 +106,12 @@ def test_blocks_shrink(
     assert server.compare_image("model/blocks/shrink.jpeg")
 
 
-def test_blocks_threshold(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_blocks_threshold(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
         [
             {
                 "ids": [model_id],

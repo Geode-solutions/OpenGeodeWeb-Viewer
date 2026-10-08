@@ -29,9 +29,7 @@ def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) ->
     assert server.compare_image("mesh/cells/register.jpeg")
 
 
-def test_cells_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_cells_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
@@ -43,9 +41,7 @@ def test_cells_color(
     assert server.compare_image("mesh/cells/color.jpeg")
 
 
-def test_cells_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_cells_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
@@ -57,15 +53,12 @@ def test_cells_visibility(
     assert server.compare_image("mesh/cells/visibility.jpeg")
 
 
-def test_cells_clipping_plane(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_cells_clipping_plane(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -81,15 +74,12 @@ def test_cells_clipping_plane(
     assert server.compare_image("mesh/cells/clipping_plane.jpeg")
 
 
-def test_cells_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_cells_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -102,14 +92,10 @@ def test_cells_shrink(
 
 grid_3d_id = "22345678901234567890123456789012"
 other_mesh_id = "32345678901234567890123456789012"
-slice_rpc = (
-    VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["slice"]["rpc"]
-)
+slice_rpc = VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["slice"]["rpc"]
 
 
-def register_grid_3d(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def register_grid_3d(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     dataset_factory(
         data_id=grid_3d_id,
         viewable_file="regular_grid_3d.vti",
@@ -122,9 +108,7 @@ def register_grid_3d(
     assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg")
 
 
-def call_slice(
-    server: ServerMonitor, ids: list[str], slices: list[dict[str, int]]
-) -> object:
+def call_slice(server: ServerMonitor, ids: list[str], slices: list[dict[str, int]]) -> object:
     server.call(slice_rpc, [{"ids": ids, "slices": slices}])
     response = server.get_response()
     assert isinstance(response, dict), f"Unexpected response: {response!r}"
@@ -139,9 +123,7 @@ def test_slice(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
     assert server.compare_image("mesh/cells/slice_grid_3d.jpeg")
 
 
-def test_slice_clamped(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_slice_clamped(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register(server, dataset_factory)
 
     result = call_slice(server, [mesh_id], [{"axis": 0, "index": 10000}])
@@ -152,9 +134,7 @@ def test_slice_clamped(
     assert server.compare_image("mesh/cells/slice_grid_2d_last.jpeg")
 
 
-def test_slice_removed(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_slice_removed(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     register_grid_3d(server, dataset_factory)
     call_slice(server, [grid_3d_id], [{"axis": 2, "index": 3}])
 
@@ -163,15 +143,12 @@ def test_slice_removed(
     assert server.compare_image("mesh/cells/slice_grid_3d_register.jpeg")
 
 
-def test_slice_then_clipping(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_slice_then_clipping(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     register_grid_3d(server, dataset_factory)
     call_slice(server, [grid_3d_id], [{"axis": 2, "index": 3}])
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [grid_3d_id],
@@ -182,9 +159,7 @@ def test_slice_then_clipping(
     assert server.compare_image("mesh/cells/slice_grid_3d_clipping.jpeg")
 
 
-def test_slice_grid_2d(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_slice_grid_2d(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register(server, dataset_factory)
 
     result = call_slice(server, [mesh_id], [{"axis": 0, "index": 262}])
@@ -195,9 +170,7 @@ def test_slice_grid_2d(
 def test_slice_on_non_grid_removed(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    dataset_factory(
-        data_id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+    dataset_factory(data_id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": other_mesh_id, "name": "hat.vtp"}],
@@ -212,9 +185,7 @@ def test_slice_on_non_grid_ignored(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     register_grid_3d(server, dataset_factory)
-    dataset_factory(
-        data_id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+    dataset_factory(data_id=other_mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": other_mesh_id, "name": "hat.vtp"}],
@@ -225,9 +196,7 @@ def test_slice_on_non_grid_ignored(
     assert result == {"max_indices": [10, 8, 6]}
 
 
-def test_multiple_slices(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_multiple_slices(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register(server, dataset_factory)
 
     result = call_slice(
@@ -243,15 +212,12 @@ def test_multiple_slices(
     assert server.compare_image("mesh/cells/slice_grid_2d_multiple.jpeg")
 
 
-def test_cells_threshold(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_cells_threshold(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -268,8 +234,7 @@ def test_cells_threshold(
     assert server.compare_image("mesh/cells/threshold.jpeg")
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
         [{"ids": [mesh_id]}],
     )
     assert server.compare_image("mesh/cells/register.jpeg")

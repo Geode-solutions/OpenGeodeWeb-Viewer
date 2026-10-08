@@ -47,9 +47,7 @@ def test_corners_points_visibility(
     assert server.compare_image("model/corners/visibility.jpeg")
 
 
-def test_corners_points_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_corners_points_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_corners_points_visibility(server, dataset_factory)
 

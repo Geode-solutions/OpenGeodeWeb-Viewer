@@ -116,8 +116,7 @@ def test_surfaces_clipping_plane(
     test_surfaces_polygons_visibility(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [model_id],
@@ -133,15 +132,12 @@ def test_surfaces_clipping_plane(
     assert server.compare_image("model/surfaces/clipping_plane.jpeg")
 
 
-def test_surfaces_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_surfaces_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_surfaces_polygons_visibility(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [model_id],

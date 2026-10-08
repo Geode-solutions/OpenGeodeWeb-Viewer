@@ -43,9 +43,7 @@ def test_polyhedra_vertex_color_map(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -82,9 +80,7 @@ def test_polyhedra_vertex_color_map_range_update(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -114,9 +110,7 @@ def test_polyhedra_vertex_color_map_range_update(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -153,9 +147,7 @@ def test_polyhedra_vertex_color_map_red_shift(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -185,9 +177,7 @@ def test_polyhedra_vertex_color_map_red_shift(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -224,9 +214,7 @@ def test_polyhedra_vertex_color_map_rainbow(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -280,9 +268,7 @@ def test_polyhedra_vertex_color_map_rainbow(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -342,9 +328,7 @@ def test_polyhedra_vertex_attribute_item(
         VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_prefix
         + VtkMeshPolyhedraAttributeVertexView.mesh_polyhedra_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,

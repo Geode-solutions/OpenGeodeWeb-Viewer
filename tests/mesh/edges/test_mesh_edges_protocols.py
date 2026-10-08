@@ -15,9 +15,7 @@ from tests.mesh.test_mesh_protocols import test_register_mesh
 mesh_id = "12345678901234567890123456789012"
 
 
-def test_edges_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -28,9 +26,7 @@ def test_edges_visibility(
     assert server.compare_image("mesh/edges/visibility.jpeg")
 
 
-def test_edges_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_edges_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_edges_visibility(server, dataset_factory)
 
     server.call(
@@ -46,12 +42,8 @@ def test_edges_color(
     assert server.compare_image("mesh/edges/color.jpeg")
 
 
-def test_edges_with_edged_curve(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-    dataset_factory(
-        data_id=mesh_id, viewable_file="edged_curve.vtp", viewer_elements_type="edges"
-    )
+def test_edges_with_edged_curve(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    dataset_factory(data_id=mesh_id, viewable_file="edged_curve.vtp", viewer_elements_type="edges")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -74,14 +66,11 @@ def test_edges_with_edged_curve(
     assert server.compare_image("mesh/edges/edged_curve_visibility.jpeg")
 
 
-def test_edges_clipping_plane(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_edges_clipping_plane(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -97,14 +86,11 @@ def test_edges_clipping_plane(
     assert server.compare_image("mesh/edges/clipping_plane.jpeg")
 
 
-def test_edges_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_edges_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [mesh_id],

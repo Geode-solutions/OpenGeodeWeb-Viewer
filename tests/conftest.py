@@ -98,10 +98,7 @@ class ServerMonitor:
         return images_diff.GetThresholdedError()
 
     def compare_image(self, filename: str) -> bool:
-        self.call(
-            VtkViewerView.viewer_prefix
-            + VtkViewerView.viewer_schemas_dict["render"]["rpc"]
-        )
+        self.call(VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["render"]["rpc"])
         while True:
             image = self.ws.recv()
             if isinstance(image, bytes):
@@ -129,9 +126,7 @@ class ServerMonitor:
         )
         self.call("viewport.image.push.observer.add", [-1])
 
-    def _drain_initial_messages(
-        self, max_messages: int = 5, timeout: float = 10.0
-    ) -> None:
+    def _drain_initial_messages(self, max_messages: int = 5, timeout: float = 10.0) -> None:
         self.ws.settimeout(timeout)
         for i in range(max_messages):
             try:

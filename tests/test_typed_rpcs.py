@@ -34,9 +34,9 @@ def test_every_rpc_is_typed() -> None:
     rpcs = {uri: f for uri, f in _registered_rpcs().items() if uri.startswith(PREFIX)}
     assert rpcs
     for uri, function in rpcs.items():
-        assert getattr(
-            function, TYPED_RPC_MARKER, False
-        ), f"{uri} must be registered with @typed_rpc"
+        assert getattr(function, TYPED_RPC_MARKER, False), (
+            f"{uri} must be registered with @typed_rpc"
+        )
 
 
 class _Protocol:
@@ -51,9 +51,7 @@ class _Protocol:
         return schemas.PickColormapResponse(data_id=None)
 
     @typed_rpc(PREFIX, schemas.get_point_position_route)
-    def wrong_type(
-        self, _params: schemas.GetPointPosition
-    ) -> schemas.GetPointPositionResponse:
+    def wrong_type(self, _params: schemas.GetPointPosition) -> schemas.GetPointPositionResponse:
         return schemas.PickColormapResponse()  # type: ignore[return-value]
 
     @typed_rpc(PREFIX, schemas.get_point_position_route)
@@ -76,9 +74,7 @@ def test_typed_rpc_returns_dict_without_none() -> None:
 
 
 def test_typed_rpc_returns_json_serializable_enum() -> None:
-    payload = _Protocol().highlight(
-        {"field_type": "POINT", "ids": ["0" * 32], "x": 1, "y": 2}
-    )
+    payload = _Protocol().highlight({"field_type": "POINT", "ids": ["0" * 32], "x": 1, "y": 2})
     assert payload["field_type"] == "POINT"
     json.dumps(payload)
 

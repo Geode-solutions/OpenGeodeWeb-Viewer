@@ -122,9 +122,7 @@ class VtkViewerView(VtkView):
         return schemas.ResetCameraResponse()
 
     @typed_rpc(viewer_prefix, schemas.take_screenshot_route)
-    def take_screenshot(
-        self, params: schemas.TakeScreenshot
-    ) -> schemas.TakeScreenshotResponse:
+    def take_screenshot(self, params: schemas.TakeScreenshot) -> schemas.TakeScreenshotResponse:
         render_window = self.getView("-1")
 
         w2if = vtkWindowToImageFilter()
@@ -204,9 +202,7 @@ class VtkViewerView(VtkView):
         return schemas.GetPointPositionResponse(x=ppos[0], y=ppos[1], z=ppos[2])
 
     @typed_rpc(viewer_prefix, schemas.pick_colormap_route)
-    def pick_colormap(
-        self, params: schemas.PickColormap
-    ) -> schemas.PickColormapResponse:
+    def pick_colormap(self, params: schemas.PickColormap) -> schemas.PickColormapResponse:
 
         render_window = self.getView("-1")
         size = render_window.GetSize()
@@ -250,9 +246,7 @@ class VtkViewerView(VtkView):
         )
         # Filter pipeline IDs whose actors are in the picked list
         array_ids = [
-            data_id
-            for data_id in params.ids
-            if self.get_vtk_pipeline(data_id).actor in actors
+            data_id for data_id in params.ids if self.get_vtk_pipeline(data_id).actor in actors
         ]
         if not array_ids:
             return schemas.PickedIDSResponse(array_ids=[])
@@ -274,9 +268,7 @@ class VtkViewerView(VtkView):
         return schemas.AxesResponse()
 
     @typed_rpc(viewer_prefix, schemas.update_camera_route)
-    def update_camera(
-        self, params: schemas.UpdateCamera
-    ) -> schemas.UpdateCameraResponse:
+    def update_camera(self, params: schemas.UpdateCamera) -> schemas.UpdateCameraResponse:
         camera_options = params.camera_options
 
         render_window = self.getView("-1")
@@ -345,9 +337,7 @@ class VtkViewerView(VtkView):
 
     @typed_rpc(viewer_prefix, schemas.slice_route)
     def set_slice_rpc(self, params: schemas.Slice) -> schemas.SliceResponse:
-        return schemas.SliceResponse(
-            max_indices=self.set_slice(params.ids, params.slices)
-        )
+        return schemas.SliceResponse(max_indices=self.set_slice(params.ids, params.slices))
 
     @typed_rpc(viewer_prefix, schemas.threshold_route)
     def set_threshold_rpc(self, params: schemas.Threshold) -> schemas.ThresholdResponse:
@@ -368,13 +358,9 @@ class VtkViewerView(VtkView):
         return schemas.SetZScalingResponse()
 
     @typed_rpc(viewer_prefix, schemas.preview_points_route)
-    def preview_points(
-        self, params: schemas.PreviewPoints
-    ) -> schemas.PreviewPointsResponse:
+    def preview_points(self, params: schemas.PreviewPoints) -> schemas.PreviewPointsResponse:
         points_data = params.points
-        style_name = (
-            params.style.value if hasattr(params.style, "value") else params.style
-        )
+        style_name = params.style.value if hasattr(params.style, "value") else params.style
 
         if not points_data:
             if self._preview_actor is not None:
@@ -401,9 +387,7 @@ class VtkViewerView(VtkView):
         self._preview_polydata.GetPointData().SetScalars(colors)
         self._preview_polydata.GetPointData().SetActiveScalars("Colors")
 
-        lines, polys = self._preview_cells(
-            style_name, len(points_data), closed=bool(params.closed)
-        )
+        lines, polys = self._preview_cells(style_name, len(points_data), closed=bool(params.closed))
         self._preview_polydata.SetLines(lines)
         self._preview_polydata.SetPolys(polys)
         self._preview_polydata.Modified()

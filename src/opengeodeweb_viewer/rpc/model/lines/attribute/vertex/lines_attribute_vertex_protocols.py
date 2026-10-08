@@ -12,12 +12,8 @@ from . import schemas
 
 
 class VtkModelLinesAttributeVertexView(VtkModelView):
-    model_lines_attribute_vertex_prefix = (
-        "opengeodeweb_viewer.model.lines.attribute.vertex."
-    )
-    model_lines_attribute_vertex_schemas_dict = get_schemas_dict(
-        Path(__file__).parent / "schemas"
-    )
+    model_lines_attribute_vertex_prefix = "opengeodeweb_viewer.model.lines.attribute.vertex."
+    model_lines_attribute_vertex_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()

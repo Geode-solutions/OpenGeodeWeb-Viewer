@@ -14,9 +14,7 @@ from tests.model.test_model_protocols import test_register_model
 model_id = "12345678901234567890123456789012"
 
 
-def test_points_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 
@@ -28,9 +26,7 @@ def test_points_visibility(
     assert server.compare_image("model/points/visibility.jpeg")
 
 
-def test_points_size(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_points_size(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_points_visibility(server, dataset_factory)
 

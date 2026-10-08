@@ -45,9 +45,7 @@ def test_blocks_polyhedron_attribute(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -97,9 +95,7 @@ def test_blocks_polyhedron_color_map(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -150,9 +146,7 @@ def test_blocks_polyhedron_color_map_range_update(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -183,9 +177,7 @@ def test_blocks_polyhedron_color_map_range_update(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -236,9 +228,7 @@ def test_blocks_polyhedron_color_map_red_shift(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -269,9 +259,7 @@ def test_blocks_polyhedron_color_map_red_shift(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -322,9 +310,7 @@ def test_blocks_polyhedron_color_map_rainbow(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -379,9 +365,7 @@ def test_blocks_polyhedron_color_map_rainbow(
         VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
         + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,

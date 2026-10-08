@@ -12,12 +12,8 @@ from . import schemas
 
 
 class VtkModelLinesAttributeEdgeView(VtkModelView):
-    model_lines_attribute_edge_prefix = (
-        "opengeodeweb_viewer.model.lines.attribute.edge."
-    )
-    model_lines_attribute_edge_schemas_dict = get_schemas_dict(
-        Path(__file__).parent / "schemas"
-    )
+    model_lines_attribute_edge_prefix = "opengeodeweb_viewer.model.lines.attribute.edge."
+    model_lines_attribute_edge_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()

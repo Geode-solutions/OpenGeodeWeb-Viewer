@@ -36,9 +36,7 @@ class AttributeProtocol(Protocol):
 type RpcParams = dict[str, str]
 
 
-def validate_schema(
-    rpc_params: RpcParams, schema: SchemaDict, prefix: str = ""
-) -> None:
+def validate_schema(rpc_params: RpcParams, schema: SchemaDict, prefix: str = "") -> None:
     logger.debug("%s%s rpc_params=%s", prefix, schema["rpc"], rpc_params)
     try:
         validate = fastjsonschema.compile(schema)
@@ -77,9 +75,7 @@ def deterministic_color(identifier: str) -> tuple[float, float, float]:
 
     def component(phase: int) -> float:
         step = (phase + hue / DEGREES_PER_STEP) % STEPS_COUNT
-        intensity = BASE_LIGHTNESS - VIBRANCY_RANGE * max(
-            min(step - 3, MIRROR_MAX - step, 1), -1
-        )
+        intensity = BASE_LIGHTNESS - VIBRANCY_RANGE * max(min(step - 3, MIRROR_MAX - step, 1), -1)
         return round(255 * intensity) / 255
 
     return (component(0), component(PHASE_GREEN), component(4))
@@ -108,9 +104,7 @@ def create_color_transfer_function(
         span = x_max - x_min
         for i in range(0, len(points), 4):
             x, r, g, b = points[i : i + 4]
-            new_x = (
-                minimum + (x - x_min) / span * (maximum - minimum) if span else minimum
-            )
+            new_x = minimum + (x - x_min) / span * (maximum - minimum) if span else minimum
             lut.AddRGBPoint(new_x, r, g, b)
     else:
         lut.AddRGBPoint(minimum, 0, 0, 0)

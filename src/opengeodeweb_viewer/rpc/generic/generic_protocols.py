@@ -18,9 +18,7 @@ class VtkGenericView(VtkView):
     generic_prefix = "opengeodeweb_viewer.generic."
     generic_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
-    def __init__(
-        self, mesh_protocols: VtkMeshView, model_protocols: VtkModelView
-    ) -> None:
+    def __init__(self, mesh_protocols: VtkMeshView, model_protocols: VtkModelView) -> None:
         super().__init__()
         self.mesh_protocols = mesh_protocols
         self.model_protocols = model_protocols

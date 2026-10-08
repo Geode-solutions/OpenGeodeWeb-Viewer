@@ -19,9 +19,7 @@ class VtkMeshCellsView(VtkMeshView):
         super().__init__()
 
     @typed_rpc(mesh_cells_prefix, schemas.visibility_route)
-    def set_mesh_cells_visibility(
-        self, params: schemas.Visibility
-    ) -> schemas.VisibilityResponse:
+    def set_mesh_cells_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
         self.set_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 

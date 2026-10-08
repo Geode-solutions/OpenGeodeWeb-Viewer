@@ -43,9 +43,9 @@ def test_blocks_vertex_attribute(
 
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -93,9 +93,9 @@ def test_blocks_vertex_color_map(
     # Set active vertex attribute, item, color map & range
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -144,9 +144,9 @@ def test_blocks_vertex_color_map_range_update(
     # Set active vertex attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -175,9 +175,9 @@ def test_blocks_vertex_color_map_range_update(
     # Update range via attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -226,9 +226,9 @@ def test_blocks_vertex_color_map_green_shift(
     # Set active vertex attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -257,9 +257,9 @@ def test_blocks_vertex_color_map_green_shift(
     # Update range via attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -308,9 +308,9 @@ def test_blocks_vertex_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -363,9 +363,9 @@ def test_blocks_vertex_color_map_rainbow(
     # Update rainbow range via attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -437,9 +437,9 @@ def test_blocks_vertex_attribute_item(
 
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
