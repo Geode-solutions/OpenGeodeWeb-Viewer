@@ -252,7 +252,9 @@ class VtkPipeline:
         pruned.SetNumberOfBlocks(dataset.GetNumberOfBlocks())
         for index in range(dataset.GetNumberOfBlocks()):
             block = dataset.GetBlock(index)
-            if block and attributes.GetBlockVisibility(block):
+            if block is None:
+                continue
+            if attributes.GetBlockVisibility(block):
                 child = (
                     self.prune_hidden_blocks(block, attributes)
                     if isinstance(block, vtkMultiBlockDataSet)

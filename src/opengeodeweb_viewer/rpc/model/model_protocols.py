@@ -116,7 +116,7 @@ class VtkModelView(VtkObjectView):
     def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
         active_attrs: dict[str, BlockStyle] = {}
         for block_id, style in pipeline.block_styles.items():
-            if style and style["name"]:
+            if style["name"]:
                 name = style["name"]
                 item = style["item"]
                 minimum = style["minimum"]
@@ -227,7 +227,7 @@ class VtkModelView(VtkObjectView):
             iterator.InitTraversal()
             while not iterator.IsDoneWithTraversal():
                 block = iterator.GetCurrentDataObject()
-                if block:
+                if block is not None:
                     flat_index = iterator.GetCurrentFlatIndex()
                     while flat_index > len(data.block_data_sets):
                         data.block_data_sets.append(None)

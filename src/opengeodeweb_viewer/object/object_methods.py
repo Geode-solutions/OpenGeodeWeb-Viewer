@@ -37,7 +37,7 @@ class VtkObjectView(VtkView):
         should_reset_camera = True
         actors = renderer.GetActors()
         actors.InitTraversal()
-        while actor := actors.GetNextItem():
+        while (actor := actors.GetNextItem()) is not None:
             if actor.visibility:
                 should_reset_camera = False
         renderer.AddActor(data.actor)
@@ -72,7 +72,7 @@ class VtkObjectView(VtkView):
             ):
                 pipeline.scalar_bar.VisibilityOn()
             for style in pipeline.block_styles.values():
-                if style and style.get("name"):
+                if style.get("name"):
                     for bar in pipeline.scalar_bars.values():
                         if bar.GetLookupTable() is not None:
                             bar.VisibilityOn()

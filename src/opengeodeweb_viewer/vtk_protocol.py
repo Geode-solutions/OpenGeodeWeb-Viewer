@@ -111,7 +111,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             raise RuntimeError(msg)
 
         with get_session() as session:
-            if not session:
+            if session is None:
                 msg = "No database session available"
                 raise RuntimeError(msg)
 
@@ -362,7 +362,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         try:
             picker.Pick(x, y, 0, renderer)
             viewer_id = picker.GetFlatBlockIndex()
-            while actor := picker.GetActor():
+            while (actor := picker.GetActor()) is not None:
                 actors.append(actor)
                 actor.PickableOff()
                 picker.Pick(x, y, 0, renderer)
@@ -438,7 +438,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         props = renderer.GetViewProps()
         props.InitTraversal()
         prop = props.GetNextProp()
-        while prop:
+        while prop is not None:
             if prop.GetVisibility() and prop.GetUseBounds() and prop != grid_scale:
                 prop_bounds = prop.GetBounds()
                 if prop_bounds is not None:
