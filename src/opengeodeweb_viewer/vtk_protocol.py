@@ -61,9 +61,9 @@ class VtkTypingMixin:
     def getView(self, view_id: str) -> vtkRenderWindow:  # noqa: N802 VTK override
         return cast("vtkRenderWindow", super().getView(view_id))  # type: ignore[misc]
 
-    def registerVtkWebProtocol(
+    def registerVtkWebProtocol(  # noqa: N802 VTK override
         self, protocol: object
-    ) -> None:  # noqa: N802 VTK override
+    ) -> None:
         super().registerVtkWebProtocol(protocol)  # type: ignore[misc]
 
     def getApplication(self) -> vtkWebApplication:  # noqa: N802 VTK override
