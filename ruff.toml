@@ -14,9 +14,6 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-"src/**/app.py" = [
-  "E501", # PyInstaller entry point: absolute imports required, module paths are long
-]
 "tests/**" = [
   "S101", # assert is how pytest works
   "PLR2004", # expected values in asserts are not magic numbers
