@@ -1,14 +1,14 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
     VtkModelCornersView,
 )
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
-from tests.conftest import ServerMonitor
 
 # Local constants
 model_id = "12345678901234567890123456789012"
@@ -31,7 +31,7 @@ def test_corners_points_visibility(
             }
         ],
     )
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg")
 
     server.call(
         VtkModelCornersView.model_corners_prefix
@@ -44,12 +44,10 @@ def test_corners_points_visibility(
             }
         ],
     )
-    assert server.compare_image("model/corners/visibility.jpeg") == True
+    assert server.compare_image("model/corners/visibility.jpeg")
 
 
-def test_corners_points_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_corners_points_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_corners_points_visibility(server, dataset_factory)
 
@@ -65,7 +63,7 @@ def test_corners_points_color(
             }
         ],
     )
-    assert server.compare_image("model/corners/color.jpeg") == True
+    assert server.compare_image("model/corners/color.jpeg")
 
 
 def test_corners_points_random_color(
@@ -79,4 +77,4 @@ def test_corners_points_random_color(
         + VtkModelCornersView.model_corners_schemas_dict["color"]["rpc"],
         [{"id": model_id, "block_ids": list(range(1, 13)), "color_mode": "random"}],
     )
-    assert server.compare_image("model/corners/random_color.jpeg") == True
+    assert server.compare_image("model/corners/random_color.jpeg")

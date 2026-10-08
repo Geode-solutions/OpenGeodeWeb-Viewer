@@ -1,23 +1,21 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
     VtkModelLinesView,
 )
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
-from tests.conftest import ServerMonitor
 
 # Local constants
 model_id = "12345678901234567890123456789012"
 
 
-def test_lines_edges_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -32,7 +30,7 @@ def test_lines_edges_visibility(
             }
         ],
     )
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg")
 
     server.call(
         VtkModelLinesView.model_lines_prefix
@@ -45,12 +43,10 @@ def test_lines_edges_visibility(
             }
         ],
     )
-    assert server.compare_image("model/lines/visibility.jpeg") == True
+    assert server.compare_image("model/lines/visibility.jpeg")
 
 
-def test_lines_edges_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_edges_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_lines_edges_visibility(server, dataset_factory)
 
@@ -66,18 +62,15 @@ def test_lines_edges_color(
             }
         ],
     )
-    assert server.compare_image("model/lines/color.jpeg") == True
+    assert server.compare_image("model/lines/color.jpeg")
 
 
-def test_lines_clipping_plane(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_clipping_plane(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_lines_edges_visibility(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [model_id],
@@ -90,18 +83,15 @@ def test_lines_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("model/lines/clipping_plane.jpeg") == True
+    assert server.compare_image("model/lines/clipping_plane.jpeg")
 
 
-def test_lines_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_lines_edges_visibility(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [model_id],
@@ -109,4 +99,4 @@ def test_lines_shrink(
             }
         ],
     )
-    assert server.compare_image("model/lines/shrink.jpeg") == True
+    assert server.compare_image("model/lines/shrink.jpeg")

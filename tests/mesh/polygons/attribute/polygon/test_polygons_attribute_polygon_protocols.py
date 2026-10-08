@@ -1,14 +1,18 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.mesh.polygons.attribute.polygon.polygons_attribute_polygon_protocols import (
-    VtkMeshPolygonsAttributePolygonView,
+from opengeodeweb_viewer.rpc.mesh.polygons.attribute.polygon import (
+    polygons_attribute_polygon_protocols,
 )
 
 # Local application imports
 from tests.conftest import ServerMonitor
+
+VtkMeshPolygonsAttributePolygonView = (
+    polygons_attribute_polygon_protocols.VtkMeshPolygonsAttributePolygonView
+)
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"
@@ -17,7 +21,7 @@ mesh_id = "12345678901234567890123456789012"
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(
-        id=mesh_id,
+        data_id=mesh_id,
         viewable_file="triangulated_surface2d.vtp",
         viewer_elements_type="polygons",
     )
@@ -39,9 +43,7 @@ def test_polygons_polygon_color_map(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -64,7 +66,7 @@ def test_polygons_polygon_color_map(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/polygon_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/polygon_color_map.jpeg")
 
 
 def test_polygons_polygon_color_map_range_update(
@@ -78,9 +80,7 @@ def test_polygons_polygon_color_map_range_update(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -103,16 +103,14 @@ def test_polygons_polygon_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/polygon_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/polygon_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -135,10 +133,7 @@ def test_polygons_polygon_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/polygon_color_map_range_update.jpeg")
-        == True
-    )
+    assert server.compare_image("mesh/polygons/polygon_color_map_range_update.jpeg")
 
 
 def test_polygons_polygon_color_map_red_shift(
@@ -152,9 +147,7 @@ def test_polygons_polygon_color_map_red_shift(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -177,16 +170,14 @@ def test_polygons_polygon_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/polygon_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/polygon_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -209,9 +200,7 @@ def test_polygons_polygon_color_map_red_shift(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/polygon_color_map_red_shift.jpeg") == True
-    )
+    assert server.compare_image("mesh/polygons/polygon_color_map_red_shift.jpeg")
 
 
 def test_polygons_polygon_color_map_rainbow(
@@ -225,9 +214,7 @@ def test_polygons_polygon_color_map_rainbow(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -274,19 +261,14 @@ def test_polygons_polygon_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/polygon_color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("mesh/polygons/polygon_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -333,7 +315,7 @@ def test_polygons_polygon_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/polygon_color_map_rainbow.jpeg") == True
+    assert server.compare_image("mesh/polygons/polygon_color_map_rainbow.jpeg")
 
 
 def test_polygons_polygon_attribute_item(
@@ -346,9 +328,7 @@ def test_polygons_polygon_attribute_item(
         VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_prefix
         + VtkMeshPolygonsAttributePolygonView.mesh_polygons_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -371,4 +351,4 @@ def test_polygons_polygon_attribute_item(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/polygon_attribute_item.jpeg") == True
+    assert server.compare_image("mesh/polygons/polygon_attribute_item.jpeg")

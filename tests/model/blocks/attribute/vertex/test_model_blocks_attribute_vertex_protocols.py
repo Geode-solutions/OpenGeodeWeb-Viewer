@@ -1,17 +1,22 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
+
+from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex import (
+    blocks_attribute_vertex_protocols,
+)
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
-from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
-    VtkModelBlocksAttributeVertexView,
-)
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
-from tests.conftest import ServerMonitor
+
+VtkModelBlocksAttributeVertexView = (
+    blocks_attribute_vertex_protocols.VtkModelBlocksAttributeVertexView
+)
 
 # Local constants
 model_id = "12345678901234567890123456789012"
@@ -38,9 +43,9 @@ def test_blocks_vertex_attribute(
 
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -63,7 +68,7 @@ def test_blocks_vertex_attribute(
             }
         ],
     )
-    assert server.compare_image("model/blocks/vertex_attribute.jpeg") == True
+    assert server.compare_image("model/blocks/vertex_attribute.jpeg")
 
 
 def test_blocks_vertex_color_map(
@@ -88,9 +93,9 @@ def test_blocks_vertex_color_map(
     # Set active vertex attribute, item, color map & range
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -114,7 +119,7 @@ def test_blocks_vertex_color_map(
         ],
     )
 
-    assert server.compare_image("model/blocks/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/blocks/vertex_color_map.jpeg")
 
 
 def test_blocks_vertex_color_map_range_update(
@@ -139,9 +144,9 @@ def test_blocks_vertex_color_map_range_update(
     # Set active vertex attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -165,14 +170,14 @@ def test_blocks_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/blocks/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/blocks/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -196,7 +201,7 @@ def test_blocks_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/blocks/updated_vertex_color_map.jpeg") == True
+    assert server.compare_image("model/blocks/updated_vertex_color_map.jpeg")
 
 
 def test_blocks_vertex_color_map_green_shift(
@@ -221,9 +226,9 @@ def test_blocks_vertex_color_map_green_shift(
     # Set active vertex attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -247,14 +252,14 @@ def test_blocks_vertex_color_map_green_shift(
         ],
     )
 
-    assert server.compare_image("model/blocks/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/blocks/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -278,7 +283,7 @@ def test_blocks_vertex_color_map_green_shift(
         ],
     )
 
-    assert server.compare_image("model/blocks/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/blocks/vertex_color_map.jpeg")
 
 
 def test_blocks_vertex_color_map_rainbow(
@@ -303,9 +308,9 @@ def test_blocks_vertex_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -353,17 +358,14 @@ def test_blocks_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/blocks/vertex_color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("model/blocks/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -411,7 +413,7 @@ def test_blocks_vertex_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/blocks/vertex_color_map_rainbow.jpeg") == True
+    assert server.compare_image("model/blocks/vertex_color_map_rainbow.jpeg")
 
 
 def test_blocks_vertex_attribute_item(
@@ -435,9 +437,9 @@ def test_blocks_vertex_attribute_item(
 
     server.call(
         VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_prefix
-        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelBlocksAttributeVertexView.model_blocks_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -460,4 +462,4 @@ def test_blocks_vertex_attribute_item(
             }
         ],
     )
-    assert server.compare_image("model/blocks/vertex_attribute_item.jpeg") == True
+    assert server.compare_image("model/blocks/vertex_attribute_item.jpeg")

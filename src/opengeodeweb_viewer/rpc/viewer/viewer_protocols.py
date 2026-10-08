@@ -1,52 +1,55 @@
 # Standard library imports
 import math
-import os
-from typing import cast, Any
+from pathlib import Path
+from typing import Any
+
+from opengeodeweb_microservice.schemas import get_schemas_dict
+from vtkmodules.vtkCommonCore import reference, vtkPoints, vtkUnsignedCharArray
+from vtkmodules.vtkCommonDataModel import vtkCellArray, vtkDataSet, vtkPolyData
+from vtkmodules.vtkCommonTransforms import vtkTransform
+from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
+from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Third party imports
-from vtkmodules.vtkIOImage import vtkPNGWriter, vtkJPEGWriter
-from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor, vtkAxesActor
+from vtkmodules.vtkIOImage import vtkJPEGWriter, vtkPNGWriter
+from vtkmodules.vtkRenderingAnnotation import vtkAxesActor, vtkCubeAxesActor
 from vtkmodules.vtkRenderingCore import (
-    vtkWindowToImageFilter,
+    vtkAbstractMapper,
+    vtkActor,
+    vtkCellPicker,
+    vtkDataSetMapper,
+    vtkPropPicker,
     vtkRenderer,
     vtkRenderWindowInteractor,
-    vtkAbstractMapper,
+    vtkWindowToImageFilter,
     vtkWorldPointPicker,
-    vtkCellPicker,
-    vtkPropPicker,
-    vtkDataSetMapper,
-    vtkActor,
 )
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
-from vtkmodules.vtkCommonCore import reference, vtkPoints, vtkUnsignedCharArray
-from vtkmodules.vtkCommonDataModel import vtkDataSet, vtkPolyData, vtkCellArray
-from vtkmodules.vtkCommonTransforms import vtkTransform
-from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
-from opengeodeweb_microservice.schemas import get_schemas_dict
+
+from opengeodeweb_viewer.rpc.viewer import schemas
+from opengeodeweb_viewer.typed_rpc import typed_rpc
 
 # Local application imports
 from opengeodeweb_viewer.vtk_pipeline import RulerPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
-from opengeodeweb_viewer.typed_rpc import typed_rpc
-from opengeodeweb_viewer.rpc.viewer import schemas
+
+MIN_CLOSED_CURVE_POINTS = 2
+MIN_SURFACE_POINTS = 3
 
 
 class VtkViewerView(VtkView):
     viewer_prefix = "opengeodeweb_viewer.viewer."
-    viewer_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
-    )
+    viewer_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()
         self._preview_actor: vtkActor | None = None
 
     @typed_rpc(viewer_prefix, schemas.reset_visualization_route)
-    def resetVisualization(
-        self, params: schemas.ResetVisualization
+    def reset_visualization(
+        self, _params: schemas.ResetVisualization
     ) -> schemas.ResetVisualizationResponse:
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        render_window = self.getView("-1")
+        renderer = render_window.GetRenderers().GetFirstRenderer()
         renderer.RemoveAllViewProps()
 
         grid_scale = vtkCubeAxesActor()
@@ -72,18 +75,18 @@ class VtkViewerView(VtkView):
         grid_scale.SetYTitle("Y")
         grid_scale.SetZTitle("Z")
 
-        grid_scale.SetVisibility(False)
+        grid_scale.VisibilityOff()
         self.set_grid_scale(grid_scale)
 
         renderer.AddActor(grid_scale)
 
-        renderWindowInteractor = vtkRenderWindowInteractor()
-        renderWindowInteractor.SetRenderWindow(renderWindow)
+        render_window_interactor = vtkRenderWindowInteractor()
+        render_window_interactor.SetRenderWindow(render_window)
         style = vtkInteractorStyleTrackball()
-        renderWindowInteractor.SetInteractorStyle(style)
-        renderWindowInteractor.EnableRenderOff()
+        render_window_interactor.SetInteractorStyle(style)
+        render_window_interactor.EnableRenderOff()
         widget = vtkOrientationMarkerWidget()
-        widget.SetInteractor(renderWindowInteractor)
+        widget.SetInteractor(render_window_interactor)
         widget.SetViewport(0.8, 0.0, 1, 0.2)
         axes = vtkAxesActor()
         widget.SetOrientationMarker(axes)
@@ -102,41 +105,38 @@ class VtkViewerView(VtkView):
         return schemas.ResetVisualizationResponse()
 
     @typed_rpc(viewer_prefix, schemas.set_background_color_route)
-    def setBackgroundColor(
+    def set_background_color(
         self, params: schemas.SetBackgroundColor
     ) -> schemas.SetBackgroundColorResponse:
         color = params.color
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+        render_window = self.getView("-1")
+        renderer = render_window.GetRenderers().GetFirstRenderer()
 
         renderer.SetBackground([color.r / 255, color.g / 255, color.b / 255])
         return schemas.SetBackgroundColorResponse()
 
     @typed_rpc(viewer_prefix, schemas.reset_camera_route)
-    def resetCamera(self, params: schemas.ResetCamera) -> schemas.ResetCameraResponse:
-        renderWindow = self.getView("-1")
-        renderWindow.GetRenderers().GetFirstRenderer().ResetCamera()
+    def reset_camera(self, _params: schemas.ResetCamera) -> schemas.ResetCameraResponse:
+        render_window = self.getView("-1")
+        render_window.GetRenderers().GetFirstRenderer().ResetCamera()
         return schemas.ResetCameraResponse()
 
     @typed_rpc(viewer_prefix, schemas.take_screenshot_route)
-    def takeScreenshot(
-        self, params: schemas.TakeScreenshot
-    ) -> schemas.TakeScreenshotResponse:
-        renderWindow = self.getView("-1")
-        renderer = self.get_renderer()
+    def take_screenshot(self, params: schemas.TakeScreenshot) -> schemas.TakeScreenshotResponse:
+        render_window = self.getView("-1")
 
         w2if = vtkWindowToImageFilter()
         include_background = params.include_background
         if not include_background:
-            renderWindow.SetAlphaBitPlanes(1)
+            render_window.SetAlphaBitPlanes(1)
             w2if.SetInputBufferTypeToRGBA()
         else:
-            renderWindow.SetAlphaBitPlanes(0)
+            render_window.SetAlphaBitPlanes(0)
             w2if.SetInputBufferTypeToRGB()
 
-        renderWindow.Render()
+        render_window.Render()
 
-        w2if.SetInput(renderWindow)
+        w2if.SetInput(render_window)
         w2if.ReadFrontBufferOff()
         w2if.Update()
         output_extension = params.output_extension
@@ -145,24 +145,25 @@ class VtkViewerView(VtkView):
             writer = vtkPNGWriter()
         elif output_extension == schemas.take_screenshot.OutputExtension.JPG:
             if not include_background:
-                raise Exception("output_extension not supported with background")
+                msg = "output_extension not supported with background"
+                raise ValueError(msg)
             writer = vtkJPEGWriter()
         else:
-            raise Exception("output_extension not supported")
+            msg = "output_extension not supported"
+            raise ValueError(msg)
 
         new_filename = params.filename + "." + output_extension.value
-        file_path = os.path.join(self.DATA_FOLDER_PATH, new_filename)
-        writer.SetFileName(file_path)
+        file_path = Path(self.DATA_FOLDER_PATH) / new_filename
+        writer.SetFileName(str(file_path))
         writer.SetInputConnection(w2if.GetOutputPort())
         writer.Write()
 
-        with open(file_path, "rb") as file:
-            file_content = file.read()
+        file_content = file_path.read_bytes()
 
         return schemas.TakeScreenshotResponse(blob=self.addAttachment(file_content))
 
     @typed_rpc(viewer_prefix, schemas.update_data_route)
-    def updateData(self, params: schemas.UpdateData) -> schemas.UpdateDataResponse:
+    def update_data(self, params: schemas.UpdateData) -> schemas.UpdateDataResponse:
         data = self.get_vtk_pipeline(params.id)
         reader = data.reader
         reader.Update()
@@ -170,7 +171,8 @@ class VtkViewerView(VtkView):
         tag: Any = reference(0)
         output = reader.GetOutputDataObject(0)
         if not isinstance(output, vtkDataSet):
-            raise Exception("Output is not a vtkDataSet")
+            msg = "Output is not a vtkDataSet"
+            raise TypeError(msg)
 
         scalars = vtkAbstractMapper.GetAbstractScalars(
             output,
@@ -184,7 +186,7 @@ class VtkViewerView(VtkView):
         return schemas.UpdateDataResponse()
 
     @typed_rpc(viewer_prefix, schemas.get_point_position_route)
-    def getPointPosition(
+    def get_point_position(
         self, params: schemas.GetPointPosition
     ) -> schemas.GetPointPositionResponse:
         renderer = self.get_renderer()
@@ -200,17 +202,15 @@ class VtkViewerView(VtkView):
         return schemas.GetPointPositionResponse(x=ppos[0], y=ppos[1], z=ppos[2])
 
     @typed_rpc(viewer_prefix, schemas.pick_colormap_route)
-    def pickColormap(
-        self, params: schemas.PickColormap
-    ) -> schemas.PickColormapResponse:
+    def pick_colormap(self, params: schemas.PickColormap) -> schemas.PickColormapResponse:
 
-        renderWindow = self.getView("-1")
-        size = renderWindow.GetSize()
+        render_window = self.getView("-1")
+        size = render_window.GetSize()
         nx = params.x / size[0]
         ny = 1.0 - (params.y / size[1])
 
         for data_id, pipeline in self.get_data_base().items():
-            bar = pipeline.scalarBar
+            bar = pipeline.scalar_bar
             if bar.GetVisibility() and bar.GetLookupTable() is not None:
                 pos = bar.GetPositionCoordinate()
                 bx, by = pos.GetValue()[0], pos.GetValue()[1]
@@ -222,23 +222,23 @@ class VtkViewerView(VtkView):
 
         return schemas.PickColormapResponse()
 
-    def computeEpsilon(self, renderer: vtkRenderer, z: float) -> float:
+    def compute_epsilon(self, renderer: vtkRenderer, z: float) -> float:
         renderer.SetDisplayPoint(0, 0, z)
         renderer.DisplayToWorld()
-        windowLowerLeft = renderer.GetWorldPoint()
+        window_lower_left = renderer.GetWorldPoint()
         size = renderer.GetRenderWindow().GetSize()
         renderer.SetDisplayPoint(size[0], size[1], z)
         renderer.DisplayToWorld()
-        windowUpperRight = renderer.GetWorldPoint()
+        window_upper_right = renderer.GetWorldPoint()
         epsilon: float = 0.0
         for i in range(3):
-            epsilon += (windowUpperRight[i] - windowLowerLeft[i]) * (
-                windowUpperRight[i] - windowLowerLeft[i]
+            epsilon += (window_upper_right[i] - window_lower_left[i]) * (
+                window_upper_right[i] - window_lower_left[i]
             )
         return math.sqrt(epsilon) * 0.0125
 
     @typed_rpc(viewer_prefix, schemas.picked_ids_route)
-    def pickedIds(self, params: schemas.PickedIDS) -> schemas.PickedIDSResponse:
+    def picked_ids(self, params: schemas.PickedIDS) -> schemas.PickedIDSResponse:
         picker = vtkCellPicker(tolerance=0.005)
         # Retrieve all actors under the clicked coordinates
         actors, flat_index = self.pick_actors_under_coordinate(
@@ -246,9 +246,7 @@ class VtkViewerView(VtkView):
         )
         # Filter pipeline IDs whose actors are in the picked list
         array_ids = [
-            data_id
-            for data_id in params.ids
-            if self.get_vtk_pipeline(data_id).actor in actors
+            data_id for data_id in params.ids if self.get_vtk_pipeline(data_id).actor in actors
         ]
         if not array_ids:
             return schemas.PickedIDSResponse(array_ids=[])
@@ -256,27 +254,25 @@ class VtkViewerView(VtkView):
         return schemas.PickedIDSResponse(array_ids=array_ids, viewer_id=viewer_id)
 
     @typed_rpc(viewer_prefix, schemas.grid_scale_route)
-    def toggleGridScale(self, params: schemas.GridScale) -> schemas.GridScaleResponse:
+    def toggle_grid_scale(self, params: schemas.GridScale) -> schemas.GridScaleResponse:
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
             grid_scale.SetVisibility(params.visibility)
         return schemas.GridScaleResponse()
 
     @typed_rpc(viewer_prefix, schemas.axes_route)
-    def toggleAxes(self, params: schemas.Axes) -> schemas.AxesResponse:
+    def toggle_axes(self, params: schemas.Axes) -> schemas.AxesResponse:
         axes = self.get_axes()
         if axes is not None:
             axes.SetVisibility(params.visibility)
         return schemas.AxesResponse()
 
     @typed_rpc(viewer_prefix, schemas.update_camera_route)
-    def updateCamera(
-        self, params: schemas.UpdateCamera
-    ) -> schemas.UpdateCameraResponse:
+    def update_camera(self, params: schemas.UpdateCamera) -> schemas.UpdateCameraResponse:
         camera_options = params.camera_options
 
-        renderWindow = self.getView("-1")
-        camera = renderWindow.GetRenderers().GetFirstRenderer().GetActiveCamera()
+        render_window = self.getView("-1")
+        camera = render_window.GetRenderers().GetFirstRenderer().GetActiveCamera()
 
         camera.SetFocalPoint(camera_options.focal_point)
         camera.SetViewUp(camera_options.view_up)
@@ -289,12 +285,12 @@ class VtkViewerView(VtkView):
         return schemas.UpdateCameraResponse()
 
     @typed_rpc(viewer_prefix, schemas.render_route)
-    def renderNow(self, params: schemas.Render) -> schemas.RenderResponse:
+    def render_now(self, _params: schemas.Render) -> schemas.RenderResponse:
         self.render()
         return schemas.RenderResponse()
 
     @typed_rpc(viewer_prefix, schemas.highlight_route)
-    def setHighlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
+    def set_highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
         # Clear previous highlights
         self.clear_highlights(params.ids)
         picker = vtkCellPicker(tolerance=0.005)
@@ -323,54 +319,48 @@ class VtkViewerView(VtkView):
         )
 
     @typed_rpc(viewer_prefix, schemas.clipping_planes_route)
-    def setClippingPlanes(
+    def set_clipping_planes_rpc(
         self, params: schemas.ClippingPlanes
     ) -> schemas.ClippingPlanesResponse:
         self.set_clipping_planes(params.ids, params.planes)
         return schemas.ClippingPlanesResponse()
 
     @typed_rpc(viewer_prefix, schemas.shrink_route)
-    def setShrink(self, params: schemas.Shrink) -> schemas.ShrinkResponse:
+    def set_shrink_rpc(self, params: schemas.Shrink) -> schemas.ShrinkResponse:
         self.set_shrink(params.ids, params.shrink_factor)
         return schemas.ShrinkResponse()
 
     @typed_rpc(viewer_prefix, schemas.explode_route)
-    def setExplode(self, params: schemas.Explode) -> schemas.ExplodeResponse:
+    def set_explode_rpc(self, params: schemas.Explode) -> schemas.ExplodeResponse:
         self.set_explode(params.ids, params.explode_factor)
         return schemas.ExplodeResponse()
 
     @typed_rpc(viewer_prefix, schemas.slice_route)
-    def setSlice(self, params: schemas.Slice) -> schemas.SliceResponse:
-        return schemas.SliceResponse(
-            max_indices=self.set_slice(params.ids, params.slices)
-        )
+    def set_slice_rpc(self, params: schemas.Slice) -> schemas.SliceResponse:
+        return schemas.SliceResponse(max_indices=self.set_slice(params.ids, params.slices))
 
     @typed_rpc(viewer_prefix, schemas.threshold_route)
-    def setThreshold(self, params: schemas.Threshold) -> schemas.ThresholdResponse:
+    def set_threshold_rpc(self, params: schemas.Threshold) -> schemas.ThresholdResponse:
         self.set_threshold(params.ids, params.attribute)
         return schemas.ThresholdResponse()
 
     @typed_rpc(viewer_prefix, schemas.set_z_scaling_route)
-    def setZScaling(self, params: schemas.SetZScaling) -> schemas.SetZScalingResponse:
-        renderWindow = self.getView("-1")
-        renderer = renderWindow.GetRenderers().GetFirstRenderer()
+    def set_z_scaling(self, params: schemas.SetZScaling) -> schemas.SetZScalingResponse:
+        render_window = self.getView("-1")
+        renderer = render_window.GetRenderers().GetFirstRenderer()
         cam = renderer.GetActiveCamera()
         transform = vtkTransform()
         transform.Scale(1, 1, params.z_scale)
         cam.SetModelTransformMatrix(transform.GetMatrix())
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
-            grid_scale.SetUse2DMode(True)
+            grid_scale.SetUse2DMode(True)  # noqa: FBT003 VTK API
         return schemas.SetZScalingResponse()
 
     @typed_rpc(viewer_prefix, schemas.preview_points_route)
-    def previewPoints(
-        self, params: schemas.PreviewPoints
-    ) -> schemas.PreviewPointsResponse:
+    def preview_points(self, params: schemas.PreviewPoints) -> schemas.PreviewPointsResponse:
         points_data = params.points
-        style_name = (
-            params.style.value if hasattr(params.style, "value") else params.style
-        )
+        style_name = params.style.value if hasattr(params.style, "value") else params.style
 
         if not points_data:
             if self._preview_actor is not None:
@@ -378,23 +368,7 @@ class VtkViewerView(VtkView):
                 self._preview_actor = None
                 self.render(-1)
             return schemas.PreviewPointsResponse()
-        if self._preview_actor is None:
-            self._preview_points = vtkPoints()
-            self._preview_verts = vtkCellArray()
-            self._preview_polydata = vtkPolyData()
-            self._preview_polydata.SetPoints(self._preview_points)
-            self._preview_polydata.SetVerts(self._preview_verts)
-            self._preview_mapper = vtkDataSetMapper()
-            self._preview_mapper.SetInputData(self._preview_polydata)
-            self._preview_mapper.ScalarVisibilityOn()
-            self._preview_mapper.SetColorModeToDirectScalars()
-            self._preview_actor = vtkActor()
-            self._preview_actor.SetMapper(self._preview_mapper)
-            prop = self._preview_actor.GetProperty()
-            prop.SetPointSize(10)
-            prop.SetLineWidth(2)
-            self.get_renderer().AddActor(self._preview_actor)
-
+        self._ensure_preview_actor()
         self._preview_points.Reset()
         self._preview_verts.Reset()
 
@@ -413,38 +387,65 @@ class VtkViewerView(VtkView):
         self._preview_polydata.GetPointData().SetScalars(colors)
         self._preview_polydata.GetPointData().SetActiveScalars("Colors")
 
-        lines = vtkCellArray()
-        polys = vtkCellArray()
-        if style_name == "curve":
-            for i in range(len(points_data) - 1):
-                lines.InsertNextCell(2, [i, i + 1])
-            if params.closed and len(points_data) >= 2:
-                lines.InsertNextCell(2, [len(points_data) - 1, 0])
-        elif style_name == "surface":
-            for i in range(len(points_data) - 1):
-                lines.InsertNextCell(2, [i, i + 1])
-            if len(points_data) >= 3:
-                lines.InsertNextCell(2, [len(points_data) - 1, 0])
-                polys.InsertNextCell(len(points_data), list(range(len(points_data))))
-
+        lines, polys = self._preview_cells(style_name, len(points_data), closed=bool(params.closed))
         self._preview_polydata.SetLines(lines)
         self._preview_polydata.SetPolys(polys)
         self._preview_polydata.Modified()
         self.render(-1)
         return schemas.PreviewPointsResponse()
 
-    @typed_rpc(viewer_prefix, schemas.ruler_route)
-    def setRuler(self, params: schemas.Ruler) -> schemas.RulerResponse:
+    def _ensure_preview_actor(self) -> None:
+        if self._preview_actor is None:
+            self._preview_points = vtkPoints()
+            self._preview_verts = vtkCellArray()
+            self._preview_polydata = vtkPolyData()
+            self._preview_polydata.SetPoints(self._preview_points)
+            self._preview_polydata.SetVerts(self._preview_verts)
+            self._preview_mapper = vtkDataSetMapper()
+            self._preview_mapper.SetInputData(self._preview_polydata)
+            self._preview_mapper.ScalarVisibilityOn()
+            self._preview_mapper.SetColorModeToDirectScalars()
+            self._preview_actor = vtkActor()
+            self._preview_actor.SetMapper(self._preview_mapper)
+            prop = self._preview_actor.GetProperty()
+            prop.SetPointSize(10)
+            prop.SetLineWidth(2)
+            self.get_renderer().AddActor(self._preview_actor)
+
+    @staticmethod
+    def _preview_cells(
+        style_name: object, point_count: int, *, closed: bool
+    ) -> tuple[vtkCellArray, vtkCellArray]:
+        lines = vtkCellArray()
+        polys = vtkCellArray()
+        if style_name in ("curve", "surface"):
+            for i in range(point_count - 1):
+                lines.InsertNextCell(2, [i, i + 1])
+        if style_name == "curve":
+            if closed and point_count >= MIN_CLOSED_CURVE_POINTS:
+                lines.InsertNextCell(2, [point_count - 1, 0])
+        elif style_name == "surface" and point_count >= MIN_SURFACE_POINTS:
+            lines.InsertNextCell(2, [point_count - 1, 0])
+            polys.InsertNextCell(point_count, list(range(point_count)))
+        return lines, polys
+
+    def _get_initialized_ruler(self) -> RulerPipeline:
         ruler = self.get_ruler()
-        assert ruler is not None
+        if ruler is None:
+            msg = "Ruler is not initialized"
+            raise RuntimeError(msg)
+        return ruler
+
+    @typed_rpc(viewer_prefix, schemas.ruler_route)
+    def set_ruler_rpc(self, params: schemas.Ruler) -> schemas.RulerResponse:
+        ruler = self._get_initialized_ruler()
         point1 = params.points[0]
         point2 = params.points[1] if len(params.points) > 1 else None
         distance = ruler.set_endpoints(point1, point2, renderer=self.get_renderer())
         return schemas.RulerResponse(distance=distance, point1=point1, point2=point2)
 
     @typed_rpc(viewer_prefix, schemas.reset_ruler_route)
-    def resetRuler(self, params: schemas.ResetRuler) -> schemas.ResetRulerResponse:
-        ruler = self.get_ruler()
-        assert ruler is not None
+    def reset_ruler(self, _params: schemas.ResetRuler) -> schemas.ResetRulerResponse:
+        ruler = self._get_initialized_ruler()
         ruler.reset()
         return schemas.ResetRulerResponse()

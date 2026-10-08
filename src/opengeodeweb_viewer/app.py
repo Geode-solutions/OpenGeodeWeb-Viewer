@@ -1,107 +1,41 @@
 # Standard library imports
 import argparse
+import asyncio
+import logging
 import os
-from typing import Any, cast, Protocol, runtime_checkable
+import sys
+from pathlib import Path
+
+from opengeodeweb_microservice.database import connection
+from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
+from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
+from vtkmodules.web import protocols as vtk_protocols
 
 # Third party imports
 from vtkmodules.web.wslink import ServerProtocol
-from vtkmodules.web import protocols as vtk_protocols
-from wslink import server  # type: ignore
-from vtkmodules.vtkWebCore import vtkWebApplication
-from vtkmodules.vtkRenderingCore import vtkRenderer, vtkRenderWindow
-from vtkmodules.vtkCommonCore import vtkFileOutputWindow, vtkOutputWindow
-from opengeodeweb_microservice.database import connection
+from wslink import server  # type: ignore[import-untyped]
 
 # Local application imports
-from opengeodeweb_viewer.config import *
-from opengeodeweb_viewer.vtk_protocol import VtkView, VtkTypingMixin
-from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
-from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
-from opengeodeweb_viewer.rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
-    VtkMeshPointsAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
-from opengeodeweb_viewer.rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
-    VtkMeshEdgesAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.mesh.edges.attribute.edge.edges_attribute_edge_protocols import (
-    VtkMeshEdgesAttributeEdgeView,
-)
-from opengeodeweb_viewer.rpc.mesh.cells.cells_protocols import VtkMeshCellsView
-from opengeodeweb_viewer.rpc.mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
-    VtkMeshCellsAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.mesh.cells.attribute.cell.cells_attribute_cell_protocols import (
-    VtkMeshCellsAttributeCellView,
-)
-from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
-from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
-    VtkMeshPolygonsAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.mesh.polygons.attribute.polygon.polygons_attribute_polygon_protocols import (
-    VtkMeshPolygonsAttributePolygonView,
-)
-from opengeodeweb_viewer.rpc.mesh.polyhedra.polyhedra_protocols import (
-    VtkMeshPolyhedraView,
-)
-from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.vertex.polyhedra_attribute_vertex_protocols import (
-    VtkMeshPolyhedraAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.mesh.polyhedra.attribute.polyhedron.polyhedra_attribute_polyhedron_protocols import (
-    VtkMeshPolyhedraAttributePolyhedronView,
-)
-from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
-from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
-    VtkModelEdgesView,
-)
-from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
-    VtkModelPointsView,
-)
-from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
-    VtkModelCornersView,
-)
-from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
-    VtkModelLinesView,
-)
-from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
-    VtkModelSurfacesView,
-)
-from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
-    VtkModelBlocksView,
-)
-from opengeodeweb_viewer.rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
-    VtkModelCornersAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.model.lines.attribute.vertex.lines_attribute_vertex_protocols import (
-    VtkModelLinesAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.model.lines.attribute.edge.lines_attribute_edge_protocols import (
-    VtkModelLinesAttributeEdgeView,
-)
-from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
-    VtkModelSurfacesAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
-    VtkModelSurfacesAttributePolygonView,
-)
-from opengeodeweb_viewer.rpc.model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
-    VtkModelBlocksAttributeVertexView,
-)
-from opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron.blocks_attribute_polyhedron_protocols import (
-    VtkModelBlocksAttributePolyhedronView,
-)
+from opengeodeweb_viewer.config import Config, DevConfig, ProdConfig, TestConfig
 from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.rpc.protocols import MESH_PROTOCOLS, MODEL_PROTOCOLS
 from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from opengeodeweb_viewer.vtk_protocol import VtkTypingMixin, VtkView
 
 # =============================================================================
 # Server class
 # =============================================================================
 
 
+logger = logging.getLogger(__name__)
+
+
 class _Server(VtkTypingMixin, ServerProtocol):
     # Defaults
-    authKey = "wslink-secret"
+    authKey = "wslink-secret"  # noqa: N815 wslink option name
     view = None
     debug = False
 
@@ -121,48 +55,24 @@ class _Server(VtkTypingMixin, ServerProtocol):
         # Bring used components
         self.registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
         self.registerVtkWebProtocol(vtk_protocols.vtkWebViewPort())
-        publisher = vtk_protocols.vtkWebPublishImageDelivery(decode=False)  # type: ignore
+        publisher = vtk_protocols.vtkWebPublishImageDelivery(decode=False)  # type: ignore[no-untyped-call]
         publisher.deltaStaleTimeBeforeRender = 0.1
         self.registerVtkWebProtocol(publisher)
-        self.setSharedObject("db", dict())
+        self.setSharedObject("db", {})
         self.setSharedObject("publisher", publisher)
 
         # Custom API
         mesh_protocols = VtkMeshView()
         model_protocols = VtkModelView()
-        vtk_view = VtkView()
-        self.registerVtkWebProtocol(vtk_view)
+        self.registerVtkWebProtocol(VtkView())
         self.registerVtkWebProtocol(VtkUtilsView())
         self.registerVtkWebProtocol(VtkViewerView())
         self.registerVtkWebProtocol(mesh_protocols)
-        self.registerVtkWebProtocol(VtkMeshPointsView())
-        self.registerVtkWebProtocol(VtkMeshPointsAttributeVertexView())
-        self.registerVtkWebProtocol(VtkMeshEdgesView())
-        self.registerVtkWebProtocol(VtkMeshEdgesAttributeVertexView())
-        self.registerVtkWebProtocol(VtkMeshEdgesAttributeEdgeView())
-        self.registerVtkWebProtocol(VtkMeshCellsView())
-        self.registerVtkWebProtocol(VtkMeshCellsAttributeVertexView())
-        self.registerVtkWebProtocol(VtkMeshCellsAttributeCellView())
-        self.registerVtkWebProtocol(VtkMeshPolygonsView())
-        self.registerVtkWebProtocol(VtkMeshPolygonsAttributeVertexView())
-        self.registerVtkWebProtocol(VtkMeshPolygonsAttributePolygonView())
-        self.registerVtkWebProtocol(VtkMeshPolyhedraView())
-        self.registerVtkWebProtocol(VtkMeshPolyhedraAttributeVertexView())
-        self.registerVtkWebProtocol(VtkMeshPolyhedraAttributePolyhedronView())
+        for protocol_class in MESH_PROTOCOLS:
+            self.registerVtkWebProtocol(protocol_class())
         self.registerVtkWebProtocol(model_protocols)
-        self.registerVtkWebProtocol(VtkModelEdgesView())
-        self.registerVtkWebProtocol(VtkModelPointsView())
-        self.registerVtkWebProtocol(VtkModelCornersView())
-        self.registerVtkWebProtocol(VtkModelLinesView())
-        self.registerVtkWebProtocol(VtkModelSurfacesView())
-        self.registerVtkWebProtocol(VtkModelBlocksView())
-        self.registerVtkWebProtocol(VtkModelCornersAttributeVertexView())
-        self.registerVtkWebProtocol(VtkModelLinesAttributeVertexView())
-        self.registerVtkWebProtocol(VtkModelLinesAttributeEdgeView())
-        self.registerVtkWebProtocol(VtkModelSurfacesAttributeVertexView())
-        self.registerVtkWebProtocol(VtkModelSurfacesAttributePolygonView())
-        self.registerVtkWebProtocol(VtkModelBlocksAttributeVertexView())
-        self.registerVtkWebProtocol(VtkModelBlocksAttributePolyhedronView())
+        for protocol_class in MODEL_PROTOCOLS:
+            self.registerVtkWebProtocol(protocol_class())
         self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
 
         # tell the C++ web app to use no encoding.
@@ -172,19 +82,19 @@ class _Server(VtkTypingMixin, ServerProtocol):
         # Update authentication key to use
         self.updateSecret(_Server.authKey)
 
-        errOut = vtkFileOutputWindow()
-        errOut.SetFileName("VTK.txt")
-        vtkStdErrOut = vtkOutputWindow()
-        vtkStdErrOut.SetInstance(errOut)
+        err_out = vtkFileOutputWindow()
+        err_out.SetFileName("VTK.txt")
+        vtk_std_err_out = vtkOutputWindow()
+        vtk_std_err_out.SetInstance(err_out)
 
         if not _Server.view:
             renderer = vtkRenderer()
-            renderWindow = vtkRenderWindow()
-            renderWindow.AddRenderer(renderer)
+            render_window = vtkRenderWindow()
+            render_window.AddRenderer(renderer)
             self.setSharedObject("renderer", renderer)
-            self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", renderWindow)
+            self.getApplication().GetObjectIdMap().SetActiveObject("VIEW", render_window)
 
-            renderWindow.SetOffScreenRendering(not _Server.debug)
+            render_window.SetOffScreenRendering(not _Server.debug)
 
 
 # =============================================================================
@@ -192,29 +102,40 @@ class _Server(VtkTypingMixin, ServerProtocol):
 # =============================================================================
 
 
-def run_server(Server: type[ServerProtocol] = _Server) -> None:
+def _configure_logging(python_env: str) -> None:
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    package_logger = logging.getLogger("opengeodeweb_viewer")
+    package_logger.addHandler(handler)
+    package_logger.propagate = False
+    package_logger.setLevel(logging.DEBUG if python_env in ("dev", "test") else logging.INFO)
+
+
+def run_server(server_protocol: type[ServerProtocol] = _Server) -> None:
     parser = argparse.ArgumentParser(description="Vtk server")
     server.add_arguments(parser)
     parser.set_defaults(port=None, host=None)
-    Server.add_arguments(parser)
+    server_protocol.add_arguments(parser)
     args = parser.parse_args()
 
     if args.project_folder_path is None:
-        raise ValueError("project_folder_path must be provided")
-    else:
-        args.project_folder_path = os.path.abspath(args.project_folder_path)
+        msg = "project_folder_path must be provided"
+        raise ValueError(msg)
+    args.project_folder_path = str(Path(args.project_folder_path).resolve())
 
-    PYTHON_ENV = os.environ.get("PYTHON_ENV", "prod").strip().lower()
+    python_env = os.environ.get("PYTHON_ENV", "prod").strip().lower()
+    _configure_logging(python_env)
 
     app_config: Config
-    if PYTHON_ENV == "prod":
+    if python_env == "prod":
         app_config = ProdConfig(args.project_folder_path)
-    elif PYTHON_ENV == "dev":
+    elif python_env == "dev":
         app_config = DevConfig(args.project_folder_path)
-    elif PYTHON_ENV == "test":
+    elif python_env == "test":
         app_config = TestConfig(args.project_folder_path)
     else:
-        raise ValueError(f"Unknown PYTHON_ENV: {PYTHON_ENV!r}")
+        msg = f"Unknown PYTHON_ENV: {python_env!r}"
+        raise ValueError(msg)
 
     if args.host is not None:
         app_config.HOST = str(args.host)
@@ -228,13 +149,15 @@ def run_server(Server: type[ServerProtocol] = _Server) -> None:
 
     app_config.sync_env()
 
-    db_full_path = os.path.join(os.environ["DATA_FOLDER_PATH"], "project.db")
+    db_full_path = Path(os.environ["DATA_FOLDER_PATH"]) / "project.db"
     connection.init_database(db_full_path, create_tables=False)
-    print(f"Viewer connected to database at: {db_full_path}", flush=True)
+    logger.info("Viewer connected to database at: %s", db_full_path)
 
-    print(f"{args=}", flush=True)
-    Server.configure(args)
-    server.start_webserver(options=args, protocol=Server)
+    logger.info("args=%s", args)
+    server_protocol.configure(args)
+    # Python 3.14 no longer creates a default event loop, which wslink 1.x expects
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    server.start_webserver(options=args, protocol=server_protocol)
 
 
 if __name__ == "__main__":

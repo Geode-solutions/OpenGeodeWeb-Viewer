@@ -1,15 +1,15 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
 )
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
-from tests.conftest import ServerMonitor
 
 # Local constants
 model_id = "12345678901234567890123456789012"
@@ -32,7 +32,7 @@ def test_surfaces_polygons_visibility(
             }
         ],
     )
-    assert server.compare_image("model/cube_visibility_false.jpeg") == True
+    assert server.compare_image("model/cube_visibility_false.jpeg")
 
     server.call(
         VtkModelSurfacesView.model_surfaces_prefix
@@ -46,7 +46,7 @@ def test_surfaces_polygons_visibility(
         ],
     )
 
-    assert server.compare_image("model/surfaces/visibility.jpeg") == True
+    assert server.compare_image("model/surfaces/visibility.jpeg")
 
 
 def test_surfaces_polygons_color(
@@ -67,7 +67,7 @@ def test_surfaces_polygons_color(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/color.jpeg") == True
+    assert server.compare_image("model/surfaces/color.jpeg")
 
 
 def test_surfaces_polygons_random_color(
@@ -81,7 +81,7 @@ def test_surfaces_polygons_random_color(
         + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"],
         [{"id": model_id, "block_ids": list(range(36, 47)), "color_mode": "random"}],
     )
-    assert server.compare_image("model/surfaces/random_color.jpeg") == True
+    assert server.compare_image("model/surfaces/random_color.jpeg")
 
 
 def test_surfaces_polygons_random_collection_id(
@@ -116,8 +116,7 @@ def test_surfaces_clipping_plane(
     test_surfaces_polygons_visibility(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [model_id],
@@ -130,18 +129,15 @@ def test_surfaces_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/clipping_plane.jpeg") == True
+    assert server.compare_image("model/surfaces/clipping_plane.jpeg")
 
 
-def test_surfaces_shrink(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_surfaces_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_surfaces_polygons_visibility(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["shrink"]["rpc"],
         [
             {
                 "ids": [model_id],
@@ -149,4 +145,4 @@ def test_surfaces_shrink(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/shrink.jpeg") == True
+    assert server.compare_image("model/surfaces/shrink.jpeg")

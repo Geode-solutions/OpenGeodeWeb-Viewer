@@ -1,20 +1,18 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.points.points_protocols import (
     VtkMeshPointsView,
 )
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.mesh.test_mesh_protocols import test_register_mesh
-from tests.conftest import ServerMonitor
 
 
-def test_points_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "12345678901234567890123456789012"
     test_register_mesh(server, dataset_factory)
 
@@ -23,12 +21,10 @@ def test_points_visibility(
         + VtkMeshPointsView.mesh_points_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": True}],
     )
-    assert server.compare_image("mesh/points/visibility.jpeg") == True
+    assert server.compare_image("mesh/points/visibility.jpeg")
 
 
-def test_points_size(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_points_size(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "12345678901234567890123456789012"
     test_points_visibility(server, dataset_factory)
 
@@ -37,12 +33,10 @@ def test_points_size(
         + VtkMeshPointsView.mesh_points_schemas_dict["size"]["rpc"],
         [{"id": mesh_id, "size": 15}],
     )
-    assert server.compare_image("mesh/points/size.jpeg") == True
+    assert server.compare_image("mesh/points/size.jpeg")
 
 
-def test_points_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_points_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "12345678901234567890123456789012"
     test_points_size(server, dataset_factory)
 
@@ -51,40 +45,36 @@ def test_points_color(
         + VtkMeshPointsView.mesh_points_schemas_dict["color"]["rpc"],
         [{"id": mesh_id, "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1}}],
     )
-    assert server.compare_image("mesh/points/color.jpeg") == True
+    assert server.compare_image("mesh/points/color.jpeg")
 
 
-def test_points_with_point_set(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_points_with_point_set(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     mesh_id = "00000000000000000000000044556677"
 
-    dataset_factory(
-        id=mesh_id, viewable_file="points.vtp", viewer_elements_type="points"
-    )
+    dataset_factory(data_id=mesh_id, viewable_file="points.vtp", viewer_elements_type="points")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": mesh_id, "name": "points.vtp"}],
     )
-    assert server.compare_image("mesh/points/register_point_set.jpeg") == True
+    assert server.compare_image("mesh/points/register_point_set.jpeg")
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix
         + VtkMeshPointsView.mesh_points_schemas_dict["size"]["rpc"],
         [{"id": mesh_id, "size": 10}],
     )
-    assert server.compare_image("mesh/points/point_set_size.jpeg") == True
+    assert server.compare_image("mesh/points/point_set_size.jpeg")
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix
         + VtkMeshPointsView.mesh_points_schemas_dict["color"]["rpc"],
         [{"id": mesh_id, "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1.0}}],
     )
-    assert server.compare_image("mesh/points/point_set_color.jpeg") == True
+    assert server.compare_image("mesh/points/point_set_color.jpeg")
 
     server.call(
         VtkMeshPointsView.mesh_points_prefix
         + VtkMeshPointsView.mesh_points_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": False}],
     )
-    assert server.compare_image("mesh/points/point_set_visibility.jpeg") == True
+    assert server.compare_image("mesh/points/point_set_visibility.jpeg")

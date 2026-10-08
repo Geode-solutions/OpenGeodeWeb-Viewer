@@ -1,12 +1,13 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
+
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex import (
+    surfaces_attribute_vertex_protocols,
+)
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
-)
-from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
-    VtkModelSurfacesAttributeVertexView,
 )
 
 # Local application imports
@@ -14,6 +15,10 @@ from tests.conftest import ServerMonitor
 from tests.model.test_model_protocols import (
     test_register_model_cube,
     test_register_model_implicit_attribute,
+)
+
+VtkModelSurfacesAttributeVertexView = (
+    surfaces_attribute_vertex_protocols.VtkModelSurfacesAttributeVertexView
 )
 
 # Local constants
@@ -43,9 +48,7 @@ def test_surfaces_vertex_attribute(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -68,7 +71,7 @@ def test_surfaces_vertex_attribute(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/vertex_attribute.jpeg") == True
+    assert server.compare_image("model/surfaces/vertex_attribute.jpeg")
 
 
 def test_surfaces_vertex_color_map(
@@ -95,9 +98,7 @@ def test_surfaces_vertex_color_map(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -121,7 +122,7 @@ def test_surfaces_vertex_color_map(
         ],
     )
 
-    assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/vertex_color_map.jpeg")
 
 
 def test_surfaces_vertex_color_map_range_update(
@@ -148,9 +149,7 @@ def test_surfaces_vertex_color_map_range_update(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -174,16 +173,14 @@ def test_surfaces_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -207,7 +204,7 @@ def test_surfaces_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/surfaces/updated_vertex_color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/updated_vertex_color_map.jpeg")
 
 
 def test_surfaces_vertex_color_map_red_shift(
@@ -234,9 +231,7 @@ def test_surfaces_vertex_color_map_red_shift(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -260,16 +255,14 @@ def test_surfaces_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -293,7 +286,7 @@ def test_surfaces_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/surfaces/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/vertex_color_map.jpeg")
 
 
 def test_surfaces_vertex_color_map_rainbow(
@@ -320,9 +313,7 @@ def test_surfaces_vertex_color_map_rainbow(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -370,19 +361,14 @@ def test_surfaces_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/vertex_color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("model/surfaces/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -430,7 +416,7 @@ def test_surfaces_vertex_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/surfaces/vertex_color_map_rainbow.jpeg") == True
+    assert server.compare_image("model/surfaces/vertex_color_map_rainbow.jpeg")
 
 
 def test_surfaces_vertex_attribute_item(
@@ -456,9 +442,7 @@ def test_surfaces_vertex_attribute_item(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -482,7 +466,7 @@ def test_surfaces_vertex_attribute_item(
         ],
     )
 
-    assert server.compare_image("model/surfaces/vertex_attribute_item.jpeg") == True
+    assert server.compare_image("model/surfaces/vertex_attribute_item.jpeg")
 
 
 def test_surfaces_vertex_attribute_interpolates_through_colormap(
@@ -506,9 +490,7 @@ def test_surfaces_vertex_attribute_interpolates_through_colormap(
         VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_prefix
         + VtkModelSurfacesAttributeVertexView.model_surfaces_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -556,6 +538,4 @@ def test_surfaces_vertex_attribute_interpolates_through_colormap(
         ],
     )
 
-    assert (
-        server.compare_image("model/surfaces/implicit_attribute_color_map.jpeg") == True
-    )
+    assert server.compare_image("model/surfaces/implicit_attribute_color_map.jpeg")

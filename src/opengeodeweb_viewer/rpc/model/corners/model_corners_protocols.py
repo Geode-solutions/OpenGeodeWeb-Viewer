@@ -1,5 +1,5 @@
 # Standard library imports
-import os
+from pathlib import Path
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
@@ -7,27 +7,26 @@ from opengeodeweb_microservice.schemas import get_schemas_dict
 # Local application imports
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
+
 from . import schemas
 
 
 class VtkModelCornersView(VtkModelView):
     model_corners_prefix = "opengeodeweb_viewer.model.corners."
-    model_corners_schemas_dict = get_schemas_dict(
-        os.path.join(os.path.dirname(__file__), "schemas")
-    )
+    model_corners_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
     def __init__(self) -> None:
         super().__init__()
 
     @typed_rpc(model_corners_prefix, schemas.visibility_route)
-    def setModelCornersPointsVisibility(
+    def set_model_corners_points_visibility(
         self, params: schemas.Visibility
     ) -> schemas.VisibilityResponse:
-        self.SetBlocksVisibility(params.id, params.block_ids, params.visibility)
+        self.set_blocks_visibility(params.id, params.block_ids, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_corners_prefix, schemas.color_route)
-    def setModelCornersColor(self, params: schemas.Color) -> schemas.ColorResponse:
+    def set_model_corners_color(self, params: schemas.Color) -> schemas.ColorResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         colors = self.apply_color(
             pipeline,

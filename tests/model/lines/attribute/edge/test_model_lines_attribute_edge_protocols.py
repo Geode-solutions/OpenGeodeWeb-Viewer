@@ -1,25 +1,24 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
+
+from opengeodeweb_viewer.rpc.model.lines.attribute.edge.lines_attribute_edge_protocols import (
+    VtkModelLinesAttributeEdgeView,
+)
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.lines.model_lines_protocols import (
     VtkModelLinesView,
 )
-from opengeodeweb_viewer.rpc.model.lines.attribute.edge.lines_attribute_edge_protocols import (
-    VtkModelLinesAttributeEdgeView,
-)
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
-from tests.conftest import ServerMonitor
 
 # Local constants
 model_id = "12345678901234567890123456789012"
 
 
-def test_lines_edge_attribute(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_edge_attribute(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -38,9 +37,9 @@ def test_lines_edge_attribute(
 
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -63,12 +62,10 @@ def test_lines_edge_attribute(
             }
         ],
     )
-    assert server.compare_image("model/lines/attribute.jpeg") == True
+    assert server.compare_image("model/lines/attribute.jpeg")
 
 
-def test_lines_edge_color_map(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_lines_edge_color_map(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model_cube(server, dataset_factory)
 
@@ -88,9 +85,9 @@ def test_lines_edge_color_map(
     # Set active edge attribute, item, color map & range
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -114,7 +111,7 @@ def test_lines_edge_color_map(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map.jpeg") == True
+    assert server.compare_image("model/lines/color_map.jpeg")
 
 
 def test_lines_edge_color_map_range_update(
@@ -139,9 +136,9 @@ def test_lines_edge_color_map_range_update(
     # Set active edge attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -165,14 +162,14 @@ def test_lines_edge_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map.jpeg") == True
+    assert server.compare_image("model/lines/color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -196,7 +193,7 @@ def test_lines_edge_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/lines/updated_color_map.jpeg") == True
+    assert server.compare_image("model/lines/updated_color_map.jpeg")
 
 
 def test_lines_edge_color_map_red_shift(
@@ -221,9 +218,9 @@ def test_lines_edge_color_map_red_shift(
     # Set active edge attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -247,14 +244,14 @@ def test_lines_edge_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map.jpeg") == True
+    assert server.compare_image("model/lines/color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -278,7 +275,7 @@ def test_lines_edge_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map_red_shift.jpeg") == True
+    assert server.compare_image("model/lines/color_map_red_shift.jpeg")
 
 
 def test_lines_edge_color_map_rainbow(
@@ -303,9 +300,9 @@ def test_lines_edge_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -353,14 +350,14 @@ def test_lines_edge_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map_rainbow_initial.jpeg") == True
+    assert server.compare_image("model/lines/color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_prefix
-        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkModelLinesAttributeEdgeView.model_lines_attribute_edge_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": model_id,
@@ -408,4 +405,4 @@ def test_lines_edge_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/lines/color_map_rainbow.jpeg") == True
+    assert server.compare_image("model/lines/color_map_rainbow.jpeg")

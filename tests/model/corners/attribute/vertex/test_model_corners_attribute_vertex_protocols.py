@@ -1,17 +1,22 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
+
+from opengeodeweb_viewer.rpc.model.corners.attribute.vertex import (
+    corners_attribute_vertex_protocols,
+)
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
     VtkModelCornersView,
 )
-from opengeodeweb_viewer.rpc.model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
-    VtkModelCornersAttributeVertexView,
-)
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
-from tests.conftest import ServerMonitor
+
+VtkModelCornersAttributeVertexView = (
+    corners_attribute_vertex_protocols.VtkModelCornersAttributeVertexView
+)
 
 # Local constants
 model_id = "12345678901234567890123456789012"
@@ -40,9 +45,7 @@ def test_corners_vertex_attribute(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -65,7 +68,7 @@ def test_corners_vertex_attribute(
             }
         ],
     )
-    assert server.compare_image("model/corners/vertex_attribute.jpeg") == True
+    assert server.compare_image("model/corners/vertex_attribute.jpeg")
 
 
 def test_corners_vertex_color_map(
@@ -92,9 +95,7 @@ def test_corners_vertex_color_map(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -118,7 +119,7 @@ def test_corners_vertex_color_map(
         ],
     )
 
-    assert server.compare_image("model/corners/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/corners/vertex_color_map.jpeg")
 
 
 def test_corners_vertex_color_map_range_update(
@@ -145,9 +146,7 @@ def test_corners_vertex_color_map_range_update(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -171,16 +170,14 @@ def test_corners_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/corners/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/corners/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -204,7 +201,7 @@ def test_corners_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/corners/updated_vertex_color_map.jpeg") == True
+    assert server.compare_image("model/corners/updated_vertex_color_map.jpeg")
 
 
 def test_corners_vertex_color_map_red_shift(
@@ -231,9 +228,7 @@ def test_corners_vertex_color_map_red_shift(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -257,16 +252,14 @@ def test_corners_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/corners/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/corners/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -290,7 +283,7 @@ def test_corners_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/corners/vertex_color_map.jpeg") == True
+    assert server.compare_image("model/corners/vertex_color_map.jpeg")
 
 
 def test_corners_vertex_color_map_rainbow(
@@ -317,9 +310,7 @@ def test_corners_vertex_color_map_rainbow(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -367,19 +358,14 @@ def test_corners_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("model/corners/vertex_color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("model/corners/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_prefix
         + VtkModelCornersAttributeVertexView.model_corners_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -427,4 +413,4 @@ def test_corners_vertex_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/corners/vertex_color_map_rainbow.jpeg") == True
+    assert server.compare_image("model/corners/vertex_color_map_rainbow.jpeg")

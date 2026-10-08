@@ -6,13 +6,13 @@ import pkgutil
 from typing import Any
 
 # Third party imports
-import fastjsonschema  # type: ignore
+import fastjsonschema  # type: ignore[import-untyped]
 import pytest
 
 # Local application imports
 from opengeodeweb_viewer import rpc
-from opengeodeweb_viewer.typed_rpc import TYPED_RPC_MARKER, typed_rpc
 from opengeodeweb_viewer.rpc.viewer import schemas
+from opengeodeweb_viewer.typed_rpc import TYPED_RPC_MARKER, typed_rpc
 
 PREFIX = "opengeodeweb_viewer."
 
@@ -34,36 +34,34 @@ def test_every_rpc_is_typed() -> None:
     rpcs = {uri: f for uri, f in _registered_rpcs().items() if uri.startswith(PREFIX)}
     assert rpcs
     for uri, function in rpcs.items():
-        assert getattr(
-            function, TYPED_RPC_MARKER, False
-        ), f"{uri} must be registered with @typed_rpc"
+        assert getattr(function, TYPED_RPC_MARKER, False), (
+            f"{uri} must be registered with @typed_rpc"
+        )
 
 
 class _Protocol:
     def __init__(self) -> None:
-        self.published: list[tuple[str, Any]] = []
+        self.published: list[tuple[str, object]] = []
 
-    def publish(self, rpc_id: str, params: Any) -> None:
+    def publish(self, rpc_id: str, params: object) -> None:
         self.published.append((rpc_id, params))
 
     @typed_rpc(PREFIX, schemas.pick_colormap_route)
-    def pick(self, params: schemas.PickColormap) -> schemas.PickColormapResponse:
+    def pick(self, _params: schemas.PickColormap) -> schemas.PickColormapResponse:
         return schemas.PickColormapResponse(data_id=None)
 
     @typed_rpc(PREFIX, schemas.get_point_position_route)
-    def wrong_type(
-        self, params: schemas.GetPointPosition
-    ) -> schemas.GetPointPositionResponse:
+    def wrong_type(self, _params: schemas.GetPointPosition) -> schemas.GetPointPositionResponse:
         return schemas.PickColormapResponse()  # type: ignore[return-value]
 
     @typed_rpc(PREFIX, schemas.get_point_position_route)
     def invalid_payload(
-        self, params: schemas.GetPointPosition
+        self, _params: schemas.GetPointPosition
     ) -> schemas.GetPointPositionResponse:
         return schemas.GetPointPositionResponse(x="a", y=0, z=0)  # type: ignore[arg-type]
 
     @typed_rpc(PREFIX, schemas.highlight_route)
-    def highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
+    def highlight(self, _params: schemas.Highlight) -> schemas.HighlightResponse:
         return schemas.HighlightResponse(
             id="data",
             picked_id=0,
@@ -76,9 +74,7 @@ def test_typed_rpc_returns_dict_without_none() -> None:
 
 
 def test_typed_rpc_returns_json_serializable_enum() -> None:
-    payload = _Protocol().highlight(
-        {"field_type": "POINT", "ids": ["0" * 32], "x": 1, "y": 2}
-    )
+    payload = _Protocol().highlight({"field_type": "POINT", "ids": ["0" * 32], "x": 1, "y": 2})
     assert payload["field_type"] == "POINT"
     json.dumps(payload)
 

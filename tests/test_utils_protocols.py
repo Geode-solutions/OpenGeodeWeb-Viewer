@@ -1,9 +1,11 @@
-from typing import Callable
-from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
-from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
-from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from collections.abc import Callable
+
 from opengeodeweb_microservice.database.connection import get_session
 from opengeodeweb_microservice.database.data import Data
+
+from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.utils_protocols import VtkUtilsView
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from tests.conftest import ServerMonitor
 
 
@@ -12,7 +14,7 @@ def test_reset_project_after_import(
 ) -> None:
     # Mock
     pre_id = "00000000000000000000000123456789"
-    dataset_factory(id=pre_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
+    dataset_factory(data_id=pre_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": pre_id, "name": "hat.vtp"}],
@@ -25,13 +27,10 @@ def test_reset_project_after_import(
         session.commit()
 
     post_id = "00000000000000000000000987654321"
-    dataset_factory(
-        id=post_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+    dataset_factory(data_id=post_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
 
     server.call(
-        VtkUtilsView.utils_prefix
-        + VtkUtilsView.utils_schemas_dict["import_project"]["rpc"]
+        VtkUtilsView.utils_prefix + VtkUtilsView.utils_schemas_dict["import_project"]["rpc"]
     )
     server.get_response()
 

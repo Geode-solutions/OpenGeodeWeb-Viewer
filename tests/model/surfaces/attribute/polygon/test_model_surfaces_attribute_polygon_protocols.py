@@ -1,32 +1,36 @@
 # Standard library imports
-import glob
 import os
-from typing import Callable
+from collections.abc import Callable
+from pathlib import Path
+
+from vtkmodules.vtkCommonCore import vtkDoubleArray
 
 # Third party imports
 from vtkmodules.vtkIOXML import vtkXMLPolyDataReader, vtkXMLPolyDataWriter
-from vtkmodules.vtkCommonCore import vtkDoubleArray
 
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
+from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon import (
+    surfaces_attribute_polygon_protocols,
+)
 from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
-)
-from opengeodeweb_viewer.rpc.model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
-    VtkModelSurfacesAttributePolygonView,
 )
 
 # Local application imports
 from tests.conftest import ServerMonitor
+
+VtkModelSurfacesAttributePolygonView = (
+    surfaces_attribute_polygon_protocols.VtkModelSurfacesAttributePolygonView
+)
 
 # Local constants
 model_id = "12345678901234567890123456789012"
 
 
 def add_polygon_attribute_to_cube(model_id: str) -> None:
-    data_folder = os.path.join(os.environ["DATA_FOLDER_PATH"], model_id)
-    for filepath in glob.glob(
-        os.path.join(data_folder, "**", "Surface_*.vtp"), recursive=True
-    ):
+    data_folder = Path(os.environ["DATA_FOLDER_PATH"]) / model_id
+    for path in data_folder.rglob("Surface_*.vtp"):
+        filepath = str(path)
         reader = vtkXMLPolyDataReader()
         reader.SetFileName(filepath)
         reader.Update()
@@ -50,13 +54,13 @@ def add_polygon_attribute_to_cube(model_id: str) -> None:
 def register_model_cube_with_polygon_attribute(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
-    dataset_factory(id=model_id, viewable_file="cube.vtm")
+    dataset_factory(data_id=model_id, viewable_file="cube.vtm")
     add_polygon_attribute_to_cube(model_id)
     server.call(
         VtkModelView.model_prefix + VtkModelView.model_schemas_dict["register"]["rpc"],
         [{"id": model_id, "name": "cube.vtm"}],
     )
-    assert server.compare_image("model/cube_register.jpeg") == True
+    assert server.compare_image("model/cube_register.jpeg")
 
 
 def test_surfaces_polygon_attribute(
@@ -82,9 +86,7 @@ def test_surfaces_polygon_attribute(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -107,7 +109,7 @@ def test_surfaces_polygon_attribute(
             }
         ],
     )
-    assert server.compare_image("model/surfaces/attribute.jpeg") == True
+    assert server.compare_image("model/surfaces/attribute.jpeg")
 
 
 def test_surfaces_polygon_color_map(
@@ -134,9 +136,7 @@ def test_surfaces_polygon_color_map(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -160,7 +160,7 @@ def test_surfaces_polygon_color_map(
         ],
     )
 
-    assert server.compare_image("model/surfaces/color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/color_map.jpeg")
 
 
 def test_surfaces_polygon_color_map_range_update(
@@ -187,9 +187,7 @@ def test_surfaces_polygon_color_map_range_update(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -213,16 +211,14 @@ def test_surfaces_polygon_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/surfaces/color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -246,7 +242,7 @@ def test_surfaces_polygon_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("model/surfaces/updated_color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/updated_color_map.jpeg")
 
 
 def test_surfaces_polygon_color_map_red_shift(
@@ -273,9 +269,7 @@ def test_surfaces_polygon_color_map_red_shift(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -299,16 +293,14 @@ def test_surfaces_polygon_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/surfaces/color_map.jpeg") == True
+    assert server.compare_image("model/surfaces/color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -332,7 +324,7 @@ def test_surfaces_polygon_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("model/surfaces/color_map_red_shift.jpeg") == True
+    assert server.compare_image("model/surfaces/color_map_red_shift.jpeg")
 
 
 def test_surfaces_polygon_color_map_rainbow(
@@ -359,9 +351,7 @@ def test_surfaces_polygon_color_map_rainbow(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -409,16 +399,14 @@ def test_surfaces_polygon_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/surfaces/color_map_rainbow_initial.jpeg") == True
+    assert server.compare_image("model/surfaces/color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_prefix
         + VtkModelSurfacesAttributePolygonView.model_surfaces_attribute_polygon_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": model_id,
@@ -466,4 +454,4 @@ def test_surfaces_polygon_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("model/surfaces/color_map_rainbow.jpeg") == True
+    assert server.compare_image("model/surfaces/color_map_rainbow.jpeg")

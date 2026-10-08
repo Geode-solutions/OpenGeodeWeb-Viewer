@@ -1,22 +1,20 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
     VtkModelEdgesView,
 )
+from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model
-from tests.conftest import ServerMonitor
 
 # Local constants
 model_id = "12345678901234567890123456789012"
 
 
-def test_edges_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_model(server, dataset_factory)
 
@@ -25,4 +23,4 @@ def test_edges_visibility(
         + VtkModelEdgesView.model_edges_schemas_dict["visibility"]["rpc"],
         [{"id": model_id, "visibility": True}],
     )
-    assert server.compare_image("model/edges/visibility.jpeg") == True
+    assert server.compare_image("model/edges/visibility.jpeg")

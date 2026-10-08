@@ -1,5 +1,5 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
@@ -17,7 +17,7 @@ mesh_id = "12345678901234567890123456789012"
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     dataset_factory(
-        id=mesh_id,
+        data_id=mesh_id,
         viewable_file="hat.vtp",
         viewer_elements_type="points",
     )
@@ -36,9 +36,9 @@ def test_points_vertex_attribute(
 
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -51,7 +51,7 @@ def test_points_vertex_attribute(
             }
         ],
     )
-    assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/points/vertex_color_map.jpeg")
 
 
 def test_points_vertex_color_map_range_update(
@@ -63,9 +63,9 @@ def test_points_vertex_color_map_range_update(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -88,14 +88,14 @@ def test_points_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/points/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -118,9 +118,7 @@ def test_points_vertex_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/points/vertex_color_map_range_update.jpeg") == True
-    )
+    assert server.compare_image("mesh/points/vertex_color_map_range_update.jpeg")
 
 
 def test_points_vertex_color_map_red_shift(
@@ -132,9 +130,9 @@ def test_points_vertex_color_map_red_shift(
     # Set active attribute, item, range and color map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -157,14 +155,14 @@ def test_points_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/points/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/points/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -187,7 +185,7 @@ def test_points_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/points/vertex_color_map_red_shift.jpeg") == True
+    assert server.compare_image("mesh/points/vertex_color_map_red_shift.jpeg")
 
 
 def test_points_vertex_color_map_rainbow(
@@ -199,9 +197,9 @@ def test_points_vertex_color_map_rainbow(
     # Rainbow Desaturated Map
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -248,17 +246,14 @@ def test_points_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/points/vertex_color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("mesh/points/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -305,7 +300,7 @@ def test_points_vertex_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("mesh/points/vertex_color_map_rainbow.jpeg") == True
+    assert server.compare_image("mesh/points/vertex_color_map_rainbow.jpeg")
 
 
 def test_points_vertex_attribute_item(
@@ -316,9 +311,9 @@ def test_points_vertex_attribute_item(
 
     server.call(
         VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
-        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict[
-            "attribute"
-        ]["rpc"],
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
         [
             {
                 "id": mesh_id,
@@ -340,4 +335,4 @@ def test_points_vertex_attribute_item(
             }
         ],
     )
-    assert server.compare_image("mesh/points/vertex_attribute_item.jpeg") == True
+    assert server.compare_image("mesh/points/vertex_attribute_item.jpeg")

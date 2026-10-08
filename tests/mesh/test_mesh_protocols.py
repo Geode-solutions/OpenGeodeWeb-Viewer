@@ -1,4 +1,5 @@
-from typing import Callable
+from collections.abc import Callable
+
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from tests.conftest import ServerMonitor
 
@@ -6,23 +7,17 @@ from tests.conftest import ServerMonitor
 mesh_id = "12345678901234567890123456789012"
 
 
-def test_register_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-    dataset_factory(
-        id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    dataset_factory(data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": mesh_id, "name": "hat.vtp"}],
     )
-    assert server.compare_image("mesh/register.jpeg") == True
+    assert server.compare_image("mesh/register.jpeg")
 
 
-def test_deregister_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_deregister_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -30,7 +25,7 @@ def test_deregister_mesh(
         [{"id": mesh_id}],
     )
 
-    assert server.compare_image("mesh/deregister.jpeg") == True
+    assert server.compare_image("mesh/deregister.jpeg")
 
 
 def test_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
@@ -40,7 +35,7 @@ def test_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) 
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": False}],
     )
-    assert server.compare_image("mesh/visibility.jpeg") == True
+    assert server.compare_image("mesh/visibility.jpeg")
 
 
 def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
@@ -55,22 +50,19 @@ def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
             }
         ],
     )
-    assert server.compare_image("mesh/color.jpeg") == True
+    assert server.compare_image("mesh/color.jpeg")
 
 
-def test_apply_textures(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_apply_textures(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
-    texture_entry = dataset_factory(
-        id="00000000000000000000000987654321",
+    dataset_factory(
+        data_id="00000000000000000000000987654321",
         viewable_file="hat_lambert2SG.vti",
         viewer_elements_type="polygons",
     )
 
     server.call(
-        VtkMeshView.mesh_prefix
-        + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -83,32 +75,4 @@ def test_apply_textures(
             }
         ],
     )
-    assert server.compare_image("mesh/apply_textures.jpeg") == True
-
-
-# def test_display_vertex_attribute(server):
-#     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"], [{"id": "00000000000000000000000123456789", "name": "hat.vtp"}])
-#     assert server.compare_image("mesh/display_vertex_attribute_1.jpeg") == True
-
-#     server.call(
-#         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["display_vertex_attribute"]["rpc"],
-#         [{"id": "00000000000000000000000123456789", "name": "geode_implicit_attribute"}],
-#     )
-#     assert server.compare_image("mesh/display_vertex_attribute_2.jpeg") == True
-
-
-#     server.call(
-#         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["color"]["rpc"],
-#         [{"id": "00000000000000000000000123456789", "red": 250, "green": 0, "blue": 0}],
-#     )
-#     assert server.compare_image("mesh/display_vertex_attribute_3.jpeg") == True
-
-# def test_display_polygon_attribute(server):
-#     server.call(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"], [{"id": "00000000000000000000000123456789", "name": "hat.vtp"}])
-#     assert server.compare_image("mesh/display_polygon_attribute_1.jpeg") == True
-
-#     server.call(
-#         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["display_polygon_attribute"]["rpc"],
-#         [{"id": "00000000000000000000000123456789", "name": "implicit_on_polygons"}],
-#     )
-#     assert server.compare_image("mesh/display_polygon_attribute_2.jpeg") == True
+    assert server.compare_image("mesh/apply_textures.jpeg")

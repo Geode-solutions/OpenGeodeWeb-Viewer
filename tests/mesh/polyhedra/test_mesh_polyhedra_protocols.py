@@ -1,5 +1,5 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
@@ -15,11 +15,9 @@ from tests.conftest import ServerMonitor
 mesh_id = "12345678901234567890123456789012"
 
 
-def test_register_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     dataset_factory(
-        id=mesh_id,
+        data_id=mesh_id,
         viewable_file="polyhedron_attribute.vtu",
         viewer_elements_type="polyhedra",
     )
@@ -28,12 +26,10 @@ def test_register_mesh(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": mesh_id, "name": "polyhedron_attribute.vtu"}],
     )
-    assert server.compare_image("mesh/polyhedra/register.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/register.jpeg")
 
 
-def test_polyhedra_color(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_polyhedra_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -46,12 +42,10 @@ def test_polyhedra_color(
             }
         ],
     )
-    assert server.compare_image("mesh/polyhedra/color.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/color.jpeg")
 
 
-def test_polyhedra_visibility(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_polyhedra_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -59,7 +53,7 @@ def test_polyhedra_visibility(
         + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["visibility"]["rpc"],
         [{"id": mesh_id, "visibility": False}],
     )
-    assert server.compare_image("mesh/polyhedra/visibility.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/visibility.jpeg")
 
 
 def test_polyhedra_clipping_plane(
@@ -69,8 +63,7 @@ def test_polyhedra_clipping_plane(
     test_register_mesh(server, dataset_factory)
 
     server.call(
-        VtkViewerView.viewer_prefix
-        + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"],
         [
             {
                 "ids": [mesh_id],
@@ -83,4 +76,4 @@ def test_polyhedra_clipping_plane(
             }
         ],
     )
-    assert server.compare_image("mesh/polyhedra/clipping_plane.jpeg") == True
+    assert server.compare_image("mesh/polyhedra/clipping_plane.jpeg")

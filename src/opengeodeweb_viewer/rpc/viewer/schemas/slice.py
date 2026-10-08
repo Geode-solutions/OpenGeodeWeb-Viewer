@@ -1,3 +1,4 @@
+from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
@@ -32,7 +33,7 @@ class SliceResponse(DataClassJsonMixin):
 
 
 slice_route = Route(
-    schema=load_schema(__file__),
+    schema=load_schema(Path(__file__)),
     params=Slice,
     response=SliceResponse,
 )

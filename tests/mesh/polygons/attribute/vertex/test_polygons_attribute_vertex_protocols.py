@@ -1,14 +1,18 @@
 # Standard library imports
-from typing import Callable
+from collections.abc import Callable
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex.polygons_attribute_vertex_protocols import (
-    VtkMeshPolygonsAttributeVertexView,
+from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex import (
+    polygons_attribute_vertex_protocols,
 )
 
 # Local application imports
 from tests.conftest import ServerMonitor
+
+VtkMeshPolygonsAttributeVertexView = (
+    polygons_attribute_vertex_protocols.VtkMeshPolygonsAttributeVertexView
+)
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"
@@ -16,9 +20,7 @@ mesh_id = "12345678901234567890123456789012"
 
 def test_register(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
-    dataset_factory(
-        id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+    dataset_factory(data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -37,9 +39,7 @@ def test_polygons_vertex_color_map(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -62,7 +62,7 @@ def test_polygons_vertex_color_map(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg")
 
 
 def test_polygons_vertex_color_map_range_update(
@@ -76,9 +76,7 @@ def test_polygons_vertex_color_map_range_update(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -101,16 +99,14 @@ def test_polygons_vertex_color_map_range_update(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -133,9 +129,7 @@ def test_polygons_vertex_color_map_range_update(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/vertex_color_map_range_update.jpeg") == True
-    )
+    assert server.compare_image("mesh/polygons/vertex_color_map_range_update.jpeg")
 
 
 def test_polygons_vertex_color_map_red_shift(
@@ -149,9 +143,7 @@ def test_polygons_vertex_color_map_red_shift(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -174,16 +166,14 @@ def test_polygons_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map.jpeg")
 
     # Update range via attribute
     server.call(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -206,7 +196,7 @@ def test_polygons_vertex_color_map_red_shift(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map_red_shift.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map_red_shift.jpeg")
 
 
 def test_polygons_vertex_color_map_rainbow(
@@ -220,9 +210,7 @@ def test_polygons_vertex_color_map_rainbow(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -269,19 +257,14 @@ def test_polygons_vertex_color_map_rainbow(
         ],
     )
 
-    assert (
-        server.compare_image("mesh/polygons/vertex_color_map_rainbow_initial.jpeg")
-        == True
-    )
+    assert server.compare_image("mesh/polygons/vertex_color_map_rainbow_initial.jpeg")
 
     # Update rainbow range via attribute
     server.call(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -328,7 +311,7 @@ def test_polygons_vertex_color_map_rainbow(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_color_map_rainbow.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_color_map_rainbow.jpeg")
 
 
 def test_polygons_vertex_attribute_item(
@@ -340,9 +323,7 @@ def test_polygons_vertex_attribute_item(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -365,14 +346,14 @@ def test_polygons_vertex_attribute_item(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_attribute_item.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_attribute_item.jpeg")
 
 
 def test_polygons_vertex_no_data(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:
     dataset_factory(
-        id=mesh_id,
+        data_id=mesh_id,
         viewable_file="polygon_attribute.vtp",
         viewer_elements_type="polygons",
     )
@@ -386,9 +367,7 @@ def test_polygons_vertex_no_data(
         VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
         + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
             "attribute"
-        ][
-            "rpc"
-        ],
+        ]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -411,4 +390,4 @@ def test_polygons_vertex_no_data(
         ],
     )
 
-    assert server.compare_image("mesh/polygons/vertex_no_data.jpeg") == True
+    assert server.compare_image("mesh/polygons/vertex_no_data.jpeg")
