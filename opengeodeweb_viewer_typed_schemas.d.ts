@@ -896,7 +896,10 @@ export interface ViewerTakeScreenshotParams {
 export type OutputExtension = "png" | "jpg";
 
 export interface ViewerTakeScreenshotResponse {
-    blob: string;
+    /**
+     * Image file content, sent as binary
+     */
+    blob: any;
 }
 
 export interface ViewerSliceParams {

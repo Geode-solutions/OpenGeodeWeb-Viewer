@@ -1,5 +1,4 @@
 import contextlib
-import json
 import logging
 import os
 import shutil
@@ -9,12 +8,14 @@ from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any, ClassVar
 
+import msgpack  # type: ignore[import-untyped]
 import pytest
 from opengeodeweb_microservice.database.connection import get_session, init_database
 from opengeodeweb_microservice.database.data import Data
 from vtkmodules.vtkImagingCore import vtkImageDifference
 from vtkmodules.vtkIOImage import vtkImageReader2, vtkJPEGReader, vtkPNGReader
 from websocket import WebSocketTimeoutException, create_connection
+from wslink.chunking import UnChunker, generate_chunks  # type: ignore[import-untyped]
 from xprocess import ProcessStarter, XProcess  # type: ignore[import-untyped]
 
 from opengeodeweb_viewer.config import TestConfig
@@ -25,28 +26,37 @@ logger = logging.getLogger(__name__)
 
 type RpcTestParams = list[dict[str, Any] | int] | None
 
+MAX_MESSAGE_SIZE = 1024**3
+INITIAL_IMAGE_TIMEOUT = 2.0
+
 
 class ServerMonitor:
     def __init__(self, log: str, port: str = "1234") -> None:
         self.log = log
         self.ws = create_connection(f"ws://localhost:{port}/ws")
+        self.unchunker = UnChunker()
+        # The un-chunker refuses messages above 512 bytes by default
+        self.unchunker.set_max_message_size(MAX_MESSAGE_SIZE)
         self.images_dir_path = Path(__file__).parent.resolve() / "data" / "images"
         self.test_output_dir = Path(__file__).parent.resolve() / "tests_output"
         self.test_output_dir.mkdir(exist_ok=True)
         self._init_ws()
         self._drain_initial_messages()
 
+    def send(self, message: dict[str, Any]) -> None:
+        # wslink 2 messages are msgpack-encoded and sent as (here, a single) binary chunk
+        for chunk in generate_chunks(msgpack.packb(message), 0):
+            self.ws.send_binary(chunk)
+
     def call(self, rpc: str, params: RpcTestParams = None) -> None:
         if params is None:
             params = [{}]
-        self.ws.send(
-            json.dumps(
-                {
-                    "id": "rpc:" + rpc,
-                    "method": rpc,
-                    "args": params,
-                }
-            )
+        self.send(
+            {
+                "id": "rpc:" + rpc,
+                "method": rpc,
+                "args": params,
+            }
         )
 
     def print_log(self) -> None:
@@ -59,17 +69,22 @@ class ServerMonitor:
                 output += line
         logger.info("%s", output)
 
-    def get_response(self) -> bytes | dict[str, object] | str:
-        response = self.ws.recv()
-        if isinstance(response, bytes):
-            return response
-        try:
-            parsed = json.loads(response)
-            if isinstance(parsed, dict):
-                return parsed
-            return str(parsed)
-        except json.JSONDecodeError:
-            return str(response)
+    def get_response(self) -> dict[str, Any]:
+        while True:
+            # process_chunk returns the msgpack-decoded message once all its chunks are received
+            response: dict[str, Any] | None = self.unchunker.process_chunk(self.ws.recv())
+            if response is not None:
+                return response
+
+    def get_rpc_response(self, rpc: str) -> dict[str, Any]:
+        while True:
+            response = self.get_response()
+            if response.get("id") == "rpc:" + rpc:
+                return response
+
+    def get_result(self, rpc: str) -> dict[str, Any]:
+        result: dict[str, Any] = self.get_rpc_response(rpc)["result"]
+        return result
 
     @staticmethod
     def _reader_for_file(path: Path) -> vtkImageReader2:
@@ -100,43 +115,43 @@ class ServerMonitor:
     def compare_image(self, filename: str) -> bool:
         self.call(VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["render"]["rpc"])
         while True:
-            image = self.ws.recv()
-            if isinstance(image, bytes):
-                response = self.ws.recv()
-                logger.info("response=%s", response)
-                result = json.loads(response)["result"]
-                if result["stale"]:
-                    continue
-                test_file_path = self.test_output_dir / f"test.{result['format']}"
-                test_file_path.write_bytes(image)
-                path_image = self.images_dir_path / filename
-                return self.images_diff(test_file_path, path_image) == 0.0
-            logger.info("response = %s", image)
-        return False
+            response = self.get_response()
+            result = response.get("result")
+            if not isinstance(result, dict) or "image" not in result:
+                logger.info("response = %s", response)
+                continue
+            logger.info("response=%s", {**result, "image": f"<{len(result['image'])} bytes>"})
+            if result["stale"]:
+                continue
+            test_file_path = self.test_output_dir / f"test.{result['format']}"
+            test_file_path.write_bytes(result["image"])
+            path_image = self.images_dir_path / filename
+            return self.images_diff(test_file_path, path_image) == 0.0
 
     def _init_ws(self) -> None:
-        self.ws.send(
-            json.dumps(
-                {
-                    "id": "system:hello",
-                    "method": "wslink.hello",
-                    "args": [{"secret": "wslink-secret"}],
-                }
-            )
+        self.send(
+            {
+                "id": "system:hello",
+                "method": "wslink.hello",
+                "args": [{"secret": "wslink-secret"}],
+            }
         )
         self.call("viewport.image.push.observer.add", [-1])
 
-    def _drain_initial_messages(self, max_messages: int = 5, timeout: float = 10.0) -> None:
+    def _drain_initial_messages(self, timeout: float = 10.0) -> None:
         self.ws.settimeout(timeout)
-        for i in range(max_messages):
-            try:
-                self.ws.recv()
-            except WebSocketTimeoutException:
-                logger.warning(
-                    "Timeout on message %s, but continuing to try remaining messages...",
-                    i,
-                )
-                continue
+        self.get_result("viewport.image.push.observer.add")
+        # A fresh viewer then publishes its initial image, a reused one may not
+        self.ws.settimeout(INITIAL_IMAGE_TIMEOUT)
+        try:
+            while True:
+                result = self.get_response().get("result")
+                if isinstance(result, dict) and "image" in result:
+                    return
+        except WebSocketTimeoutException:
+            logger.info("No initial image received")
+        finally:
+            self.ws.settimeout(timeout)
 
 
 class FixtureHelper:

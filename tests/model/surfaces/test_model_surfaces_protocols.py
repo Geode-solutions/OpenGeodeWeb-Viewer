@@ -102,9 +102,11 @@ def test_surfaces_polygons_random_collection_id(
             }
         ],
     )
-    response = server.get_response()
-    assert isinstance(response, dict)
-    colors = [result["color"] for result in response["result"]["colors"]]
+    result = server.get_result(
+        VtkModelSurfacesView.model_surfaces_prefix
+        + VtkModelSurfacesView.model_surfaces_schemas_dict["color"]["rpc"]
+    )
+    colors = [surface["color"] for surface in result["colors"]]
     assert len(colors) == 11
     assert all(color == colors[0] for color in colors)
 

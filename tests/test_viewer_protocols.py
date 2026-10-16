@@ -54,12 +54,9 @@ def test_get_point_position(server: ServerMonitor, dataset_factory: Callable[...
         + VtkViewerView.viewer_schemas_dict["get_point_position"]["rpc"],
         [{"x": 0, "y": 0}],
     )
-    response = server.get_response()
-    if response is None:
-        pytest.fail("Response is None from get_point_position")
-    if not isinstance(response, dict) or "result" not in response:
-        pytest.fail(f"No 'result' key in response: {response!r}")
-    result = response["result"]
+    result = server.get_result(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["get_point_position"]["rpc"]
+    )
     if result is None:
         return
     if not isinstance(result, dict):
@@ -90,8 +87,9 @@ def test_take_screenshot(server: ServerMonitor, dataset_factory: Callable[..., s
         ],
     )
 
-    server.get_response()
-    blob = server.get_response()
+    blob = server.get_result(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"]
+    )["blob"]
     assert type(blob) is bytes
 
     first_image_path = server.test_output_dir / "test.jpg"
@@ -112,10 +110,9 @@ def test_take_screenshot(server: ServerMonitor, dataset_factory: Callable[..., s
         ],
     )
 
-    server.get_response()
-    server.get_response()
-    blob = server.get_response()
-    logger.info("%r", blob)
+    blob = server.get_result(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"]
+    )["blob"]
     assert type(blob) is bytes
 
     first_image_path = server.test_output_dir / "test.png"
@@ -136,10 +133,9 @@ def test_take_screenshot(server: ServerMonitor, dataset_factory: Callable[..., s
         ],
     )
 
-    server.get_response()
-    server.get_response()
-    blob = server.get_response()
-    logger.info("%r", blob)
+    blob = server.get_result(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"]
+    )["blob"]
     assert type(blob) is bytes
 
     first_image_path = server.test_output_dir / "test.png"
@@ -157,12 +153,11 @@ def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) 
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["picked_ids"]["rpc"],
         [{"x": 0, "y": 0, "ids": ["00000000000000000000000123456789"]}],
     )
-    response = server.get_response()
+    response = server.get_rpc_response(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["picked_ids"]["rpc"]
+    )
     logger.info("picked_ids response: %r", response)
-    if response is None:
-        logger.warning("picked_ids returned None response")
-        return
-    if not isinstance(response, dict) or "result" not in response:
+    if "result" not in response:
         logger.warning("No 'result' key in picked_ids response: %r", response)
         return
     result = response["result"]

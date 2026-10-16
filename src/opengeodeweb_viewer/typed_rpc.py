@@ -2,6 +2,7 @@
 import functools
 import os
 from collections.abc import Callable
+from dataclasses import fields
 from typing import Any, Concatenate, Protocol, cast
 
 # Third party imports
@@ -28,6 +29,17 @@ def _drop_none(value: object) -> object:
     if isinstance(value, list):
         return [_drop_none(item) for item in value]
     return value
+
+
+def _to_payload(result: DataClassJsonMixin) -> dict[str, Any]:
+    payload = cast("dict[str, Any]", _drop_none(result.to_dict(encode_json=True)))
+    # dataclasses_json encodes bytes as a list of ints: keep them as bytes,
+    # wslink (msgpack) sends them as binary
+    for field in fields(result):  # type: ignore[arg-type]
+        value = getattr(result, field.name)
+        if isinstance(value, bytes):
+            payload[field.name] = value
+    return payload
 
 
 def _validate_responses() -> bool:
@@ -65,7 +77,7 @@ def typed_rpc[SelfT: Publisher, ParamsT: DataClassJsonMixin, ResponseT: DataClas
                     f"expected {route.response.__name__}"
                 )
                 raise TypeError(msg)
-            payload = cast("dict[str, Any]", _drop_none(result.to_dict(encode_json=True)))
+            payload = _to_payload(result)
             if _validate_responses():
                 validate_response(payload)
             if do_stream:

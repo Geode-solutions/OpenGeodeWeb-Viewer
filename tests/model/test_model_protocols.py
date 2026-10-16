@@ -72,11 +72,7 @@ def test_get_blocks_bounds(server: ServerMonitor, dataset_factory: Callable[...,
     rpc = VtkModelView.model_prefix + "get_blocks_bounds"
     server.call(rpc, [{"id": "12345678901234567890123456789012", "block_ids": [2]}])
 
-    response = server.get_response()
-    while isinstance(response, bytes) or response.get("id") != f"rpc:{rpc}":
-        response = server.get_response()
-
-    assert response.get("result") == {"bounds": [4.9, 4.9, 3.1, 3.1, 0.0, 0.0]}
+    assert server.get_result(rpc) == {"bounds": [4.9, 4.9, 3.1, 3.1, 0.0, 0.0]}
 
 
 def test_model_cube_side_view(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:

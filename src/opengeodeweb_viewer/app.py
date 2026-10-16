@@ -155,7 +155,10 @@ def run_server(server_protocol: type[ServerProtocol] = _Server) -> None:
 
     logger.info("args=%s", args)
     server_protocol.configure(args)
-    # Python 3.14 no longer creates a default event loop, which wslink 1.x expects
+    # Wslink 2 writes its ready message without a trailing newline,
+    # which line-based launchers waiting for it never receive
+    os.environ.setdefault("WSLINK_READY_MSG", "wslink: Starting factory\n")
+    # Python 3.14 no longer creates a default event loop, which wslink expects
     asyncio.set_event_loop(asyncio.new_event_loop())
     server.start_webserver(options=args, protocol=server_protocol)
 

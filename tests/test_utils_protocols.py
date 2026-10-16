@@ -32,7 +32,9 @@ def test_reset_project_after_import(
     server.call(
         VtkUtilsView.utils_prefix + VtkUtilsView.utils_schemas_dict["import_project"]["rpc"]
     )
-    server.get_response()
+    server.get_result(
+        VtkUtilsView.utils_prefix + VtkUtilsView.utils_schemas_dict["import_project"]["rpc"]
+    )
 
     server.call(
         VtkViewerView.viewer_prefix
