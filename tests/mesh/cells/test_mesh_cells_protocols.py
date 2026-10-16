@@ -110,9 +110,7 @@ def register_grid_3d(server: ServerMonitor, dataset_factory: Callable[..., str])
 
 def call_slice(server: ServerMonitor, ids: list[str], slices: list[dict[str, int]]) -> object:
     server.call(slice_rpc, [{"ids": ids, "slices": slices}])
-    response = server.get_response()
-    assert isinstance(response, dict), f"Unexpected response: {response!r}"
-    return response["result"]
+    return server.get_result(slice_rpc)
 
 
 def test_slice(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
@@ -175,7 +173,7 @@ def test_slice_on_non_grid_removed(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": other_mesh_id, "name": "hat.vtp"}],
     )
-    server.get_response()
+    server.get_result(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"])
 
     result = call_slice(server, [other_mesh_id], [])
     assert result == {"max_indices": [0, 0, 0]}
@@ -190,7 +188,7 @@ def test_slice_on_non_grid_ignored(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
         [{"id": other_mesh_id, "name": "hat.vtp"}],
     )
-    server.get_response()
+    server.get_result(VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"])
 
     result = call_slice(server, [other_mesh_id, grid_3d_id], [{"axis": 2, "index": 3}])
     assert result == {"max_indices": [10, 8, 6]}

@@ -28,6 +28,8 @@ kiwisolver==1.*
     # via matplotlib
 matplotlib==3.*
     # via vtk
+msgpack==1.*
+    # via wslink
 multidict==6.*
     # via
     #   aiohttp
@@ -58,7 +60,7 @@ vtk==9.6.2
     # via -r requirements.in
 websocket-client==1.8.0
     # via -r requirements.in
-wslink==1.12.4
+wslink==2.6.0
     # via -r requirements.in
 yarl==1.*
     # via aiohttp

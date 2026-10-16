@@ -28,7 +28,7 @@
     "type": "object",
     "properties": {
       "blob": {
-        "type": "string"
+        "description": "Image file content, sent as binary"
       }
     },
     "required": [

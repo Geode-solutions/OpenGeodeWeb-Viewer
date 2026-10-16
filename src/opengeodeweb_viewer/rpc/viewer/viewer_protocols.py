@@ -160,7 +160,7 @@ class VtkViewerView(VtkView):
 
         file_content = file_path.read_bytes()
 
-        return schemas.TakeScreenshotResponse(blob=self.addAttachment(file_content))
+        return schemas.TakeScreenshotResponse(blob=file_content)
 
     @typed_rpc(viewer_prefix, schemas.update_data_route)
     def update_data(self, params: schemas.UpdateData) -> schemas.UpdateDataResponse:
