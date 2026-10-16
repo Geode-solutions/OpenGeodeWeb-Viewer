@@ -13,3 +13,4 @@ build
 *.db
 tests/tests_output/
 package-lock.json
+VTK.txt
