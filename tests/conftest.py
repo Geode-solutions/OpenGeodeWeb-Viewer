@@ -53,7 +53,6 @@ class ServerMonitor:
             params = [{}]
         self.send(
             {
-                "wslink": "1.0",
                 "id": "rpc:" + rpc,
                 "method": rpc,
                 "args": params,
@@ -132,7 +131,6 @@ class ServerMonitor:
     def _init_ws(self) -> None:
         self.send(
             {
-                "wslink": "1.0",
                 "id": "system:hello",
                 "method": "wslink.hello",
                 "args": [{"secret": "wslink-secret"}],

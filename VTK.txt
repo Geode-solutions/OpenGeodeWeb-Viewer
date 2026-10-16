@@ -1,0 +1,6 @@
+Warning: In vtkInteractorStyleTrackball.cxx, line 20
+vtkInteractorStyleTrackball (0x3884a220): vtkInteractorStyleTrackball will be deprecated in
+the next release after VTK 4.0. Please use
+vtkInteractorStyleSwitch instead.
+
+
