@@ -221,6 +221,8 @@ class VtkPipeline:
     block_geode_ids: list[str] = field(default_factory=list)
     scalar_bar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
     scalar_bars: dict[str, vtkScalarBarActor] = field(default_factory=dict)
+    # Blocks colored by each scalar bar of scalar_bars, under the same key
+    scalar_bar_block_ids: dict[str, list[int]] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
 

@@ -9,9 +9,10 @@ from opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron import (
 from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
     VtkModelBlocksView,
 )
-from tests.conftest import ServerMonitor
 
 # Local application imports
+from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+from tests.conftest import ServerMonitor
 from tests.model.test_model_protocols import test_register_model_cube
 
 VtkModelBlocksAttributePolyhedronView = (
@@ -414,3 +415,35 @@ def test_blocks_polyhedron_color_map_rainbow(
     )
 
     assert server.compare_image("model/blocks/color_map_rainbow.jpeg")
+
+
+def test_pick_blocks_polyhedron_color_map(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_model_cube(server, dataset_factory)
+
+    server.call(
+        VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_prefix
+        + VtkModelBlocksAttributePolyhedronView.model_blocks_attribute_polyhedron_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [
+            {
+                "id": model_id,
+                "block_ids": list(range(48, 50)),
+                "name": "tetrahedron_vertices",
+                "item": 0,
+                "points": [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0],
+                "minimum": 0.0,
+                "maximum": 1.0,
+            }
+        ],
+    )
+
+    # The first scalar bar is at the bottom left of the 300x300 view
+    pick_rpc = (
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["pick_colormap"]["rpc"]
+    )
+    server.call(pick_rpc, [{"x": 81, "y": 276}])
+    assert server.get_result(pick_rpc) == {"data_id": model_id, "block_ids": [48, 49]}

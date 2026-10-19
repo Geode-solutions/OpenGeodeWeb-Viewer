@@ -115,6 +115,7 @@ class VtkModelView(VtkObjectView):
 
     def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
         active_attrs: dict[str, BlockStyle] = {}
+        active_block_ids: dict[str, list[int]] = {}
         for block_id, style in pipeline.block_styles.items():
             if style["name"]:
                 name = style["name"]
@@ -139,6 +140,7 @@ class VtkModelView(VtkObjectView):
                         if attr_key in active_attrs and active_attrs[attr_key]["points"] != points:
                             attr_key = f"{attr_key} (Block {block_id})"
                 active_attrs[attr_key] = style
+                active_block_ids.setdefault(attr_key, []).append(block_id)
         for name, style in active_attrs.items():
             if name not in pipeline.scalar_bars:
                 bar = vtkScalarBarActor()
@@ -156,6 +158,7 @@ class VtkModelView(VtkObjectView):
         for name, bar in pipeline.scalar_bars.items():
             if name not in active_attrs:
                 bar.VisibilityOff()
+        pipeline.scalar_bar_block_ids = active_block_ids
 
         self.update_scalar_bars_layout()
 
