@@ -57,6 +57,8 @@ class VtkObjectView(VtkView):
             renderer.RemoveActor(pipeline.points_actor)
         if pipeline.points_scalar_bar is not None:
             renderer.RemoveViewProp(pipeline.points_scalar_bar)
+        for size_actor in pipeline.points_size_actors.values():
+            renderer.RemoveActor(size_actor.actor)
         renderer.RemoveViewProp(pipeline.scalar_bar)
         for bar in pipeline.scalar_bars.values():
             renderer.RemoveViewProp(bar)
@@ -66,8 +68,7 @@ class VtkObjectView(VtkView):
     def set_visibility(self, data_id: str, *, visibility: bool) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.actor.SetVisibility(visibility)
-        if pipeline.points_actor is not None:
-            pipeline.points_actor.SetVisibility(visibility and pipeline.points_visibility)
+        self.set_points_actors_visibility(pipeline, visibility=visibility)
         if not visibility:
             pipeline.scalar_bar.VisibilityOff()
             for bar in pipeline.scalar_bars.values():
@@ -88,6 +89,12 @@ class VtkObjectView(VtkView):
                             bar.VisibilityOn()
                     break
         self.update_scalar_bars_layout()
+
+    def set_points_actors_visibility(self, pipeline: VtkPipeline, *, visibility: bool) -> None:
+        if pipeline.points_actor is not None:
+            pipeline.points_actor.SetVisibility(visibility and pipeline.points_visibility)
+        for size_actor in pipeline.points_size_actors.values():
+            size_actor.actor.SetVisibility(visibility)
 
     def set_opacity(self, data_id: str, opacity: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
@@ -201,6 +208,7 @@ class VtkObjectView(VtkView):
         logger.debug("visibility_attributes=%s", visibility_attributes)
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
+        pipeline.update_points_size_actors()
         dataset = mapper.GetInputDataObject(0, 0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return
