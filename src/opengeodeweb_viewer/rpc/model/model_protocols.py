@@ -14,7 +14,6 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
-from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
@@ -28,7 +27,7 @@ from opengeodeweb_viewer.utils_functions import (
     create_color_transfer_function,
     deterministic_color,
 )
-from opengeodeweb_viewer.vtk_pipeline import BlockStyle, VtkPipeline
+from opengeodeweb_viewer.vtk_pipeline import BlockStyle, ModelScalarBar, VtkPipeline
 
 from . import schemas
 
@@ -143,10 +142,10 @@ class VtkModelView(VtkObjectView):
                 active_block_ids.setdefault(attr_key, []).append(block_id)
         for name, style in active_attrs.items():
             if name not in pipeline.scalar_bars:
-                bar = vtkScalarBarActor()
-                self.get_renderer().AddViewProp(bar)
-                pipeline.scalar_bars[name] = bar
-            bar = pipeline.scalar_bars[name]
+                pipeline.scalar_bars[name] = ModelScalarBar()
+                self.get_renderer().AddViewProp(pipeline.scalar_bars[name].actor)
+            pipeline.scalar_bars[name].block_ids = active_block_ids[name]
+            bar = pipeline.scalar_bars[name].actor
             item = style["item"]
             minimum = style["minimum"]
             maximum = style["maximum"]
@@ -155,10 +154,9 @@ class VtkModelView(VtkObjectView):
             lut = create_color_transfer_function(points, minimum, maximum, item, no_data_color)
             bar.SetLookupTable(lut)
             bar.VisibilityOn()
-        for name, bar in pipeline.scalar_bars.items():
+        for name, scalar_bar in pipeline.scalar_bars.items():
             if name not in active_attrs:
-                bar.VisibilityOff()
-        pipeline.scalar_bar_block_ids = active_block_ids
+                scalar_bar.actor.VisibilityOff()
 
         self.update_scalar_bars_layout()
 

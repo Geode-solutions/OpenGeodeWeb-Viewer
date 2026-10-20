@@ -53,8 +53,8 @@ class VtkObjectView(VtkView):
         renderer.RemoveActor(pipeline.actor)
         renderer.RemoveActor(pipeline.highlight.actor)
         renderer.RemoveViewProp(pipeline.scalar_bar)
-        for bar in pipeline.scalar_bars.values():
-            renderer.RemoveViewProp(bar)
+        for scalar_bar in pipeline.scalar_bars.values():
+            renderer.RemoveViewProp(scalar_bar.actor)
         self.deregister_object(data_id)
         self.update_scalar_bars_layout()
 
@@ -63,8 +63,8 @@ class VtkObjectView(VtkView):
         pipeline.actor.SetVisibility(visibility)
         if not visibility:
             pipeline.scalar_bar.VisibilityOff()
-            for bar in pipeline.scalar_bars.values():
-                bar.VisibilityOff()
+            for scalar_bar in pipeline.scalar_bars.values():
+                scalar_bar.actor.VisibilityOff()
         else:
             if (
                 pipeline.mapper.GetScalarVisibility()
@@ -73,9 +73,9 @@ class VtkObjectView(VtkView):
                 pipeline.scalar_bar.VisibilityOn()
             for style in pipeline.block_styles.values():
                 if style.get("name"):
-                    for bar in pipeline.scalar_bars.values():
-                        if bar.GetLookupTable() is not None:
-                            bar.VisibilityOn()
+                    for scalar_bar in pipeline.scalar_bars.values():
+                        if scalar_bar.actor.GetLookupTable() is not None:
+                            scalar_bar.actor.VisibilityOn()
                     break
         self.update_scalar_bars_layout()
 
@@ -166,8 +166,8 @@ class VtkObjectView(VtkView):
             pipeline.clear_blocks_scalars()
         mapper.ScalarVisibilityOff()
         pipeline.scalar_bar.VisibilityOff()
-        for bar in pipeline.scalar_bars.values():
-            bar.VisibilityOff()
+        for scalar_bar in pipeline.scalar_bars.values():
+            scalar_bar.actor.VisibilityOff()
         self.update_scalar_bars_layout()
 
     def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:

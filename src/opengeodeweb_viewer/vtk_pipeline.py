@@ -206,6 +206,13 @@ class BlockStyle(TypedDict):
 
 
 @dataclass
+class ModelScalarBar:
+    actor: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
+    # Blocks colored by this scalar bar
+    block_ids: list[int] = field(default_factory=list)
+
+
+@dataclass
 class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
@@ -220,9 +227,7 @@ class VtkPipeline:
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)
     scalar_bar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
-    scalar_bars: dict[str, vtkScalarBarActor] = field(default_factory=dict)
-    # Blocks colored by each scalar bar of scalar_bars, under the same key
-    scalar_bar_block_ids: dict[str, list[int]] = field(default_factory=dict)
+    scalar_bars: dict[str, ModelScalarBar] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
 

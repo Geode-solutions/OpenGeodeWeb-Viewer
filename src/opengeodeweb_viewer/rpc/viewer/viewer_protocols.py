@@ -17,6 +17,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkAbstractMapper,
     vtkActor,
     vtkCellPicker,
+    vtkCompositePolyDataMapper,
     vtkDataSetMapper,
     vtkPropPicker,
     vtkRenderer,
@@ -210,14 +211,15 @@ class VtkViewerView(VtkView):
         ny = 1.0 - (params.y / size[1])
 
         for data_id, pipeline in self.get_data_base().items():
-            if self.is_scalar_bar_clicked(pipeline.scalar_bar, nx, ny):
+            # A model has one scalar bar per attribute, each coloring some of its blocks
+            if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+                for scalar_bar in pipeline.scalar_bars.values():
+                    if self.is_scalar_bar_clicked(scalar_bar.actor, nx, ny):
+                        return schemas.PickColormapResponse(
+                            data_id=data_id, block_ids=scalar_bar.block_ids
+                        )
+            elif self.is_scalar_bar_clicked(pipeline.scalar_bar, nx, ny):
                 return schemas.PickColormapResponse(data_id=data_id)
-            # Model scalar bars: one per attribute, each coloring some of the blocks
-            for name, bar in pipeline.scalar_bars.items():
-                if self.is_scalar_bar_clicked(bar, nx, ny):
-                    return schemas.PickColormapResponse(
-                        data_id=data_id, block_ids=pipeline.scalar_bar_block_ids.get(name, [])
-                    )
 
         return schemas.PickColormapResponse()
 
