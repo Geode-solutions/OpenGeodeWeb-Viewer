@@ -465,12 +465,31 @@ class VtkPipeline:
         self.mapper.InterpolateScalarsBeforeMappingOn()
         self.mapper.Modified()
 
-    def sync_block_display_attributes(self, new_blocks: list[vtkDataObject | None]) -> None:
-        mapper = cast("vtkCompositePolyDataMapper", self.mapper)
+    def block_component_types(self) -> dict[int, str]:
+        component_types: dict[int, str] = {}
+        component_type = ""
+        iterator = self.reader.GetOutputDataObject(0).NewTreeIterator()
+        iterator.VisitOnlyLeavesOff()
+        iterator.InitTraversal()
+        while not iterator.IsDoneWithTraversal():
+            component = iterator.GetCurrentDataObject()
+            if isinstance(component, vtkMultiBlockDataSet):
+                component_type = iterator.GetCurrentMetaData().Get(vtkCompositeDataSet.NAME())
+            elif component is not None:
+                component_types[iterator.GetCurrentFlatIndex()] = component_type
+            iterator.GoToNextItem()
+        return component_types
+
+    @staticmethod
+    def sync_mapper_display_attributes(
+        mapper: vtkCompositePolyDataMapper,
+        source_blocks: list[vtkDataObject | None],
+        new_blocks: list[vtkDataObject | None],
+    ) -> None:
         attributes = mapper.GetCompositeDataDisplayAttributes()
         synced_attributes = vtkCompositeDataDisplayAttributes()
         color_rgb = [0.0, 0.0, 0.0]
-        for source_block, destination_block in zip(self.block_data_sets, new_blocks, strict=False):
+        for source_block, destination_block in zip(source_blocks, new_blocks, strict=False):
             if source_block and destination_block:
                 if attributes.HasBlockColor(source_block):
                     attributes.GetBlockColor(source_block, color_rgb)
@@ -484,6 +503,10 @@ class VtkPipeline:
                         destination_block, attributes.GetBlockOpacity(source_block)
                     )
         mapper.SetCompositeDataDisplayAttributes(synced_attributes)
+
+    def sync_block_display_attributes(self, new_blocks: list[vtkDataObject | None]) -> None:
+        mapper = cast("vtkCompositePolyDataMapper", self.mapper)
+        self.sync_mapper_display_attributes(mapper, self.block_data_sets, new_blocks)
         self.block_data_sets = new_blocks
         for block_id in self.block_styles:
             self.update_block_colors(block_id)
