@@ -164,7 +164,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
             pipeline.mapper.SetInputDataObject(geometry_output)
         else:
-            pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
+            pipeline.connect_mappers()
         return geometry_output
 
     def update_highlight(
@@ -218,7 +218,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 filtered_dataset = pipeline.explode_blocks(filtered_dataset)
             pipeline.sync_composite_pipeline(filtered_dataset)
             return
-        pipeline.mapper.SetInputConnection(pipeline.filter.GetOutputPort())
+        pipeline.connect_mappers()
         target_dataset = (
             cast("vtkDataSet", filtered_dataset)
             if active_filters or pipeline.slice_filter is not None
@@ -503,25 +503,41 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         else:
             grid_scale.SetAxisLabels(axis, None)
 
-    def update_scalar_bars_layout(self) -> None:
+    def visible_scalar_bars(
+        self, data_id: str, pipeline: VtkPipeline
+    ) -> list[tuple[vtkScalarBarActor, str, str, VtkPipeline]]:
         visible_bars: list[tuple[vtkScalarBarActor, str, str, VtkPipeline]] = []
-        for data_id, pipeline in self.get_data_base().items():
-            if (
-                pipeline.scalar_bar.GetVisibility()
-                and pipeline.scalar_bar.GetLookupTable() is not None
-            ):
-                dataset = pipeline.filter.GetOutputDataObject(0)
-                scalars = (
-                    dataset.GetPointData().GetScalars() or dataset.GetCellData().GetScalars()
-                    if isinstance(dataset, vtkDataSet)
-                    else None
-                )
-                attr_name = scalars.GetName() if scalars else "Attribute"
-                visible_bars.append((pipeline.scalar_bar, attr_name, data_id, pipeline))
+        if pipeline.scalar_bar.GetVisibility() and pipeline.scalar_bar.GetLookupTable() is not None:
+            dataset = pipeline.filter.GetOutputDataObject(0)
+            scalars = (
+                dataset.GetPointData().GetScalars() or dataset.GetCellData().GetScalars()
+                if isinstance(dataset, vtkDataSet)
+                else None
+            )
+            attr_name = scalars.GetName() if scalars else "Attribute"
+            visible_bars.append((pipeline.scalar_bar, attr_name, data_id, pipeline))
 
-            for attr_name, bar in pipeline.scalar_bars.items():
-                if bar.GetVisibility() and bar.GetLookupTable() is not None:
-                    visible_bars.append((bar, attr_name, data_id, pipeline))
+        points_bar = pipeline.points_scalar_bar
+        if (
+            points_bar is not None
+            and pipeline.points_mapper is not None
+            and points_bar.GetVisibility()
+            and points_bar.GetLookupTable() is not None
+        ):
+            points_attr_name = pipeline.points_mapper.GetArrayName()
+            visible_bars.append((points_bar, points_attr_name, data_id, pipeline))
+
+        for attr_name, bar in pipeline.scalar_bars.items():
+            if bar.GetVisibility() and bar.GetLookupTable() is not None:
+                visible_bars.append((bar, attr_name, data_id, pipeline))
+        return visible_bars
+
+    def update_scalar_bars_layout(self) -> None:
+        visible_bars = [
+            bar
+            for data_id, pipeline in self.get_data_base().items()
+            for bar in self.visible_scalar_bars(data_id, pipeline)
+        ]
 
         if not visible_bars:
             return

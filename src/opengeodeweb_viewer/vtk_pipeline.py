@@ -223,6 +223,16 @@ class VtkPipeline:
     scalar_bars: dict[str, vtkScalarBarActor] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
+    points_mapper: vtkDataSetMapper | None = None
+    points_actor: vtkActor | None = None
+    points_scalar_bar: vtkScalarBarActor | None = None
+    points_visibility: bool = False
+    color_map_points: list[float] = field(default_factory=list)
+
+    def connect_mappers(self) -> None:
+        self.mapper.SetInputConnection(self.filter.GetOutputPort())
+        if self.points_mapper is not None:
+            self.points_mapper.SetInputConnection(self.filter.GetOutputPort())
 
     def extract_blocks(self, multiblock: vtkDataObject | None) -> list[vtkDataObject | None]:
         if not isinstance(multiblock, vtkMultiBlockDataSet):
