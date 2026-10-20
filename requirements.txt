@@ -40,7 +40,7 @@ numpy==2.*
     #   matplotlib
 packaging==26.*
     # via matplotlib
-pillow==12.*
+pillow==13.*
     # via matplotlib
 propcache==0.*
     # via
