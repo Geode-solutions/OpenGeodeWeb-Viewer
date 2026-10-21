@@ -1,5 +1,6 @@
 # Standard library imports
-from collections.abc import Callable
+
+from typing import TYPE_CHECKING
 
 from opengeodeweb_viewer.rpc.model.surfaces.attribute.vertex import (
     surfaces_attribute_vertex_protocols,
@@ -11,11 +12,15 @@ from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
 )
 
 # Local application imports
-from tests.conftest import ServerMonitor
 from tests.model.test_model_protocols import (
     test_register_model_cube,
     test_register_model_implicit_attribute,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkModelSurfacesAttributeVertexView = (
     surfaces_attribute_vertex_protocols.VtkModelSurfacesAttributeVertexView

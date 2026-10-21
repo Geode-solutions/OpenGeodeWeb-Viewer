@@ -1,18 +1,21 @@
 # Standard library imports
 import functools
 import os
-from collections.abc import Callable
 from dataclasses import fields
-from typing import Any, Concatenate, Protocol, cast
+from typing import TYPE_CHECKING, Any, Concatenate, Protocol, cast
 
 # Third party imports
 import fastjsonschema  # type: ignore[import-untyped]
 from dataclasses_json import DataClassJsonMixin
-from opengeodeweb_microservice.schemas import Route
 from wslink import register  # type: ignore[import-untyped]
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import RpcParams, validate_schema
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from opengeodeweb_microservice.schemas import Route
 
 TYPED_RPC_MARKER = "__typed_rpc__"
 

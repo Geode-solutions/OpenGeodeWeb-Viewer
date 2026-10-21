@@ -1,7 +1,11 @@
-from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
-from tests.conftest import ServerMonitor
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 
 def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:

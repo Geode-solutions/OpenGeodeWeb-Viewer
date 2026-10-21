@@ -1,4 +1,5 @@
 import logging
+from typing import TYPE_CHECKING
 
 # Third party imports
 from vtkmodules.vtkCommonDataModel import (
@@ -13,9 +14,11 @@ from vtkmodules.vtkRenderingCore import (
 )
 
 # Local application imports
-from opengeodeweb_viewer.utils_functions import ColorClassProtocol
-from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
+
+if TYPE_CHECKING:
+    from opengeodeweb_viewer.utils_functions import ColorClassProtocol
+    from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 
 logger = logging.getLogger(__name__)
 

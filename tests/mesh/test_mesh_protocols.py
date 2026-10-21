@@ -1,7 +1,11 @@
-from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from tests.conftest import ServerMonitor
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"

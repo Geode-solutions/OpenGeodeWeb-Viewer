@@ -1,7 +1,8 @@
 # Standard library imports
-from collections.abc import Callable
 
 # Third party imports
+from typing import TYPE_CHECKING
+
 from opengeodeweb_viewer.rpc.model.lines.points.model_lines_points_protocols import (
     VtkModelLinesPointsView,
 )
@@ -18,10 +19,14 @@ from opengeodeweb_viewer.rpc.model.surfaces.points.model_surfaces_points_protoco
     VtkModelSurfacesPointsView,
 )
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
-from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_model_cube_side_view, test_register_model
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkModelSurfacesPointsAttributeVertexView = (
     surfaces_points_attribute_vertex_protocols.VtkModelSurfacesPointsAttributeVertexView
