@@ -12,11 +12,12 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Third party imports
 from vtkmodules.vtkIOImage import vtkJPEGWriter, vtkPNGWriter
-from vtkmodules.vtkRenderingAnnotation import vtkAxesActor, vtkCubeAxesActor
+from vtkmodules.vtkRenderingAnnotation import vtkAxesActor, vtkCubeAxesActor, vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
     vtkAbstractMapper,
     vtkActor,
     vtkCellPicker,
+    vtkCompositePolyDataMapper,
     vtkDataSetMapper,
     vtkPropPicker,
     vtkRenderer,
@@ -210,17 +211,24 @@ class VtkViewerView(VtkView):
         ny = 1.0 - (params.y / size[1])
 
         for data_id, pipeline in self.get_data_base().items():
-            bar = pipeline.scalar_bar
-            if bar.GetVisibility() and bar.GetLookupTable() is not None:
-                pos = bar.GetPositionCoordinate()
-                bx, by = pos.GetValue()[0], pos.GetValue()[1]
-                w, h = bar.GetWidth(), bar.GetHeight()
-
-                # Check if click falls within the scalar bar bounding box
-                if bx <= nx <= bx + w and by <= ny <= by + h:
-                    return schemas.PickColormapResponse(data_id=data_id)
+            # A model has one scalar bar per attribute, each coloring some of its blocks
+            if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
+                for scalar_bar in pipeline.scalar_bars.values():
+                    if self.is_scalar_bar_clicked(scalar_bar.actor, nx, ny):
+                        return schemas.PickColormapResponse(
+                            data_id=data_id, block_ids=scalar_bar.block_ids
+                        )
+            elif self.is_scalar_bar_clicked(pipeline.scalar_bar, nx, ny):
+                return schemas.PickColormapResponse(data_id=data_id)
 
         return schemas.PickColormapResponse()
+
+    @staticmethod
+    def is_scalar_bar_clicked(bar: vtkScalarBarActor, nx: float, ny: float) -> bool:
+        if not bar.GetVisibility() or bar.GetLookupTable() is None:
+            return False
+        bx, by = bar.GetPositionCoordinate().GetValue()[:2]
+        return bool(bx <= nx <= bx + bar.GetWidth() and by <= ny <= by + bar.GetHeight())
 
     def compute_epsilon(self, renderer: vtkRenderer, z: float) -> float:
         renderer.SetDisplayPoint(0, 0, z)

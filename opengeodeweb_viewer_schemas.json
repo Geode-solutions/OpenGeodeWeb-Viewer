@@ -4330,6 +4330,12 @@
           "properties": {
             "data_id": {
               "type": "string"
+            },
+            "block_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
             }
           },
           "required": [],

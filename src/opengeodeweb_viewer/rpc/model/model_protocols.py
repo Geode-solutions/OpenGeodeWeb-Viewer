@@ -14,7 +14,6 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkFiltersCore import vtkAppendDataSets
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
-from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkCompositeDataDisplayAttributes,
@@ -32,6 +31,7 @@ from opengeodeweb_viewer.utils_functions import (
 from opengeodeweb_viewer.vtk_pipeline import (
     BlockStyle,
     ModelPointsStyle,
+    ModelScalarBar,
     PointsSizeActor,
     VtkPipeline,
 )
@@ -122,46 +122,57 @@ class VtkModelView(VtkObjectView):
         self.setup_model_color_map(pipeline)
         return colors
 
+    @staticmethod
+    def scalar_bar_key(active_attrs: dict[str, BlockStyle], style: BlockStyle, label: str) -> str:
+        # Styles sharing the same color map share a scalar bar,
+        # the key only grows to tell them apart
+        name = style["name"]
+        item = style["item"]
+        minimum = style["minimum"]
+        maximum = style["maximum"]
+        points = style["points"]
+        attr_key = name
+        if attr_key in active_attrs and (
+            active_attrs[attr_key]["item"] != item
+            or active_attrs[attr_key]["minimum"] != minimum
+            or active_attrs[attr_key]["maximum"] != maximum
+            or active_attrs[attr_key]["points"] != points
+        ):
+            attr_key = f"{name} (Item {item + 1})" if item > 0 else name
+            if attr_key in active_attrs and (
+                active_attrs[attr_key]["minimum"] != minimum
+                or active_attrs[attr_key]["maximum"] != maximum
+                or active_attrs[attr_key]["points"] != points
+            ):
+                attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
+                if attr_key in active_attrs and active_attrs[attr_key]["points"] != points:
+                    attr_key = f"{attr_key} (Block {label})"
+        return attr_key
+
     def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
         # Points attributes join the polygons ones, so identical color maps share one scalar bar
         displayed_styles = [
-            (str(block_id), style) for block_id, style in pipeline.block_styles.items()
+            (block_id, str(block_id), style) for block_id, style in pipeline.block_styles.items()
         ] + [
-            (f"{block_id} points", points_style.attribute)
+            (block_id, f"{block_id} points", points_style.attribute)
             for block_id, points_style in pipeline.points_block_styles.items()
             if points_style.attribute is not None and points_style.visibility
         ]
         active_attrs: dict[str, BlockStyle] = {}
-        for block_id, style in displayed_styles:
+        active_block_ids: dict[str, list[int]] = {}
+        for block_id, label, style in displayed_styles:
             if style["name"]:
-                name = style["name"]
-                item = style["item"]
-                minimum = style["minimum"]
-                maximum = style["maximum"]
-                points = style["points"]
-                attr_key = name
-                if attr_key in active_attrs and (
-                    active_attrs[attr_key]["item"] != item
-                    or active_attrs[attr_key]["minimum"] != minimum
-                    or active_attrs[attr_key]["maximum"] != maximum
-                    or active_attrs[attr_key]["points"] != points
-                ):
-                    attr_key = f"{name} (Item {item + 1})" if item > 0 else name
-                    if attr_key in active_attrs and (
-                        active_attrs[attr_key]["minimum"] != minimum
-                        or active_attrs[attr_key]["maximum"] != maximum
-                        or active_attrs[attr_key]["points"] != points
-                    ):
-                        attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
-                        if attr_key in active_attrs and active_attrs[attr_key]["points"] != points:
-                            attr_key = f"{attr_key} (Block {block_id})"
+                attr_key = self.scalar_bar_key(active_attrs, style, label)
                 active_attrs[attr_key] = style
+                bar_block_ids = active_block_ids.setdefault(attr_key, [])
+                if block_id not in bar_block_ids:
+                    bar_block_ids.append(block_id)
         for name, style in active_attrs.items():
             if name not in pipeline.scalar_bars:
-                bar = vtkScalarBarActor()
-                self.get_renderer().AddViewProp(bar)
-                pipeline.scalar_bars[name] = bar
-            bar = pipeline.scalar_bars[name]
+                pipeline.scalar_bars[name] = ModelScalarBar()
+                self.get_renderer().AddViewProp(pipeline.scalar_bars[name].actor)
+            pipeline.scalar_bars[name].block_ids = active_block_ids[name]
+            bar = pipeline.scalar_bars[name].actor
             item = style["item"]
             minimum = style["minimum"]
             maximum = style["maximum"]
@@ -170,9 +181,9 @@ class VtkModelView(VtkObjectView):
             lut = create_color_transfer_function(points, minimum, maximum, item, no_data_color)
             bar.SetLookupTable(lut)
             bar.VisibilityOn()
-        for name, bar in pipeline.scalar_bars.items():
+        for name, scalar_bar in pipeline.scalar_bars.items():
             if name not in active_attrs:
-                bar.VisibilityOff()
+                scalar_bar.actor.VisibilityOff()
 
         self.update_scalar_bars_layout()
 

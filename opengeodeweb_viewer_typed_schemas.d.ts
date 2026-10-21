@@ -1187,7 +1187,8 @@ export interface ViewerPickColormapParams {
 }
 
 export interface ViewerPickColormapResponse {
-    data_id?: string;
+    block_ids?: number[];
+    data_id?:   string;
 }
 
 export interface ViewerHighlightParams {

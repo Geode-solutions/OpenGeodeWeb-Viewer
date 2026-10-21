@@ -63,8 +63,8 @@ class VtkObjectView(VtkView):
         for size_actor in pipeline.points_size_actors.values():
             renderer.RemoveActor(size_actor.actor)
         renderer.RemoveViewProp(pipeline.scalar_bar)
-        for bar in pipeline.scalar_bars.values():
-            renderer.RemoveViewProp(bar)
+        for scalar_bar in pipeline.scalar_bars.values():
+            renderer.RemoveViewProp(scalar_bar.actor)
         self.deregister_object(data_id)
         self.update_scalar_bars_layout()
 
@@ -74,8 +74,8 @@ class VtkObjectView(VtkView):
         self.set_points_actors_visibility(pipeline, visibility=visibility)
         if not visibility:
             pipeline.scalar_bar.VisibilityOff()
-            for bar in pipeline.scalar_bars.values():
-                bar.VisibilityOff()
+            for scalar_bar in pipeline.scalar_bars.values():
+                scalar_bar.actor.VisibilityOff()
             if pipeline.points_scalar_bar is not None:
                 pipeline.points_scalar_bar.VisibilityOff()
         else:
@@ -87,9 +87,9 @@ class VtkObjectView(VtkView):
             self.update_points_scalar_bar_visibility(pipeline)
             for style in pipeline.block_styles.values():
                 if style.get("name"):
-                    for bar in pipeline.scalar_bars.values():
-                        if bar.GetLookupTable() is not None:
-                            bar.VisibilityOn()
+                    for scalar_bar in pipeline.scalar_bars.values():
+                        if scalar_bar.actor.GetLookupTable() is not None:
+                            scalar_bar.actor.VisibilityOn()
                     break
         self.update_scalar_bars_layout()
 
@@ -234,8 +234,8 @@ class VtkObjectView(VtkView):
             pipeline.clear_blocks_scalars()
         mapper.ScalarVisibilityOff()
         pipeline.scalar_bar.VisibilityOff()
-        for bar in pipeline.scalar_bars.values():
-            bar.VisibilityOff()
+        for scalar_bar in pipeline.scalar_bars.values():
+            scalar_bar.actor.VisibilityOff()
         self.update_scalar_bars_layout()
 
     def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:
