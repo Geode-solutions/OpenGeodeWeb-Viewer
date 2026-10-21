@@ -11,6 +11,9 @@ from opengeodeweb_viewer.rpc.model.points.model_points_protocols import (
 from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
 )
+from opengeodeweb_viewer.rpc.model.surfaces.points.attribute.vertex import (
+    surfaces_points_attribute_vertex_protocols,
+)
 from opengeodeweb_viewer.rpc.model.surfaces.points.model_surfaces_points_protocols import (
     VtkModelSurfacesPointsView,
 )
@@ -19,6 +22,10 @@ from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_model_cube_side_view, test_register_model
+
+VtkModelSurfacesPointsAttributeVertexView = (
+    surfaces_points_attribute_vertex_protocols.VtkModelSurfacesPointsAttributeVertexView
+)
 
 # Local constants
 model_id = "12345678901234567890123456789012"
@@ -154,3 +161,48 @@ def test_surface_points_size(server: ServerMonitor, dataset_factory: Callable[..
         ],
     )
     assert server.compare_image("model/points/surface_points_size.jpeg")
+
+
+def test_surfaces_points_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_surfaces_points_color(server, dataset_factory)
+
+    attribute_view = VtkModelSurfacesPointsAttributeVertexView
+    server.call(
+        attribute_view.model_surfaces_points_attribute_vertex_prefix
+        + attribute_view.model_surfaces_points_attribute_vertex_schemas_dict["attribute"]["rpc"],
+        [
+            {
+                "id": model_id,
+                "block_ids": surfaces_ids,
+                "name": "unique vertices",
+                "item": 0,
+                "points": [0.0, 0.0, 0.0, 1.0, 663.0, 1.0, 0.0, 0.0],
+                "minimum": 0.0,
+                "maximum": 663.0,
+            }
+        ],
+    )
+    assert server.compare_image("model/points/surfaces_points_attribute.jpeg")
+
+
+def test_surfaces_points_opacity(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_surfaces_points_color(server, dataset_factory)
+
+    server.call(
+        VtkModelSurfacesPointsView.model_surfaces_points_prefix
+        + VtkModelSurfacesPointsView.model_surfaces_points_schemas_dict["color"]["rpc"],
+        [
+            {
+                "id": model_id,
+                "block_ids": surfaces_ids,
+                "color": {"red": 255, "green": 0, "blue": 0, "alpha": 0.2},
+            }
+        ],
+    )
+    assert server.compare_image("model/points/surfaces_points_opacity.jpeg")

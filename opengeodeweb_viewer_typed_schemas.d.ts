@@ -433,6 +433,29 @@ export interface ModelBlocksAttributeVertexAttributeParamsNoDataColor {
 
 export interface ModelBlocksAttributeVertexAttributeResponse {}
 
+export interface ModelBlocksPointsAttributeVertexAttributeParams {
+  block_ids: number[];
+  id: string;
+  item: number;
+  maximum: number;
+  minimum: number;
+  name: string;
+  no_data_color?: ModelBlocksPointsAttributeVertexAttributeParamsNoDataColor;
+  /**
+   * Flat array of [value, r, g, b, ...]
+   */
+  points: number[];
+}
+
+export interface ModelBlocksPointsAttributeVertexAttributeParamsNoDataColor {
+  alpha: number;
+  blue: number;
+  green: number;
+  red: number;
+}
+
+export interface ModelBlocksPointsAttributeVertexAttributeResponse {}
+
 export interface ModelBlocksPointsVisibilityParams {
   block_ids: number[];
   id: string;
@@ -622,6 +645,29 @@ export interface ModelLinesAttributeVertexAttributeParamsNoDataColor {
 
 export interface ModelLinesAttributeVertexAttributeResponse {}
 
+export interface ModelLinesPointsAttributeVertexAttributeParams {
+  block_ids: number[];
+  id: string;
+  item: number;
+  maximum: number;
+  minimum: number;
+  name: string;
+  no_data_color?: ModelLinesPointsAttributeVertexAttributeParamsNoDataColor;
+  /**
+   * Flat array of [value, r, g, b, ...]
+   */
+  points: number[];
+}
+
+export interface ModelLinesPointsAttributeVertexAttributeParamsNoDataColor {
+  alpha: number;
+  blue: number;
+  green: number;
+  red: number;
+}
+
+export interface ModelLinesPointsAttributeVertexAttributeResponse {}
+
 export interface ModelLinesPointsVisibilityParams {
   block_ids: number[];
   id: string;
@@ -789,6 +835,29 @@ export interface ModelSurfacesAttributeVertexAttributeParamsNoDataColor {
 }
 
 export interface ModelSurfacesAttributeVertexAttributeResponse {}
+
+export interface ModelSurfacesPointsAttributeVertexAttributeParams {
+  block_ids: number[];
+  id: string;
+  item: number;
+  maximum: number;
+  minimum: number;
+  name: string;
+  no_data_color?: ModelSurfacesPointsAttributeVertexAttributeParamsNoDataColor;
+  /**
+   * Flat array of [value, r, g, b, ...]
+   */
+  points: number[];
+}
+
+export interface ModelSurfacesPointsAttributeVertexAttributeParamsNoDataColor {
+  alpha: number;
+  blue: number;
+  green: number;
+  red: number;
+}
+
+export interface ModelSurfacesPointsAttributeVertexAttributeResponse {}
 
 export interface ModelSurfacesPointsVisibilityParams {
   block_ids: number[];
@@ -1261,6 +1330,15 @@ export interface Schemas {
           };
         };
         readonly points: {
+          readonly attribute: {
+            readonly vertex: {
+              readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["points"]["attribute"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ModelBlocksPointsAttributeVertexAttributeParams,
+                  ModelBlocksPointsAttributeVertexAttributeResponse
+                >;
+            };
+          };
           readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["points"]["visibility"] &
             TypedSchema<ModelBlocksPointsVisibilityParams, ModelBlocksPointsVisibilityResponse>;
           readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["points"]["size"] &
@@ -1310,6 +1388,15 @@ export interface Schemas {
           };
         };
         readonly points: {
+          readonly attribute: {
+            readonly vertex: {
+              readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["points"]["attribute"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ModelLinesPointsAttributeVertexAttributeParams,
+                  ModelLinesPointsAttributeVertexAttributeResponse
+                >;
+            };
+          };
           readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["points"]["visibility"] &
             TypedSchema<ModelLinesPointsVisibilityParams, ModelLinesPointsVisibilityResponse>;
           readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["points"]["size"] &
@@ -1356,6 +1443,15 @@ export interface Schemas {
           };
         };
         readonly points: {
+          readonly attribute: {
+            readonly vertex: {
+              readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["points"]["attribute"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ModelSurfacesPointsAttributeVertexAttributeParams,
+                  ModelSurfacesPointsAttributeVertexAttributeResponse
+                >;
+            };
+          };
           readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["points"]["visibility"] &
             TypedSchema<ModelSurfacesPointsVisibilityParams, ModelSurfacesPointsVisibilityResponse>;
           readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["points"]["size"] &
