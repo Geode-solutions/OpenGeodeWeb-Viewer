@@ -134,7 +134,8 @@ class VtkObjectView(VtkView):
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
             pipeline.actor.GetProperty().SetLineWidth(width)
             return
-        pipeline.actor.GetProperty().SetEdgeWidth(width)
+        # VTK draws polygon edges with the line width, the edge width property is not rendered
+        pipeline.actor.GetProperty().SetLineWidth(width)
         if pipeline.edges_actor is not None:
             pipeline.edges_actor.GetProperty().SetLineWidth(width)
 
@@ -228,7 +229,7 @@ class VtkObjectView(VtkView):
         main_property = pipeline.actor.GetProperty()
         edges_property = actor.GetProperty()
         edges_property.SetRepresentationToWireframe()
-        edges_property.SetLineWidth(main_property.GetEdgeWidth())
+        edges_property.SetLineWidth(main_property.GetLineWidth())
         edges_property.SetColor(*main_property.GetEdgeColor())
         pipeline.edges_visibility = bool(main_property.GetEdgeVisibility())
         actor.SetVisibility(pipeline.actor.GetVisibility() and pipeline.edges_visibility)
