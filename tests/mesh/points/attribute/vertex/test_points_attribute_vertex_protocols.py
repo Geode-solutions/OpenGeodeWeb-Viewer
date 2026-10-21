@@ -490,3 +490,17 @@ def test_polygons_points_shared_scalar_bar(
         [attribute],
     )
     assert server.compare_image("mesh/points/polygons_points_shared_scalar_bar.jpeg")
+
+
+def test_polygons_points_attribute_then_color(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_polygons_points_vertex_attribute(server, dataset_factory)
+    server.call(
+        VtkMeshPointsView.mesh_points_prefix
+        + VtkMeshPointsView.mesh_points_schemas_dict["color"]["rpc"],
+        [{"id": mesh_id, "color": {"red": 255, "green": 0, "blue": 0, "alpha": 1.0}}],
+    )
+    # Red points, no points scalar bar
+    assert server.compare_image("mesh/points/polygons_points_attribute_then_color.jpeg")

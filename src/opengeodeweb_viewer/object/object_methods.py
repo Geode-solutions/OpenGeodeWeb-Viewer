@@ -263,11 +263,20 @@ class VtkObjectView(VtkView):
     def set_points_color(self, data_id: str, color: ColorClassProtocol) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
             self.set_color(data_id, color)
-        else:
-            actor = self.get_vtk_pipeline(data_id).actor
-            actor.GetProperty().SetVertexColor(
-                [color.red / 255, color.green / 255, color.blue / 255]
-            )
+            return
+        pipeline = self.get_vtk_pipeline(data_id)
+        rgb = [color.red / 255, color.green / 255, color.blue / 255]
+        pipeline.actor.GetProperty().SetVertexColor(rgb)
+        if pipeline.points_actor is None or pipeline.points_mapper is None:
+            return
+        # A constant color replaces the points attribute and its scalar bar
+        pipeline.points_mapper.ScalarVisibilityOff()
+        pipeline.points_actor.GetProperty().SetColor(rgb)
+        pipeline.points_actor.GetProperty().SetOpacity(color.alpha)
+        if pipeline.points_scalar_bar is not None:
+            pipeline.points_scalar_bar.SetLookupTable(None)
+        self.update_points_scalar_bar_visibility(pipeline)
+        self.update_scalar_bars_layout()
 
     def set_blocks_visibility(
         self, data_id: str, block_ids: list[int], *, visibility: bool
