@@ -4,9 +4,8 @@ import os
 import shutil
 import tempfile
 import xml.etree.ElementTree as ET
-from collections.abc import Callable, Generator
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import msgpack  # type: ignore[import-untyped]
 import pytest
@@ -20,6 +19,9 @@ from xprocess import ProcessStarter, XProcess  # type: ignore[import-untyped]
 
 from opengeodeweb_viewer.config import TestConfig
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Generator
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +184,7 @@ TEST_PROJECT_FOLDER_PATH = tempfile.mkdtemp(prefix="ogw_test_data_")
 
 
 @pytest.fixture
-def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
+def server(xprocess: XProcess) -> Generator[ServerMonitor]:
     name, starter, monitor_class = HELPER.get_xprocess_args(TEST_PROJECT_FOLDER_PATH)
     os.environ["PYTHON_ENV"] = "test"
     _, log = xprocess.ensure(name, starter)
@@ -195,7 +197,7 @@ def server(xprocess: XProcess) -> Generator[ServerMonitor, None, None]:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def configure_test_environment() -> Generator[None, None, None]:
+def configure_test_environment() -> Generator[None]:
     app_config = TestConfig(TEST_PROJECT_FOLDER_PATH)
     db_path = Path(app_config.DATA_FOLDER_PATH) / "project.db"
     init_database(db_path=db_path)

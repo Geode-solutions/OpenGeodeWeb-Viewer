@@ -1,14 +1,19 @@
 # Standard library imports
-from collections.abc import Callable
 
 # Third party imports
+from typing import TYPE_CHECKING
+
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.polygons.attribute.polygon import (
     polygons_attribute_polygon_protocols,
 )
 
 # Local application imports
-from tests.conftest import ServerMonitor
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkMeshPolygonsAttributePolygonView = (
     polygons_attribute_polygon_protocols.VtkMeshPolygonsAttributePolygonView

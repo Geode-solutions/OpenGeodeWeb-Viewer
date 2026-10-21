@@ -1,7 +1,7 @@
 # Standard library imports
 import os
-from collections.abc import Callable
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from vtkmodules.vtkCommonCore import vtkDoubleArray
 
@@ -17,7 +17,11 @@ from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
 )
 
 # Local application imports
-from tests.conftest import ServerMonitor
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkModelSurfacesAttributePolygonView = (
     surfaces_attribute_polygon_protocols.VtkModelSurfacesAttributePolygonView

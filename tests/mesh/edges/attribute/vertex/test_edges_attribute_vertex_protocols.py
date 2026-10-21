@@ -1,5 +1,6 @@
 # Standard library imports
-from collections.abc import Callable
+
+from typing import TYPE_CHECKING
 
 from opengeodeweb_viewer.rpc.mesh.edges.attribute.vertex.edges_attribute_vertex_protocols import (
     VtkMeshEdgesAttributeVertexView,
@@ -18,7 +19,11 @@ from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex import (
 from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 
 # Local application imports
-from tests.conftest import ServerMonitor
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkMeshPolygonsAttributeVertexView = (
     polygons_attribute_vertex_protocols.VtkMeshPolygonsAttributeVertexView

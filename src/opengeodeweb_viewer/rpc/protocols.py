@@ -1,5 +1,6 @@
 # Local application imports
-from opengeodeweb_viewer.vtk_protocol import VtkView
+
+from typing import TYPE_CHECKING
 
 from .mesh.cells.attribute.cell.cells_attribute_cell_protocols import VtkMeshCellsAttributeCellView
 from .mesh.cells.attribute.vertex.cells_attribute_vertex_protocols import (
@@ -76,6 +77,9 @@ from .model.surfaces.points.attribute.vertex.surfaces_points_attribute_vertex_pr
     VtkModelSurfacesPointsAttributeVertexView,
 )
 from .model.surfaces.points.model_surfaces_points_protocols import VtkModelSurfacesPointsView
+
+if TYPE_CHECKING:
+    from opengeodeweb_viewer.vtk_protocol import VtkView
 
 MESH_PROTOCOLS: tuple[type[VtkView], ...] = (
     VtkMeshPointsView,

@@ -2,13 +2,13 @@ import logging
 
 # Standard library imports
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from opengeodeweb_microservice.database.data import Data
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
 from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
-from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
     vtkDataSetMapper,
     vtkTexture,
@@ -24,6 +24,9 @@ from opengeodeweb_viewer.utils_functions import (
 from opengeodeweb_viewer.vtk_pipeline import ColorMapKey, VtkPipeline
 
 from . import schemas
+
+if TYPE_CHECKING:
+    from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 
 logger = logging.getLogger(__name__)
 

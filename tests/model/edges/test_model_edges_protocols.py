@@ -1,7 +1,8 @@
 # Standard library imports
-from collections.abc import Callable
 
 # Third party imports
+from typing import TYPE_CHECKING
+
 from opengeodeweb_viewer.rpc.model.blocks.edges.model_blocks_edges_protocols import (
     VtkModelBlocksEdgesView,
 )
@@ -19,10 +20,14 @@ from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
     VtkModelSurfacesView,
 )
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
-from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_model_cube_side_view, test_register_model
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkModelSurfacesEdgesAttributeVertexView = (
     surfaces_edges_attribute_vertex_protocols.VtkModelSurfacesEdgesAttributeVertexView

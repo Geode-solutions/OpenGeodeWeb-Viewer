@@ -4,7 +4,7 @@ import logging
 import math
 import os
 from pathlib import Path
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import vtkmodules.vtkRenderingOpenGL2  # noqa: F401 registers the OpenGL render window backend
 
@@ -27,12 +27,6 @@ from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
 from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
 from vtkmodules.vtkImagingCore import vtkExtractVOI
-from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
-from vtkmodules.vtkRenderingAnnotation import (
-    vtkAxesActor,
-    vtkCubeAxesActor,
-    vtkScalarBarActor,
-)
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkCellPicker,
@@ -40,17 +34,26 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkRenderWindow,
 )
-from vtkmodules.vtkWebCore import vtkWebApplication
 from vtkmodules.web import protocols as vtk_protocols
 
-from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
-from opengeodeweb_viewer.rpc.viewer.schemas.slice import SliceElement
 from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
 from opengeodeweb_viewer.vtk_pipeline import (
     RulerPipeline,
     ViewerData,
     VtkPipeline,
 )
+
+if TYPE_CHECKING:
+    from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
+    from vtkmodules.vtkRenderingAnnotation import (
+        vtkAxesActor,
+        vtkCubeAxesActor,
+        vtkScalarBarActor,
+    )
+    from vtkmodules.vtkWebCore import vtkWebApplication
+
+    from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
+    from opengeodeweb_viewer.rpc.viewer.schemas.slice import SliceElement
 
 logger = logging.getLogger(__name__)
 
