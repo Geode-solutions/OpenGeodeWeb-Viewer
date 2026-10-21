@@ -216,6 +216,7 @@ class ModelPointsStyle:
     size: float
     visibility: bool
     color: tuple[float, float, float] | None = None
+    opacity: float = 1.0
 
 
 @dataclass
@@ -516,8 +517,11 @@ class VtkPipeline:
                     and block_visibility
                 )
                 size_actor_attributes.SetBlockVisibility(block, visible)
-                if visible and style is not None and style.color is not None:
+                if not visible or style is None:
+                    continue
+                if style.color is not None:
                     size_actor_attributes.SetBlockColor(block, list(style.color))
+                size_actor_attributes.SetBlockOpacity(block, style.opacity)
             size_actor.mapper.SetCompositeDataDisplayAttributes(size_actor_attributes)
             size_actor.mapper.Modified()
 

@@ -281,6 +281,7 @@ class VtkModelView(VtkObjectView):
     ) -> None:
         for style in self.component_points_styles(data_id, component_type, block_ids):
             style.color = (color.red / 255, color.green / 255, color.blue / 255)
+            style.opacity = color.alpha
         self.sync_points_size_actors(self.get_vtk_pipeline(data_id))
 
     def set_component_points_size(
