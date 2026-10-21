@@ -3,13 +3,9 @@ import logging
 # Standard library imports
 import math
 from dataclasses import dataclass, field
-from typing import Literal, TypedDict, cast
+from typing import TYPE_CHECKING, Literal, TypedDict, cast
 
 # Local application imports
-from opengeodeweb_microservice.database.data_types import (
-    ViewerElementsType,
-    ViewerType,
-)
 from vtkmodules.vtkCommonDataModel import (
     vtkBoundingBox,
     vtkCompositeDataSet,
@@ -20,9 +16,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkSelectionNode,
     vtkVector2d,
 )
-from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
 from vtkmodules.vtkCommonTransforms import vtkTransform
-from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
 from vtkmodules.vtkFiltersExtraction import (
     vtkExtractGeometry,
     vtkExtractSelection,
@@ -30,7 +24,6 @@ from vtkmodules.vtkFiltersExtraction import (
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTransformFilter
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
-from vtkmodules.vtkIOXML import vtkXMLReader
 from vtkmodules.vtkRenderingAnnotation import (
     vtkScalarBarActor,
 )
@@ -56,6 +49,15 @@ from opengeodeweb_viewer.utils_functions import (
     ColorClassProtocol,
     create_color_transfer_function,
 )
+
+if TYPE_CHECKING:
+    from opengeodeweb_microservice.database.data_types import (
+        ViewerElementsType,
+        ViewerType,
+    )
+    from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
+    from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
+    from vtkmodules.vtkIOXML import vtkXMLReader
 
 logger = logging.getLogger(__name__)
 

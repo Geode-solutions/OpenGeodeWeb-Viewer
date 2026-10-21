@@ -1,15 +1,20 @@
 # Standard library imports
-from collections.abc import Callable
 
 # Third party imports
+from typing import TYPE_CHECKING
+
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.points.points_protocols import (
     VtkMeshPointsView,
 )
-from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.mesh.test_mesh_protocols import test_register_mesh
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 
 def test_points_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:

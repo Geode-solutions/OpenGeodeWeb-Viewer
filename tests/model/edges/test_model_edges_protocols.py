@@ -1,14 +1,19 @@
 # Standard library imports
-from collections.abc import Callable
 
 # Third party imports
+from typing import TYPE_CHECKING
+
 from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
     VtkModelEdgesView,
 )
-from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 # Local constants
 model_id = "12345678901234567890123456789012"

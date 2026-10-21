@@ -1,17 +1,20 @@
 # Standard library imports
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
-from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
-from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 
 # Local application imports
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 from . import schemas
+
+if TYPE_CHECKING:
+    from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+    from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 
 
 class VtkGenericView(VtkView):
