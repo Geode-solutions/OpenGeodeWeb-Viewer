@@ -31,6 +31,8 @@ from opengeodeweb_viewer.utils_functions import (
 )
 from opengeodeweb_viewer.vtk_pipeline import (
     BlockStyle,
+    EdgesWidthActor,
+    ModelEdgesStyle,
     ModelPointsStyle,
     PointsSizeActor,
     VtkPipeline,
@@ -62,6 +64,8 @@ class ColorResult(TypedDict):
 
 
 POINTS_COMPONENT_TYPES = ("lines", "surfaces", "blocks")
+# Lines are edges themselves and corners have none, so only these components get an edges style
+EDGES_COMPONENT_TYPES = ("surfaces", "blocks")
 
 
 class VtkModelView(VtkObjectView):
@@ -124,13 +128,19 @@ class VtkModelView(VtkObjectView):
 
     def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
         # Points attributes join the polygons ones, so identical color maps share one scalar bar
-        displayed_styles = [
-            (str(block_id), style) for block_id, style in pipeline.block_styles.items()
-        ] + [
-            (f"{block_id} points", points_style.attribute)
-            for block_id, points_style in pipeline.points_block_styles.items()
-            if points_style.attribute is not None and points_style.visibility
-        ]
+        displayed_styles = (
+            [(str(block_id), style) for block_id, style in pipeline.block_styles.items()]
+            + [
+                (f"{block_id} points", points_style.attribute)
+                for block_id, points_style in pipeline.points_block_styles.items()
+                if points_style.attribute is not None and points_style.visibility
+            ]
+            + [
+                (f"{block_id} edges", edges_style.attribute)
+                for block_id, edges_style in pipeline.edges_block_styles.items()
+                if edges_style.attribute is not None and edges_style.visibility
+            ]
+        )
         active_attrs: dict[str, BlockStyle] = {}
         for block_id, style in displayed_styles:
             if style["name"]:
@@ -342,6 +352,123 @@ class VtkModelView(VtkObjectView):
         for style in pipeline.points_block_styles.values():
             style.size = size
         self.sync_points_size_actors(pipeline)
+
+    def ensure_model_edges_styles(self, pipeline: VtkPipeline) -> dict[int, ModelEdgesStyle]:
+        # Components edges leave the main actor once styled individually
+        if pipeline.edges_block_styles:
+            return pipeline.edges_block_styles
+        main_property = pipeline.actor.GetProperty()
+        red, green, blue = main_property.GetEdgeColor()
+        for block_id, component_type in pipeline.block_component_types().items():
+            if component_type in EDGES_COMPONENT_TYPES:
+                pipeline.edges_block_styles[block_id] = ModelEdgesStyle(
+                    width=main_property.GetEdgeWidth(),
+                    visibility=bool(main_property.GetEdgeVisibility()),
+                    color=(red, green, blue),
+                )
+        main_property.EdgeVisibilityOff()
+        return pipeline.edges_block_styles
+
+    def sync_edges_width_actors(self, pipeline: VtkPipeline) -> None:
+        renderer = self.get_renderer()
+        widths = {style.width for style in pipeline.edges_block_styles.values()}
+        for width in list(pipeline.edges_width_actors):
+            if width not in widths:
+                renderer.RemoveActor(pipeline.edges_width_actors.pop(width).actor)
+        for width in widths - pipeline.edges_width_actors.keys():
+            mapper = vtkCompositePolyDataMapper()
+            mapper.SetInputDataObject(pipeline.mapper.GetInputDataObject(0, 0))
+            mapper.ScalarVisibilityOn()
+            mapper.SetColorModeToMapScalars()
+            mapper.SetResolveCoincidentTopologyLineOffsetParameters(0, -4)
+            actor = vtkActor()
+            actor.SetMapper(mapper)
+            actor.PickableOff()
+            actor.SetVisibility(pipeline.actor.GetVisibility())
+            edges_property = actor.GetProperty()
+            edges_property.SetRepresentationToWireframe()
+            edges_property.SetLineWidth(width)
+            pipeline.edges_width_actors[width] = EdgesWidthActor(mapper=mapper, actor=actor)
+            renderer.AddActor(actor)
+        pipeline.update_edges_width_actors()
+
+    def component_edges_styles(
+        self, data_id: str, component_type: str, block_ids: list[int]
+    ) -> list[ModelEdgesStyle]:
+        pipeline = self.get_vtk_pipeline(data_id)
+        styles = self.ensure_model_edges_styles(pipeline)
+        component_types = pipeline.block_component_types()
+        return [
+            styles[block_id]
+            for block_id in block_ids
+            if block_id in styles and component_types.get(block_id) == component_type
+        ]
+
+    def set_component_edges_visibility(
+        self, data_id: str, component_type: str, block_ids: list[int], *, visibility: bool
+    ) -> None:
+        for style in self.component_edges_styles(data_id, component_type, block_ids):
+            style.visibility = visibility
+        pipeline = self.get_vtk_pipeline(data_id)
+        self.sync_edges_width_actors(pipeline)
+        self.setup_model_color_map(pipeline)
+
+    def set_component_edges_color(
+        self, data_id: str, component_type: str, block_ids: list[int], color: ColorProtocol
+    ) -> None:
+        for style in self.component_edges_styles(data_id, component_type, block_ids):
+            style.color = (color.red / 255, color.green / 255, color.blue / 255)
+            style.opacity = color.alpha
+            style.attribute = None
+        pipeline = self.get_vtk_pipeline(data_id)
+        self.sync_edges_width_actors(pipeline)
+        self.setup_model_color_map(pipeline)
+
+    def set_component_edges_attribute(
+        self,
+        data_id: str,
+        component_type: str,
+        block_ids: list[int],
+        attribute: AttributeProtocol,
+    ) -> None:
+        for style in self.component_edges_styles(data_id, component_type, block_ids):
+            style.attribute = BlockStyle(
+                name=attribute.name,
+                attribute_location="point",
+                points=attribute.points,
+                minimum=attribute.minimum,
+                maximum=attribute.maximum,
+                item=attribute.item,
+                no_data_color=attribute.no_data_color,
+            )
+        pipeline = self.get_vtk_pipeline(data_id)
+        self.sync_edges_width_actors(pipeline)
+        self.setup_model_color_map(pipeline)
+
+    def set_component_edges_width(
+        self, data_id: str, component_type: str, block_ids: list[int], width: float
+    ) -> None:
+        for style in self.component_edges_styles(data_id, component_type, block_ids):
+            style.width = width
+        self.sync_edges_width_actors(self.get_vtk_pipeline(data_id))
+
+    def set_model_edges_visibility_on_all(self, data_id: str, *, visibility: bool) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
+        if not pipeline.edges_block_styles:
+            self.set_edges_visibility(data_id, visibility=visibility)
+            return
+        for style in pipeline.edges_block_styles.values():
+            style.visibility = visibility
+        self.sync_edges_width_actors(pipeline)
+        self.setup_model_color_map(pipeline)
+
+    def set_model_edges_width_on_all(self, data_id: str, width: float) -> None:
+        # The main actor line width would also resize the lines, so edges always use their styles
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.actor.GetProperty().SetEdgeWidth(width)
+        for style in self.ensure_model_edges_styles(pipeline).values():
+            style.width = width
+        self.sync_edges_width_actors(pipeline)
 
     @typed_rpc(model_prefix, schemas.register_route)
     def register_model(self, params: schemas.Register) -> schemas.RegisterResponse:

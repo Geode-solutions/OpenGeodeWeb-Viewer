@@ -20,5 +20,10 @@ class VtkModelEdgesView(VtkModelView):
 
     @typed_rpc(model_edges_prefix, schemas.visibility_route)
     def set_model_edges_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
-        self.set_edges_visibility(params.id, visibility=params.visibility)
+        self.set_model_edges_visibility_on_all(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
+
+    @typed_rpc(model_edges_prefix, schemas.width_route)
+    def set_model_edges_width(self, params: schemas.Width) -> schemas.WidthResponse:
+        self.set_model_edges_width_on_all(params.id, params.width)
+        return schemas.WidthResponse()

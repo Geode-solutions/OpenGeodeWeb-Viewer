@@ -24,3 +24,15 @@ def test_edges_visibility(server: ServerMonitor, dataset_factory: Callable[..., 
         [{"id": model_id, "visibility": True}],
     )
     assert server.compare_image("model/edges/visibility.jpeg")
+
+
+def test_edges_width(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+
+    test_edges_visibility(server, dataset_factory)
+
+    server.call(
+        VtkModelEdgesView.model_edges_prefix
+        + VtkModelEdgesView.model_edges_schemas_dict["width"]["rpc"],
+        [{"id": model_id, "width": 6}],
+    )
+    assert server.compare_image("model/edges/width.jpeg")

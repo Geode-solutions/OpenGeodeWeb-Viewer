@@ -2,6 +2,7 @@ import logging
 
 # Standard library imports
 import math
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Literal, TypedDict, cast
 
@@ -223,6 +224,26 @@ class ModelPointsStyle:
 
 
 @dataclass
+class EdgesWidthActor:
+    mapper: vtkCompositePolyDataMapper
+    actor: vtkActor
+
+
+@dataclass
+class ModelEdgesStyle:
+    width: float
+    visibility: bool
+    color: tuple[float, float, float] | None = None
+    opacity: float = 1.0
+    attribute: BlockStyle | None = None
+
+
+def style_actor_key(style: ModelPointsStyle | ModelEdgesStyle) -> float:
+    # Points actors are split by size, edges actors by width
+    return style.size if isinstance(style, ModelPointsStyle) else style.width
+
+
+@dataclass
 class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
@@ -252,6 +273,9 @@ class VtkPipeline:
     edges_actor: vtkActor | None = None
     edges_scalar_bar: vtkScalarBarActor | None = None
     edges_visibility: bool = False
+    # One edges actor per distinct width, since line width is an actor property
+    edges_width_actors: dict[float, EdgesWidthActor] = field(default_factory=dict)
+    edges_block_styles: dict[int, ModelEdgesStyle] = field(default_factory=dict)
 
     def connect_mappers(self) -> None:
         self.mapper.SetInputConnection(self.filter.GetOutputPort())
@@ -506,37 +530,49 @@ class VtkPipeline:
             iterator.GoToNextItem()
         return component_types
 
+    def update_style_actor_attributes(
+        self,
+        mapper: vtkCompositePolyDataMapper,
+        styles: Mapping[int, ModelPointsStyle | ModelEdgesStyle],
+        actor_key: float,
+    ) -> None:
+        # A block shows in a style actor only when it is visible and its style matches the actor
+        main_mapper = cast("vtkCompositePolyDataMapper", self.mapper)
+        attributes = main_mapper.GetCompositeDataDisplayAttributes()
+        actor_attributes = vtkCompositeDataDisplayAttributes()
+        for block_id, block in enumerate(self.block_data_sets):
+            if not isinstance(block, vtkDataSet):
+                continue
+            style = styles.get(block_id)
+            block_visibility = not attributes.HasBlockVisibility(
+                block
+            ) or attributes.GetBlockVisibility(block)
+            visible = (
+                style is not None
+                and style_actor_key(style) == actor_key
+                and style.visibility
+                and block_visibility
+            )
+            actor_attributes.SetBlockVisibility(block, visible)
+            if not visible or style is None:
+                continue
+            if style.color is not None:
+                actor_attributes.SetBlockColor(block, list(style.color))
+            actor_attributes.SetBlockOpacity(block, style.opacity)
+            self.set_block_point_attribute(actor_attributes, block, style.attribute)
+        mapper.SetCompositeDataDisplayAttributes(actor_attributes)
+        mapper.Modified()
+
     def update_points_size_actors(self) -> None:
-        # A block shows its points in the actor of its size, only when the block is visible
-        mapper = cast("vtkCompositePolyDataMapper", self.mapper)
-        attributes = mapper.GetCompositeDataDisplayAttributes()
         for size, size_actor in self.points_size_actors.items():
-            size_actor_attributes = vtkCompositeDataDisplayAttributes()
-            for block_id, block in enumerate(self.block_data_sets):
-                if not isinstance(block, vtkDataSet):
-                    continue
-                style = self.points_block_styles.get(block_id)
-                block_visibility = not attributes.HasBlockVisibility(
-                    block
-                ) or attributes.GetBlockVisibility(block)
-                visible = (
-                    style is not None
-                    and style.size == size
-                    and style.visibility
-                    and block_visibility
-                )
-                size_actor_attributes.SetBlockVisibility(block, visible)
-                if not visible or style is None:
-                    continue
-                if style.color is not None:
-                    size_actor_attributes.SetBlockColor(block, list(style.color))
-                size_actor_attributes.SetBlockOpacity(block, style.opacity)
-                self.set_points_block_attribute(size_actor_attributes, block, style.attribute)
-            size_actor.mapper.SetCompositeDataDisplayAttributes(size_actor_attributes)
-            size_actor.mapper.Modified()
+            self.update_style_actor_attributes(size_actor.mapper, self.points_block_styles, size)
+
+    def update_edges_width_actors(self) -> None:
+        for width, width_actor in self.edges_width_actors.items():
+            self.update_style_actor_attributes(width_actor.mapper, self.edges_block_styles, width)
 
     @staticmethod
-    def set_points_block_attribute(
+    def set_block_point_attribute(
         attributes: vtkCompositeDataDisplayAttributes,
         block: vtkDataSet,
         attribute: BlockStyle | None,
@@ -592,6 +628,7 @@ class VtkPipeline:
         self.sync_mapper_display_attributes(mapper, self.block_data_sets, new_blocks)
         self.block_data_sets = new_blocks
         self.update_points_size_actors()
+        self.update_edges_width_actors()
         for block_id in self.block_styles:
             self.update_block_colors(block_id)
 
@@ -608,6 +645,8 @@ class VtkPipeline:
         self.mapper.SetInputDataObject(dataset)
         for size_actor in self.points_size_actors.values():
             size_actor.mapper.SetInputDataObject(dataset)
+        for width_actor in self.edges_width_actors.values():
+            width_actor.mapper.SetInputDataObject(dataset)
         if self.pick_mapper and isinstance(dataset, vtkMultiBlockDataSet):
             mapper = cast("vtkCompositePolyDataMapper", self.mapper)
             attributes = mapper.GetCompositeDataDisplayAttributes()

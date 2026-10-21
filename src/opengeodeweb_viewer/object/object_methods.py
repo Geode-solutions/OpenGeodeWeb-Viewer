@@ -61,6 +61,8 @@ class VtkObjectView(VtkView):
             renderer.RemoveActor(size_actor.actor)
         if pipeline.edges_actor is not None:
             renderer.RemoveActor(pipeline.edges_actor)
+        for width_actor in pipeline.edges_width_actors.values():
+            renderer.RemoveActor(width_actor.actor)
         if pipeline.edges_scalar_bar is not None:
             renderer.RemoveViewProp(pipeline.edges_scalar_bar)
         renderer.RemoveViewProp(pipeline.scalar_bar)
@@ -104,6 +106,8 @@ class VtkObjectView(VtkView):
             size_actor.actor.SetVisibility(visibility)
         if pipeline.edges_actor is not None:
             pipeline.edges_actor.SetVisibility(visibility and pipeline.edges_visibility)
+        for width_actor in pipeline.edges_width_actors.values():
+            width_actor.actor.SetVisibility(visibility)
 
     def set_opacity(self, data_id: str, opacity: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
@@ -279,6 +283,7 @@ class VtkObjectView(VtkView):
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
         pipeline.update_points_size_actors()
+        pipeline.update_edges_width_actors()
         dataset = mapper.GetInputDataObject(0, 0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return
