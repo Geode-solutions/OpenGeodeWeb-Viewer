@@ -20,10 +20,10 @@ class VtkModelPointsView(VtkModelView):
 
     @typed_rpc(model_points_prefix, schemas.visibility_route)
     def set_model_points_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
-        self.set_points_visibility(params.id, visibility=params.visibility)
+        self.set_model_points_visibility_on_all(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_points_prefix, schemas.size_route)
     def set_model_points_size(self, params: schemas.Size) -> schemas.SizeResponse:
-        self.set_points_size(params.id, params.size)
+        self.set_model_points_size_on_all(params.id, params.size)
         return schemas.SizeResponse()

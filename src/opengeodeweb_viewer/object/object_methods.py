@@ -5,6 +5,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
     vtkMultiBlockDataSet,
 )
+from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkCompositePolyDataMapper,
@@ -52,6 +53,12 @@ class VtkObjectView(VtkView):
         renderer = render_window.GetRenderers().GetFirstRenderer()
         renderer.RemoveActor(pipeline.actor)
         renderer.RemoveActor(pipeline.highlight.actor)
+        if pipeline.points_actor is not None:
+            renderer.RemoveActor(pipeline.points_actor)
+        if pipeline.points_scalar_bar is not None:
+            renderer.RemoveViewProp(pipeline.points_scalar_bar)
+        for size_actor in pipeline.points_size_actors.values():
+            renderer.RemoveActor(size_actor.actor)
         renderer.RemoveViewProp(pipeline.scalar_bar)
         for scalar_bar in pipeline.scalar_bars.values():
             renderer.RemoveViewProp(scalar_bar.actor)
@@ -61,16 +68,20 @@ class VtkObjectView(VtkView):
     def set_visibility(self, data_id: str, *, visibility: bool) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.actor.SetVisibility(visibility)
+        self.set_points_actors_visibility(pipeline, visibility=visibility)
         if not visibility:
             pipeline.scalar_bar.VisibilityOff()
             for scalar_bar in pipeline.scalar_bars.values():
                 scalar_bar.actor.VisibilityOff()
+            if pipeline.points_scalar_bar is not None:
+                pipeline.points_scalar_bar.VisibilityOff()
         else:
             if (
                 pipeline.mapper.GetScalarVisibility()
                 and pipeline.mapper.GetLookupTable() is not None
             ):
                 pipeline.scalar_bar.VisibilityOn()
+            self.update_points_scalar_bar_visibility(pipeline)
             for style in pipeline.block_styles.values():
                 if style.get("name"):
                     for scalar_bar in pipeline.scalar_bars.values():
@@ -78,6 +89,12 @@ class VtkObjectView(VtkView):
                             scalar_bar.actor.VisibilityOn()
                     break
         self.update_scalar_bars_layout()
+
+    def set_points_actors_visibility(self, pipeline: VtkPipeline, *, visibility: bool) -> None:
+        if pipeline.points_actor is not None:
+            pipeline.points_actor.SetVisibility(visibility and pipeline.points_visibility)
+        for size_actor in pipeline.points_size_actors.values():
+            size_actor.actor.SetVisibility(visibility)
 
     def set_opacity(self, data_id: str, opacity: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
@@ -115,12 +132,59 @@ class VtkObjectView(VtkView):
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
             self.set_visibility(data_id, visibility=visibility)
         else:
-            actor = self.get_vtk_pipeline(data_id).actor
-            actor.GetProperty().SetVertexVisibility(visibility)
+            pipeline = self.get_vtk_pipeline(data_id)
+            if pipeline.points_actor is not None:
+                pipeline.points_visibility = visibility
+                pipeline.points_actor.SetVisibility(visibility)
+                self.update_points_scalar_bar_visibility(pipeline)
+                self.update_scalar_bars_layout()
+            else:
+                pipeline.actor.GetProperty().SetVertexVisibility(visibility)
 
     def set_points_size(self, data_id: str, size: float) -> None:
-        actor = self.get_vtk_pipeline(data_id).actor
-        actor.GetProperty().SetPointSize(size)
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.actor.GetProperty().SetPointSize(size)
+        if pipeline.points_actor is not None:
+            pipeline.points_actor.GetProperty().SetPointSize(size)
+
+    def ensure_points_actor(self, pipeline: VtkPipeline) -> vtkActor:
+        # Points get their own actor so their scalars stay independent from the polygons
+        if pipeline.points_actor is not None:
+            return pipeline.points_actor
+        mapper = vtkDataSetMapper()
+        mapper.SetInputConnection(pipeline.filter.GetOutputPort())
+        mapper.SetResolveCoincidentTopologyPointOffsetParameter(-2)
+        actor = vtkActor()
+        actor.SetMapper(mapper)
+        actor.PickableOff()
+        main_property = pipeline.actor.GetProperty()
+        points_property = actor.GetProperty()
+        points_property.SetRepresentationToPoints()
+        points_property.SetPointSize(main_property.GetPointSize())
+        pipeline.points_visibility = bool(main_property.GetVertexVisibility())
+        actor.SetVisibility(pipeline.points_visibility)
+        main_property.VertexVisibilityOff()
+        scalar_bar = vtkScalarBarActor()
+        scalar_bar.VisibilityOff()
+        render_window = self.getView("-1")
+        renderer = render_window.GetRenderers().GetFirstRenderer()
+        renderer.AddActor(actor)
+        renderer.AddViewProp(scalar_bar)
+        pipeline.points_mapper = mapper
+        pipeline.points_actor = actor
+        pipeline.points_scalar_bar = scalar_bar
+        return actor
+
+    def update_points_scalar_bar_visibility(self, pipeline: VtkPipeline) -> None:
+        # A points scalar bar only holds a lookup table when it differs from the polygons one
+        bar = pipeline.points_scalar_bar
+        if bar is None:
+            return
+        bar.SetVisibility(
+            pipeline.actor.GetVisibility()
+            and pipeline.points_visibility
+            and bar.GetLookupTable() is not None
+        )
 
     def set_points_color(self, data_id: str, color: ColorClassProtocol) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
@@ -144,6 +208,7 @@ class VtkObjectView(VtkView):
         logger.debug("visibility_attributes=%s", visibility_attributes)
         for block_id in block_ids:
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
+        pipeline.update_points_size_actors()
         dataset = mapper.GetInputDataObject(0, 0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return

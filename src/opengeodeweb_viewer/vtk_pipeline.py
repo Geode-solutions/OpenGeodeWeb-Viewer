@@ -37,8 +37,10 @@ from vtkmodules.vtkRenderingAnnotation import (
 
 # Third party imports
 from vtkmodules.vtkRenderingCore import (
+    VTK_GET_ARRAY_BY_NAME,
     VTK_SCALAR_MODE_USE_CELL_DATA,
     VTK_SCALAR_MODE_USE_POINT_DATA,
+    VTK_SCALAR_MODE_USE_POINT_FIELD_DATA,
     vtkActor,
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
@@ -213,6 +215,21 @@ class ModelScalarBar:
 
 
 @dataclass
+class PointsSizeActor:
+    mapper: vtkCompositePolyDataMapper
+    actor: vtkActor
+
+
+@dataclass
+class ModelPointsStyle:
+    size: float
+    visibility: bool
+    color: tuple[float, float, float] | None = None
+    opacity: float = 1.0
+    attribute: BlockStyle | None = None
+
+
+@dataclass
 class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
@@ -230,6 +247,19 @@ class VtkPipeline:
     scalar_bars: dict[str, ModelScalarBar] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
+    points_mapper: vtkDataSetMapper | None = None
+    points_actor: vtkActor | None = None
+    points_scalar_bar: vtkScalarBarActor | None = None
+    points_visibility: bool = False
+    color_map_points: list[float] = field(default_factory=list)
+    # One points actor per distinct size, since point size is an actor property
+    points_size_actors: dict[float, PointsSizeActor] = field(default_factory=dict)
+    points_block_styles: dict[int, ModelPointsStyle] = field(default_factory=dict)
+
+    def connect_mappers(self) -> None:
+        self.mapper.SetInputConnection(self.filter.GetOutputPort())
+        if self.points_mapper is not None:
+            self.points_mapper.SetInputConnection(self.filter.GetOutputPort())
 
     def extract_blocks(self, multiblock: vtkDataObject | None) -> list[vtkDataObject | None]:
         if not isinstance(multiblock, vtkMultiBlockDataSet):
@@ -462,12 +492,88 @@ class VtkPipeline:
         self.mapper.InterpolateScalarsBeforeMappingOn()
         self.mapper.Modified()
 
-    def sync_block_display_attributes(self, new_blocks: list[vtkDataObject | None]) -> None:
+    def block_component_types(self) -> dict[int, str]:
+        component_types: dict[int, str] = {}
+        component_type = ""
+        iterator = self.reader.GetOutputDataObject(0).NewTreeIterator()
+        iterator.VisitOnlyLeavesOff()
+        iterator.InitTraversal()
+        while not iterator.IsDoneWithTraversal():
+            component = iterator.GetCurrentDataObject()
+            if isinstance(component, vtkMultiBlockDataSet):
+                component_type = iterator.GetCurrentMetaData().Get(vtkCompositeDataSet.NAME())
+            elif component is not None:
+                component_types[iterator.GetCurrentFlatIndex()] = component_type
+            iterator.GoToNextItem()
+        return component_types
+
+    def update_points_size_actors(self) -> None:
+        # A block shows its points in the actor of its size, only when the block is visible
         mapper = cast("vtkCompositePolyDataMapper", self.mapper)
+        attributes = mapper.GetCompositeDataDisplayAttributes()
+        for size, size_actor in self.points_size_actors.items():
+            size_actor_attributes = vtkCompositeDataDisplayAttributes()
+            for block_id, block in enumerate(self.block_data_sets):
+                if not isinstance(block, vtkDataSet):
+                    continue
+                style = self.points_block_styles.get(block_id)
+                block_visibility = not attributes.HasBlockVisibility(
+                    block
+                ) or attributes.GetBlockVisibility(block)
+                visible = (
+                    style is not None
+                    and style.size == size
+                    and style.visibility
+                    and block_visibility
+                )
+                size_actor_attributes.SetBlockVisibility(block, visible)
+                if not visible or style is None:
+                    continue
+                if style.color is not None:
+                    size_actor_attributes.SetBlockColor(block, list(style.color))
+                size_actor_attributes.SetBlockOpacity(block, style.opacity)
+                self.set_points_block_attribute(size_actor_attributes, block, style.attribute)
+            size_actor.mapper.SetCompositeDataDisplayAttributes(size_actor_attributes)
+            size_actor.mapper.Modified()
+
+    @staticmethod
+    def set_points_block_attribute(
+        attributes: vtkCompositeDataDisplayAttributes,
+        block: vtkDataSet,
+        attribute: BlockStyle | None,
+    ) -> None:
+        if attribute is None or not block.GetPointData().GetArray(attribute["name"]):
+            attributes.SetBlockScalarVisibility(block, False)  # noqa: FBT003 VTK API
+            return
+        lut = create_color_transfer_function(
+            attribute["points"],
+            attribute["minimum"],
+            attribute["maximum"],
+            attribute["item"],
+            attribute["no_data_color"],
+        )
+        # Field data mode keeps the active scalars shared with the polygons untouched
+        attributes.SetBlockScalarMode(block, VTK_SCALAR_MODE_USE_POINT_FIELD_DATA)
+        attributes.SetBlockArrayAccessMode(block, VTK_GET_ARRAY_BY_NAME)
+        attributes.SetBlockArrayName(block, attribute["name"])
+        attributes.SetBlockArrayComponent(block, attribute["item"])
+        attributes.SetBlockLookupTable(block, lut)
+        attributes.SetBlockScalarRange(
+            block, vtkVector2d(attribute["minimum"], attribute["maximum"])
+        )
+        attributes.SetBlockInterpolateScalarsBeforeMapping(block, True)  # noqa: FBT003 VTK API
+        attributes.SetBlockScalarVisibility(block, True)  # noqa: FBT003 VTK API
+
+    @staticmethod
+    def sync_mapper_display_attributes(
+        mapper: vtkCompositePolyDataMapper,
+        source_blocks: list[vtkDataObject | None],
+        new_blocks: list[vtkDataObject | None],
+    ) -> None:
         attributes = mapper.GetCompositeDataDisplayAttributes()
         synced_attributes = vtkCompositeDataDisplayAttributes()
         color_rgb = [0.0, 0.0, 0.0]
-        for source_block, destination_block in zip(self.block_data_sets, new_blocks, strict=False):
+        for source_block, destination_block in zip(source_blocks, new_blocks, strict=False):
             if source_block and destination_block:
                 if attributes.HasBlockColor(source_block):
                     attributes.GetBlockColor(source_block, color_rgb)
@@ -481,7 +587,12 @@ class VtkPipeline:
                         destination_block, attributes.GetBlockOpacity(source_block)
                     )
         mapper.SetCompositeDataDisplayAttributes(synced_attributes)
+
+    def sync_block_display_attributes(self, new_blocks: list[vtkDataObject | None]) -> None:
+        mapper = cast("vtkCompositePolyDataMapper", self.mapper)
+        self.sync_mapper_display_attributes(mapper, self.block_data_sets, new_blocks)
         self.block_data_sets = new_blocks
+        self.update_points_size_actors()
         for block_id in self.block_styles:
             self.update_block_colors(block_id)
 
@@ -496,6 +607,8 @@ class VtkPipeline:
         new_blocks = self.extract_blocks(dataset)
         self.sync_block_display_attributes(new_blocks)
         self.mapper.SetInputDataObject(dataset)
+        for size_actor in self.points_size_actors.values():
+            size_actor.mapper.SetInputDataObject(dataset)
         if self.pick_mapper and isinstance(dataset, vtkMultiBlockDataSet):
             mapper = cast("vtkCompositePolyDataMapper", self.mapper)
             attributes = mapper.GetCompositeDataDisplayAttributes()

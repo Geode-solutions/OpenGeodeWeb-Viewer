@@ -463,6 +463,64 @@ export interface ModelBlocksAttributeVertexAttributeParamsNoDataColor {
 export interface ModelBlocksAttributeVertexAttributeResponse {
 }
 
+export interface ModelBlocksPointsAttributeVertexAttributeParams {
+    block_ids:      number[];
+    id:             string;
+    item:           number;
+    maximum:        number;
+    minimum:        number;
+    name:           string;
+    no_data_color?: ModelBlocksPointsAttributeVertexAttributeParamsNoDataColor;
+    /**
+     * Flat array of [value, r, g, b, ...]
+     */
+    points: number[];
+}
+
+export interface ModelBlocksPointsAttributeVertexAttributeParamsNoDataColor {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
+export interface ModelBlocksPointsAttributeVertexAttributeResponse {
+}
+
+export interface ModelBlocksPointsVisibilityParams {
+    block_ids:  number[];
+    id:         string;
+    visibility: boolean;
+}
+
+export interface ModelBlocksPointsVisibilityResponse {
+}
+
+export interface ModelBlocksPointsSizeParams {
+    block_ids: number[];
+    id:        string;
+    size:      number;
+}
+
+export interface ModelBlocksPointsSizeResponse {
+}
+
+export interface ModelBlocksPointsColorParams {
+    block_ids: number[];
+    color:     ModelBlocksPointsColorParamsColor;
+    id:        string;
+}
+
+export interface ModelBlocksPointsColorParamsColor {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
+export interface ModelBlocksPointsColorResponse {
+}
+
 export interface ModelBlocksVisibilityParams {
     block_ids:  number[];
     id:         string;
@@ -627,6 +685,64 @@ export interface ModelLinesAttributeVertexAttributeParamsNoDataColor {
 export interface ModelLinesAttributeVertexAttributeResponse {
 }
 
+export interface ModelLinesPointsAttributeVertexAttributeParams {
+    block_ids:      number[];
+    id:             string;
+    item:           number;
+    maximum:        number;
+    minimum:        number;
+    name:           string;
+    no_data_color?: ModelLinesPointsAttributeVertexAttributeParamsNoDataColor;
+    /**
+     * Flat array of [value, r, g, b, ...]
+     */
+    points: number[];
+}
+
+export interface ModelLinesPointsAttributeVertexAttributeParamsNoDataColor {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
+export interface ModelLinesPointsAttributeVertexAttributeResponse {
+}
+
+export interface ModelLinesPointsVisibilityParams {
+    block_ids:  number[];
+    id:         string;
+    visibility: boolean;
+}
+
+export interface ModelLinesPointsVisibilityResponse {
+}
+
+export interface ModelLinesPointsSizeParams {
+    block_ids: number[];
+    id:        string;
+    size:      number;
+}
+
+export interface ModelLinesPointsSizeResponse {
+}
+
+export interface ModelLinesPointsColorParams {
+    block_ids: number[];
+    color:     ModelLinesPointsColorParamsColor;
+    id:        string;
+}
+
+export interface ModelLinesPointsColorParamsColor {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
+export interface ModelLinesPointsColorResponse {
+}
+
 export interface ModelLinesVisibilityParams {
     block_ids:  number[];
     id:         string;
@@ -771,6 +887,64 @@ export interface ModelSurfacesAttributeVertexAttributeParamsNoDataColor {
 }
 
 export interface ModelSurfacesAttributeVertexAttributeResponse {
+}
+
+export interface ModelSurfacesPointsAttributeVertexAttributeParams {
+    block_ids:      number[];
+    id:             string;
+    item:           number;
+    maximum:        number;
+    minimum:        number;
+    name:           string;
+    no_data_color?: ModelSurfacesPointsAttributeVertexAttributeParamsNoDataColor;
+    /**
+     * Flat array of [value, r, g, b, ...]
+     */
+    points: number[];
+}
+
+export interface ModelSurfacesPointsAttributeVertexAttributeParamsNoDataColor {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
+export interface ModelSurfacesPointsAttributeVertexAttributeResponse {
+}
+
+export interface ModelSurfacesPointsVisibilityParams {
+    block_ids:  number[];
+    id:         string;
+    visibility: boolean;
+}
+
+export interface ModelSurfacesPointsVisibilityResponse {
+}
+
+export interface ModelSurfacesPointsSizeParams {
+    block_ids: number[];
+    id:        string;
+    size:      number;
+}
+
+export interface ModelSurfacesPointsSizeResponse {
+}
+
+export interface ModelSurfacesPointsColorParams {
+    block_ids: number[];
+    color:     ModelSurfacesPointsColorParamsColor;
+    id:        string;
+}
+
+export interface ModelSurfacesPointsColorParamsColor {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
+}
+
+export interface ModelSurfacesPointsColorResponse {
 }
 
 export interface ModelSurfacesVisibilityParams {
@@ -1176,6 +1350,16 @@ export interface Schemas {
             readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelBlocksAttributeVertexAttributeParams, ModelBlocksAttributeVertexAttributeResponse>;
           };
         };
+        readonly points: {
+          readonly attribute: {
+            readonly vertex: {
+              readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["points"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelBlocksPointsAttributeVertexAttributeParams, ModelBlocksPointsAttributeVertexAttributeResponse>;
+            };
+          };
+          readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["points"]["visibility"] & TypedSchema<ModelBlocksPointsVisibilityParams, ModelBlocksPointsVisibilityResponse>;
+          readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["points"]["size"] & TypedSchema<ModelBlocksPointsSizeParams, ModelBlocksPointsSizeResponse>;
+          readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["points"]["color"] & TypedSchema<ModelBlocksPointsColorParams, ModelBlocksPointsColorResponse>;
+        };
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["visibility"] & TypedSchema<ModelBlocksVisibilityParams, ModelBlocksVisibilityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["blocks"]["color"] & TypedSchema<ModelBlocksColorParams, ModelBlocksColorResponse>;
       };
@@ -1200,6 +1384,16 @@ export interface Schemas {
             readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelLinesAttributeVertexAttributeParams, ModelLinesAttributeVertexAttributeResponse>;
           };
         };
+        readonly points: {
+          readonly attribute: {
+            readonly vertex: {
+              readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["points"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelLinesPointsAttributeVertexAttributeParams, ModelLinesPointsAttributeVertexAttributeResponse>;
+            };
+          };
+          readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["points"]["visibility"] & TypedSchema<ModelLinesPointsVisibilityParams, ModelLinesPointsVisibilityResponse>;
+          readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["points"]["size"] & TypedSchema<ModelLinesPointsSizeParams, ModelLinesPointsSizeResponse>;
+          readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["points"]["color"] & TypedSchema<ModelLinesPointsColorParams, ModelLinesPointsColorResponse>;
+        };
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["visibility"] & TypedSchema<ModelLinesVisibilityParams, ModelLinesVisibilityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["lines"]["color"] & TypedSchema<ModelLinesColorParams, ModelLinesColorResponse>;
       };
@@ -1220,6 +1414,16 @@ export interface Schemas {
           readonly vertex: {
             readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelSurfacesAttributeVertexAttributeParams, ModelSurfacesAttributeVertexAttributeResponse>;
           };
+        };
+        readonly points: {
+          readonly attribute: {
+            readonly vertex: {
+              readonly attribute: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["points"]["attribute"]["vertex"]["attribute"] & TypedSchema<ModelSurfacesPointsAttributeVertexAttributeParams, ModelSurfacesPointsAttributeVertexAttributeResponse>;
+            };
+          };
+          readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["points"]["visibility"] & TypedSchema<ModelSurfacesPointsVisibilityParams, ModelSurfacesPointsVisibilityResponse>;
+          readonly size: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["points"]["size"] & TypedSchema<ModelSurfacesPointsSizeParams, ModelSurfacesPointsSizeResponse>;
+          readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["points"]["color"] & TypedSchema<ModelSurfacesPointsColorParams, ModelSurfacesPointsColorResponse>;
         };
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["visibility"] & TypedSchema<ModelSurfacesVisibilityParams, ModelSurfacesVisibilityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["color"] & TypedSchema<ModelSurfacesColorParams, ModelSurfacesColorResponse>;

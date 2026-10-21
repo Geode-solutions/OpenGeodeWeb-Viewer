@@ -22,5 +22,8 @@ class VtkMeshPointsAttributeVertexView(VtkMeshView):
     def set_mesh_points_vertex_attribute(
         self, params: schemas.Attribute
     ) -> schemas.AttributeResponse:
-        self.display_attribute_on_vertices(params.id, params)
+        if self.get_viewer_data(params.id).viewer_elements_type == "points":
+            self.display_attribute_on_vertices(params.id, params)
+        else:
+            self.display_attribute_on_points(params.id, params)
         return schemas.AttributeResponse()

@@ -36,6 +36,10 @@ from .model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
     VtkModelBlocksAttributeVertexView,
 )
 from .model.blocks.model_blocks_protocols import VtkModelBlocksView
+from .model.blocks.points.attribute.vertex.blocks_points_attribute_vertex_protocols import (
+    VtkModelBlocksPointsAttributeVertexView,
+)
+from .model.blocks.points.model_blocks_points_protocols import VtkModelBlocksPointsView
 from .model.corners.attribute.vertex.corners_attribute_vertex_protocols import (
     VtkModelCornersAttributeVertexView,
 )
@@ -48,6 +52,10 @@ from .model.lines.attribute.vertex.lines_attribute_vertex_protocols import (
     VtkModelLinesAttributeVertexView,
 )
 from .model.lines.model_lines_protocols import VtkModelLinesView
+from .model.lines.points.attribute.vertex.lines_points_attribute_vertex_protocols import (
+    VtkModelLinesPointsAttributeVertexView,
+)
+from .model.lines.points.model_lines_points_protocols import VtkModelLinesPointsView
 from .model.points.model_points_protocols import VtkModelPointsView
 from .model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols import (
     VtkModelSurfacesAttributePolygonView,
@@ -56,6 +64,10 @@ from .model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import
     VtkModelSurfacesAttributeVertexView,
 )
 from .model.surfaces.model_surfaces_protocols import VtkModelSurfacesView
+from .model.surfaces.points.attribute.vertex.surfaces_points_attribute_vertex_protocols import (
+    VtkModelSurfacesPointsAttributeVertexView,
+)
+from .model.surfaces.points.model_surfaces_points_protocols import VtkModelSurfacesPointsView
 
 MESH_PROTOCOLS: tuple[type[VtkView], ...] = (
     VtkMeshPointsView,
@@ -88,4 +100,10 @@ MODEL_PROTOCOLS: tuple[type[VtkView], ...] = (
     VtkModelSurfacesAttributePolygonView,
     VtkModelBlocksAttributeVertexView,
     VtkModelBlocksAttributePolyhedronView,
+    VtkModelLinesPointsView,
+    VtkModelSurfacesPointsView,
+    VtkModelBlocksPointsView,
+    VtkModelLinesPointsAttributeVertexView,
+    VtkModelSurfacesPointsAttributeVertexView,
+    VtkModelBlocksPointsAttributeVertexView,
 )
