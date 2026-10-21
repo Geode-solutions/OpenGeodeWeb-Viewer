@@ -1673,6 +1673,232 @@
             }
           }
         },
+        "edges": {
+          "attribute": {
+            "vertex": {
+              "attribute": {
+                "$id": "opengeodeweb_viewer.model.blocks.edges.attribute.vertex.attribute",
+                "rpc": "attribute",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "block_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "points": {
+                    "type": "array",
+                    "description": "Flat array of [value, r, g, b, ...]",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 8
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "no_data_color": {
+                    "type": "object",
+                    "properties": {
+                      "red": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                      },
+                      "green": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                      },
+                      "blue": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                      },
+                      "alpha": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": [
+                      "red",
+                      "green",
+                      "blue",
+                      "alpha"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "block_ids",
+                  "name",
+                  "item",
+                  "points",
+                  "minimum",
+                  "maximum"
+                ],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {},
+                  "required": [],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "width": {
+            "$id": "opengeodeweb_viewer.model.blocks.edges.width",
+            "rpc": "width",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "block_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "block_ids",
+              "width"
+            ],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "visibility": {
+            "$id": "opengeodeweb_viewer.model.blocks.edges.visibility",
+            "rpc": "visibility",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "block_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "visibility": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "block_ids",
+              "visibility"
+            ],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "color": {
+            "$id": "opengeodeweb_viewer.model.blocks.edges.color",
+            "rpc": "color",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "block_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "color": {
+                "type": "object",
+                "properties": {
+                  "red": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "green": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "blue": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "alpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "red",
+                  "green",
+                  "blue",
+                  "alpha"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "block_ids",
+              "color"
+            ],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          }
+        },
         "points": {
           "attribute": {
             "vertex": {
@@ -2312,6 +2538,32 @@
         }
       },
       "edges": {
+        "width": {
+          "$id": "opengeodeweb_viewer.model.edges.width",
+          "rpc": "width",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "width": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "width"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
         "visibility": {
           "$id": "opengeodeweb_viewer.model.edges.visibility",
           "rpc": "visibility",
@@ -3292,6 +3544,232 @@
                 "required": [],
                 "additionalProperties": false
               }
+            }
+          }
+        },
+        "edges": {
+          "attribute": {
+            "vertex": {
+              "attribute": {
+                "$id": "opengeodeweb_viewer.model.surfaces.edges.attribute.vertex.attribute",
+                "rpc": "attribute",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "block_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "points": {
+                    "type": "array",
+                    "description": "Flat array of [value, r, g, b, ...]",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 8
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "no_data_color": {
+                    "type": "object",
+                    "properties": {
+                      "red": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                      },
+                      "green": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                      },
+                      "blue": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                      },
+                      "alpha": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": [
+                      "red",
+                      "green",
+                      "blue",
+                      "alpha"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "block_ids",
+                  "name",
+                  "item",
+                  "points",
+                  "minimum",
+                  "maximum"
+                ],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {},
+                  "required": [],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "width": {
+            "$id": "opengeodeweb_viewer.model.surfaces.edges.width",
+            "rpc": "width",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "block_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "block_ids",
+              "width"
+            ],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "visibility": {
+            "$id": "opengeodeweb_viewer.model.surfaces.edges.visibility",
+            "rpc": "visibility",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "block_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "visibility": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "block_ids",
+              "visibility"
+            ],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "color": {
+            "$id": "opengeodeweb_viewer.model.surfaces.edges.color",
+            "rpc": "color",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "block_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "color": {
+                "type": "object",
+                "properties": {
+                  "red": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "green": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "blue": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "alpha": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "red",
+                  "green",
+                  "blue",
+                  "alpha"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "block_ids",
+              "color"
+            ],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
             }
           }
         },

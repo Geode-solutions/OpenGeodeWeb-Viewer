@@ -8,6 +8,9 @@ from opengeodeweb_viewer.rpc.model.blocks.edges.model_blocks_edges_protocols imp
 from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
     VtkModelEdgesView,
 )
+from opengeodeweb_viewer.rpc.model.surfaces.edges.attribute.vertex import (
+    surfaces_edges_attribute_vertex_protocols,
+)
 from opengeodeweb_viewer.rpc.model.surfaces.edges.model_surfaces_edges_protocols import (
     VtkModelSurfacesEdgesView,
 )
@@ -19,6 +22,10 @@ from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_model_cube_side_view, test_register_model
+
+VtkModelSurfacesEdgesAttributeVertexView = (
+    surfaces_edges_attribute_vertex_protocols.VtkModelSurfacesEdgesAttributeVertexView
+)
 
 # Local constants
 model_id = "12345678901234567890123456789012"
@@ -76,6 +83,30 @@ def test_surface_edges_width(server: ServerMonitor, dataset_factory: Callable[..
     test_surfaces_edges_color(server, dataset_factory)
     call_surfaces_edges(server, "width", {"block_ids": [45], "width": 8})
     assert server.compare_image("model/edges/surface_edges_width.jpeg")
+
+
+def test_surfaces_edges_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_surfaces_edges_color(server, dataset_factory)
+    view = VtkModelSurfacesEdgesAttributeVertexView
+    server.call(
+        view.model_surfaces_edges_attribute_vertex_prefix
+        + view.model_surfaces_edges_attribute_vertex_schemas_dict["attribute"]["rpc"],
+        [
+            {
+                "id": model_id,
+                "block_ids": surfaces_ids,
+                "name": "unique vertices",
+                "item": 0,
+                "points": [0.0, 0.0, 0.0, 1.0, 663.0, 1.0, 0.0, 0.0],
+                "minimum": 0.0,
+                "maximum": 663.0,
+            }
+        ],
+    )
+    assert server.compare_image("model/edges/surfaces_edges_attribute.jpeg")
 
 
 def test_surfaces_edges_opacity(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
