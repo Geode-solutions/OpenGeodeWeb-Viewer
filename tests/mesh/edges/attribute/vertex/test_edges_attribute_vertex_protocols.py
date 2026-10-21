@@ -15,6 +15,7 @@ from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsVi
 from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex import (
     polygons_attribute_vertex_protocols,
 )
+from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 
 # Local application imports
 from tests.conftest import ServerMonitor
@@ -474,3 +475,38 @@ def test_polygons_points_and_edges_shared_scalar_bar(
     set_edges_vertex_attribute(server, HAT_ATTRIBUTE)
     # Same attribute and color map on points and edges: one scalar bar only
     assert server.compare_image("mesh/edges/polygons_points_and_edges_shared_scalar_bar.jpeg")
+
+
+def set_polygons_vertex_attribute(server: ServerMonitor) -> None:
+    server.call(
+        VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
+        + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [{"id": mesh_id, **HAT_ATTRIBUTE}],
+    )
+
+
+def test_polygons_edges_shared_scalar_bar_edges_first(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    register_hat_with_edges(server, dataset_factory)
+    set_edges_vertex_attribute(server, HAT_ATTRIBUTE)
+    set_polygons_vertex_attribute(server)
+    # Same picture as when the polygons attribute comes first: one scalar bar only
+    assert server.compare_image("mesh/edges/polygons_edges_shared_scalar_bar.jpeg")
+
+
+def test_polygons_color_after_shared_scalar_bar(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_polygons_edges_shared_scalar_bar(server, dataset_factory)
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["color"]["rpc"],
+        [{"id": mesh_id, "color": {"red": 255, "green": 255, "blue": 255, "alpha": 1.0}}],
+    )
+    # Polygons back to a constant color: the edges keep their attribute and get their own bar
+    assert server.compare_image("mesh/edges/polygons_color_after_shared_scalar_bar.jpeg")

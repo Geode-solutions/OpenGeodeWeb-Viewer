@@ -14,7 +14,7 @@ from vtkmodules.vtkRenderingCore import (
 
 # Local application imports
 from opengeodeweb_viewer.utils_functions import ColorClassProtocol
-from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
+from opengeodeweb_viewer.vtk_pipeline import ColorMapKey, VtkPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 logger = logging.getLogger(__name__)
@@ -107,11 +107,15 @@ class VtkObjectView(VtkView):
         actor.GetProperty().SetOpacity(opacity)
 
     def set_color(self, data_id: str, color: ColorClassProtocol) -> None:
-        mapper = self.get_vtk_pipeline(data_id).mapper
-        mapper.ScalarVisibilityOff()
-        actor = self.get_vtk_pipeline(data_id).actor
+        pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.mapper.ScalarVisibilityOff()
+        actor = pipeline.actor
         actor.GetProperty().SetColor([color.red / 255, color.green / 255, color.blue / 255])
         actor.GetProperty().SetOpacity(color.alpha)
+        # Points and edges bars that reused the polygons one now show their own
+        pipeline.scalar_bar.VisibilityOff()
+        self.update_style_scalar_bars_visibility(pipeline)
+        self.update_scalar_bars_layout()
 
     def set_edges_visibility(self, data_id: str, *, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
@@ -202,29 +206,43 @@ class VtkObjectView(VtkView):
         pipeline.points_scalar_bar = scalar_bar
         return actor
 
+    @staticmethod
+    def polygons_color_map_key(pipeline: VtkPipeline) -> ColorMapKey | None:
+        mapper = pipeline.mapper
+        if not mapper.GetScalarVisibility() or mapper.GetLookupTable() is None:
+            return None
+        minimum, maximum = mapper.GetScalarRange()
+        return (
+            mapper.GetArrayName(),
+            mapper.GetArrayComponent(),
+            minimum,
+            maximum,
+            tuple(pipeline.color_map_points),
+        )
+
     def update_style_scalar_bars_visibility(self, pipeline: VtkPipeline) -> None:
-        # Points and edges bars only hold a lookup table when they differ from the polygons one
-        points_bar = pipeline.points_scalar_bar
+        # Points and edges bars show only when no visible bar already holds the same attribute
+        visible = bool(pipeline.actor.GetVisibility())
+        polygons_key = self.polygons_color_map_key(pipeline)
         points_bar_visible = (
-            points_bar is not None
-            and pipeline.actor.GetVisibility()
+            visible
             and pipeline.points_visibility
-            and points_bar.GetLookupTable() is not None
+            and pipeline.points_color_map_key is not None
+            and pipeline.points_color_map_key != polygons_key
         )
-        if points_bar is not None:
-            points_bar.SetVisibility(points_bar_visible)
-        edges_bar = pipeline.edges_scalar_bar
-        if edges_bar is None:
-            return
-        # Edges showing the same attribute as the points reuse the points bar
-        edges_bar.SetVisibility(
-            pipeline.actor.GetVisibility()
-            and pipeline.edges_visibility
-            and edges_bar.GetLookupTable() is not None
-            and not (
-                points_bar_visible and pipeline.edges_color_map_key == pipeline.points_color_map_key
+        if pipeline.points_scalar_bar is not None:
+            pipeline.points_scalar_bar.SetVisibility(points_bar_visible)
+        if pipeline.edges_scalar_bar is not None:
+            pipeline.edges_scalar_bar.SetVisibility(
+                visible
+                and pipeline.edges_visibility
+                and pipeline.edges_color_map_key is not None
+                and pipeline.edges_color_map_key != polygons_key
+                and not (
+                    points_bar_visible
+                    and pipeline.edges_color_map_key == pipeline.points_color_map_key
+                )
             )
-        )
 
     def ensure_edges_actor(self, pipeline: VtkPipeline) -> vtkActor:
         # Edges get their own actor so their scalars stay independent from the polygons
