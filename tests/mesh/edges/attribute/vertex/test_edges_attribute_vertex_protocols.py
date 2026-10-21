@@ -8,6 +8,10 @@ from opengeodeweb_viewer.rpc.mesh.edges.edges_protocols import VtkMeshEdgesView
 
 # Third party imports
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
+    VtkMeshPointsAttributeVertexView,
+)
+from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
 from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex import (
     polygons_attribute_vertex_protocols,
 )
@@ -448,3 +452,25 @@ def test_polygons_edges_hidden_with_object(
     )
     # Empty scene: no edges, no scalar bar
     assert server.compare_image("mesh/edges/polygons_edges_hidden_with_object.jpeg")
+
+
+def test_polygons_points_and_edges_shared_scalar_bar(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    register_hat_with_edges(server, dataset_factory)
+    server.call(
+        VtkMeshPointsView.mesh_points_prefix
+        + VtkMeshPointsView.mesh_points_schemas_dict["visibility"]["rpc"],
+        [{"id": mesh_id, "visibility": True}],
+    )
+    server.call(
+        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
+        [{"id": mesh_id, **HAT_ATTRIBUTE}],
+    )
+    set_edges_vertex_attribute(server, HAT_ATTRIBUTE)
+    # Same attribute and color map on points and edges: one scalar bar only
+    assert server.compare_image("mesh/edges/polygons_points_and_edges_shared_scalar_bar.jpeg")

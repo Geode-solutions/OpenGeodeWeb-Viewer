@@ -208,6 +208,10 @@ class BlockStyle(TypedDict):
     no_data_color: ColorClassProtocol | None
 
 
+# Attribute name, item, range and color map points: equal keys mean identical scalar bars
+ColorMapKey = tuple[str, int, float, float, tuple[float, ...]]
+
+
 @dataclass
 class PointsSizeActor:
     mapper: vtkCompositePolyDataMapper
@@ -273,6 +277,9 @@ class VtkPipeline:
     edges_actor: vtkActor | None = None
     edges_scalar_bar: vtkScalarBarActor | None = None
     edges_visibility: bool = False
+    # Attribute shown by the points and edges dedicated scalar bars, None when they have none
+    points_color_map_key: ColorMapKey | None = None
+    edges_color_map_key: ColorMapKey | None = None
     # One edges actor per distinct width, since line width is an actor property
     edges_width_actors: dict[float, EdgesWidthActor] = field(default_factory=dict)
     edges_block_styles: dict[int, ModelEdgesStyle] = field(default_factory=dict)
