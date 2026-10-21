@@ -124,7 +124,8 @@ class VtkModelView(VtkObjectView):
 
     @staticmethod
     def scalar_bar_key(active_attrs: dict[str, BlockStyle], style: BlockStyle, label: str) -> str:
-        # Styles sharing the same color map share a scalar bar, the key only grows to tell them apart
+        # Styles sharing the same color map share a scalar bar,
+        # the key only grows to tell them apart
         name = style["name"]
         item = style["item"]
         minimum = style["minimum"]
