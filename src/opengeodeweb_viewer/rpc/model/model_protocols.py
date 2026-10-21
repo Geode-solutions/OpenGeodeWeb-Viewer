@@ -122,6 +122,32 @@ class VtkModelView(VtkObjectView):
         self.setup_model_color_map(pipeline)
         return colors
 
+    @staticmethod
+    def scalar_bar_key(active_attrs: dict[str, BlockStyle], style: BlockStyle, label: str) -> str:
+        # Styles sharing the same color map share a scalar bar, the key only grows to tell them apart
+        name = style["name"]
+        item = style["item"]
+        minimum = style["minimum"]
+        maximum = style["maximum"]
+        points = style["points"]
+        attr_key = name
+        if attr_key in active_attrs and (
+            active_attrs[attr_key]["item"] != item
+            or active_attrs[attr_key]["minimum"] != minimum
+            or active_attrs[attr_key]["maximum"] != maximum
+            or active_attrs[attr_key]["points"] != points
+        ):
+            attr_key = f"{name} (Item {item + 1})" if item > 0 else name
+            if attr_key in active_attrs and (
+                active_attrs[attr_key]["minimum"] != minimum
+                or active_attrs[attr_key]["maximum"] != maximum
+                or active_attrs[attr_key]["points"] != points
+            ):
+                attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
+                if attr_key in active_attrs and active_attrs[attr_key]["points"] != points:
+                    attr_key = f"{attr_key} (Block {label})"
+        return attr_key
+
     def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
         # Points attributes join the polygons ones, so identical color maps share one scalar bar
         displayed_styles = [
@@ -135,27 +161,7 @@ class VtkModelView(VtkObjectView):
         active_block_ids: dict[str, list[int]] = {}
         for block_id, label, style in displayed_styles:
             if style["name"]:
-                name = style["name"]
-                item = style["item"]
-                minimum = style["minimum"]
-                maximum = style["maximum"]
-                points = style["points"]
-                attr_key = name
-                if attr_key in active_attrs and (
-                    active_attrs[attr_key]["item"] != item
-                    or active_attrs[attr_key]["minimum"] != minimum
-                    or active_attrs[attr_key]["maximum"] != maximum
-                    or active_attrs[attr_key]["points"] != points
-                ):
-                    attr_key = f"{name} (Item {item + 1})" if item > 0 else name
-                    if attr_key in active_attrs and (
-                        active_attrs[attr_key]["minimum"] != minimum
-                        or active_attrs[attr_key]["maximum"] != maximum
-                        or active_attrs[attr_key]["points"] != points
-                    ):
-                        attr_key = f"{attr_key} [{minimum:g}, {maximum:g}]"
-                        if attr_key in active_attrs and active_attrs[attr_key]["points"] != points:
-                            attr_key = f"{attr_key} (Block {label})"
+                attr_key = self.scalar_bar_key(active_attrs, style, label)
                 active_attrs[attr_key] = style
                 bar_block_ids = active_block_ids.setdefault(attr_key, [])
                 if block_id not in bar_block_ids:
