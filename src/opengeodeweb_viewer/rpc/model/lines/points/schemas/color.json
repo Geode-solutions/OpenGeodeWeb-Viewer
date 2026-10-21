@@ -1,0 +1,62 @@
+{
+  "rpc": "color",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
+    "block_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1
+    },
+    "color": {
+      "type": "object",
+      "properties": {
+        "red": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "green": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "blue": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "alpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "red",
+        "green",
+        "blue",
+        "alpha"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "block_ids",
+    "color"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

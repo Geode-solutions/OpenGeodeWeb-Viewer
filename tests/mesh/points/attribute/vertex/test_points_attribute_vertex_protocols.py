@@ -6,9 +6,17 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
     VtkMeshPointsAttributeVertexView,
 )
+from opengeodeweb_viewer.rpc.mesh.points.points_protocols import VtkMeshPointsView
+from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex import (
+    polygons_attribute_vertex_protocols,
+)
 
 # Local application imports
 from tests.conftest import ServerMonitor
+
+VtkMeshPolygonsAttributeVertexView = (
+    polygons_attribute_vertex_protocols.VtkMeshPolygonsAttributeVertexView
+)
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"
@@ -336,3 +344,149 @@ def test_points_vertex_attribute_item(
         ],
     )
     assert server.compare_image("mesh/points/vertex_attribute_item.jpeg")
+
+
+def display_points_attribute(
+    server: ServerMonitor,
+    dataset_factory: Callable[..., str],
+    viewable_file: str,
+    viewer_elements_type: str,
+    attribute: dict[str, object],
+) -> None:
+    dataset_factory(
+        data_id=mesh_id,
+        viewable_file=viewable_file,
+        viewer_elements_type=viewer_elements_type,
+    )
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": mesh_id, "name": viewable_file}],
+    )
+    server.call(
+        VtkMeshPointsView.mesh_points_prefix
+        + VtkMeshPointsView.mesh_points_schemas_dict["visibility"]["rpc"],
+        [{"id": mesh_id, "visibility": True}],
+    )
+    server.call(
+        VtkMeshPointsView.mesh_points_prefix
+        + VtkMeshPointsView.mesh_points_schemas_dict["size"]["rpc"],
+        [{"id": mesh_id, "size": 15}],
+    )
+    server.call(
+        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
+        [{"id": mesh_id, **attribute}],
+    )
+
+
+def test_polygons_points_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    display_points_attribute(
+        server,
+        dataset_factory,
+        "hat.vtp",
+        "polygons",
+        {
+            "name": "lambert2SG",
+            "item": 0,
+            "points": [0.0, 0, 0, 1.0, 1.0, 1.0, 0, 0],
+            "minimum": 0.0,
+            "maximum": 1.0,
+        },
+    )
+    assert server.compare_image("mesh/points/polygons_points_vertex_attribute.jpeg")
+
+
+def test_edges_points_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    display_points_attribute(
+        server,
+        dataset_factory,
+        "attributed_edged_curve.vtp",
+        "edges",
+        {
+            "name": "vertex_attribute",
+            "item": 0,
+            "points": [0.0, 0, 0, 1.0, 58.0, 1.0, 0, 0],
+            "minimum": 0.0,
+            "maximum": 58.0,
+        },
+    )
+    assert server.compare_image("mesh/points/edges_points_vertex_attribute.jpeg")
+
+
+def test_cells_points_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    display_points_attribute(
+        server,
+        dataset_factory,
+        "regular_grid_2d.vti",
+        "cells",
+        {
+            "name": "points",
+            "item": 0,
+            "points": [2.0, 0, 0, 1.0, 498.0, 1.0, 0, 0],
+            "minimum": 2.0,
+            "maximum": 498.0,
+        },
+    )
+    assert server.compare_image("mesh/points/cells_points_vertex_attribute.jpeg")
+
+
+def test_polyhedra_points_vertex_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    display_points_attribute(
+        server,
+        dataset_factory,
+        "polyhedron_attribute.vtu",
+        "polyhedra",
+        {
+            "name": "toto_on_vertices",
+            "item": 0,
+            "points": [1.0, 0, 0, 1.0, 11.0, 1.0, 0, 0],
+            "minimum": 1.0,
+            "maximum": 11.0,
+        },
+    )
+    assert server.compare_image("mesh/points/polyhedra_points_vertex_attribute.jpeg")
+
+
+def test_polygons_points_shared_scalar_bar(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    attribute = {
+        "id": mesh_id,
+        "name": "lambert2SG",
+        "item": 0,
+        "points": [0.0, 0, 0, 1.0, 1.0, 1.0, 0, 0],
+        "minimum": 0.0,
+        "maximum": 1.0,
+    }
+    test_polygons_points_vertex_attribute(server, dataset_factory)
+
+    server.call(
+        VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_prefix
+        + VtkMeshPolygonsAttributeVertexView.mesh_polygons_attribute_vertex_schemas_dict[
+            "attribute"
+        ]["rpc"],
+        [attribute],
+    )
+    server.call(
+        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
+        [attribute],
+    )
+    assert server.compare_image("mesh/points/polygons_points_shared_scalar_bar.jpeg")
