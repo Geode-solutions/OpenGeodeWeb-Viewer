@@ -37,8 +37,10 @@ from vtkmodules.vtkRenderingAnnotation import (
 
 # Third party imports
 from vtkmodules.vtkRenderingCore import (
+    VTK_GET_ARRAY_BY_NAME,
     VTK_SCALAR_MODE_USE_CELL_DATA,
     VTK_SCALAR_MODE_USE_POINT_DATA,
+    VTK_SCALAR_MODE_USE_POINT_FIELD_DATA,
     vtkActor,
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
@@ -217,6 +219,7 @@ class ModelPointsStyle:
     visibility: bool
     color: tuple[float, float, float] | None = None
     opacity: float = 1.0
+    attribute: BlockStyle | None = None
 
 
 @dataclass
@@ -522,8 +525,37 @@ class VtkPipeline:
                 if style.color is not None:
                     size_actor_attributes.SetBlockColor(block, list(style.color))
                 size_actor_attributes.SetBlockOpacity(block, style.opacity)
+                self.set_points_block_attribute(size_actor_attributes, block, style.attribute)
             size_actor.mapper.SetCompositeDataDisplayAttributes(size_actor_attributes)
             size_actor.mapper.Modified()
+
+    @staticmethod
+    def set_points_block_attribute(
+        attributes: vtkCompositeDataDisplayAttributes,
+        block: vtkDataSet,
+        attribute: BlockStyle | None,
+    ) -> None:
+        if attribute is None or not block.GetPointData().GetArray(attribute["name"]):
+            attributes.SetBlockScalarVisibility(block, False)  # noqa: FBT003 VTK API
+            return
+        lut = create_color_transfer_function(
+            attribute["points"],
+            attribute["minimum"],
+            attribute["maximum"],
+            attribute["item"],
+            attribute["no_data_color"],
+        )
+        # Field data mode keeps the active scalars shared with the polygons untouched
+        attributes.SetBlockScalarMode(block, VTK_SCALAR_MODE_USE_POINT_FIELD_DATA)
+        attributes.SetBlockArrayAccessMode(block, VTK_GET_ARRAY_BY_NAME)
+        attributes.SetBlockArrayName(block, attribute["name"])
+        attributes.SetBlockArrayComponent(block, attribute["item"])
+        attributes.SetBlockLookupTable(block, lut)
+        attributes.SetBlockScalarRange(
+            block, vtkVector2d(attribute["minimum"], attribute["maximum"])
+        )
+        attributes.SetBlockInterpolateScalarsBeforeMapping(block, True)  # noqa: FBT003 VTK API
+        attributes.SetBlockScalarVisibility(block, True)  # noqa: FBT003 VTK API
 
     @staticmethod
     def sync_mapper_display_attributes(

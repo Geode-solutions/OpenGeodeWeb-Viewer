@@ -123,8 +123,16 @@ class VtkModelView(VtkObjectView):
         return colors
 
     def setup_model_color_map(self, pipeline: VtkPipeline) -> None:
+        # Points attributes join the polygons ones, so identical color maps share one scalar bar
+        displayed_styles = [
+            (str(block_id), style) for block_id, style in pipeline.block_styles.items()
+        ] + [
+            (f"{block_id} points", points_style.attribute)
+            for block_id, points_style in pipeline.points_block_styles.items()
+            if points_style.attribute is not None and points_style.visibility
+        ]
         active_attrs: dict[str, BlockStyle] = {}
-        for block_id, style in pipeline.block_styles.items():
+        for block_id, style in displayed_styles:
             if style["name"]:
                 name = style["name"]
                 item = style["item"]
@@ -240,7 +248,8 @@ class VtkModelView(VtkObjectView):
         for size in sizes - pipeline.points_size_actors.keys():
             mapper = vtkCompositePolyDataMapper()
             mapper.SetInputDataObject(pipeline.mapper.GetInputDataObject(0, 0))
-            mapper.ScalarVisibilityOff()
+            mapper.ScalarVisibilityOn()
+            mapper.SetColorModeToMapScalars()
             mapper.SetResolveCoincidentTopologyPointOffsetParameter(-2)
             actor = vtkActor()
             actor.SetMapper(mapper)
@@ -274,7 +283,9 @@ class VtkModelView(VtkObjectView):
     ) -> None:
         for style in self.component_points_styles(data_id, component_type, block_ids):
             style.visibility = visibility
-        self.sync_points_size_actors(self.get_vtk_pipeline(data_id))
+        pipeline = self.get_vtk_pipeline(data_id)
+        self.sync_points_size_actors(pipeline)
+        self.setup_model_color_map(pipeline)
 
     def set_component_points_color(
         self, data_id: str, component_type: str, block_ids: list[int], color: ColorProtocol
@@ -282,7 +293,31 @@ class VtkModelView(VtkObjectView):
         for style in self.component_points_styles(data_id, component_type, block_ids):
             style.color = (color.red / 255, color.green / 255, color.blue / 255)
             style.opacity = color.alpha
-        self.sync_points_size_actors(self.get_vtk_pipeline(data_id))
+            style.attribute = None
+        pipeline = self.get_vtk_pipeline(data_id)
+        self.sync_points_size_actors(pipeline)
+        self.setup_model_color_map(pipeline)
+
+    def set_component_points_attribute(
+        self,
+        data_id: str,
+        component_type: str,
+        block_ids: list[int],
+        attribute: AttributeProtocol,
+    ) -> None:
+        for style in self.component_points_styles(data_id, component_type, block_ids):
+            style.attribute = BlockStyle(
+                name=attribute.name,
+                attribute_location="point",
+                points=attribute.points,
+                minimum=attribute.minimum,
+                maximum=attribute.maximum,
+                item=attribute.item,
+                no_data_color=attribute.no_data_color,
+            )
+        pipeline = self.get_vtk_pipeline(data_id)
+        self.sync_points_size_actors(pipeline)
+        self.setup_model_color_map(pipeline)
 
     def set_component_points_size(
         self, data_id: str, component_type: str, block_ids: list[int], size: float
@@ -299,6 +334,7 @@ class VtkModelView(VtkObjectView):
         for style in pipeline.points_block_styles.values():
             style.visibility = visibility
         self.sync_points_size_actors(pipeline)
+        self.setup_model_color_map(pipeline)
 
     def set_model_points_size_on_all(self, data_id: str, size: float) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
