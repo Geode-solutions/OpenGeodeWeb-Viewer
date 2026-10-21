@@ -8,6 +8,7 @@ from opengeodeweb_microservice.database.data import Data
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
 from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
+from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
 from vtkmodules.vtkRenderingCore import (
     vtkDataSetMapper,
     vtkTexture,
@@ -114,9 +115,33 @@ class VtkMeshView(VtkObjectView):
     def display_attribute_on_points(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         self.ensure_points_actor(pipeline)
-        mapper = pipeline.points_mapper
-        if mapper is None:
+        if pipeline.points_mapper is None:
             return
+        self.display_attribute_on_style_mapper(
+            data_id, pipeline.points_mapper, pipeline.points_scalar_bar, attribute
+        )
+        self.update_points_scalar_bar_visibility(pipeline)
+        self.update_scalar_bars_layout()
+
+    def display_attribute_on_edges(self, data_id: str, attribute: AttributeProtocol) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
+        self.ensure_edges_actor(pipeline)
+        if pipeline.edges_mapper is None:
+            return
+        self.display_attribute_on_style_mapper(
+            data_id, pipeline.edges_mapper, pipeline.edges_scalar_bar, attribute
+        )
+        self.update_edges_scalar_bar_visibility(pipeline)
+        self.update_scalar_bars_layout()
+
+    def display_attribute_on_style_mapper(
+        self,
+        data_id: str,
+        mapper: vtkDataSetMapper,
+        scalar_bar: vtkScalarBarActor | None,
+        attribute: AttributeProtocol,
+    ) -> None:
+        pipeline = self.get_vtk_pipeline(data_id)
         # Field data mode avoids touching the active scalars shared with the polygons
         mapper.ScalarVisibilityOn()
         mapper.SetScalarModeToUsePointFieldData()
@@ -124,7 +149,7 @@ class VtkMeshView(VtkObjectView):
         if self.shares_polygons_color_map(data_id, attribute):
             # Same color map as the polygons: reuse their scalar bar instead of adding one
             lut = pipeline.mapper.GetLookupTable()
-            points_bar_lut = None
+            bar_lut = None
         else:
             lut = create_color_transfer_function(
                 attribute.points,
@@ -134,15 +159,13 @@ class VtkMeshView(VtkObjectView):
                 attribute.no_data_color,
             )
             lut.SetRange(attribute.minimum, attribute.maximum)
-            points_bar_lut = lut
+            bar_lut = lut
         mapper.SetLookupTable(lut)
         mapper.SetScalarRange(attribute.minimum, attribute.maximum)
         mapper.UseLookupTableScalarRangeOff()
         mapper.InterpolateScalarsBeforeMappingOn()
-        if pipeline.points_scalar_bar is not None:
-            pipeline.points_scalar_bar.SetLookupTable(points_bar_lut)
-        self.update_points_scalar_bar_visibility(pipeline)
-        self.update_scalar_bars_layout()
+        if scalar_bar is not None:
+            scalar_bar.SetLookupTable(bar_lut)
 
     def shares_polygons_color_map(self, data_id: str, attribute: AttributeProtocol) -> bool:
         pipeline = self.get_vtk_pipeline(data_id)

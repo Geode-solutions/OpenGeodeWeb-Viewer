@@ -248,11 +248,17 @@ class VtkPipeline:
     # One points actor per distinct size, since point size is an actor property
     points_size_actors: dict[float, PointsSizeActor] = field(default_factory=dict)
     points_block_styles: dict[int, ModelPointsStyle] = field(default_factory=dict)
+    edges_mapper: vtkDataSetMapper | None = None
+    edges_actor: vtkActor | None = None
+    edges_scalar_bar: vtkScalarBarActor | None = None
+    edges_visibility: bool = False
 
     def connect_mappers(self) -> None:
         self.mapper.SetInputConnection(self.filter.GetOutputPort())
         if self.points_mapper is not None:
             self.points_mapper.SetInputConnection(self.filter.GetOutputPort())
+        if self.edges_mapper is not None:
+            self.edges_mapper.SetInputConnection(self.filter.GetOutputPort())
 
     def extract_blocks(self, multiblock: vtkDataObject | None) -> list[vtkDataObject | None]:
         if not isinstance(multiblock, vtkMultiBlockDataSet):

@@ -59,6 +59,10 @@ class VtkObjectView(VtkView):
             renderer.RemoveViewProp(pipeline.points_scalar_bar)
         for size_actor in pipeline.points_size_actors.values():
             renderer.RemoveActor(size_actor.actor)
+        if pipeline.edges_actor is not None:
+            renderer.RemoveActor(pipeline.edges_actor)
+        if pipeline.edges_scalar_bar is not None:
+            renderer.RemoveViewProp(pipeline.edges_scalar_bar)
         renderer.RemoveViewProp(pipeline.scalar_bar)
         for bar in pipeline.scalar_bars.values():
             renderer.RemoveViewProp(bar)
@@ -68,13 +72,15 @@ class VtkObjectView(VtkView):
     def set_visibility(self, data_id: str, *, visibility: bool) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.actor.SetVisibility(visibility)
-        self.set_points_actors_visibility(pipeline, visibility=visibility)
+        self.set_style_actors_visibility(pipeline, visibility=visibility)
         if not visibility:
             pipeline.scalar_bar.VisibilityOff()
             for bar in pipeline.scalar_bars.values():
                 bar.VisibilityOff()
             if pipeline.points_scalar_bar is not None:
                 pipeline.points_scalar_bar.VisibilityOff()
+            if pipeline.edges_scalar_bar is not None:
+                pipeline.edges_scalar_bar.VisibilityOff()
         else:
             if (
                 pipeline.mapper.GetScalarVisibility()
@@ -82,6 +88,7 @@ class VtkObjectView(VtkView):
             ):
                 pipeline.scalar_bar.VisibilityOn()
             self.update_points_scalar_bar_visibility(pipeline)
+            self.update_edges_scalar_bar_visibility(pipeline)
             for style in pipeline.block_styles.values():
                 if style.get("name"):
                     for bar in pipeline.scalar_bars.values():
@@ -90,11 +97,13 @@ class VtkObjectView(VtkView):
                     break
         self.update_scalar_bars_layout()
 
-    def set_points_actors_visibility(self, pipeline: VtkPipeline, *, visibility: bool) -> None:
+    def set_style_actors_visibility(self, pipeline: VtkPipeline, *, visibility: bool) -> None:
         if pipeline.points_actor is not None:
             pipeline.points_actor.SetVisibility(visibility and pipeline.points_visibility)
         for size_actor in pipeline.points_size_actors.values():
             size_actor.actor.SetVisibility(visibility)
+        if pipeline.edges_actor is not None:
+            pipeline.edges_actor.SetVisibility(visibility and pipeline.edges_visibility)
 
     def set_opacity(self, data_id: str, opacity: float) -> None:
         actor = self.get_vtk_pipeline(data_id).actor
@@ -110,23 +119,42 @@ class VtkObjectView(VtkView):
     def set_edges_visibility(self, data_id: str, *, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
             self.set_visibility(data_id, visibility=visibility)
-        else:
-            actor = self.get_vtk_pipeline(data_id).actor
-            actor.GetProperty().SetEdgeVisibility(visibility)
+            return
+        pipeline = self.get_vtk_pipeline(data_id)
+        if pipeline.edges_actor is None:
+            pipeline.actor.GetProperty().SetEdgeVisibility(visibility)
+            return
+        pipeline.edges_visibility = visibility
+        pipeline.edges_actor.SetVisibility(pipeline.actor.GetVisibility() and visibility)
+        self.update_edges_scalar_bar_visibility(pipeline)
+        self.update_scalar_bars_layout()
 
     def set_edges_width(self, data_id: str, width: float) -> None:
-        actor = self.get_vtk_pipeline(data_id).actor
+        pipeline = self.get_vtk_pipeline(data_id)
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
-            actor.GetProperty().SetLineWidth(width)
-        else:
-            actor.GetProperty().SetEdgeWidth(width)
+            pipeline.actor.GetProperty().SetLineWidth(width)
+            return
+        pipeline.actor.GetProperty().SetEdgeWidth(width)
+        if pipeline.edges_actor is not None:
+            pipeline.edges_actor.GetProperty().SetLineWidth(width)
 
     def set_edges_color(self, data_id: str, color: ColorClassProtocol) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "edges":
             self.set_color(data_id, color)
-        else:
-            actor = self.get_vtk_pipeline(data_id).actor
-            actor.GetProperty().SetEdgeColor([color.red / 255, color.green / 255, color.blue / 255])
+            return
+        pipeline = self.get_vtk_pipeline(data_id)
+        rgb = [color.red / 255, color.green / 255, color.blue / 255]
+        pipeline.actor.GetProperty().SetEdgeColor(rgb)
+        if pipeline.edges_actor is None or pipeline.edges_mapper is None:
+            return
+        # A constant color replaces the edges attribute and its scalar bar
+        pipeline.edges_mapper.ScalarVisibilityOff()
+        pipeline.edges_actor.GetProperty().SetColor(rgb)
+        pipeline.edges_actor.GetProperty().SetOpacity(color.alpha)
+        if pipeline.edges_scalar_bar is not None:
+            pipeline.edges_scalar_bar.SetLookupTable(None)
+        self.update_edges_scalar_bar_visibility(pipeline)
+        self.update_scalar_bars_layout()
 
     def set_points_visibility(self, data_id: str, *, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
@@ -183,6 +211,47 @@ class VtkObjectView(VtkView):
         bar.SetVisibility(
             pipeline.actor.GetVisibility()
             and pipeline.points_visibility
+            and bar.GetLookupTable() is not None
+        )
+
+    def ensure_edges_actor(self, pipeline: VtkPipeline) -> vtkActor:
+        # Edges get their own actor so their scalars stay independent from the polygons
+        if pipeline.edges_actor is not None:
+            return pipeline.edges_actor
+        mapper = vtkDataSetMapper()
+        mapper.SetInputConnection(pipeline.filter.GetOutputPort())
+        mapper.ScalarVisibilityOff()
+        mapper.SetResolveCoincidentTopologyLineOffsetParameters(0, -4)
+        actor = vtkActor()
+        actor.SetMapper(mapper)
+        actor.PickableOff()
+        main_property = pipeline.actor.GetProperty()
+        edges_property = actor.GetProperty()
+        edges_property.SetRepresentationToWireframe()
+        edges_property.SetLineWidth(main_property.GetEdgeWidth())
+        edges_property.SetColor(*main_property.GetEdgeColor())
+        pipeline.edges_visibility = bool(main_property.GetEdgeVisibility())
+        actor.SetVisibility(pipeline.actor.GetVisibility() and pipeline.edges_visibility)
+        main_property.EdgeVisibilityOff()
+        scalar_bar = vtkScalarBarActor()
+        scalar_bar.VisibilityOff()
+        render_window = self.getView("-1")
+        renderer = render_window.GetRenderers().GetFirstRenderer()
+        renderer.AddActor(actor)
+        renderer.AddViewProp(scalar_bar)
+        pipeline.edges_mapper = mapper
+        pipeline.edges_actor = actor
+        pipeline.edges_scalar_bar = scalar_bar
+        return actor
+
+    def update_edges_scalar_bar_visibility(self, pipeline: VtkPipeline) -> None:
+        # An edges scalar bar only holds a lookup table when it differs from the polygons one
+        bar = pipeline.edges_scalar_bar
+        if bar is None:
+            return
+        bar.SetVisibility(
+            pipeline.actor.GetVisibility()
+            and pipeline.edges_visibility
             and bar.GetLookupTable() is not None
         )
 
