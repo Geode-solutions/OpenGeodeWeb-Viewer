@@ -1,5 +1,6 @@
 # Standard library imports
-from collections.abc import Callable
+
+from typing import TYPE_CHECKING
 
 from opengeodeweb_viewer.rpc.model.blocks.attribute.polyhedron import (
     blocks_attribute_polyhedron_protocols,
@@ -14,6 +15,11 @@ from opengeodeweb_viewer.rpc.model.blocks.model_blocks_protocols import (
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 from tests.conftest import ServerMonitor
 from tests.model.test_model_protocols import test_register_model_cube
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkModelBlocksAttributePolyhedronView = (
     blocks_attribute_polyhedron_protocols.VtkModelBlocksAttributePolyhedronView

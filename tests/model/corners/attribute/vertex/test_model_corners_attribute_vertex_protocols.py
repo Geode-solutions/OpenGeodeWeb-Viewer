@@ -1,5 +1,6 @@
 # Standard library imports
-from collections.abc import Callable
+
+from typing import TYPE_CHECKING
 
 from opengeodeweb_viewer.rpc.model.corners.attribute.vertex import (
     corners_attribute_vertex_protocols,
@@ -9,10 +10,14 @@ from opengeodeweb_viewer.rpc.model.corners.attribute.vertex import (
 from opengeodeweb_viewer.rpc.model.corners.model_corners_protocols import (
     VtkModelCornersView,
 )
-from tests.conftest import ServerMonitor
 
 # Local application imports
 from tests.model.test_model_protocols import test_register_model_cube
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 VtkModelCornersAttributeVertexView = (
     corners_attribute_vertex_protocols.VtkModelCornersAttributeVertexView

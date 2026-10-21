@@ -1,5 +1,6 @@
 # Standard library imports
-from collections.abc import Callable
+
+from typing import TYPE_CHECKING
 
 from opengeodeweb_viewer.rpc.mesh.cells.cells_protocols import VtkMeshCellsView
 
@@ -8,7 +9,11 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 # Local application imports
-from tests.conftest import ServerMonitor
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from tests.conftest import ServerMonitor
 
 # Local constants
 mesh_id = "12345678901234567890123456789012"

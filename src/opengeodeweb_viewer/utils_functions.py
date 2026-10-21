@@ -2,11 +2,13 @@ import logging
 
 # Standard library imports
 # Third party imports
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 import fastjsonschema  # type: ignore[import-untyped]
-from opengeodeweb_microservice.schemas import SchemaDict
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
+
+if TYPE_CHECKING:
+    from opengeodeweb_microservice.schemas import SchemaDict
 
 logger = logging.getLogger(__name__)
 
