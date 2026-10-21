@@ -90,12 +90,6 @@ class VtkObjectView(VtkView):
             ):
                 pipeline.scalar_bar.VisibilityOn()
             self.update_style_scalar_bars_visibility(pipeline)
-            for style in pipeline.block_styles.values():
-                if style.get("name"):
-                    for bar in pipeline.scalar_bars.values():
-                        if bar.GetLookupTable() is not None:
-                            bar.VisibilityOn()
-                    break
         self.update_scalar_bars_layout()
 
     def set_style_actors_visibility(self, pipeline: VtkPipeline, *, visibility: bool) -> None:

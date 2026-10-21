@@ -179,7 +179,7 @@ class VtkModelView(VtkObjectView):
             no_data_color = style["no_data_color"]
             lut = create_color_transfer_function(points, minimum, maximum, item, no_data_color)
             bar.SetLookupTable(lut)
-            bar.VisibilityOn()
+            bar.SetVisibility(pipeline.actor.GetVisibility())
         for name, bar in pipeline.scalar_bars.items():
             if name not in active_attrs:
                 bar.VisibilityOff()
@@ -514,6 +514,9 @@ class VtkModelView(VtkObjectView):
     @typed_rpc(model_prefix, schemas.visibility_route)
     def set_model_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
         self.set_visibility(params.id, visibility=params.visibility)
+        if params.visibility:
+            # Bars come back from the displayed attributes, hidden components' ones stay hidden
+            self.setup_model_color_map(self.get_vtk_pipeline(params.id))
         return schemas.VisibilityResponse()
 
     @typed_rpc(model_prefix, schemas.highlight_route)

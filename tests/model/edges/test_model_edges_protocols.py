@@ -8,6 +8,7 @@ from opengeodeweb_viewer.rpc.model.blocks.edges.model_blocks_edges_protocols imp
 from opengeodeweb_viewer.rpc.model.edges.model_edges_protocols import (
     VtkModelEdgesView,
 )
+from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.rpc.model.surfaces.edges.attribute.vertex import (
     surfaces_edges_attribute_vertex_protocols,
 )
@@ -106,6 +107,20 @@ def test_surfaces_edges_attribute(
             }
         ],
     )
+    assert server.compare_image("model/edges/surfaces_edges_attribute.jpeg")
+
+
+def test_surfaces_edges_attribute_model_hidden_then_shown(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_surfaces_edges_attribute(server, dataset_factory)
+    for visibility in (False, True):
+        server.call(
+            VtkModelView.model_prefix + VtkModelView.model_schemas_dict["visibility"]["rpc"],
+            [{"id": model_id, "visibility": visibility}],
+        )
+    # The edges scalar bar comes back with the model
     assert server.compare_image("model/edges/surfaces_edges_attribute.jpeg")
 
 
