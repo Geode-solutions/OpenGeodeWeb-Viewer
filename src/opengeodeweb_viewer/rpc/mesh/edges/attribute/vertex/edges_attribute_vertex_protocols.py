@@ -22,5 +22,8 @@ class VtkMeshEdgesAttributeVertexView(VtkMeshView):
     def set_mesh_edges_vertex_attribute(
         self, params: schemas.Attribute
     ) -> schemas.AttributeResponse:
-        self.display_attribute_on_vertices(params.id, params)
+        if self.get_viewer_data(params.id).viewer_elements_type == "edges":
+            self.display_attribute_on_vertices(params.id, params)
+        else:
+            self.display_attribute_on_edges(params.id, params)
         return schemas.AttributeResponse()

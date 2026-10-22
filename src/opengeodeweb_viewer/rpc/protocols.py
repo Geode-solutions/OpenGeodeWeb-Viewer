@@ -36,6 +36,10 @@ from .model.blocks.attribute.polyhedron.blocks_attribute_polyhedron_protocols im
 from .model.blocks.attribute.vertex.blocks_attribute_vertex_protocols import (
     VtkModelBlocksAttributeVertexView,
 )
+from .model.blocks.edges.attribute.vertex.blocks_edges_attribute_vertex_protocols import (
+    VtkModelBlocksEdgesAttributeVertexView,
+)
+from .model.blocks.edges.model_blocks_edges_protocols import VtkModelBlocksEdgesView
 from .model.blocks.model_blocks_protocols import VtkModelBlocksView
 from .model.blocks.points.attribute.vertex.blocks_points_attribute_vertex_protocols import (
     VtkModelBlocksPointsAttributeVertexView,
@@ -64,6 +68,10 @@ from .model.surfaces.attribute.polygon.surfaces_attribute_polygon_protocols impo
 from .model.surfaces.attribute.vertex.surfaces_attribute_vertex_protocols import (
     VtkModelSurfacesAttributeVertexView,
 )
+from .model.surfaces.edges.attribute.vertex.surfaces_edges_attribute_vertex_protocols import (
+    VtkModelSurfacesEdgesAttributeVertexView,
+)
+from .model.surfaces.edges.model_surfaces_edges_protocols import VtkModelSurfacesEdgesView
 from .model.surfaces.model_surfaces_protocols import VtkModelSurfacesView
 from .model.surfaces.points.attribute.vertex.surfaces_points_attribute_vertex_protocols import (
     VtkModelSurfacesPointsAttributeVertexView,
@@ -110,4 +118,8 @@ MODEL_PROTOCOLS: tuple[type[VtkView], ...] = (
     VtkModelLinesPointsAttributeVertexView,
     VtkModelSurfacesPointsAttributeVertexView,
     VtkModelBlocksPointsAttributeVertexView,
+    VtkModelSurfacesEdgesView,
+    VtkModelBlocksEdgesView,
+    VtkModelSurfacesEdgesAttributeVertexView,
+    VtkModelBlocksEdgesAttributeVertexView,
 )

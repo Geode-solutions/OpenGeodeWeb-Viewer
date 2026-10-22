@@ -530,6 +530,16 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             points_attr_name = pipeline.points_mapper.GetArrayName()
             visible_bars.append((points_bar, points_attr_name, data_id, pipeline))
 
+        edges_bar = pipeline.edges_scalar_bar
+        if (
+            edges_bar is not None
+            and pipeline.edges_mapper is not None
+            and edges_bar.GetVisibility()
+            and edges_bar.GetLookupTable() is not None
+        ):
+            edges_attr_name = pipeline.edges_mapper.GetArrayName()
+            visible_bars.append((edges_bar, edges_attr_name, data_id, pipeline))
+
         for attr_name, scalar_bar in pipeline.scalar_bars.items():
             if scalar_bar.actor.GetVisibility() and scalar_bar.actor.GetLookupTable() is not None:
                 visible_bars.append((scalar_bar.actor, attr_name, data_id, pipeline))

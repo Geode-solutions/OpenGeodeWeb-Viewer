@@ -1,0 +1,33 @@
+{
+  "rpc": "visibility",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
+    "block_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1
+    },
+    "visibility": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "block_ids",
+    "visibility"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}
