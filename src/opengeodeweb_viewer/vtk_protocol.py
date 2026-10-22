@@ -540,9 +540,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             edges_attr_name = pipeline.edges_mapper.GetArrayName()
             visible_bars.append((edges_bar, edges_attr_name, data_id, pipeline))
 
-        for attr_name, bar in pipeline.scalar_bars.items():
-            if bar.GetVisibility() and bar.GetLookupTable() is not None:
-                visible_bars.append((bar, attr_name, data_id, pipeline))
+        for attr_name, scalar_bar in pipeline.scalar_bars.items():
+            if scalar_bar.actor.GetVisibility() and scalar_bar.actor.GetLookupTable() is not None:
+                visible_bars.append((scalar_bar.actor, attr_name, data_id, pipeline))
         return visible_bars
 
     def update_scalar_bars_layout(self) -> None:

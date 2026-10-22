@@ -216,6 +216,13 @@ ColorMapKey = tuple[str, int, float, float, tuple[float, ...]]
 
 
 @dataclass
+class ModelScalarBar:
+    actor: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
+    # Blocks colored by this scalar bar
+    block_ids: list[int] = field(default_factory=list)
+
+
+@dataclass
 class PointsSizeActor:
     mapper: vtkCompositePolyDataMapper
     actor: vtkActor
@@ -265,7 +272,7 @@ class VtkPipeline:
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)
     scalar_bar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
-    scalar_bars: dict[str, vtkScalarBarActor] = field(default_factory=dict)
+    scalar_bars: dict[str, ModelScalarBar] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
     points_mapper: vtkDataSetMapper | None = None

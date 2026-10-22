@@ -69,8 +69,8 @@ class VtkObjectView(VtkView):
         if pipeline.edges_scalar_bar is not None:
             renderer.RemoveViewProp(pipeline.edges_scalar_bar)
         renderer.RemoveViewProp(pipeline.scalar_bar)
-        for bar in pipeline.scalar_bars.values():
-            renderer.RemoveViewProp(bar)
+        for scalar_bar in pipeline.scalar_bars.values():
+            renderer.RemoveViewProp(scalar_bar.actor)
         self.deregister_object(data_id)
         self.update_scalar_bars_layout()
 
@@ -80,8 +80,8 @@ class VtkObjectView(VtkView):
         self.set_style_actors_visibility(pipeline, visibility=visibility)
         if not visibility:
             pipeline.scalar_bar.VisibilityOff()
-            for bar in pipeline.scalar_bars.values():
-                bar.VisibilityOff()
+            for scalar_bar in pipeline.scalar_bars.values():
+                scalar_bar.actor.VisibilityOff()
             if pipeline.points_scalar_bar is not None:
                 pipeline.points_scalar_bar.VisibilityOff()
             if pipeline.edges_scalar_bar is not None:
@@ -333,8 +333,8 @@ class VtkObjectView(VtkView):
             pipeline.clear_blocks_scalars()
         mapper.ScalarVisibilityOff()
         pipeline.scalar_bar.VisibilityOff()
-        for bar in pipeline.scalar_bars.values():
-            bar.VisibilityOff()
+        for scalar_bar in pipeline.scalar_bars.values():
+            scalar_bar.actor.VisibilityOff()
         self.update_scalar_bars_layout()
 
     def _apply_highlight_style(self, actor: vtkActor, mapper: vtkDataSetMapper) -> None:

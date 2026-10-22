@@ -48,9 +48,11 @@ propcache==0.*
     #   yarl
 pyparsing==3.*
     # via matplotlib
-python-dateutil==2.9.0.post0
+python-dateutil==3.*
     # via matplotlib
 six==1.*
+    # via python-dateutil
+tzdata==2026.*
     # via python-dateutil
 vtk==9.6.2
     # via -r requirements.in
