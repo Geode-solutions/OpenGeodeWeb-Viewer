@@ -349,7 +349,7 @@ class VtkViewerView(VtkView):
 
     @typed_rpc(viewer_prefix, schemas.threshold_route)
     def set_threshold_rpc(self, params: schemas.Threshold) -> schemas.ThresholdResponse:
-        self.set_threshold(params.ids, params.attribute)
+        self.set_threshold(params.ids, params.attributes)
         return schemas.ThresholdResponse()
 
     @typed_rpc(viewer_prefix, schemas.set_z_scaling_route)
