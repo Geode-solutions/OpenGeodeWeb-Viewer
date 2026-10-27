@@ -49,6 +49,7 @@ class VtkObjectView(VtkView):
         renderer.AddViewProp(data.scalar_bar)
         if should_reset_camera:
             renderer.ResetCamera()
+        self.mark_basemaps_dirty()
 
     def remove_object(self, data_id: str) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
@@ -71,13 +72,17 @@ class VtkObjectView(VtkView):
         renderer.RemoveViewProp(pipeline.scalar_bar)
         for scalar_bar in pipeline.scalar_bars.values():
             renderer.RemoveViewProp(scalar_bar.actor)
+        if pipeline.drape_actor is not None:
+            renderer.RemoveActor(pipeline.drape_actor)
         self.deregister_object(data_id)
         self.update_scalar_bars_layout()
+        self.mark_basemaps_dirty()
 
     def set_visibility(self, data_id: str, *, visibility: bool) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.actor.SetVisibility(visibility)
         self.set_style_actors_visibility(pipeline, visibility=visibility)
+        self.mark_basemaps_dirty()
         if not visibility:
             pipeline.scalar_bar.VisibilityOff()
             for scalar_bar in pipeline.scalar_bars.values():
@@ -311,6 +316,7 @@ class VtkObjectView(VtkView):
             visibility_attributes.SetBlockVisibility(blocks[block_id], visibility)
         pipeline.update_points_size_actors()
         pipeline.update_edges_width_actors()
+        self.mark_basemaps_dirty()
         dataset = mapper.GetInputDataObject(0, 0)
         if not isinstance(dataset, vtkMultiBlockDataSet):
             return

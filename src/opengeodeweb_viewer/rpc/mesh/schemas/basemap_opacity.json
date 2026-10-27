@@ -1,0 +1,27 @@
+{
+  "rpc": "basemap_opacity",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
+    "opacity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "required": [
+    "id",
+    "opacity"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

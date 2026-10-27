@@ -1,0 +1,36 @@
+{
+  "rpc": "apply_basemap",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
+    "tiles_folder": {
+      "type": "string",
+      "minLength": 1
+    },
+    "columns": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "rows": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "id",
+    "tiles_folder",
+    "columns",
+    "rows"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

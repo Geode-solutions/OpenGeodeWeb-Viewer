@@ -1440,6 +1440,67 @@
           "additionalProperties": false
         }
       },
+      "basemap_opacity": {
+        "$id": "opengeodeweb_viewer.mesh.basemap_opacity",
+        "rpc": "basemap_opacity",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "id",
+          "opacity"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "basemap_drape": {
+        "$id": "opengeodeweb_viewer.mesh.basemap_drape",
+        "rpc": "basemap_drape",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "around": {
+            "type": "boolean"
+          },
+          "data_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "around",
+          "data_ids"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
       "apply_textures": {
         "$id": "opengeodeweb_viewer.mesh.apply_textures",
         "rpc": "apply_textures",
@@ -1477,6 +1538,43 @@
         "required": [
           "id",
           "textures"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "apply_basemap": {
+        "$id": "opengeodeweb_viewer.mesh.apply_basemap",
+        "rpc": "apply_basemap",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "tiles_folder": {
+            "type": "string",
+            "minLength": 1
+          },
+          "columns": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "rows": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "id",
+          "tiles_folder",
+          "columns",
+          "rows"
         ],
         "additionalProperties": false,
         "response": {
