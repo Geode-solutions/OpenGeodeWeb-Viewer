@@ -4,7 +4,7 @@ import logging
 
 # Standard library imports
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from opengeodeweb_microservice.database.data import Data
 
@@ -71,7 +71,7 @@ def _grey_tile(size: int) -> vtkImageData:
     canvas.SetDrawColor(MISSING_TILE_GREY, MISSING_TILE_GREY, MISSING_TILE_GREY)
     canvas.FillBox(0, size - 1, 0, size - 1)
     canvas.Update()
-    return canvas.GetOutput()
+    return cast("vtkImageData", canvas.GetOutput())
 
 
 class VtkMeshView(VtkObjectView):
@@ -193,7 +193,7 @@ class VtkMeshView(VtkObjectView):
             line.Update()
             rows.AddInputData(line.GetOutput())
         rows.Update()
-        return rows.GetOutput()
+        return cast("vtkImageData", rows.GetOutput())
 
     def display_attribute_on_vertices(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
