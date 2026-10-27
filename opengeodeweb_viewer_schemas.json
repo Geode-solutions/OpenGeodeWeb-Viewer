@@ -1468,6 +1468,39 @@
           "additionalProperties": false
         }
       },
+      "basemap_drape": {
+        "$id": "opengeodeweb_viewer.mesh.basemap_drape",
+        "rpc": "basemap_drape",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "around": {
+            "type": "boolean"
+          },
+          "data_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "around",
+          "data_ids"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
       "apply_textures": {
         "$id": "opengeodeweb_viewer.mesh.apply_textures",
         "rpc": "apply_textures",

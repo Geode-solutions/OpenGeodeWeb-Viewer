@@ -410,6 +410,15 @@ export interface MeshBasemapOpacityParams {
 export interface MeshBasemapOpacityResponse {
 }
 
+export interface MeshBasemapDrapeParams {
+    around:   boolean;
+    data_ids: string[];
+    id:       string;
+}
+
+export interface MeshBasemapDrapeResponse {
+}
+
 export interface MeshApplyTexturesParams {
     id:       string;
     textures: MeshApplyTexturesParamsTexture[];
@@ -1481,6 +1490,7 @@ export interface Schemas {
       readonly deregister: (typeof json)["opengeodeweb_viewer"]["mesh"]["deregister"] & TypedSchema<MeshDeregisterParams, MeshDeregisterResponse>;
       readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["color"] & TypedSchema<MeshColorParams, MeshColorResponse>;
       readonly basemap_opacity: (typeof json)["opengeodeweb_viewer"]["mesh"]["basemap_opacity"] & TypedSchema<MeshBasemapOpacityParams, MeshBasemapOpacityResponse>;
+      readonly basemap_drape: (typeof json)["opengeodeweb_viewer"]["mesh"]["basemap_drape"] & TypedSchema<MeshBasemapDrapeParams, MeshBasemapDrapeResponse>;
       readonly apply_textures: (typeof json)["opengeodeweb_viewer"]["mesh"]["apply_textures"] & TypedSchema<MeshApplyTexturesParams, MeshApplyTexturesResponse>;
       readonly apply_basemap: (typeof json)["opengeodeweb_viewer"]["mesh"]["apply_basemap"] & TypedSchema<MeshApplyBasemapParams, MeshApplyBasemapResponse>;
     };

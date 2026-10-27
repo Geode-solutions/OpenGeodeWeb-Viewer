@@ -21,6 +21,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkImplicitBoolean,
     vtkMultiBlockDataSet,
     vtkPlane,
+    vtkPolyData,
     vtkSelectionNode,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
@@ -37,6 +38,13 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.web import protocols as vtk_protocols
 
+from opengeodeweb_viewer.basemap_drape import (
+    drape_actor,
+    drape_polydata,
+    flat_map_lift,
+    flat_map_visible,
+    top_surfaces,
+)
 from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
 from opengeodeweb_viewer.vtk_pipeline import (
     RulerPipeline,
@@ -86,6 +94,28 @@ def basemap_clipping_filter(planes_data: list[Plane]) -> vtkTableBasedClipDataSe
     # Keep the inside of the planes, like the data clipping
     clip.InsideOutOn()
     return clip
+
+
+def pipeline_surfaces(pipeline: VtkPipeline) -> list[vtkPolyData]:
+    """Visible surfaces of a data, after clipping, threshold, shrink and explosion."""
+    if not pipeline.actor.GetVisibility():
+        return []
+    mapper = pipeline.mapper
+    if isinstance(mapper, vtkCompositePolyDataMapper):
+        attributes = mapper.GetCompositeDataDisplayAttributes()
+        types = pipeline.block_component_types()
+        return [
+            block
+            for index, block in enumerate(pipeline.block_data_sets)
+            if types.get(index) == "surfaces"
+            and isinstance(block, vtkPolyData)
+            and attributes.GetBlockVisibility(block)
+        ]
+    # Solids are unstructured grids: only polydata readers hold surfaces
+    if not isinstance(pipeline.reader.GetOutputDataObject(0), vtkPolyData):
+        return []
+    output = pipeline.filter.GetOutput()
+    return [output] if output.GetNumberOfPolys() > 0 else []
 
 
 class VtkTypingMixin:
@@ -272,26 +302,61 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         for pipeline in self.get_data_base().values():
             if pipeline.basemap:
                 self.clip_basemap(pipeline)
+        self.mark_basemaps_dirty()
 
     def clip_basemap(self, pipeline: VtkPipeline) -> None:
         planes_data = cast("list[Plane] | None", self.getSharedObject("basemap_clipping_planes"))
         pipeline.clipping_filter = basemap_clipping_filter(planes_data) if planes_data else None
         self.update_pipeline_filter(pipeline)
 
-    def lift_basemaps(self) -> None:
-        """Keep the basemaps on top of the exploded blocks."""
-        pipelines = self.get_data_base().values()
+    def mark_basemaps_dirty(self) -> None:
+        """The drapes are rebuilt once, at the next render."""
+        self.coreServer.setSharedObject("basemaps_dirty", True)  # noqa: FBT003 VTK API
+
+    def update_basemaps(self) -> None:
+        database = self.get_data_base()
         exploded_tops = [
             pipeline.actor.GetBounds()[5]
-            for pipeline in pipelines
+            for pipeline in database.values()
             if not pipeline.basemap
             and pipeline.explode_factor > 0
             and pipeline.actor.GetVisibility()
         ]
-        for pipeline in pipelines:
+        for pipeline in database.values():
             if pipeline.basemap:
-                basemap_top = pipeline.reader.GetOutputAsDataSet().GetBounds()[5]
-                pipeline.actor.SetPosition(0.0, 0.0, basemap_lift(basemap_top, exploded_tops))
+                self._update_basemap(pipeline, exploded_tops)
+
+    def _update_basemap(self, basemap: VtkPipeline, exploded_tops: list[float]) -> None:
+        database = self.get_data_base()
+        # Only georeferenced data: the front sends their ids
+        data = [
+            database[data_id]
+            for data_id in basemap.drape_ids
+            if data_id in database and database[data_id].actor.GetVisibility()
+        ]
+        draped: list[vtkPolyData] = []
+        if data:
+            bounds = [pipeline.actor.GetBounds() for pipeline in data]
+            data_top = max(bound[5] for bound in bounds)
+            z_extent = data_top - min(bound[4] for bound in bounds)
+            surfaces = [surface for pipeline in data for surface in pipeline_surfaces(pipeline)]
+            draped = top_surfaces(surfaces, data_top, z_extent)
+        renderer = self.get_renderer()
+        if basemap.drape_actor is not None:
+            renderer.RemoveActor(basemap.drape_actor)
+            basemap.drape_actor = None
+        basemap_dataset = cast("vtkPolyData", basemap.reader.GetOutputAsDataSet())
+        basemap_top = basemap_dataset.GetBounds()[5]
+        draped_bottom = None
+        if draped:
+            basemap.drape_actor = drape_actor(
+                drape_polydata(draped, basemap_dataset), basemap.actor
+            )
+            renderer.AddActor(basemap.drape_actor)
+            draped_bottom = min(surface.GetBounds()[4] for surface in draped)
+        lift = flat_map_lift(basemap_top, draped_bottom, basemap_lift(basemap_top, exploded_tops))
+        basemap.actor.SetPosition(0.0, 0.0, lift)
+        basemap.actor.SetVisibility(flat_map_visible(around=basemap.around, draped=bool(draped)))
 
     def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
         for data_id in data_ids:
@@ -316,6 +381,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             else:
                 pipeline.threshold_filter = None
             self.update_pipeline_filter(pipeline)
+        self.mark_basemaps_dirty()
 
     def set_shrink(self, data_ids: list[str], shrink_factor: float) -> None:
         for data_id in data_ids:
@@ -327,6 +393,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             else:
                 pipeline.shrink_filter = None
             self.update_pipeline_filter(pipeline)
+        self.mark_basemaps_dirty()
 
     def set_explode(self, data_ids: list[str], explode_factor: float) -> None:
         for data_id in data_ids:
@@ -335,7 +402,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 continue
             pipeline.explode_factor = explode_factor
             self.update_pipeline_filter(pipeline)
-        self.lift_basemaps()
+        self.mark_basemaps_dirty()
 
     def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:
         max_indices = [0, 0, 0]
@@ -474,7 +541,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if not grid_scale.GetVisibility():
                 # The basemap spans a margin around the data: the grid measures the data
                 basemaps = {
-                    pipeline.actor for pipeline in self.get_data_base().values() if pipeline.basemap
+                    actor
+                    for pipeline in self.get_data_base().values()
+                    if pipeline.basemap
+                    for actor in (pipeline.actor, pipeline.drape_actor)
+                    if actor is not None
                 }
                 self.fit_grid_scale_to_visible_props(grid_scale, renderer, basemaps)
             final_bounds = list(grid_scale.GetBounds())
@@ -663,6 +734,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             bar.SetHeight(bar_height)
 
     def render(self, view: int = -1) -> None:
+        if self.getSharedObject("basemaps_dirty"):
+            self.coreServer.setSharedObject("basemaps_dirty", False)  # noqa: FBT003 VTK API
+            self.update_basemaps()
         self.update_grid_scale_and_clipping_range()
         self.getSharedObject("publisher").imagePush({"view": view})
 

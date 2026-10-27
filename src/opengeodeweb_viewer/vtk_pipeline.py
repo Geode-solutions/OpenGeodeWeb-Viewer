@@ -274,6 +274,10 @@ class VtkPipeline:
     explode_factor: float = 0.0
     # A map under the data: excluded from the data bounds, follows the data clipping
     basemap: bool = False
+    # Basemap only: its drape over the top surfaces, the georeferenced data and "Map around"
+    drape_actor: vtkActor | None = None
+    drape_ids: list[str] = field(default_factory=list)
+    around: bool = True
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)

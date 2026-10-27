@@ -133,6 +133,16 @@ def test_basemap_opacity(server: ServerMonitor, dataset_factory: Callable[..., s
     assert server.compare_image("mesh/basemap_opacity.jpeg")
 
 
+def test_basemap_drape(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    basemap_id = _apply_basemap(server, dataset_factory)
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["basemap_drape"]["rpc"],
+        [{"id": basemap_id, "around": False, "data_ids": []}],
+    )
+    # Nothing to drape: the flat map stays, whatever "Map around" says
+    assert server.compare_image("mesh/apply_basemap.jpeg")
+
+
 def test_basemap_style_stays_behind_the_data() -> None:
     actor = vtkActor()
     mapper = vtkDataSetMapper()

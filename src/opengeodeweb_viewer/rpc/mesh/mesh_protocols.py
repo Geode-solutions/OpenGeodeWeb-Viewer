@@ -162,7 +162,7 @@ class VtkMeshView(VtkObjectView):
         # A basemap rebuilt while the data is clipped or exploded follows it at once
         pipeline.basemap = True
         self.clip_basemap(pipeline)
-        self.lift_basemaps()
+        self.mark_basemaps_dirty()
         return schemas.ApplyBasemapResponse()
 
     @typed_rpc(mesh_prefix, schemas.basemap_opacity_route)
@@ -170,7 +170,18 @@ class VtkMeshView(VtkObjectView):
         self, params: schemas.BasemapOpacity
     ) -> schemas.BasemapOpacityResponse:
         self.set_opacity(params.id, params.opacity)
+        drape = self.get_vtk_pipeline(params.id).drape_actor
+        if drape is not None:
+            drape.GetProperty().SetOpacity(params.opacity)
         return schemas.BasemapOpacityResponse()
+
+    @typed_rpc(mesh_prefix, schemas.basemap_drape_route)
+    def mesh_basemap_drape(self, params: schemas.BasemapDrape) -> schemas.BasemapDrapeResponse:
+        pipeline = self.get_vtk_pipeline(params.id)
+        pipeline.drape_ids = list(params.data_ids)
+        pipeline.around = params.around
+        self.mark_basemaps_dirty()
+        return schemas.BasemapDrapeResponse()
 
     def _basemap_image(self, params: schemas.ApplyBasemap) -> vtkImageData:
         """Tiles side by side; row 0 is the north edge, VTK images start at the south."""
