@@ -265,7 +265,7 @@ class VtkPipeline:
     actor: vtkActor = field(default_factory=vtkActor)
     slice_filter: vtkAppendFilter | None = None
     clipping_filter: vtkExtractGeometry | None = None
-    threshold_filter: vtkThreshold | None = None
+    threshold_filters: list[vtkThreshold] = field(default_factory=list)
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
