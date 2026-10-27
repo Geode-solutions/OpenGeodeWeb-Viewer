@@ -40,8 +40,10 @@ logger = logging.getLogger(__name__)
 
 MISSING_TILE_GREY = 128
 DEFAULT_TILE_SIZE = 256
-# Added to the global offset (2, 0) of every mapper: the basemap is drawn behind flat data
-BASEMAP_POLYGON_OFFSET = 4.0
+# Added to the global offset (2, 0) of every mapper: the basemap is drawn behind flat data.
+# Only a constant depth offset: a slope factor would grow at grazing angles and let the
+# data sides just under the basemap show through it
+BASEMAP_POLYGON_OFFSET_UNITS = 4.0
 
 
 def check_tiles_folder(name: str) -> None:
@@ -58,9 +60,7 @@ def style_basemap(actor: vtkActor, mapper: vtkMapper) -> None:
     properties.SetAmbient(1.0)
     properties.SetDiffuse(0.0)
     actor.PickableOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(
-        BASEMAP_POLYGON_OFFSET, BASEMAP_POLYGON_OFFSET
-    )
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, BASEMAP_POLYGON_OFFSET_UNITS)
 
 
 def _grey_tile(size: int) -> vtkImageData:
@@ -159,6 +159,10 @@ class VtkMeshView(VtkObjectView):
         pipeline.filter.Update()
         pipeline.actor.SetTexture(texture)
         style_basemap(pipeline.actor, pipeline.mapper)
+        # A basemap rebuilt while the data is clipped or exploded follows it at once
+        pipeline.basemap = True
+        self.clip_basemap(pipeline)
+        self.lift_basemaps()
         return schemas.ApplyBasemapResponse()
 
     @typed_rpc(mesh_prefix, schemas.basemap_opacity_route)

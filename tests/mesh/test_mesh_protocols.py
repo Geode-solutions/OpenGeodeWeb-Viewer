@@ -5,13 +5,18 @@ from typing import TYPE_CHECKING
 
 import pytest
 from vtkmodules.vtkCommonCore import reference
-from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper
+from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
+from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkPlaneSource
+from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
+from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkPolyDataMapper, vtkRenderer
 
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     VtkMeshView,
     check_tiles_folder,
     style_basemap,
 )
+from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
+from opengeodeweb_viewer.vtk_protocol import VtkView, basemap_clipping_filter, basemap_lift
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -132,10 +137,11 @@ def test_basemap_style_stays_behind_the_data() -> None:
     actor = vtkActor()
     mapper = vtkDataSetMapper()
     style_basemap(actor, mapper)
-    # Positive offsets push the basemap away from flat data at the same height
+    # A constant offset pushes the basemap away from flat data at the same height,
+    # without a slope factor that would let the data sides show through at grazing angles
     factor, units = reference(0.0), reference(0.0)
     mapper.GetRelativeCoincidentTopologyPolygonOffsetParameters(factor, units)
-    assert (factor.get(), units.get()) == (4.0, 4.0)
+    assert (factor.get(), units.get()) == (0.0, 4.0)
     assert not actor.GetPickable()
     assert not actor.GetProperty().GetLighting()
 
@@ -148,3 +154,49 @@ def test_tiles_folder_must_be_a_plain_name(name: str) -> None:
 
 def test_tiles_folder_plain_name() -> None:
     check_tiles_folder("tiles")
+
+
+def test_basemap_lift_follows_exploded_blocks() -> None:
+    # Exploded blocks only move up: the basemap rises to the highest one, never down
+    assert basemap_lift(0.0, []) == 0.0
+    assert basemap_lift(0.0, [-50.0]) == 0.0
+    assert basemap_lift(10.0, [5.0, 250.0]) == 240.0
+
+
+def _actor(bounds: tuple[float, float, float, float, float, float]) -> vtkActor:
+    cube = vtkCubeSource()
+    cube.SetBounds(bounds)
+    mapper = vtkPolyDataMapper()
+    mapper.SetInputConnection(cube.GetOutputPort())
+    actor = vtkActor()
+    actor.SetMapper(mapper)
+    return actor
+
+
+def test_grid_scale_ignores_the_basemap() -> None:
+    renderer = vtkRenderer()
+    data = _actor((0, 10, 0, 10, -5, 0))
+    basemap = _actor((-100, 100, -100, 100, 0, 0))
+    renderer.AddActor(data)
+    renderer.AddActor(basemap)
+    grid_scale = vtkCubeAxesActor()
+    VtkView.fit_grid_scale_to_visible_props(grid_scale, renderer, {basemap})
+    assert list(grid_scale.GetBounds()) == pytest.approx([0, 10, 0, 10, -5, 0])
+
+
+def test_basemap_clipping_keeps_texture_coordinates() -> None:
+    plane = vtkPlaneSource()
+    plane.SetOrigin(0, 0, 0)
+    plane.SetPoint1(10, 0, 0)
+    plane.SetPoint2(0, 10, 0)
+    plane.Update()
+    basemap = plane.GetOutput()
+    # Keep x <= 4: the cut is exact, not along the coarse basemap cells
+    clip = basemap_clipping_filter([Plane(normal=[1, 0, 0], origin=[4, 0, 0])])
+    clip.SetInputData(basemap)
+    geometry = vtkGeometryFilter()
+    geometry.SetInputConnection(clip.GetOutputPort())
+    geometry.Update()
+    output = geometry.GetOutput()
+    assert output.GetBounds()[1] == pytest.approx(4)
+    assert output.GetPointData().GetTCoords() is not None

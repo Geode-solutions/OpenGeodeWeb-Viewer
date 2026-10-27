@@ -21,7 +21,11 @@ from vtkmodules.vtkFiltersExtraction import (
     vtkExtractGeometry,
     vtkExtractSelection,
 )
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTransformFilter
+from vtkmodules.vtkFiltersGeneral import (
+    vtkShrinkFilter,
+    vtkTableBasedClipDataSet,
+    vtkTransformFilter,
+)
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkRenderingAnnotation import (
@@ -264,10 +268,12 @@ class VtkPipeline:
     filter: vtkGeometryFilter = field(default_factory=vtkGeometryFilter)
     actor: vtkActor = field(default_factory=vtkActor)
     slice_filter: vtkAppendFilter | None = None
-    clipping_filter: vtkExtractGeometry | None = None
+    clipping_filter: vtkExtractGeometry | vtkTableBasedClipDataSet | None = None
     threshold_filter: vtkThreshold | None = None
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
+    # A map under the data: excluded from the data bounds, follows the data clipping
+    basemap: bool = False
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)

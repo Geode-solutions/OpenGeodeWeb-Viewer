@@ -25,12 +25,13 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
 from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
+from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTableBasedClipDataSet
 from vtkmodules.vtkImagingCore import vtkExtractVOI
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkCellPicker,
     vtkCompositePolyDataMapper,
+    vtkProp,
     vtkRenderer,
     vtkRenderWindow,
 )
@@ -44,6 +45,8 @@ from opengeodeweb_viewer.vtk_pipeline import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Set as AbstractSet
+
     from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
     from vtkmodules.vtkRenderingAnnotation import (
         vtkAxesActor,
@@ -58,6 +61,31 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 MAX_DATA_NAME_LENGTH = 22
+
+
+def basemap_lift(basemap_top: float, exploded_tops: list[float]) -> float:
+    """Height to raise a basemap so exploded blocks, which only move up, stay under it."""
+    return max([0.0, *(top - basemap_top for top in exploded_tops)])
+
+
+def _clipping_function(planes_data: list[Plane]) -> vtkImplicitBoolean:
+    implicit_boolean = vtkImplicitBoolean()
+    implicit_boolean.SetOperationTypeToIntersection()
+    for plane_info in planes_data:
+        plane = vtkPlane()
+        plane.SetOrigin(plane_info.origin)
+        plane.SetNormal(plane_info.normal)
+        implicit_boolean.AddFunction(plane)
+    return implicit_boolean
+
+
+def basemap_clipping_filter(planes_data: list[Plane]) -> vtkTableBasedClipDataSet:
+    """Cut the basemap exactly along the planes: its cells are too large to be extracted whole."""
+    clip = vtkTableBasedClipDataSet()
+    clip.SetClipFunction(_clipping_function(planes_data))
+    # Keep the inside of the planes, like the data clipping
+    clip.InsideOutOn()
+    return clip
 
 
 class VtkTypingMixin:
@@ -234,18 +262,36 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             pipeline = self.get_vtk_pipeline(data_id)
             if planes_data:
                 clipping_filter = vtkExtractGeometry()
-                implicit_boolean = vtkImplicitBoolean()
-                implicit_boolean.SetOperationTypeToIntersection()
-                for plane_info in planes_data:
-                    plane = vtkPlane()
-                    plane.SetOrigin(plane_info.origin)
-                    plane.SetNormal(plane_info.normal)
-                    implicit_boolean.AddFunction(plane)
-                clipping_filter.SetImplicitFunction(implicit_boolean)
+                clipping_filter.SetImplicitFunction(_clipping_function(planes_data))
                 pipeline.clipping_filter = clipping_filter
             else:
                 pipeline.clipping_filter = None
             self.update_pipeline_filter(pipeline)
+        # The map is cut with the data: kept for the basemaps built later
+        self.coreServer.setSharedObject("basemap_clipping_planes", planes_data)
+        for pipeline in self.get_data_base().values():
+            if pipeline.basemap:
+                self.clip_basemap(pipeline)
+
+    def clip_basemap(self, pipeline: VtkPipeline) -> None:
+        planes_data = cast("list[Plane] | None", self.getSharedObject("basemap_clipping_planes"))
+        pipeline.clipping_filter = basemap_clipping_filter(planes_data) if planes_data else None
+        self.update_pipeline_filter(pipeline)
+
+    def lift_basemaps(self) -> None:
+        """Keep the basemaps on top of the exploded blocks."""
+        pipelines = self.get_data_base().values()
+        exploded_tops = [
+            pipeline.actor.GetBounds()[5]
+            for pipeline in pipelines
+            if not pipeline.basemap
+            and pipeline.explode_factor > 0
+            and pipeline.actor.GetVisibility()
+        ]
+        for pipeline in pipelines:
+            if pipeline.basemap:
+                basemap_top = pipeline.reader.GetOutputAsDataSet().GetBounds()[5]
+                pipeline.actor.SetPosition(0.0, 0.0, basemap_lift(basemap_top, exploded_tops))
 
     def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
         for data_id in data_ids:
@@ -289,6 +335,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 continue
             pipeline.explode_factor = explode_factor
             self.update_pipeline_filter(pipeline)
+        self.lift_basemaps()
 
     def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:
         max_indices = [0, 0, 0]
@@ -425,7 +472,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if grid_scale is not None:
             renderer = self.get_renderer()
             if not grid_scale.GetVisibility():
-                self._fit_grid_scale_to_visible_props(grid_scale, renderer)
+                # The basemap spans a margin around the data: the grid measures the data
+                basemaps = {
+                    pipeline.actor for pipeline in self.get_data_base().values() if pipeline.basemap
+                }
+                self.fit_grid_scale_to_visible_props(grid_scale, renderer, basemaps)
             final_bounds = list(grid_scale.GetBounds())
             if final_bounds[0] <= final_bounds[1]:
                 for axis in range(3):
@@ -434,15 +485,20 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.reset_camera_clipping_range()
 
     @staticmethod
-    def _fit_grid_scale_to_visible_props(
-        grid_scale: vtkCubeAxesActor, renderer: vtkRenderer
+    def fit_grid_scale_to_visible_props(
+        grid_scale: vtkCubeAxesActor, renderer: vtkRenderer, excluded: AbstractSet[vtkProp]
     ) -> None:
         bounds = vtkBoundingBox()
         props = renderer.GetViewProps()
         props.InitTraversal()
         prop = props.GetNextProp()
         while prop is not None:
-            if prop.GetVisibility() and prop.GetUseBounds() and prop != grid_scale:
+            if (
+                prop.GetVisibility()
+                and prop.GetUseBounds()
+                and prop != grid_scale
+                and prop not in excluded
+            ):
                 prop_bounds = prop.GetBounds()
                 if prop_bounds is not None:
                     bounds.AddBounds(prop_bounds)
