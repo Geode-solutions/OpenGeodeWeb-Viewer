@@ -1229,6 +1229,32 @@ export interface ViewerSetZScalingParams {
 export interface ViewerSetZScalingResponse {
 }
 
+export interface ViewerSetTextStyleParams {
+    color:       TextColor;
+    font_family: FontFamily;
+    opacity:     number;
+}
+
+export interface TextColor {
+    b: number;
+    g: number;
+    r: number;
+}
+
+export type FontFamily = "arial" | "courier" | "times";
+
+export interface ViewerSetTextStyleResponse {
+}
+
+export interface ViewerSetOrientationWidgetParams {
+    marker: Marker;
+}
+
+export type Marker = "axes" | "compass";
+
+export interface ViewerSetOrientationWidgetResponse {
+}
+
 export interface ViewerSetBackgroundColorParams {
     color: ViewerSetBackgroundColorParamsColor;
 }
@@ -1586,6 +1612,8 @@ export interface Schemas {
       readonly slice: (typeof json)["opengeodeweb_viewer"]["viewer"]["slice"] & TypedSchema<ViewerSliceParams, ViewerSliceResponse>;
       readonly shrink: (typeof json)["opengeodeweb_viewer"]["viewer"]["shrink"] & TypedSchema<ViewerShrinkParams, ViewerShrinkResponse>;
       readonly set_z_scaling: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_z_scaling"] & TypedSchema<ViewerSetZScalingParams, ViewerSetZScalingResponse>;
+      readonly set_text_style: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_text_style"] & TypedSchema<ViewerSetTextStyleParams, ViewerSetTextStyleResponse>;
+      readonly set_orientation_widget: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_orientation_widget"] & TypedSchema<ViewerSetOrientationWidgetParams, ViewerSetOrientationWidgetResponse>;
       readonly set_background_color: (typeof json)["opengeodeweb_viewer"]["viewer"]["set_background_color"] & TypedSchema<ViewerSetBackgroundColorParams, ViewerSetBackgroundColorResponse>;
       readonly ruler: (typeof json)["opengeodeweb_viewer"]["viewer"]["ruler"] & TypedSchema<ViewerRulerParams, ViewerRulerResponse>;
       readonly reset_visualization: (typeof json)["opengeodeweb_viewer"]["viewer"]["reset_visualization"] & TypedSchema<ViewerResetVisualizationParams, ViewerResetVisualizationResponse>;

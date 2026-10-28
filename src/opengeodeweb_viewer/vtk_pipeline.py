@@ -120,6 +120,12 @@ class RulerPipeline:
             actor.VisibilityOff()
             renderer.AddActor(actor)
 
+    def set_text_color(self, rgb: tuple[float, float, float] | None, opacity: float = 1.0) -> None:
+        # None restores the ruler's own text color
+        text_property = self.text_follower.GetProperty()
+        text_property.SetColor(*(self._TEXT_COLOR if rgb is None else rgb))
+        text_property.SetOpacity(opacity)
+
     def _setup_actor(
         self,
         actor: vtkActor,

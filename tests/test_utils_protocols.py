@@ -51,3 +51,26 @@ def test_reset_project_after_import(
         [{"id": post_id, "name": "hat.vtp"}],
     )
     assert server.compare_image("viewer/import_project.jpeg") is True
+
+
+def test_scene_style_after_import(server: ServerMonitor) -> None:
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"]
+    )
+    server.call(
+        VtkUtilsView.utils_prefix + VtkUtilsView.utils_schemas_dict["import_project"]["rpc"]
+    )
+    server.get_result(
+        VtkUtilsView.utils_prefix + VtkUtilsView.utils_schemas_dict["import_project"]["rpc"]
+    )
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
+        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "arial", "opacity": 1.0}],
+    )
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"],
+        [{"marker": "compass"}],
+    )
+    assert server.compare_image("viewer/orientation_widget_compass.jpeg") is True

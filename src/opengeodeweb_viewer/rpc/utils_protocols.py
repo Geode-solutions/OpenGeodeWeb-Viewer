@@ -1,5 +1,4 @@
 # Standard library imports
-import contextlib
 import logging
 import os
 from pathlib import Path
@@ -34,14 +33,8 @@ class VtkUtilsView(VtkView):
 
     @typed_rpc(utils_prefix, schemas.import_project_route)
     def import_project(self, _params: schemas.ImportProject) -> schemas.ImportProjectResponse:
-        widget = self.get_widget()
-        if widget is not None:
-            with contextlib.suppress(Exception):
-                widget.EnabledOff()
-        self.coreServer.setSharedObject("widget", None)
-        self.coreServer.setSharedObject("grid_scale", None)
-        self.coreServer.setSharedObject("axes", None)
-
+        # Keep the widget and grid scale from the preceding reset_visualization:
+        # the scene style is applied to them after the import
         self.get_data_base().clear()
 
         self._release_database()
