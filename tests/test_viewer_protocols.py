@@ -341,12 +341,15 @@ def test_clipping_planes(server: ServerMonitor, dataset_factory: Callable[..., s
                 "planes": [
                     {
                         "origin": [0.0, 0.0, 0.0],
-                        "normal": [1.0, 0.0, 0.0],
+                        "normal": [1.0, 0.0, 1.0],
+                        "color": [0.9, 0.22, 0.21],
+                        "opacity": 0.5,
                     }
                 ],
             }
         ],
     )
+    assert server.compare_image("viewer/clipping_planes.jpeg")
 
 
 def test_shrink(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:

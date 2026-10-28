@@ -12,18 +12,24 @@ from vtkmodules.vtkCommonDataModel import (
     vtkDataObject,
     vtkDataSet,
     vtkMultiBlockDataSet,
+    vtkPlane,
     vtkSelection,
     vtkSelectionNode,
     vtkVector2d,
 )
 from vtkmodules.vtkCommonTransforms import vtkTransform
+from vtkmodules.vtkFiltersCore import vtkCleanPolyData, vtkCutter
 from vtkmodules.vtkFiltersExtraction import (
     vtkExtractGeometry,
     vtkExtractSelection,
 )
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTransformFilter
+from vtkmodules.vtkFiltersGeneral import (
+    vtkContourTriangulator,
+    vtkShrinkFilter,
+    vtkTransformFilter,
+)
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
-from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
+from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkLineSource, vtkSphereSource
 from vtkmodules.vtkRenderingAnnotation import (
     vtkScalarBarActor,
 )
@@ -82,6 +88,43 @@ class HighlightPipeline:
     selection_node: vtkSelectionNode = field(default_factory=vtkSelectionNode)
     selection: vtkSelection = field(default_factory=vtkSelection)
     extract_selection: vtkExtractSelection = field(default_factory=vtkExtractSelection)
+
+
+@dataclass
+class ClippingPlanePreview:
+    _DEFAULT_OPACITY = 0.1
+    _DEFAULT_COLOR = (0.12, 0.53, 0.9)
+
+    bounds: list[float]
+    origin: list[float]
+    normal: list[float]
+    color: list[float] | None = None
+    opacity: float | None = None
+    actor: vtkActor = field(default_factory=vtkActor)
+
+    def __post_init__(self) -> None:
+        # Section of the targets bounding box by the plane, filled as a polygon
+        box = vtkCubeSource()
+        box.SetBounds(self.bounds)
+        clean = vtkCleanPolyData()
+        clean.SetInputConnection(box.GetOutputPort())
+        plane = vtkPlane()
+        plane.SetOrigin(self.origin)
+        plane.SetNormal(self.normal)
+        cutter = vtkCutter()
+        cutter.SetCutFunction(plane)
+        cutter.SetInputConnection(clean.GetOutputPort())
+        triangulator = vtkContourTriangulator()
+        triangulator.SetInputConnection(cutter.GetOutputPort())
+        mapper = vtkPolyDataMapper()
+        mapper.SetInputConnection(triangulator.GetOutputPort())
+        self.actor.SetMapper(mapper)
+        self.actor.PickableOff()
+        actor_property = self.actor.GetProperty()
+        actor_property.SetColor(*(self.color or self._DEFAULT_COLOR))
+        actor_property.SetOpacity(self._DEFAULT_OPACITY if self.opacity is None else self.opacity)
+        actor_property.SetAmbient(1.0)
+        actor_property.SetDiffuse(0.0)
 
 
 @dataclass
