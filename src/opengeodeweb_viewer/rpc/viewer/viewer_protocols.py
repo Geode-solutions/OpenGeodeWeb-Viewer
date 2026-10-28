@@ -5,7 +5,13 @@ from typing import Any
 
 from opengeodeweb_microservice.schemas import get_schemas_dict
 from vtkmodules.vtkCommonCore import reference, vtkPoints, vtkUnsignedCharArray
-from vtkmodules.vtkCommonDataModel import vtkCellArray, vtkDataSet, vtkPolyData
+from vtkmodules.vtkCommonDataModel import (
+    vtkBoundingBox,
+    vtkCellArray,
+    vtkCompositeDataSet,
+    vtkDataSet,
+    vtkPolyData,
+)
 from vtkmodules.vtkCommonTransforms import vtkTransform
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackball
 from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
@@ -30,7 +36,7 @@ from opengeodeweb_viewer.rpc.viewer import schemas
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 
 # Local application imports
-from opengeodeweb_viewer.vtk_pipeline import RulerPipeline
+from opengeodeweb_viewer.vtk_pipeline import ClippingPlanePreview, RulerPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 MIN_CLOSED_CURVE_POINTS = 2
@@ -44,6 +50,7 @@ class VtkViewerView(VtkView):
     def __init__(self) -> None:
         super().__init__()
         self._preview_actor: vtkActor | None = None
+        self._clipping_plane_previews: list[ClippingPlanePreview] = []
 
     @typed_rpc(viewer_prefix, schemas.reset_visualization_route)
     def reset_visualization(
@@ -52,6 +59,7 @@ class VtkViewerView(VtkView):
         render_window = self.getView("-1")
         renderer = render_window.GetRenderers().GetFirstRenderer()
         renderer.RemoveAllViewProps()
+        self._clipping_plane_previews = []
 
         grid_scale = vtkCubeAxesActor()
         grid_scale.SetCamera(renderer.GetActiveCamera())
@@ -331,6 +339,7 @@ class VtkViewerView(VtkView):
         self, params: schemas.ClippingPlanes
     ) -> schemas.ClippingPlanesResponse:
         self.set_clipping_planes(params.ids, params.planes)
+        self._update_clipping_plane_previews(params.ids, params.planes)
         return schemas.ClippingPlanesResponse()
 
     @typed_rpc(viewer_prefix, schemas.shrink_route)
@@ -401,6 +410,40 @@ class VtkViewerView(VtkView):
         self._preview_polydata.Modified()
         self.render(-1)
         return schemas.PreviewPointsResponse()
+
+    def _update_clipping_plane_previews(
+        self, data_ids: list[str], planes_data: list[schemas.Plane]
+    ) -> None:
+        # Unclipping some data must keep the previews of the data still clipped
+        if not planes_data and any(
+            pipeline.clipping_filter is not None for pipeline in self.get_data_base().values()
+        ):
+            return
+        renderer = self.get_renderer()
+        for preview in self._clipping_plane_previews:
+            renderer.RemoveActor(preview.actor)
+        self._clipping_plane_previews = []
+        # Unclipped bounds of the targets, so successive calls do not shrink the previews
+        bounding_box = vtkBoundingBox()
+        bounds = [0.0] * 6
+        for data_id in data_ids:
+            dataset = self.get_vtk_pipeline(data_id).reader.GetOutputDataObject(0)
+            if isinstance(dataset, (vtkDataSet, vtkCompositeDataSet)):
+                dataset.GetBounds(bounds)
+                bounding_box.AddBounds(bounds)
+        if not bounding_box.IsValid():
+            return
+        bounding_box.GetBounds(bounds)
+        for plane_info in planes_data:
+            preview = ClippingPlanePreview(
+                bounds=bounds,
+                origin=plane_info.origin,
+                normal=plane_info.normal,
+                color=plane_info.color,
+                opacity=plane_info.opacity,
+            )
+            renderer.AddActor(preview.actor)
+            self._clipping_plane_previews.append(preview)
 
     def _ensure_preview_actor(self) -> None:
         if self._preview_actor is None:

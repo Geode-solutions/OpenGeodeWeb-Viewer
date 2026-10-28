@@ -3,7 +3,7 @@ from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -13,6 +13,8 @@ class Plane(DataClassJsonMixin):
 
     normal: List[float]
     origin: List[float]
+    color: Optional[List[float]] = None
+    opacity: Optional[float] = None
 
 
 @dataclass
