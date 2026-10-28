@@ -4542,6 +4542,89 @@
           "additionalProperties": false
         }
       },
+      "set_text_style": {
+        "$id": "opengeodeweb_viewer.viewer.set_text_style",
+        "rpc": "set_text_style",
+        "type": "object",
+        "properties": {
+          "color": {
+            "title": "TextColor",
+            "type": "object",
+            "properties": {
+              "r": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "g": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "b": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              }
+            },
+            "required": [
+              "r",
+              "g",
+              "b"
+            ],
+            "additionalProperties": false
+          },
+          "font_family": {
+            "type": "string",
+            "enum": [
+              "arial",
+              "courier",
+              "times"
+            ]
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "color",
+          "font_family",
+          "opacity"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "set_orientation_widget": {
+        "$id": "opengeodeweb_viewer.viewer.set_orientation_widget",
+        "rpc": "set_orientation_widget",
+        "type": "object",
+        "properties": {
+          "marker": {
+            "type": "string",
+            "enum": [
+              "axes",
+              "compass"
+            ]
+          }
+        },
+        "required": [
+          "marker"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
       "set_background_color": {
         "$id": "opengeodeweb_viewer.viewer.set_background_color",
         "rpc": "set_background_color",

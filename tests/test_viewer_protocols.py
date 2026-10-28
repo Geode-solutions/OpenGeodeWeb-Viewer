@@ -5,12 +5,21 @@ from typing import TYPE_CHECKING
 import pytest
 
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
+from opengeodeweb_viewer.rpc.mesh.points.attribute.vertex.points_attribute_vertex_protocols import (
+    VtkMeshPointsAttributeVertexView,
+)
 
 # Third party imports
 # Local application imports
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 # Local application imports
+from tests.mesh.points.attribute.vertex.test_points_attribute_vertex_protocols import (
+    mesh_id as points_mesh_id,
+)
+from tests.mesh.points.attribute.vertex.test_points_attribute_vertex_protocols import (
+    test_register as test_register_points,
+)
 from tests.mesh.test_mesh_protocols import test_register_mesh
 
 if TYPE_CHECKING:
@@ -47,6 +56,44 @@ def test_set_viewer_background_color(server: ServerMonitor) -> None:
         [{"color": {"r": 0, "g": 0, "b": 255}}],
     )
     assert server.compare_image("viewer/set_background_color.jpeg")
+
+
+def test_set_text_style(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    test_grid_scale(server, dataset_factory)
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
+        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "courier", "opacity": 0.5}],
+    )
+    assert server.compare_image("viewer/set_text_style.jpeg")
+
+
+def test_set_text_style_then_attribute(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_reset_visualization(server)
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
+        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "times", "opacity": 1.0}],
+    )
+    test_register_points(server, dataset_factory)
+    server.call(
+        VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_prefix
+        + VtkMeshPointsAttributeVertexView.mesh_points_attribute_vertex_schemas_dict["attribute"][
+            "rpc"
+        ],
+        [
+            {
+                "id": points_mesh_id,
+                "name": "lambert2SG",
+                "item": 0,
+                "points": [0.0, 0, 0, 1.0, 1.0, 1.0, 0, 0],
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "no_data_color": {"red": 128, "green": 128, "blue": 128, "alpha": 1.0},
+            }
+        ],
+    )
+    assert server.compare_image("viewer/set_text_style_then_attribute.jpeg")
 
 
 def test_get_point_position(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
@@ -205,6 +252,52 @@ def test_axes(server: ServerMonitor) -> None:
         [{"visibility": False}],
     )
 
+    assert server.compare_image("viewer/axes_off.jpeg")
+
+
+def test_set_orientation_widget_compass(server: ServerMonitor) -> None:
+    test_reset_visualization(server)
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
+        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "arial", "opacity": 1.0}],
+    )
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"],
+        [{"marker": "compass"}],
+    )
+    assert server.compare_image("viewer/orientation_widget_compass.jpeg")
+
+    test_reset_visualization(server)
+
+
+def test_set_text_style_after_compass(server: ServerMonitor) -> None:
+    test_reset_visualization(server)
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"],
+        [{"marker": "compass"}],
+    )
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
+        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "arial", "opacity": 1.0}],
+    )
+    assert server.compare_image("viewer/orientation_widget_compass.jpeg")
+
+    test_reset_visualization(server)
+
+
+def test_orientation_widget_keeps_visibility(server: ServerMonitor) -> None:
+    test_reset_visualization(server)
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["axes"]["rpc"],
+        [{"visibility": False}],
+    )
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"],
+        [{"marker": "compass"}],
+    )
     assert server.compare_image("viewer/axes_off.jpeg")
 
 
