@@ -21,6 +21,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkImplicitBoolean,
     vtkMultiBlockDataSet,
     vtkPlane,
+    vtkPointSet,
     vtkSelectionNode,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
@@ -216,18 +217,23 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         pipeline.filter.SetInputConnection(current_input_port)
         pipeline.filter.Update()
         filtered_dataset = pipeline.filter.GetOutputDataObject(0)
+        if isinstance(filtered_dataset, vtkPointSet) and (points := filtered_dataset.GetPoints()):
+            # Unfiltered input points are passed through, older than the cached filtered bounds
+            points.Modified()
         if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
             if pipeline.explode_factor > 0 and isinstance(filtered_dataset, vtkMultiBlockDataSet):
                 filtered_dataset = pipeline.explode_blocks(filtered_dataset)
             pipeline.sync_composite_pipeline(filtered_dataset)
-            return
-        pipeline.connect_mappers()
-        target_dataset = (
-            cast("vtkDataSet", filtered_dataset)
-            if active_filters or pipeline.slice_filter is not None
-            else pipeline.reader.GetOutputAsDataSet()
-        )
-        pipeline.restore_active_scalars(target_dataset)
+        else:
+            pipeline.connect_mappers()
+            target_dataset = (
+                cast("vtkDataSet", filtered_dataset)
+                if active_filters or pipeline.slice_filter is not None
+                else pipeline.reader.GetOutputAsDataSet()
+            )
+            pipeline.restore_active_scalars(target_dataset)
+        # A shown grid scale keeps its bounds on render, so refit it on geometry changes
+        self.fit_grid_scale()
 
     def set_clipping_planes(self, data_ids: list[str], planes_data: list[Plane]) -> None:
         for data_id in data_ids:
@@ -432,6 +438,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     dist = self._axis_display_length(renderer, final_bounds, axis)
                     self._update_grid_scale_axis_labels(grid_scale, final_bounds, axis, dist)
         self.reset_camera_clipping_range()
+
+    def fit_grid_scale(self) -> None:
+        grid_scale = self.get_grid_scale()
+        if grid_scale is not None:
+            self._fit_grid_scale_to_visible_props(grid_scale, self.get_renderer())
 
     @staticmethod
     def _fit_grid_scale_to_visible_props(
