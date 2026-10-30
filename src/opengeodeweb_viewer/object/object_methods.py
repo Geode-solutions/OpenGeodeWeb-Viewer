@@ -254,8 +254,6 @@ class VtkObjectView(VtkView):
         mapper = vtkDataSetMapper()
         mapper.SetInputConnection(pipeline.filter.GetOutputPort())
         mapper.ScalarVisibilityOff()
-        # No line offset here: the Resolve* setters are global and would pull every
-        # line in front of the surfaces hiding it
         actor = vtkActor()
         actor.SetMapper(mapper)
         actor.PickableOff()
