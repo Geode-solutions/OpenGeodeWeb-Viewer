@@ -441,9 +441,17 @@ export interface MeshApplyTexturesResponse {
 export interface MeshApplyBasemapParams {
     columns:      number;
     id:           string;
+    layers:       MapState[];
     maps:         Map[];
     rows:         number;
     tiles_folder: string;
+}
+
+export interface MapState {
+    crop:    boolean;
+    map:     string;
+    opacity: number;
+    visible: boolean;
 }
 
 export interface Map {

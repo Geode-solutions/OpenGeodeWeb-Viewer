@@ -43,6 +43,37 @@
         ],
         "additionalProperties": false
       }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "title": "MapState",
+        "type": "object",
+        "properties": {
+          "map": {
+            "type": "string",
+            "minLength": 1
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "crop": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "map",
+          "visible",
+          "opacity",
+          "crop"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [
@@ -50,7 +81,8 @@
     "tiles_folder",
     "columns",
     "rows",
-    "maps"
+    "maps",
+    "layers"
   ],
   "additionalProperties": false,
   "response": {

@@ -121,6 +121,7 @@ def _apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str]) -
                 "columns": 2,
                 "rows": 2,
                 "maps": [{"map": "satellite", "sources": ["base"]}],
+                "layers": [{"map": "satellite", "visible": True, "opacity": 1.0, "crop": False}],
             }
         ],
     )

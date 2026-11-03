@@ -79,6 +79,16 @@ def test_nothing_visible_is_transparent() -> None:
     assert compose([], SHAPE)[0, 0, 3] == 0
 
 
+def test_map_around_is_the_drape_when_nothing_is_cropped() -> None:
+    maps = [("satellite", ["s"]), ("routes", ["r"])]
+    images = {"s": SATELLITE, "r": ROADS}
+    full, around = textures(
+        maps, images, {"satellite": LayerState(), "routes": LayerState()}, SHAPE
+    )
+    # Nothing cropped: one composition for both textures
+    assert around is full
+
+
 def test_cropped_maps_stay_out_of_the_map_around() -> None:
     maps = [("satellite", ["s"]), ("routes", ["r"])]
     images = {"s": SATELLITE, "r": ROADS}

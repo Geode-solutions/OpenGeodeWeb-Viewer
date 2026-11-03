@@ -64,6 +64,10 @@ def style_basemap(actor: vtkActor, mapper: vtkMapper) -> None:
     mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, BASEMAP_POLYGON_OFFSET_UNITS)
 
 
+def _layer_states(layers: list[schemas.MapState] | list[schemas.Layer]) -> dict[str, LayerState]:
+    return {layer.map: LayerState(layer.visible, layer.opacity, layer.crop) for layer in layers}
+
+
 class VtkMeshView(VtkObjectView):
     mesh_prefix = "opengeodeweb_viewer.mesh."
     mesh_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
@@ -154,7 +158,7 @@ class VtkMeshView(VtkObjectView):
             source: mosaic(source_tiles, params.columns, params.rows, size)
             for source, source_tiles in tiles.items()
         }
-        pipeline.basemap_states = {name: LayerState() for name, _ in pipeline.basemap_maps}
+        pipeline.basemap_states = _layer_states(params.layers)
         output = pipeline.reader.GetOutputAsDataSet()
         output.GetPointData().SetTCoords(output.GetPointData().GetArray("basemap_uv"))
         pipeline.filter.Modified()
@@ -169,10 +173,7 @@ class VtkMeshView(VtkObjectView):
     @typed_rpc(mesh_prefix, schemas.basemap_layers_route)
     def mesh_basemap_layers(self, params: schemas.BasemapLayers) -> schemas.BasemapLayersResponse:
         pipeline = self.get_vtk_pipeline(params.id)
-        pipeline.basemap_states = {
-            layer.map: LayerState(layer.visible, layer.opacity, layer.crop)
-            for layer in params.layers
-        }
+        pipeline.basemap_states = _layer_states(params.layers)
         first = next(iter(pipeline.basemap_images.values()), None)
         shape = (0, 0) if first is None else (first.shape[0], first.shape[1])
         self._compose_basemap(pipeline, shape)
@@ -183,7 +184,12 @@ class VtkMeshView(VtkObjectView):
             pipeline.basemap_maps, pipeline.basemap_images, pipeline.basemap_states, shape
         )
         pipeline.full_texture = basemap_texture(full)
-        pipeline.around_texture = None if around is None else basemap_texture(around)
+        # One composition for both when nothing is cropped: share its texture
+        pipeline.around_texture = (
+            pipeline.full_texture
+            if around is full
+            else (None if around is None else basemap_texture(around))
+        )
         self.mark_basemaps_dirty()
 
     @typed_rpc(mesh_prefix, schemas.basemap_drape_route)

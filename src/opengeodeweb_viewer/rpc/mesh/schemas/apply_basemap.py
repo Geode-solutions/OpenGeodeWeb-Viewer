@@ -7,6 +7,17 @@ from typing import List
 
 
 @dataclass
+class MapState(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    crop: bool
+    map: str
+    opacity: float
+    visible: bool
+
+
+@dataclass
 class Map(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
@@ -22,6 +33,7 @@ class ApplyBasemap(DataClassJsonMixin):
 
     columns: int
     id: str
+    layers: List[MapState]
     maps: List[Map]
     rows: int
     tiles_folder: str
@@ -41,4 +53,4 @@ apply_basemap_route = Route(
     response=ApplyBasemapResponse,
 )
 
-__all__ = ["Map", "ApplyBasemap", "ApplyBasemapResponse", "apply_basemap_route"]
+__all__ = ["MapState", "Map", "ApplyBasemap", "ApplyBasemapResponse", "apply_basemap_route"]
