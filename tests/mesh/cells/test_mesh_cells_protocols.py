@@ -46,6 +46,18 @@ def test_cells_color(server: ServerMonitor, dataset_factory: Callable[..., str])
     assert server.compare_image("mesh/cells/color.jpeg")
 
 
+def test_cells_opacity(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["opacity"]["rpc"],
+        [{"id": mesh_id, "opacity": 0.5}],
+    )
+    assert server.compare_image("mesh/cells/opacity.jpeg")
+
+
 def test_cells_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)

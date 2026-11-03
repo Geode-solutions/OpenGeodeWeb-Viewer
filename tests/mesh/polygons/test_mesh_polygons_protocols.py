@@ -84,3 +84,15 @@ def test_polygons_shrink(server: ServerMonitor, dataset_factory: Callable[..., s
         ],
     )
     assert server.compare_image("mesh/polygons/shrink.jpeg")
+
+
+def test_polygons_opacity(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["opacity"]["rpc"],
+        [{"id": mesh_id, "opacity": 0.5}],
+    )
+    assert server.compare_image("mesh/polygons/opacity.jpeg")

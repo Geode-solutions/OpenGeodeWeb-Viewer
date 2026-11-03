@@ -50,6 +50,17 @@ def test_polyhedra_color(server: ServerMonitor, dataset_factory: Callable[..., s
     assert server.compare_image("mesh/polyhedra/color.jpeg")
 
 
+def test_polyhedra_opacity(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    test_register_mesh(server, dataset_factory)
+
+    server.call(
+        VtkMeshPolyhedraView.mesh_polyhedra_prefix
+        + VtkMeshPolyhedraView.mesh_polyhedra_schemas_dict["opacity"]["rpc"],
+        [{"id": mesh_id, "opacity": 0.5}],
+    )
+    assert server.compare_image("mesh/polyhedra/opacity.jpeg")
+
+
 def test_polyhedra_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
