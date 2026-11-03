@@ -545,15 +545,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if grid_scale is not None:
             renderer = self.get_renderer()
             if not grid_scale.GetVisibility():
-                # The basemap spans a margin around the data: the grid measures the data
-                basemaps = {
-                    actor
-                    for pipeline in self.get_data_base().values()
-                    if pipeline.basemap
-                    for actor in (pipeline.actor, pipeline.drape_actor)
-                    if actor is not None
-                }
-                self.fit_grid_scale_to_visible_props(grid_scale, renderer, basemaps)
+                self.fit_grid_scale_to_visible_props(grid_scale, renderer, self.basemap_actors())
             final_bounds = list(grid_scale.GetBounds())
             if final_bounds[0] <= final_bounds[1]:
                 for axis in range(3):
@@ -561,10 +553,22 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     self._update_grid_scale_axis_labels(grid_scale, final_bounds, axis, dist)
         self.reset_camera_clipping_range()
 
+    def basemap_actors(self) -> set[vtkProp]:
+        """The basemap spans a margin around the data: the grid measures the data."""
+        return {
+            actor
+            for pipeline in self.get_data_base().values()
+            if pipeline.basemap
+            for actor in (pipeline.actor, pipeline.drape_actor)
+            if actor is not None
+        }
+
     def fit_grid_scale(self) -> None:
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
-            self._fit_grid_scale_to_visible_props(grid_scale, self.get_renderer())
+            self.fit_grid_scale_to_visible_props(
+                grid_scale, self.get_renderer(), self.basemap_actors()
+            )
 
     @staticmethod
     def fit_grid_scale_to_visible_props(
