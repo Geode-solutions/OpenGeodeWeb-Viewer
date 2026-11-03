@@ -94,7 +94,7 @@ def textures(
         (name, sources) for name, sources in visible if not states.get(name, LayerState()).crop
     ]
     full = compose(layers(visible), shape)
-    if len(around) == len(visible):
+    if visible and len(around) == len(visible):
         return full, full
     return full, compose(layers(around), shape) if around else None
 

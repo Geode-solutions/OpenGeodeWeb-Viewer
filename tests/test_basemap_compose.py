@@ -89,6 +89,14 @@ def test_map_around_is_the_drape_when_nothing_is_cropped() -> None:
     assert around is full
 
 
+def test_no_map_around_when_no_map_is_visible() -> None:
+    maps = [("satellite", ["s"]), ("routes", ["r"])]
+    images = {"s": SATELLITE, "r": ROADS}
+    states = {"satellite": LayerState(visible=False), "routes": LayerState(visible=False)}
+    _, around = textures(maps, images, states, SHAPE)
+    assert around is None
+
+
 def test_cropped_maps_stay_out_of_the_map_around() -> None:
     maps = [("satellite", ["s"]), ("routes", ["r"])]
     images = {"s": SATELLITE, "r": ROADS}
