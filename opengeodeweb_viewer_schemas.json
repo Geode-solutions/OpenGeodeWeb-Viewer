@@ -246,6 +246,34 @@
             "additionalProperties": false
           }
         },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.cells.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
         "color": {
           "$id": "opengeodeweb_viewer.mesh.cells.color",
           "rpc": "color",
@@ -978,6 +1006,34 @@
             "additionalProperties": false
           }
         },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
         "color": {
           "$id": "opengeodeweb_viewer.mesh.polygons.color",
           "rpc": "color",
@@ -1220,6 +1276,34 @@
           "required": [
             "id",
             "visibility"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
           ],
           "additionalProperties": false,
           "response": {

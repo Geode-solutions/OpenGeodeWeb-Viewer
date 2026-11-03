@@ -70,6 +70,14 @@ export interface MeshCellsVisibilityParams {
 export interface MeshCellsVisibilityResponse {
 }
 
+export interface MeshCellsOpacityParams {
+    id:      string;
+    opacity: number;
+}
+
+export interface MeshCellsOpacityResponse {
+}
+
 export interface MeshCellsColorParams {
     color: MeshCellsColorParamsColor;
     id:    string;
@@ -272,6 +280,14 @@ export interface MeshPolygonsVisibilityParams {
 export interface MeshPolygonsVisibilityResponse {
 }
 
+export interface MeshPolygonsOpacityParams {
+    id:      string;
+    opacity: number;
+}
+
+export interface MeshPolygonsOpacityResponse {
+}
+
 export interface MeshPolygonsColorParams {
     color: MeshPolygonsColorParamsColor;
     id:    string;
@@ -339,6 +355,14 @@ export interface MeshPolyhedraVisibilityParams {
 }
 
 export interface MeshPolyhedraVisibilityResponse {
+}
+
+export interface MeshPolyhedraOpacityParams {
+    id:      string;
+    opacity: number;
+}
+
+export interface MeshPolyhedraOpacityResponse {
 }
 
 export interface MeshPolyhedraColorParams {
@@ -1408,6 +1432,7 @@ export interface Schemas {
           };
         };
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["visibility"] & TypedSchema<MeshCellsVisibilityParams, MeshCellsVisibilityResponse>;
+        readonly opacity: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["opacity"] & TypedSchema<MeshCellsOpacityParams, MeshCellsOpacityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["cells"]["color"] & TypedSchema<MeshCellsColorParams, MeshCellsColorResponse>;
       };
       readonly edges: {
@@ -1443,6 +1468,7 @@ export interface Schemas {
           };
         };
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["visibility"] & TypedSchema<MeshPolygonsVisibilityParams, MeshPolygonsVisibilityResponse>;
+        readonly opacity: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["opacity"] & TypedSchema<MeshPolygonsOpacityParams, MeshPolygonsOpacityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["polygons"]["color"] & TypedSchema<MeshPolygonsColorParams, MeshPolygonsColorResponse>;
       };
       readonly polyhedra: {
@@ -1455,6 +1481,7 @@ export interface Schemas {
           };
         };
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["visibility"] & TypedSchema<MeshPolyhedraVisibilityParams, MeshPolyhedraVisibilityResponse>;
+        readonly opacity: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["opacity"] & TypedSchema<MeshPolyhedraOpacityParams, MeshPolyhedraOpacityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["polyhedra"]["color"] & TypedSchema<MeshPolyhedraColorParams, MeshPolyhedraColorResponse>;
       };
       readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["visibility"] & TypedSchema<MeshVisibilityParams, MeshVisibilityResponse>;

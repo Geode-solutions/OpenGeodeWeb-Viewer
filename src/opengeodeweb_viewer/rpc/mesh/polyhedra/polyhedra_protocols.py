@@ -30,3 +30,8 @@ class VtkMeshPolyhedraView(VtkMeshView):
         color = params.color
         self.set_color(params.id, color)
         return schemas.ColorResponse()
+
+    @typed_rpc(mesh_polyhedra_prefix, schemas.opacity_route)
+    def set_mesh_polyhedra_opacity(self, params: schemas.Opacity) -> schemas.OpacityResponse:
+        self.set_opacity(params.id, params.opacity)
+        return schemas.OpacityResponse()
