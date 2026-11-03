@@ -175,11 +175,15 @@ class VtkMeshView(VtkObjectView):
         pipeline = self.get_vtk_pipeline(params.id)
         pipeline.basemap_states = _layer_states(params.layers)
         first = next(iter(pipeline.basemap_images.values()), None)
-        shape = (0, 0) if first is None else (first.shape[0], first.shape[1])
-        self._compose_basemap(pipeline, shape)
+        # Before apply_basemap there is no image to compose
+        if first is None:
+            return schemas.BasemapLayersResponse()
+        self._compose_basemap(pipeline, (first.shape[0], first.shape[1]), rebuild_drape=False)
         return schemas.BasemapLayersResponse()
 
-    def _compose_basemap(self, pipeline: VtkPipeline, shape: tuple[int, int]) -> None:
+    def _compose_basemap(
+        self, pipeline: VtkPipeline, shape: tuple[int, int], *, rebuild_drape: bool = True
+    ) -> None:
         full, around = textures(
             pipeline.basemap_maps, pipeline.basemap_images, pipeline.basemap_states, shape
         )
@@ -190,7 +194,11 @@ class VtkMeshView(VtkObjectView):
             if around is full
             else (None if around is None else basemap_texture(around))
         )
-        self.mark_basemaps_dirty()
+        if rebuild_drape:
+            self.mark_basemaps_dirty()
+        else:
+            # Same geometry: the existing actors only get the new textures
+            self.retexture_basemap(pipeline)
 
     @typed_rpc(mesh_prefix, schemas.basemap_drape_route)
     def mesh_basemap_drape(self, params: schemas.BasemapDrape) -> schemas.BasemapDrapeResponse:

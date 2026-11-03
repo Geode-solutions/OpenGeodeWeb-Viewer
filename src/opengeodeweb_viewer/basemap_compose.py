@@ -79,20 +79,20 @@ def textures(
     shape: tuple[int, int],
 ) -> tuple[np.ndarray, np.ndarray | None]:
     """Every visible map for the drape; the visible maps not cropped for the map around."""
-    visible = [(name, sources) for name, sources in maps if states.get(name, LayerState()).visible]
+    # A map the front did not describe is not shown
+    hidden = LayerState(visible=False)
+    visible = [(name, sources) for name, sources in maps if states.get(name, hidden).visible]
 
     def layers(names: list[tuple[str, list[str]]]) -> list[tuple[list[np.ndarray], float]]:
         return [
             (
                 [images[source] for source in sources if source in images],
-                states.get(name, LayerState()).opacity,
+                states.get(name, hidden).opacity,
             )
             for name, sources in names
         ]
 
-    around = [
-        (name, sources) for name, sources in visible if not states.get(name, LayerState()).crop
-    ]
+    around = [(name, sources) for name, sources in visible if not states.get(name, hidden).crop]
     full = compose(layers(visible), shape)
     if visible and len(around) == len(visible):
         return full, full

@@ -365,11 +365,19 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             draped_bottom = min(surface.GetBounds()[4] for surface in draped)
         lift = flat_map_lift(basemap_top, draped_bottom, basemap_lift(basemap_top, exploded_tops))
         basemap.actor.SetPosition(0.0, 0.0, lift)
+        self.retexture_basemap(basemap)
+
+    def retexture_basemap(self, basemap: VtkPipeline) -> None:
+        if basemap.full_texture is None:
+            return
+        draped = basemap.drape_actor is not None
+        if basemap.drape_actor is not None:
+            basemap.drape_actor.SetTexture(basemap.full_texture)
         basemap.actor.SetTexture(
-            flat_texture(basemap.full_texture, basemap.around_texture, draped=bool(draped))
+            flat_texture(basemap.full_texture, basemap.around_texture, draped=draped)
         )
         basemap.actor.SetVisibility(
-            flat_map_visible(around=basemap.around_texture is not None, draped=bool(draped))
+            flat_map_visible(around=basemap.around_texture is not None, draped=draped)
         )
 
     def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
