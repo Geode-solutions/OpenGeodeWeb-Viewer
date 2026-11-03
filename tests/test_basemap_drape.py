@@ -5,13 +5,11 @@ import pytest
 from vtkmodules.vtkCommonCore import reference, vtkFloatArray
 from vtkmodules.vtkFiltersSources import vtkPlaneSource
 from vtkmodules.vtkIOXML import vtkXMLPolyDataReader, vtkXMLPolyDataWriter
-from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkTexture
+from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkTexture
 
 from opengeodeweb_viewer.basemap_drape import (
-    BASEMAP_LAYERS,
     DRAPE_POLYGON_OFFSET_UNITS,
     drape_actor,
-    drape_offset_units,
     drape_polydata,
     flat_map_lift,
     flat_map_visible,
@@ -130,21 +128,10 @@ def test_drape_stays_behind_edges_points_and_highlight() -> None:
     assert -2 < DRAPE_POLYGON_OFFSET_UNITS < 0
 
 
-def test_stacked_drapes_stay_behind_points_and_highlight() -> None:
-    # The top drape is pulled the furthest, still behind the points and the highlight
-    offsets = [drape_offset_units(layer) for layer in range(BASEMAP_LAYERS)]
-    assert offsets == sorted(offsets, reverse=True)
-    assert -2 < offsets[-1] < offsets[0] < 0
-
-
-def test_drape_actor_copies_the_basemap_look() -> None:
-    basemap_actor = vtkActor()
+def test_drape_actor_shows_the_full_texture() -> None:
     texture = vtkTexture()
-    basemap_actor.SetTexture(texture)
-    basemap_actor.GetProperty().SetOpacity(0.4)
-    actor = drape_actor(_horizontal(0), basemap_actor, 0)
+    actor = drape_actor(_horizontal(0), texture)
     assert actor.GetTexture() is texture
-    assert actor.GetProperty().GetOpacity() == pytest.approx(0.4)
     assert not actor.GetPickable()
     assert not actor.GetProperty().GetLighting()
     factor, units = reference(0.0), reference(0.0)

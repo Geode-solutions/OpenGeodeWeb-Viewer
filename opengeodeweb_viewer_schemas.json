@@ -1440,9 +1440,9 @@
           "additionalProperties": false
         }
       },
-      "basemap_opacity": {
-        "$id": "opengeodeweb_viewer.mesh.basemap_opacity",
-        "rpc": "basemap_opacity",
+      "basemap_layers": {
+        "$id": "opengeodeweb_viewer.mesh.basemap_layers",
+        "rpc": "basemap_layers",
         "type": "object",
         "properties": {
           "id": {
@@ -1450,15 +1450,40 @@
             "minLength": 32,
             "maxLength": 32
           },
-          "opacity": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
+          "layers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "map": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "visible": {
+                  "type": "boolean"
+                },
+                "opacity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "crop": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "map",
+                "visible",
+                "opacity",
+                "crop"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
           "id",
-          "opacity"
+          "layers"
         ],
         "additionalProperties": false,
         "response": {
@@ -1478,9 +1503,6 @@
             "minLength": 32,
             "maxLength": 32
           },
-          "around": {
-            "type": "boolean"
-          },
           "data_ids": {
             "type": "array",
             "items": {
@@ -1490,7 +1512,6 @@
         },
         "required": [
           "id",
-          "around",
           "data_ids"
         ],
         "additionalProperties": false,
@@ -1569,10 +1590,30 @@
             "type": "integer",
             "minimum": 1
           },
-          "layer": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 2
+          "maps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "map": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "map",
+                "sources"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -1580,7 +1621,7 @@
           "tiles_folder",
           "columns",
           "rows",
-          "layer"
+          "maps"
         ],
         "additionalProperties": false,
         "response": {

@@ -11,7 +11,6 @@ class BasemapDrape(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    around: bool
     data_ids: List[str]
     id: str
 

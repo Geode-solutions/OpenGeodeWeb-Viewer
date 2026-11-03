@@ -402,16 +402,22 @@ export interface MeshColorParamsColor {
 export interface MeshColorResponse {
 }
 
-export interface MeshBasemapOpacityParams {
-    id:      string;
-    opacity: number;
+export interface MeshBasemapLayersParams {
+    id:     string;
+    layers: Layer[];
 }
 
-export interface MeshBasemapOpacityResponse {
+export interface Layer {
+    crop:    boolean;
+    map:     string;
+    opacity: number;
+    visible: boolean;
+}
+
+export interface MeshBasemapLayersResponse {
 }
 
 export interface MeshBasemapDrapeParams {
-    around:   boolean;
     data_ids: string[];
     id:       string;
 }
@@ -435,9 +441,14 @@ export interface MeshApplyTexturesResponse {
 export interface MeshApplyBasemapParams {
     columns:      number;
     id:           string;
-    layer:        number;
+    maps:         Map[];
     rows:         number;
     tiles_folder: string;
+}
+
+export interface Map {
+    map:     string;
+    sources: string[];
 }
 
 export interface MeshApplyBasemapResponse {
@@ -1490,7 +1501,7 @@ export interface Schemas {
       readonly highlight: (typeof json)["opengeodeweb_viewer"]["mesh"]["highlight"] & TypedSchema<MeshHighlightParams, MeshHighlightResponse>;
       readonly deregister: (typeof json)["opengeodeweb_viewer"]["mesh"]["deregister"] & TypedSchema<MeshDeregisterParams, MeshDeregisterResponse>;
       readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["color"] & TypedSchema<MeshColorParams, MeshColorResponse>;
-      readonly basemap_opacity: (typeof json)["opengeodeweb_viewer"]["mesh"]["basemap_opacity"] & TypedSchema<MeshBasemapOpacityParams, MeshBasemapOpacityResponse>;
+      readonly basemap_layers: (typeof json)["opengeodeweb_viewer"]["mesh"]["basemap_layers"] & TypedSchema<MeshBasemapLayersParams, MeshBasemapLayersResponse>;
       readonly basemap_drape: (typeof json)["opengeodeweb_viewer"]["mesh"]["basemap_drape"] & TypedSchema<MeshBasemapDrapeParams, MeshBasemapDrapeResponse>;
       readonly apply_textures: (typeof json)["opengeodeweb_viewer"]["mesh"]["apply_textures"] & TypedSchema<MeshApplyTexturesParams, MeshApplyTexturesResponse>;
       readonly apply_basemap: (typeof json)["opengeodeweb_viewer"]["mesh"]["apply_basemap"] & TypedSchema<MeshApplyBasemapParams, MeshApplyBasemapResponse>;

@@ -10,10 +10,8 @@ from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkPlaneSource
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
 from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkPolyDataMapper, vtkRenderer
 
-from opengeodeweb_viewer.basemap_drape import BASEMAP_LAYERS
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     VtkMeshView,
-    basemap_offset_units,
     check_tiles_folder,
     style_basemap,
 )
@@ -116,7 +114,15 @@ def _apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str]) -
     )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["apply_basemap"]["rpc"],
-        [{"id": basemap_id, "tiles_folder": "basemap_tiles", "columns": 2, "rows": 2, "layer": 0}],
+        [
+            {
+                "id": basemap_id,
+                "tiles_folder": "basemap_tiles",
+                "columns": 2,
+                "rows": 2,
+                "maps": [{"map": "satellite", "sources": ["base"]}],
+            }
+        ],
     )
     return basemap_id
 
@@ -126,29 +132,34 @@ def test_apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str
     assert server.compare_image("mesh/apply_basemap.jpeg")
 
 
-def test_basemap_opacity(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+def test_basemap_layers(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     basemap_id = _apply_basemap(server, dataset_factory)
     server.call(
-        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["basemap_opacity"]["rpc"],
-        [{"id": basemap_id, "opacity": 0.5}],
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["basemap_layers"]["rpc"],
+        [
+            {
+                "id": basemap_id,
+                "layers": [{"map": "satellite", "visible": True, "opacity": 0.5, "crop": False}],
+            }
+        ],
     )
-    assert server.compare_image("mesh/basemap_opacity.jpeg")
+    assert server.compare_image("mesh/basemap_layers.jpeg")
 
 
 def test_basemap_drape(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     basemap_id = _apply_basemap(server, dataset_factory)
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["basemap_drape"]["rpc"],
-        [{"id": basemap_id, "around": False, "data_ids": []}],
+        [{"id": basemap_id, "data_ids": []}],
     )
-    # Nothing to drape: the flat map stays, whatever "Map around" says
+    # Nothing to drape: the flat map stays
     assert server.compare_image("mesh/apply_basemap.jpeg")
 
 
 def test_basemap_style_stays_behind_the_data() -> None:
     actor = vtkActor()
     mapper = vtkDataSetMapper()
-    style_basemap(actor, mapper, BASEMAP_LAYERS - 1)
+    style_basemap(actor, mapper)
     # A constant offset pushes the basemap away from flat data at the same height,
     # without a slope factor that would let the data sides show through at grazing angles
     factor, units = reference(0.0), reference(0.0)
@@ -156,13 +167,6 @@ def test_basemap_style_stays_behind_the_data() -> None:
     assert (factor.get(), units.get()) == (0.0, 4.0)
     assert not actor.GetPickable()
     assert not actor.GetProperty().GetLighting()
-
-
-def test_lower_basemaps_stay_behind_upper_ones() -> None:
-    # Coincident maps shown together: the bottom map is the furthest behind
-    offsets = [basemap_offset_units(layer) for layer in range(BASEMAP_LAYERS)]
-    assert offsets == sorted(offsets, reverse=True)
-    assert len(set(offsets)) == BASEMAP_LAYERS
 
 
 @pytest.mark.parametrize("name", ["", ".", "..", "../other", "a/b", "a\\b", "/etc"])

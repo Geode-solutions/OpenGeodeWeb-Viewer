@@ -3,6 +3,16 @@ from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
+class Map(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    map: str
+    sources: List[str]
 
 
 @dataclass
@@ -12,7 +22,7 @@ class ApplyBasemap(DataClassJsonMixin):
 
     columns: int
     id: str
-    layer: int
+    maps: List[Map]
     rows: int
     tiles_folder: str
 
@@ -31,4 +41,4 @@ apply_basemap_route = Route(
     response=ApplyBasemapResponse,
 )
 
-__all__ = ["ApplyBasemap", "ApplyBasemapResponse", "apply_basemap_route"]
+__all__ = ["Map", "ApplyBasemap", "ApplyBasemapResponse", "apply_basemap_route"]

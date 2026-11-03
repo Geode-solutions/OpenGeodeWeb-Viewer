@@ -39,6 +39,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.web import protocols as vtk_protocols
 
+from opengeodeweb_viewer.basemap_compose import flat_texture
 from opengeodeweb_viewer.basemap_drape import (
     drape_actor,
     drape_polydata,
@@ -354,15 +355,22 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         basemap_dataset = cast("vtkPolyData", basemap.reader.GetOutputAsDataSet())
         basemap_top = basemap_dataset.GetBounds()[5]
         draped_bottom = None
+        if basemap.full_texture is None:
+            return
         if draped:
             basemap.drape_actor = drape_actor(
-                drape_polydata(draped, basemap_dataset), basemap.actor, basemap.basemap_layer
+                drape_polydata(draped, basemap_dataset), basemap.full_texture
             )
             renderer.AddActor(basemap.drape_actor)
             draped_bottom = min(surface.GetBounds()[4] for surface in draped)
         lift = flat_map_lift(basemap_top, draped_bottom, basemap_lift(basemap_top, exploded_tops))
         basemap.actor.SetPosition(0.0, 0.0, lift)
-        basemap.actor.SetVisibility(flat_map_visible(around=basemap.around, draped=bool(draped)))
+        basemap.actor.SetTexture(
+            flat_texture(basemap.full_texture, basemap.around_texture, draped=bool(draped))
+        )
+        basemap.actor.SetVisibility(
+            flat_map_visible(around=basemap.around_texture is not None, draped=bool(draped))
+        )
 
     def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
         for data_id in data_ids:

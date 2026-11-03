@@ -4,16 +4,12 @@ import logging
 
 # Standard library imports
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from opengeodeweb_microservice.database.data import Data
 
 # Third party imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
-from vtkmodules.vtkFiltersCore import vtkImageAppend
-from vtkmodules.vtkImagingCore import vtkImageExtractComponents
-from vtkmodules.vtkImagingSources import vtkImageCanvasSource2D
-from vtkmodules.vtkIOImage import vtkImageReader2Factory
 from vtkmodules.vtkIOXML import vtkXMLGenericDataObjectReader, vtkXMLImageDataReader
 from vtkmodules.vtkRenderingCore import (
     vtkDataSetMapper,
@@ -21,7 +17,13 @@ from vtkmodules.vtkRenderingCore import (
 )
 
 # Local application imports
-from opengeodeweb_viewer.basemap_drape import BASEMAP_LAYERS
+from opengeodeweb_viewer.basemap_compose import (
+    LayerState,
+    basemap_texture,
+    mosaic,
+    read_tiles,
+    textures,
+)
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.utils_functions import (
@@ -33,20 +35,16 @@ from opengeodeweb_viewer.vtk_pipeline import ColorMapKey, VtkPipeline
 from . import schemas
 
 if TYPE_CHECKING:
-    from vtkmodules.vtkCommonDataModel import vtkImageData
     from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
     from vtkmodules.vtkRenderingCore import vtkActor, vtkMapper
 
 logger = logging.getLogger(__name__)
 
-MISSING_TILE_GREY = 128
 DEFAULT_TILE_SIZE = 256
 # Added to the global offset (2, 0) of every mapper: the basemap is drawn behind flat data.
 # Only a constant depth offset: a slope factor would grow at grazing angles and let the
 # data sides just under the basemap show through it
 BASEMAP_POLYGON_OFFSET_UNITS = 4.0
-# Coincident maps shown together: each layer below the top one is pushed one unit further
-BASEMAP_LAYER_OFFSET_UNITS = 1.0
 
 
 def check_tiles_folder(name: str) -> None:
@@ -56,30 +54,14 @@ def check_tiles_folder(name: str) -> None:
         raise ValueError(msg)
 
 
-def basemap_offset_units(layer: int) -> float:
-    """Layer 0 is the bottom map: the furthest behind the data."""
-    return BASEMAP_POLYGON_OFFSET_UNITS + BASEMAP_LAYER_OFFSET_UNITS * (BASEMAP_LAYERS - 1 - layer)
-
-
-def style_basemap(actor: vtkActor, mapper: vtkMapper, layer: int) -> None:
+def style_basemap(actor: vtkActor, mapper: vtkMapper) -> None:
     # Map colours must not be shaded, and the basemap must not catch picks
     properties = actor.GetProperty()
     properties.LightingOff()
     properties.SetAmbient(1.0)
     properties.SetDiffuse(0.0)
     actor.PickableOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, basemap_offset_units(layer))
-
-
-def _grey_tile(size: int) -> vtkImageData:
-    canvas = vtkImageCanvasSource2D()
-    canvas.SetScalarTypeToUnsignedChar()
-    canvas.SetNumberOfScalarComponents(3)
-    canvas.SetExtent(0, size - 1, 0, size - 1, 0, 0)
-    canvas.SetDrawColor(MISSING_TILE_GREY, MISSING_TILE_GREY, MISSING_TILE_GREY)
-    canvas.FillBox(0, size - 1, 0, size - 1)
-    canvas.Update()
-    return cast("vtkImageData", canvas.GetOutput())
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, BASEMAP_POLYGON_OFFSET_UNITS)
 
 
 class VtkMeshView(VtkObjectView):
@@ -157,67 +139,59 @@ class VtkMeshView(VtkObjectView):
     @typed_rpc(mesh_prefix, schemas.apply_basemap_route)
     def mesh_apply_basemap(self, params: schemas.ApplyBasemap) -> schemas.ApplyBasemapResponse:
         check_tiles_folder(params.tiles_folder)
-        texture = vtkTexture()
-        texture.SetInputData(self._basemap_image(params))
-        texture.InterpolateOn()
+        folder = Path(self.get_data_file_path(params.id, params.tiles_folder))
         pipeline = self.get_vtk_pipeline(params.id)
+        pipeline.basemap_maps = [(entry.map, list(entry.sources)) for entry in params.maps]
+        sources = [source for _, names in pipeline.basemap_maps for source in names]
+        for source in sources:
+            check_tiles_folder(source)
+        tiles = {source: read_tiles(folder / source) for source in sources}
+        size = next(
+            (tile.shape[0] for source_tiles in tiles.values() for tile in source_tiles.values()),
+            DEFAULT_TILE_SIZE,
+        )
+        pipeline.basemap_images = {
+            source: mosaic(source_tiles, params.columns, params.rows, size)
+            for source, source_tiles in tiles.items()
+        }
+        pipeline.basemap_states = {name: LayerState() for name, _ in pipeline.basemap_maps}
         output = pipeline.reader.GetOutputAsDataSet()
         output.GetPointData().SetTCoords(output.GetPointData().GetArray("basemap_uv"))
         pipeline.filter.Modified()
         pipeline.filter.Update()
-        pipeline.actor.SetTexture(texture)
-        style_basemap(pipeline.actor, pipeline.mapper, params.layer)
-        pipeline.basemap_layer = params.layer
+        style_basemap(pipeline.actor, pipeline.mapper)
         # A basemap rebuilt while the data is clipped or exploded follows it at once
         pipeline.basemap = True
+        self._compose_basemap(pipeline, (params.rows * size, params.columns * size))
         self.clip_basemap(pipeline)
-        self.mark_basemaps_dirty()
         return schemas.ApplyBasemapResponse()
 
-    @typed_rpc(mesh_prefix, schemas.basemap_opacity_route)
-    def mesh_basemap_opacity(
-        self, params: schemas.BasemapOpacity
-    ) -> schemas.BasemapOpacityResponse:
-        self.set_opacity(params.id, params.opacity)
-        drape = self.get_vtk_pipeline(params.id).drape_actor
-        if drape is not None:
-            drape.GetProperty().SetOpacity(params.opacity)
-        return schemas.BasemapOpacityResponse()
+    @typed_rpc(mesh_prefix, schemas.basemap_layers_route)
+    def mesh_basemap_layers(self, params: schemas.BasemapLayers) -> schemas.BasemapLayersResponse:
+        pipeline = self.get_vtk_pipeline(params.id)
+        pipeline.basemap_states = {
+            layer.map: LayerState(layer.visible, layer.opacity, layer.crop)
+            for layer in params.layers
+        }
+        first = next(iter(pipeline.basemap_images.values()), None)
+        shape = (0, 0) if first is None else (first.shape[0], first.shape[1])
+        self._compose_basemap(pipeline, shape)
+        return schemas.BasemapLayersResponse()
+
+    def _compose_basemap(self, pipeline: VtkPipeline, shape: tuple[int, int]) -> None:
+        full, around = textures(
+            pipeline.basemap_maps, pipeline.basemap_images, pipeline.basemap_states, shape
+        )
+        pipeline.full_texture = basemap_texture(full)
+        pipeline.around_texture = None if around is None else basemap_texture(around)
+        self.mark_basemaps_dirty()
 
     @typed_rpc(mesh_prefix, schemas.basemap_drape_route)
     def mesh_basemap_drape(self, params: schemas.BasemapDrape) -> schemas.BasemapDrapeResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         pipeline.drape_ids = list(params.data_ids)
-        pipeline.around = params.around
         self.mark_basemaps_dirty()
         return schemas.BasemapDrapeResponse()
-
-    def _basemap_image(self, params: schemas.ApplyBasemap) -> vtkImageData:
-        """Tiles side by side; row 0 is the north edge, VTK images start at the south."""
-        folder = Path(self.get_data_file_path(params.id, params.tiles_folder))
-        tiles: dict[tuple[int, int], vtkImageData] = {}
-        for path in folder.iterdir():
-            column, row = (int(part) for part in path.stem.split("_"))
-            reader = vtkImageReader2Factory.CreateImageReader2(str(path))
-            reader.SetFileName(str(path))
-            # PNG tiles may be RGBA and JPEG ones RGB: vtkImageAppend needs one component count
-            rgb = vtkImageExtractComponents()
-            rgb.SetInputConnection(reader.GetOutputPort())
-            rgb.SetComponents(0, 1, 2)
-            rgb.Update()
-            tiles[(column, row)] = rgb.GetOutput()
-        size = next(iter(tiles.values())).GetDimensions()[0] if tiles else DEFAULT_TILE_SIZE
-        rows = vtkImageAppend()
-        rows.SetAppendAxis(1)
-        for row in reversed(range(params.rows)):
-            line = vtkImageAppend()
-            line.SetAppendAxis(0)
-            for column in range(params.columns):
-                line.AddInputData(tiles.get((column, row)) or _grey_tile(size))
-            line.Update()
-            rows.AddInputData(line.GetOutput())
-        rows.Update()
-        return cast("vtkImageData", rows.GetOutput())
 
     def display_attribute_on_vertices(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)

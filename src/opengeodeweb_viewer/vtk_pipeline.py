@@ -46,6 +46,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkPolyDataMapper,
     vtkRenderer,
+    vtkTexture,
 )
 from vtkmodules.vtkRenderingFreeType import vtkVectorText
 
@@ -57,6 +58,7 @@ from opengeodeweb_viewer.utils_functions import (
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    import numpy as np
     from opengeodeweb_microservice.database.data_types import (
         ViewerElementsType,
         ViewerType,
@@ -64,6 +66,8 @@ if TYPE_CHECKING:
     from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
     from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
     from vtkmodules.vtkIOXML import vtkXMLReader
+
+    from opengeodeweb_viewer.basemap_compose import LayerState
 
 logger = logging.getLogger(__name__)
 
@@ -277,9 +281,13 @@ class VtkPipeline:
     # Basemap only: its drape over the top surfaces, the georeferenced data and "Map around"
     drape_actor: vtkActor | None = None
     drape_ids: list[str] = field(default_factory=list)
-    around: bool = True
-    # Basemap only: maps shown together are stacked, layer 0 at the bottom
-    basemap_layer: int = 0
+    # Basemap only: its maps and their sources, the source mosaics and the state of each map
+    basemap_maps: list[tuple[str, list[str]]] = field(default_factory=list)
+    basemap_images: dict[str, np.ndarray] = field(default_factory=dict)
+    basemap_states: dict[str, LayerState] = field(default_factory=dict)
+    # Every visible map (drape), and the visible maps not cropped (flat map around)
+    full_texture: vtkTexture | None = None
+    around_texture: vtkTexture | None = None
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)
