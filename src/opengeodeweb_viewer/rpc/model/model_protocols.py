@@ -391,7 +391,6 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputDataObject(pipeline.mapper.GetInputDataObject(0, 0))
             mapper.ScalarVisibilityOn()
             mapper.SetColorModeToMapScalars()
-            mapper.SetResolveCoincidentTopologyLineOffsetParameters(0, -4)
             actor = vtkActor()
             actor.SetMapper(mapper)
             actor.PickableOff()
