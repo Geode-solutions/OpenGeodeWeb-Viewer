@@ -551,6 +551,34 @@
             "additionalProperties": false
           }
         },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.edges.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
         "color": {
           "$id": "opengeodeweb_viewer.mesh.edges.color",
           "rpc": "color",
@@ -746,6 +774,34 @@
           "required": [
             "id",
             "size"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.points.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
           ],
           "additionalProperties": false,
           "response": {

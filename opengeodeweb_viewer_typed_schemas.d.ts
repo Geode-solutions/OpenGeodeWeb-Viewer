@@ -155,6 +155,14 @@ export interface MeshEdgesVisibilityParams {
 export interface MeshEdgesVisibilityResponse {
 }
 
+export interface MeshEdgesOpacityParams {
+    id:      string;
+    opacity: number;
+}
+
+export interface MeshEdgesOpacityResponse {
+}
+
 export interface MeshEdgesColorParams {
     color: MeshEdgesColorParamsColor;
     id:    string;
@@ -209,6 +217,14 @@ export interface MeshPointsSizeParams {
 }
 
 export interface MeshPointsSizeResponse {
+}
+
+export interface MeshPointsOpacityParams {
+    id:      string;
+    opacity: number;
+}
+
+export interface MeshPointsOpacityResponse {
 }
 
 export interface MeshPointsColorParams {
@@ -1446,6 +1462,7 @@ export interface Schemas {
         };
         readonly width: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["width"] & TypedSchema<MeshEdgesWidthParams, MeshEdgesWidthResponse>;
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["visibility"] & TypedSchema<MeshEdgesVisibilityParams, MeshEdgesVisibilityResponse>;
+        readonly opacity: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["opacity"] & TypedSchema<MeshEdgesOpacityParams, MeshEdgesOpacityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["edges"]["color"] & TypedSchema<MeshEdgesColorParams, MeshEdgesColorResponse>;
       };
       readonly points: {
@@ -1456,6 +1473,7 @@ export interface Schemas {
         };
         readonly visibility: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["visibility"] & TypedSchema<MeshPointsVisibilityParams, MeshPointsVisibilityResponse>;
         readonly size: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["size"] & TypedSchema<MeshPointsSizeParams, MeshPointsSizeResponse>;
+        readonly opacity: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["opacity"] & TypedSchema<MeshPointsOpacityParams, MeshPointsOpacityResponse>;
         readonly color: (typeof json)["opengeodeweb_viewer"]["mesh"]["points"]["color"] & TypedSchema<MeshPointsColorParams, MeshPointsColorResponse>;
       };
       readonly polygons: {

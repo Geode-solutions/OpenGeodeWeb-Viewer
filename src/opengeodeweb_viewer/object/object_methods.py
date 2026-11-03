@@ -162,6 +162,14 @@ class VtkObjectView(VtkView):
         self.update_style_scalar_bars_visibility(pipeline)
         self.update_scalar_bars_layout()
 
+    def set_edges_opacity(self, data_id: str, opacity: float) -> None:
+        if self.get_viewer_data(data_id).viewer_elements_type == "edges":
+            self.set_opacity(data_id, opacity)
+            return
+        pipeline = self.get_vtk_pipeline(data_id)
+        if pipeline.edges_actor is not None:
+            pipeline.edges_actor.GetProperty().SetOpacity(opacity)
+
     def set_points_visibility(self, data_id: str, *, visibility: bool) -> None:
         if self.get_viewer_data(data_id).viewer_elements_type == "points":
             self.set_visibility(data_id, visibility=visibility)
@@ -294,6 +302,14 @@ class VtkObjectView(VtkView):
         pipeline.points_color_map_key = None
         self.update_style_scalar_bars_visibility(pipeline)
         self.update_scalar_bars_layout()
+
+    def set_points_opacity(self, data_id: str, opacity: float) -> None:
+        if self.get_viewer_data(data_id).viewer_elements_type == "points":
+            self.set_opacity(data_id, opacity)
+            return
+        pipeline = self.get_vtk_pipeline(data_id)
+        if pipeline.points_actor is not None:
+            pipeline.points_actor.GetProperty().SetOpacity(opacity)
 
     def set_blocks_visibility(
         self, data_id: str, block_ids: list[int], *, visibility: bool
