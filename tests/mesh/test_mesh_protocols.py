@@ -10,8 +10,10 @@ from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkPlaneSource
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
 from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkPolyDataMapper, vtkRenderer
 
+from opengeodeweb_viewer.basemap_drape import BASEMAP_LAYERS
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     VtkMeshView,
+    basemap_offset_units,
     check_tiles_folder,
     style_basemap,
 )
@@ -114,7 +116,7 @@ def _apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str]) -
     )
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["apply_basemap"]["rpc"],
-        [{"id": basemap_id, "tiles_folder": "basemap_tiles", "columns": 2, "rows": 2}],
+        [{"id": basemap_id, "tiles_folder": "basemap_tiles", "columns": 2, "rows": 2, "layer": 0}],
     )
     return basemap_id
 
@@ -146,7 +148,7 @@ def test_basemap_drape(server: ServerMonitor, dataset_factory: Callable[..., str
 def test_basemap_style_stays_behind_the_data() -> None:
     actor = vtkActor()
     mapper = vtkDataSetMapper()
-    style_basemap(actor, mapper)
+    style_basemap(actor, mapper, BASEMAP_LAYERS - 1)
     # A constant offset pushes the basemap away from flat data at the same height,
     # without a slope factor that would let the data sides show through at grazing angles
     factor, units = reference(0.0), reference(0.0)
@@ -154,6 +156,13 @@ def test_basemap_style_stays_behind_the_data() -> None:
     assert (factor.get(), units.get()) == (0.0, 4.0)
     assert not actor.GetPickable()
     assert not actor.GetProperty().GetLighting()
+
+
+def test_lower_basemaps_stay_behind_upper_ones() -> None:
+    # Coincident maps shown together: the bottom map is the furthest behind
+    offsets = [basemap_offset_units(layer) for layer in range(BASEMAP_LAYERS)]
+    assert offsets == sorted(offsets, reverse=True)
+    assert len(set(offsets)) == BASEMAP_LAYERS
 
 
 @pytest.mark.parametrize("name", ["", ".", "..", "../other", "a/b", "a\\b", "/etc"])

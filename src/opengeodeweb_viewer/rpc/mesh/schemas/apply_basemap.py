@@ -12,6 +12,7 @@ class ApplyBasemap(DataClassJsonMixin):
 
     columns: int
     id: str
+    layer: int
     rows: int
     tiles_folder: str
 

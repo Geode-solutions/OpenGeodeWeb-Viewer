@@ -18,13 +18,19 @@
     "rows": {
       "type": "integer",
       "minimum": 1
+    },
+    "layer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
     }
   },
   "required": [
     "id",
     "tiles_folder",
     "columns",
-    "rows"
+    "rows",
+    "layer"
   ],
   "additionalProperties": false,
   "response": {

@@ -435,6 +435,7 @@ export interface MeshApplyTexturesResponse {
 export interface MeshApplyBasemapParams {
     columns:      number;
     id:           string;
+    layer:        number;
     rows:         number;
     tiles_folder: string;
 }

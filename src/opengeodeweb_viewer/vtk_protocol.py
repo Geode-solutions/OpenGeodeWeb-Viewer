@@ -350,7 +350,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         draped_bottom = None
         if draped:
             basemap.drape_actor = drape_actor(
-                drape_polydata(draped, basemap_dataset), basemap.actor
+                drape_polydata(draped, basemap_dataset), basemap.actor, basemap.basemap_layer
             )
             renderer.AddActor(basemap.drape_actor)
             draped_bottom = min(surface.GetBounds()[4] for surface in draped)

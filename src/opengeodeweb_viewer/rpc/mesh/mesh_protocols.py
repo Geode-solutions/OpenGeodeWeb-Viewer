@@ -21,6 +21,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 
 # Local application imports
+from opengeodeweb_viewer.basemap_drape import BASEMAP_LAYERS
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.utils_functions import (
@@ -44,6 +45,8 @@ DEFAULT_TILE_SIZE = 256
 # Only a constant depth offset: a slope factor would grow at grazing angles and let the
 # data sides just under the basemap show through it
 BASEMAP_POLYGON_OFFSET_UNITS = 4.0
+# Coincident maps shown together: each layer below the top one is pushed one unit further
+BASEMAP_LAYER_OFFSET_UNITS = 1.0
 
 
 def check_tiles_folder(name: str) -> None:
@@ -53,14 +56,19 @@ def check_tiles_folder(name: str) -> None:
         raise ValueError(msg)
 
 
-def style_basemap(actor: vtkActor, mapper: vtkMapper) -> None:
+def basemap_offset_units(layer: int) -> float:
+    """Layer 0 is the bottom map: the furthest behind the data."""
+    return BASEMAP_POLYGON_OFFSET_UNITS + BASEMAP_LAYER_OFFSET_UNITS * (BASEMAP_LAYERS - 1 - layer)
+
+
+def style_basemap(actor: vtkActor, mapper: vtkMapper, layer: int) -> None:
     # Map colours must not be shaded, and the basemap must not catch picks
     properties = actor.GetProperty()
     properties.LightingOff()
     properties.SetAmbient(1.0)
     properties.SetDiffuse(0.0)
     actor.PickableOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, BASEMAP_POLYGON_OFFSET_UNITS)
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, basemap_offset_units(layer))
 
 
 def _grey_tile(size: int) -> vtkImageData:
@@ -158,7 +166,8 @@ class VtkMeshView(VtkObjectView):
         pipeline.filter.Modified()
         pipeline.filter.Update()
         pipeline.actor.SetTexture(texture)
-        style_basemap(pipeline.actor, pipeline.mapper)
+        style_basemap(pipeline.actor, pipeline.mapper, params.layer)
+        pipeline.basemap_layer = params.layer
         # A basemap rebuilt while the data is clipped or exploded follows it at once
         pipeline.basemap = True
         self.clip_basemap(pipeline)

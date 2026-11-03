@@ -16,12 +16,17 @@ from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper
 if TYPE_CHECKING:
     from vtkmodules.vtkCommonCore import vtkDataArray
 
+# Maps shown together, stacked from layer 0 (bottom) up
+BASEMAP_LAYERS = 3
 MIN_UPWARD_RATIO = 0.7
 TOP_TOLERANCE_RATIO = 0.01
 MIN_TOP_TOLERANCE = 1.0
 # Pulls the drape in front of the data surface it lies on (units 0), but not in front of
 # its points and highlight (-2) nor its edges (-4)
 DRAPE_POLYGON_OFFSET_UNITS = -1.0
+# Drapes of maps shown together lie on the same surfaces: each layer above the bottom one is
+# pulled a bit further, all of them staying between the data surface and its points
+DRAPE_LAYER_OFFSET_UNITS = -0.4
 
 
 def _to_numpy(array: vtkDataArray) -> np.ndarray:
@@ -107,11 +112,15 @@ def flat_map_visible(*, around: bool, draped: bool) -> bool:
     return around or not draped
 
 
-def drape_actor(drape: vtkPolyData, basemap_actor: vtkActor) -> vtkActor:
+def drape_offset_units(layer: int) -> float:
+    return DRAPE_POLYGON_OFFSET_UNITS + DRAPE_LAYER_OFFSET_UNITS * layer
+
+
+def drape_actor(drape: vtkPolyData, basemap_actor: vtkActor, layer: int) -> vtkActor:
     mapper = vtkPolyDataMapper()
     mapper.SetInputData(drape)
     mapper.ScalarVisibilityOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, DRAPE_POLYGON_OFFSET_UNITS)
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, drape_offset_units(layer))
     actor = vtkActor()
     actor.SetMapper(mapper)
     actor.SetTexture(basemap_actor.GetTexture())

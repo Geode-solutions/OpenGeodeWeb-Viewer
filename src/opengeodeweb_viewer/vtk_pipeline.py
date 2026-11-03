@@ -278,6 +278,8 @@ class VtkPipeline:
     drape_actor: vtkActor | None = None
     drape_ids: list[str] = field(default_factory=list)
     around: bool = True
+    # Basemap only: maps shown together are stacked, layer 0 at the bottom
+    basemap_layer: int = 0
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)
