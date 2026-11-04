@@ -63,6 +63,7 @@ if TYPE_CHECKING:
         ViewerElementsType,
         ViewerType,
     )
+    from vtkmodules.vtkCommonDataModel import vtkPolyData
     from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
     from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
     from vtkmodules.vtkIOXML import vtkXMLReader
@@ -281,6 +282,11 @@ class VtkPipeline:
     # Basemap only: its drape over the top surfaces, the georeferenced data and "Map around"
     drape_actor: vtkActor | None = None
     drape_ids: list[str] = field(default_factory=list)
+    # Basemap detail only: the base basemap it lies on
+    basemap_detail_of: str | None = None
+    # Basemap base only: the top surfaces it drapes and the height of its flat map, for its detail
+    draped_surfaces: list[vtkPolyData] = field(default_factory=list)
+    flat_lift: float = 0.0
     # Basemap only: its maps and their sources, the source mosaics and the state of each map
     basemap_maps: list[tuple[str, list[str]]] = field(default_factory=list)
     basemap_images: dict[str, np.ndarray] = field(default_factory=dict)

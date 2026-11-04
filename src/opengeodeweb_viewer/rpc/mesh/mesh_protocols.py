@@ -45,6 +45,8 @@ DEFAULT_TILE_SIZE = 256
 # Only a constant depth offset: a slope factor would grow at grazing angles and let the
 # data sides just under the basemap show through it
 BASEMAP_POLYGON_OFFSET_UNITS = 4.0
+# A detail map lies on its base map: one unit closer, still behind flat data
+DETAIL_POLYGON_OFFSET_UNITS = BASEMAP_POLYGON_OFFSET_UNITS - 1.0
 
 
 def check_tiles_folder(name: str) -> None:
@@ -54,14 +56,16 @@ def check_tiles_folder(name: str) -> None:
         raise ValueError(msg)
 
 
-def style_basemap(actor: vtkActor, mapper: vtkMapper) -> None:
+def style_basemap(
+    actor: vtkActor, mapper: vtkMapper, offset_units: float = BASEMAP_POLYGON_OFFSET_UNITS
+) -> None:
     # Map colours must not be shaded, and the basemap must not catch picks
     properties = actor.GetProperty()
     properties.LightingOff()
     properties.SetAmbient(1.0)
     properties.SetDiffuse(0.0)
     actor.PickableOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, BASEMAP_POLYGON_OFFSET_UNITS)
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, offset_units)
 
 
 def _layer_states(layers: list[schemas.MapState] | list[schemas.Layer]) -> dict[str, LayerState]:
@@ -163,7 +167,14 @@ class VtkMeshView(VtkObjectView):
         output.GetPointData().SetTCoords(output.GetPointData().GetArray("basemap_uv"))
         pipeline.filter.Modified()
         pipeline.filter.Update()
-        style_basemap(pipeline.actor, pipeline.mapper)
+        pipeline.basemap_detail_of = params.detail_of
+        style_basemap(
+            pipeline.actor,
+            pipeline.mapper,
+            BASEMAP_POLYGON_OFFSET_UNITS
+            if params.detail_of is None
+            else DETAIL_POLYGON_OFFSET_UNITS,
+        )
         # A basemap rebuilt while the data is clipped or exploded follows it at once
         pipeline.basemap = True
         self._compose_basemap(pipeline, (params.rows * size, params.columns * size))

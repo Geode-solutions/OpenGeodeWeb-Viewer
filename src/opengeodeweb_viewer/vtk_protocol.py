@@ -41,6 +41,8 @@ from vtkmodules.web import protocols as vtk_protocols
 
 from opengeodeweb_viewer.basemap_compose import flat_texture
 from opengeodeweb_viewer.basemap_drape import (
+    DETAIL_DRAPE_POLYGON_OFFSET_UNITS,
+    clipped_to_bounds,
     drape_actor,
     drape_polydata,
     flat_map_lift,
@@ -329,11 +331,15 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             and pipeline.explode_factor > 0
             and pipeline.actor.GetVisibility()
         ]
-        for pipeline in database.values():
-            if pipeline.basemap:
-                self._update_basemap(pipeline, exploded_tops)
+        basemaps = [pipeline for pipeline in database.values() if pipeline.basemap]
+        # A detail reads what its base just drew
+        for pipeline in sorted(basemaps, key=lambda p: p.basemap_detail_of is not None):
+            self._update_basemap(pipeline, exploded_tops)
 
     def _update_basemap(self, basemap: VtkPipeline, exploded_tops: list[float]) -> None:
+        if basemap.basemap_detail_of is not None:
+            self._update_basemap_detail(basemap)
+            return
         database = self.get_data_base()
         # Only georeferenced data: the front sends their ids
         data = [
@@ -365,12 +371,37 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             draped_bottom = min(surface.GetBounds()[4] for surface in draped)
         lift = flat_map_lift(basemap_top, draped_bottom, basemap_lift(basemap_top, exploded_tops))
         basemap.actor.SetPosition(0.0, 0.0, lift)
+        basemap.draped_surfaces = draped
+        basemap.flat_lift = lift
         self.retexture_basemap(basemap)
 
-    def retexture_basemap(self, basemap: VtkPipeline) -> None:
+    def _update_basemap_detail(self, detail: VtkPipeline) -> None:
+        renderer = self.get_renderer()
+        if detail.drape_actor is not None:
+            renderer.RemoveActor(detail.drape_actor)
+            detail.drape_actor = None
+        base = self.get_data_base().get(detail.basemap_detail_of or "")
+        if base is None or detail.full_texture is None:
+            detail.actor.SetVisibility(False)  # noqa: FBT003 VTK API
+            return
+        dataset = cast("vtkPolyData", detail.reader.GetOutputAsDataSet())
+        draped = clipped_to_bounds(base.draped_surfaces, dataset.GetBounds())
+        if draped:
+            detail.drape_actor = drape_actor(
+                drape_polydata(draped, dataset),
+                detail.full_texture,
+                DETAIL_DRAPE_POLYGON_OFFSET_UNITS,
+            )
+            renderer.AddActor(detail.drape_actor)
+        # Coplanar with its base: the same height, the same crop rule
+        detail.actor.SetPosition(0.0, 0.0, base.flat_lift)
+        self.retexture_basemap(detail, draped=bool(base.draped_surfaces))
+
+    def retexture_basemap(self, basemap: VtkPipeline, *, draped: bool | None = None) -> None:
         if basemap.full_texture is None:
             return
-        draped = basemap.drape_actor is not None
+        if draped is None:
+            draped = basemap.drape_actor is not None
         if basemap.drape_actor is not None:
             basemap.drape_actor.SetTexture(basemap.full_texture)
         basemap.actor.SetTexture(

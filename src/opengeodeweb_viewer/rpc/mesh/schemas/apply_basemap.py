@@ -3,7 +3,7 @@ from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 
 @dataclass
@@ -37,6 +37,7 @@ class ApplyBasemap(DataClassJsonMixin):
     maps: List[Map]
     rows: int
     tiles_folder: str
+    detail_of: Optional[str] = None
 
 
 @dataclass

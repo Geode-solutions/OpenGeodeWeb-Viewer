@@ -9,8 +9,13 @@ from typing import TYPE_CHECKING, cast
 import numpy as np
 from vtkmodules.util.numpy_support import numpy_to_vtk, vtk_to_numpy
 from vtkmodules.vtkCommonCore import vtkPoints
-from vtkmodules.vtkCommonDataModel import vtkPolyData
-from vtkmodules.vtkFiltersCore import vtkAppendPolyData, vtkProbeFilter, vtkTriangleFilter
+from vtkmodules.vtkCommonDataModel import vtkPlane, vtkPolyData
+from vtkmodules.vtkFiltersCore import (
+    vtkAppendPolyData,
+    vtkClipPolyData,
+    vtkProbeFilter,
+    vtkTriangleFilter,
+)
 from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper, vtkTexture
 
 if TYPE_CHECKING:
@@ -22,6 +27,8 @@ MIN_TOP_TOLERANCE = 1.0
 # Pulls the drape in front of the data surface it lies on (units 0), but not in front of
 # its points and highlight (-2) nor its edges (-4)
 DRAPE_POLYGON_OFFSET_UNITS = -1.0
+# The detail drape lies on the base drape: pulled a bit further, still behind the points
+DETAIL_DRAPE_POLYGON_OFFSET_UNITS = DRAPE_POLYGON_OFFSET_UNITS - 0.5
 
 
 def _to_numpy(array: vtkDataArray) -> np.ndarray:
@@ -107,11 +114,45 @@ def flat_map_visible(*, around: bool, draped: bool) -> bool:
     return around or not draped
 
 
-def drape_actor(drape: vtkPolyData, texture: vtkTexture) -> vtkActor:
+def _clip_half_space(
+    surface: vtkPolyData, origin: tuple[float, ...], normal: tuple[float, ...]
+) -> vtkPolyData:
+    plane = vtkPlane()
+    plane.SetOrigin(origin)
+    plane.SetNormal(normal)
+    clip = vtkClipPolyData()
+    clip.SetInputData(surface)
+    clip.SetClipFunction(plane)
+    clip.Update()
+    return cast("vtkPolyData", clip.GetOutput())
+
+
+def clipped_to_bounds(surfaces: list[vtkPolyData], bounds: tuple[float, ...]) -> list[vtkPolyData]:
+    """The parts of the surfaces inside the XY bounds of a detail map."""
+    # One plane per side: exact on coarse cells, which a box function interpolates badly
+    sides = [
+        ((bounds[0], 0.0, 0.0), (1.0, 0.0, 0.0)),
+        ((bounds[1], 0.0, 0.0), (-1.0, 0.0, 0.0)),
+        ((0.0, bounds[2], 0.0), (0.0, 1.0, 0.0)),
+        ((0.0, bounds[3], 0.0), (0.0, -1.0, 0.0)),
+    ]
+    clipped: list[vtkPolyData] = []
+    for surface in surfaces:
+        output = surface
+        for origin, normal in sides:
+            output = _clip_half_space(output, origin, normal)
+        if output.GetNumberOfCells() > 0:
+            clipped.append(output)
+    return clipped
+
+
+def drape_actor(
+    drape: vtkPolyData, texture: vtkTexture, offset_units: float = DRAPE_POLYGON_OFFSET_UNITS
+) -> vtkActor:
     mapper = vtkPolyDataMapper()
     mapper.SetInputData(drape)
     mapper.ScalarVisibilityOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, DRAPE_POLYGON_OFFSET_UNITS)
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, offset_units)
     actor = vtkActor()
     actor.SetMapper(mapper)
     # The opacity of each map is in the texture alpha

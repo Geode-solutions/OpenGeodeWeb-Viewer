@@ -7,6 +7,11 @@
       "minLength": 32,
       "maxLength": 32
     },
+    "detail_of": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
     "tiles_folder": {
       "type": "string",
       "minLength": 1

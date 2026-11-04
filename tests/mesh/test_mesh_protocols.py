@@ -11,6 +11,8 @@ from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
 from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkPolyDataMapper, vtkRenderer
 
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
+    BASEMAP_POLYGON_OFFSET_UNITS,
+    DETAIL_POLYGON_OFFSET_UNITS,
     VtkMeshView,
     check_tiles_folder,
     style_basemap,
@@ -224,3 +226,12 @@ def test_basemap_clipping_keeps_texture_coordinates() -> None:
     output = geometry.GetOutput()
     assert output.GetBounds()[1] == pytest.approx(4)
     assert output.GetPointData().GetTCoords() is not None
+
+
+def test_detail_basemap_stays_in_front_of_the_base() -> None:
+    assert DETAIL_POLYGON_OFFSET_UNITS < BASEMAP_POLYGON_OFFSET_UNITS
+    actor, mapper = vtkActor(), vtkDataSetMapper()
+    style_basemap(actor, mapper, DETAIL_POLYGON_OFFSET_UNITS)
+    factor, units = reference(0.0), reference(0.0)
+    mapper.GetRelativeCoincidentTopologyPolygonOffsetParameters(factor, units)
+    assert units.get() == DETAIL_POLYGON_OFFSET_UNITS

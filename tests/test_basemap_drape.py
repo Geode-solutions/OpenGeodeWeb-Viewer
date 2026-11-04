@@ -8,7 +8,9 @@ from vtkmodules.vtkIOXML import vtkXMLPolyDataReader, vtkXMLPolyDataWriter
 from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkTexture
 
 from opengeodeweb_viewer.basemap_drape import (
+    DETAIL_DRAPE_POLYGON_OFFSET_UNITS,
     DRAPE_POLYGON_OFFSET_UNITS,
+    clipped_to_bounds,
     drape_actor,
     drape_polydata,
     flat_map_lift,
@@ -156,3 +158,17 @@ def test_pipeline_surfaces_of_a_surface_mesh(tmp_path: Path) -> None:
     # Hidden data is never draped
     pipeline.actor.VisibilityOff()
     assert pipeline_surfaces(pipeline) == []
+
+
+def test_surfaces_clipped_to_the_detail_bounds() -> None:
+    # A 10 x 10 surface; the detail covers its left half only
+    surface = _horizontal(0)
+    [clipped] = clipped_to_bounds([surface], (0.0, 5.0, 0.0, 10.0, -1.0, 1.0))
+    x_min, x_max, _, _, _, _ = clipped.GetBounds()
+    assert x_min >= 0.0
+    assert x_max <= 5.0 + 1e-9
+    assert clipped_to_bounds([surface], (100.0, 110.0, 0.0, 10.0, -1.0, 1.0)) == []
+
+
+def test_detail_drape_in_front_of_the_base_drape() -> None:
+    assert -2 < DETAIL_DRAPE_POLYGON_OFFSET_UNITS < DRAPE_POLYGON_OFFSET_UNITS < 0
