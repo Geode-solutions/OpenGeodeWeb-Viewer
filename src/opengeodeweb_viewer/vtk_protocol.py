@@ -21,6 +21,7 @@ from vtkmodules.vtkCommonDataModel import (
     vtkImplicitBoolean,
     vtkMultiBlockDataSet,
     vtkPlane,
+    vtkPointSet,
     vtkSelectionNode,
 )
 from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
@@ -227,7 +228,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             filter_obj
             for filter_obj in (
                 pipeline.clipping_filter,
-                pipeline.threshold_filter,
+                *pipeline.threshold_filters,
                 pipeline.shrink_filter,
             )
             if filter_obj is not None
@@ -238,18 +239,23 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         pipeline.filter.SetInputConnection(current_input_port)
         pipeline.filter.Update()
         filtered_dataset = pipeline.filter.GetOutputDataObject(0)
+        if isinstance(filtered_dataset, vtkPointSet) and (points := filtered_dataset.GetPoints()):
+            # Unfiltered input points are passed through, older than the cached filtered bounds
+            points.Modified()
         if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
             if pipeline.explode_factor > 0 and isinstance(filtered_dataset, vtkMultiBlockDataSet):
                 filtered_dataset = pipeline.explode_blocks(filtered_dataset)
             pipeline.sync_composite_pipeline(filtered_dataset)
-            return
-        pipeline.connect_mappers()
-        target_dataset = (
-            cast("vtkDataSet", filtered_dataset)
-            if active_filters or pipeline.slice_filter is not None
-            else pipeline.reader.GetOutputAsDataSet()
-        )
-        pipeline.restore_active_scalars(target_dataset)
+        else:
+            pipeline.connect_mappers()
+            target_dataset = (
+                cast("vtkDataSet", filtered_dataset)
+                if active_filters or pipeline.slice_filter is not None
+                else pipeline.reader.GetOutputAsDataSet()
+            )
+            pipeline.restore_active_scalars(target_dataset)
+        # A shown grid scale keeps its bounds on render, so refit it on geometry changes
+        self.fit_grid_scale()
 
     def set_clipping_planes(self, data_ids: list[str], planes_data: list[Plane]) -> None:
         for data_id in data_ids:
@@ -269,10 +275,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 pipeline.clipping_filter = None
             self.update_pipeline_filter(pipeline)
 
-    def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
+    def set_threshold(self, data_ids: list[str], attributes: list[Attribute]) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
-            if attribute:
+            pipeline.threshold_filters = []
+            for attribute in attributes:
                 threshold_filter = vtkThreshold()
                 threshold_filter.SetInputArrayToProcess(
                     0,
@@ -288,9 +295,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 threshold_filter.SetSelectedComponent(attribute.item)
                 threshold_filter.SetLowerThreshold(attribute.minimum)
                 threshold_filter.SetUpperThreshold(attribute.maximum)
-                pipeline.threshold_filter = threshold_filter
-            else:
-                pipeline.threshold_filter = None
+                pipeline.threshold_filters.append(threshold_filter)
             self.update_pipeline_filter(pipeline)
 
     def set_shrink(self, data_ids: list[str], shrink_factor: float) -> None:
@@ -454,6 +459,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                     dist = self._axis_display_length(renderer, final_bounds, axis)
                     self._update_grid_scale_axis_labels(grid_scale, final_bounds, axis, dist)
         self.reset_camera_clipping_range()
+
+    def fit_grid_scale(self) -> None:
+        grid_scale = self.get_grid_scale()
+        if grid_scale is not None:
+            self._fit_grid_scale_to_visible_props(grid_scale, self.get_renderer())
 
     @staticmethod
     def _fit_grid_scale_to_visible_props(
