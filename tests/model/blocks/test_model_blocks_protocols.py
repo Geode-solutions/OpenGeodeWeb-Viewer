@@ -120,13 +120,15 @@ def test_blocks_threshold(server: ServerMonitor, dataset_factory: Callable[..., 
         [
             {
                 "ids": [model_id],
-                "attribute": {
-                    "name": "tetrahedron_vertices",
-                    "location": "cell",
-                    "item": 0,
-                    "minimum": 0.0,
-                    "maximum": 300.0,
-                },
+                "attributes": [
+                    {
+                        "name": "tetrahedron_vertices",
+                        "location": "cell",
+                        "item": 0,
+                        "minimum": 0.0,
+                        "maximum": 300.0,
+                    }
+                ],
             }
         ],
     )

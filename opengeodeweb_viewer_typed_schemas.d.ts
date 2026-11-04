@@ -1168,11 +1168,11 @@ export interface ViewerUpdateCameraResponse {
 }
 
 export interface ViewerThresholdParams {
-    attribute?: AttributeClass;
+    attributes: AttributeElement[];
     ids:        string[];
 }
 
-export interface AttributeClass {
+export interface AttributeElement {
     item:     number;
     location: Location;
     maximum:  number;
