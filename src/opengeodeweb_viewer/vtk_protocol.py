@@ -54,6 +54,7 @@ from opengeodeweb_viewer.vtk_pipeline import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from collections.abc import Set as AbstractSet
 
     from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
@@ -306,7 +307,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         for pipeline in database.values():
             if pipeline.basemap and not set(pipeline.drape_ids).isdisjoint(data_ids):
                 self.clip_basemap(pipeline)
-        self.mark_basemaps_dirty()
+        self.mark_basemaps_dirty(data_ids)
 
     def clip_basemap(self, pipeline: VtkPipeline) -> None:
         """The basemap is cut like the georeferenced data it lies under."""
@@ -322,9 +323,27 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         pipeline.clipping_filter = basemap_clipping_filter(planes_data) if planes_data else None
         self.update_pipeline_filter(pipeline)
 
-    def mark_basemaps_dirty(self) -> None:
-        """The drapes are rebuilt once, at the next render."""
-        self.coreServer.setSharedObject("basemaps_dirty", True)  # noqa: FBT003 VTK API
+    def mark_basemaps_dirty(self, data_ids: Iterable[str] | None = None) -> None:
+        """The drapes are rebuilt once, at the next render, when a change on data_ids moves them."""
+        if data_ids is None or self._basemaps_follow(data_ids):
+            self.coreServer.setSharedObject("basemaps_dirty", True)  # noqa: FBT003 VTK API
+
+    def _basemaps_follow(self, data_ids: Iterable[str]) -> bool:
+        database = self.get_data_base()
+        draped = {
+            data_id
+            for pipeline in database.values()
+            if pipeline.basemap
+            for data_id in pipeline.drape_ids
+        }
+        # Exploded data lift the flat map, and an unknown id may be anything
+        return any(
+            data_id in draped
+            or (pipeline := database.get(data_id)) is None
+            or pipeline.basemap
+            or pipeline.explode_factor > 0
+            for data_id in data_ids
+        )
 
     def update_basemaps(self) -> None:
         database = self.get_data_base()
@@ -435,7 +454,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 threshold_filter.SetUpperThreshold(attribute.maximum)
                 pipeline.threshold_filters.append(threshold_filter)
             self.update_pipeline_filter(pipeline)
-        self.mark_basemaps_dirty()
+        self.mark_basemaps_dirty(data_ids)
 
     def set_shrink(self, data_ids: list[str], shrink_factor: float) -> None:
         for data_id in data_ids:
@@ -447,7 +466,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             else:
                 pipeline.shrink_filter = None
             self.update_pipeline_filter(pipeline)
-        self.mark_basemaps_dirty()
+        self.mark_basemaps_dirty(data_ids)
 
     def set_explode(self, data_ids: list[str], explode_factor: float) -> None:
         for data_id in data_ids:
@@ -456,6 +475,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 continue
             pipeline.explode_factor = explode_factor
             self.update_pipeline_filter(pipeline)
+        # Even back to 0: the flat map was lifted over the exploded blocks
         self.mark_basemaps_dirty()
 
     def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:

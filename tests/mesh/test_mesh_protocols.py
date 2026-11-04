@@ -238,3 +238,11 @@ def test_basemap_follows_the_clipping_of_its_draped_data() -> None:
     assert basemap.clipping_filter is not None
     view.set_clipping_planes(["data"], [])
     assert basemap.clipping_filter is None
+
+
+def test_basemap_drape_dirty_only_for_its_draped_data() -> None:
+    view, _ = _view_with_basemap()
+    view.set_shrink(["other"], 0.5)
+    assert not view.getSharedObject("basemaps_dirty")
+    view.set_shrink(["data"], 0.5)
+    assert view.getSharedObject("basemaps_dirty")
