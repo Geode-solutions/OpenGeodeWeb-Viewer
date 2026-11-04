@@ -33,3 +33,8 @@ class VtkMeshPointsView(VtkMeshView):
     def set_mesh_points_size(self, params: schemas.Size) -> schemas.SizeResponse:
         self.set_points_size(params.id, params.size)
         return schemas.SizeResponse()
+
+    @typed_rpc(mesh_points_prefix, schemas.opacity_route)
+    def set_mesh_points_opacity(self, params: schemas.Opacity) -> schemas.OpacityResponse:
+        self.set_points_opacity(params.id, params.opacity)
+        return schemas.OpacityResponse()
