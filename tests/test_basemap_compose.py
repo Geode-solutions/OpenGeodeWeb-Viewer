@@ -4,18 +4,16 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from vtkmodules.vtkIOImage import vtkPNGWriter
-from vtkmodules.vtkRenderingCore import vtkTexture
 
 from opengeodeweb_viewer.basemap_compose import (
-    LayerState,
     basemap_texture,
     compose,
-    flat_texture,
     mosaic,
     read_tiles,
     rgba,
     textures,
 )
+from opengeodeweb_viewer.rpc.mesh.schemas import MapState
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -25,6 +23,10 @@ SHAPE = (2, 2)
 
 def _image(color: tuple[int, int, int, int]) -> np.ndarray:
     return np.full((*SHAPE, 4), color, np.uint8)
+
+
+def _state(name: str, *, visible: bool = True, crop: bool = False) -> MapState:
+    return MapState(crop=crop, map=name, opacity=1.0, visible=visible)
 
 
 SATELLITE = _image((0, 100, 0, 255))
@@ -43,7 +45,7 @@ def test_rgba_from_any_component_count() -> None:
 
 def test_mosaic_leaves_missing_tiles_transparent() -> None:
     tile = np.full((2, 2, 4), 255, np.uint8)
-    image = mosaic({(1, 0): tile}, columns=2, rows=1, size=2)
+    image = mosaic({(1, 0): tile}, columns=2, rows=1, tile_shape=(2, 2))
     assert image.shape == (2, 4, 4)
     assert image[0, 0, 3] == 0
     assert image[0, 2].tolist() == [255, 255, 255, 255]
@@ -83,7 +85,7 @@ def test_map_around_is_the_drape_when_nothing_is_cropped() -> None:
     maps = [("satellite", ["s"]), ("routes", ["r"])]
     images = {"s": SATELLITE, "r": ROADS}
     full, around = textures(
-        maps, images, {"satellite": LayerState(), "routes": LayerState()}, SHAPE
+        maps, images, {"satellite": _state("satellite"), "routes": _state("routes")}, SHAPE
     )
     # Nothing cropped: one composition for both textures
     assert around is full
@@ -98,7 +100,10 @@ def test_map_without_state_is_not_visible() -> None:
 def test_no_map_around_when_no_map_is_visible() -> None:
     maps = [("satellite", ["s"]), ("routes", ["r"])]
     images = {"s": SATELLITE, "r": ROADS}
-    states = {"satellite": LayerState(visible=False), "routes": LayerState(visible=False)}
+    states = {
+        "satellite": _state("satellite", visible=False),
+        "routes": _state("routes", visible=False),
+    }
     _, around = textures(maps, images, states, SHAPE)
     assert around is None
 
@@ -106,22 +111,17 @@ def test_no_map_around_when_no_map_is_visible() -> None:
 def test_cropped_maps_stay_out_of_the_map_around() -> None:
     maps = [("satellite", ["s"]), ("routes", ["r"])]
     images = {"s": SATELLITE, "r": ROADS}
-    states = {"satellite": LayerState(), "routes": LayerState(crop=True)}
+    states = {"satellite": _state("satellite"), "routes": _state("routes", crop=True)}
     full, around = textures(maps, images, states, SHAPE)
     assert full[0, 0].tolist() == [255, 0, 0, 255]
     assert around is not None
     assert around[0, 0].tolist() == [0, 100, 0, 255]
-    states = {"satellite": LayerState(crop=True), "routes": LayerState(visible=False)}
+    states = {
+        "satellite": _state("satellite", crop=True),
+        "routes": _state("routes", visible=False),
+    }
     _, around = textures(maps, images, states, SHAPE)
     assert around is None
-
-
-def test_flat_texture() -> None:
-    full, around = vtkTexture(), vtkTexture()
-    assert flat_texture(full, around, draped=True) is around
-    # Without draped surface the flat map shows every visible map, cropped or not
-    assert flat_texture(full, None, draped=False) is full
-    assert flat_texture(full, around, draped=False) is full
 
 
 def test_read_tiles_and_texture(tmp_path: Path) -> None:

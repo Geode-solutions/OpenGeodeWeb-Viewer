@@ -39,14 +39,11 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.web import protocols as vtk_protocols
 
-from opengeodeweb_viewer.basemap_compose import flat_texture
 from opengeodeweb_viewer.basemap_drape import (
     DETAIL_DRAPE_POLYGON_OFFSET_UNITS,
     clipped_to_bounds,
     drape_actor,
     drape_polydata,
-    flat_map_lift,
-    flat_map_visible,
     top_surfaces,
 )
 from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
@@ -73,11 +70,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 MAX_DATA_NAME_LENGTH = 22
-
-
-def basemap_lift(basemap_top: float, exploded_tops: list[float]) -> float:
-    """Height to raise a basemap so exploded blocks, which only move up, stay under it."""
-    return max([0.0, *(top - basemap_top for top in exploded_tops)])
 
 
 def _clipping_function(planes_data: list[Plane]) -> vtkImplicitBoolean:
@@ -332,13 +324,19 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             and pipeline.actor.GetVisibility()
         ]
         basemaps = [pipeline for pipeline in database.values() if pipeline.basemap]
+        renderer = self.get_renderer()
         # A detail reads what its base just drew
-        for pipeline in sorted(basemaps, key=lambda p: p.basemap_detail_of is not None):
-            self._update_basemap(pipeline, exploded_tops)
+        for basemap in sorted(basemaps, key=lambda p: p.basemap_detail_of is not None):
+            if basemap.drape_actor is not None:
+                renderer.RemoveActor(basemap.drape_actor)
+                basemap.drape_actor = None
+            if basemap.basemap_detail_of is None:
+                self._update_basemap(basemap, exploded_tops)
+            else:
+                self._update_basemap_detail(basemap)
 
     def _update_basemap(self, basemap: VtkPipeline, exploded_tops: list[float]) -> None:
-        if basemap.basemap_detail_of is not None:
-            self._update_basemap_detail(basemap)
+        if basemap.full_texture is None:
             return
         database = self.get_data_base()
         # Only georeferenced data: the front sends their ids
@@ -354,32 +352,23 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             z_extent = data_top - min(bound[4] for bound in bounds)
             surfaces = [surface for pipeline in data for surface in pipeline_surfaces(pipeline)]
             draped = top_surfaces(surfaces, data_top, z_extent)
-        renderer = self.get_renderer()
-        if basemap.drape_actor is not None:
-            renderer.RemoveActor(basemap.drape_actor)
-            basemap.drape_actor = None
         basemap_dataset = cast("vtkPolyData", basemap.reader.GetOutputAsDataSet())
         basemap_top = basemap_dataset.GetBounds()[5]
-        draped_bottom = None
-        if basemap.full_texture is None:
-            return
         if draped:
             basemap.drape_actor = drape_actor(
                 drape_polydata(draped, basemap_dataset), basemap.full_texture
             )
-            renderer.AddActor(basemap.drape_actor)
-            draped_bottom = min(surface.GetBounds()[4] for surface in draped)
-        lift = flat_map_lift(basemap_top, draped_bottom, basemap_lift(basemap_top, exploded_tops))
+            self.get_renderer().AddActor(basemap.drape_actor)
+            # The flat map goes under the draped relief
+            lift = min(surface.GetBounds()[4] for surface in draped) - basemap_top
+        else:
+            # Exploded blocks only move up: the flat map rises above the highest one
+            lift = max([0.0, *(top - basemap_top for top in exploded_tops)])
         basemap.actor.SetPosition(0.0, 0.0, lift)
         basemap.draped_surfaces = draped
-        basemap.flat_lift = lift
         self.retexture_basemap(basemap)
 
     def _update_basemap_detail(self, detail: VtkPipeline) -> None:
-        renderer = self.get_renderer()
-        if detail.drape_actor is not None:
-            renderer.RemoveActor(detail.drape_actor)
-            detail.drape_actor = None
         base = self.get_data_base().get(detail.basemap_detail_of or "")
         if base is None or detail.full_texture is None:
             detail.actor.SetVisibility(False)  # noqa: FBT003 VTK API
@@ -392,24 +381,25 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 detail.full_texture,
                 DETAIL_DRAPE_POLYGON_OFFSET_UNITS,
             )
-            renderer.AddActor(detail.drape_actor)
+            self.get_renderer().AddActor(detail.drape_actor)
         # Coplanar with its base: the same height, the same crop rule
-        detail.actor.SetPosition(0.0, 0.0, base.flat_lift)
-        self.retexture_basemap(detail, draped=bool(base.draped_surfaces))
+        detail.actor.SetPosition(0.0, 0.0, base.actor.GetPosition()[2])
+        self.retexture_basemap(detail)
 
-    def retexture_basemap(self, basemap: VtkPipeline, *, draped: bool | None = None) -> None:
+    def retexture_basemap(self, basemap: VtkPipeline) -> None:
         if basemap.full_texture is None:
             return
-        if draped is None:
-            draped = basemap.drape_actor is not None
+        base = self.get_data_base().get(basemap.basemap_detail_of or "", basemap)
+        # Without draped surface, cropping would hide the whole map: the flat map shows every map
+        around = basemap.around_texture
+        draped = bool(base.draped_surfaces)
+        basemap.actor.SetTexture(around if draped and around is not None else basemap.full_texture)
+        # Hiding the flat map with nothing draped would hide the whole map
+        flat_visible = around is not None or not draped
+        basemap.actor.SetVisibility(basemap.visibility and flat_visible)
         if basemap.drape_actor is not None:
             basemap.drape_actor.SetTexture(basemap.full_texture)
-        basemap.actor.SetTexture(
-            flat_texture(basemap.full_texture, basemap.around_texture, draped=draped)
-        )
-        basemap.actor.SetVisibility(
-            flat_map_visible(around=basemap.around_texture is not None, draped=draped)
-        )
+            basemap.drape_actor.SetVisibility(basemap.visibility)
 
     def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
         for data_id in data_ids:

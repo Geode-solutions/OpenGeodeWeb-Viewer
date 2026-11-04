@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 # Standard library imports
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, cast
 
 # Third party imports
@@ -15,18 +14,17 @@ from vtkmodules.vtkIOImage import vtkImageReader2Factory
 from vtkmodules.vtkRenderingCore import vtkTexture
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
+
+    from opengeodeweb_viewer.rpc.mesh.schemas import Layer, MapState
+
+    # The state of a map, as apply_basemap and basemap_layers send it
+    type LayerState = MapState | Layer
 
 RGB = 3
 RGBA = 4
 MAX_CHANNEL = 255.0
-
-
-@dataclass(frozen=True)
-class LayerState:
-    visible: bool = True
-    opacity: float = 1.0
-    crop: bool = False
 
 
 def rgba(pixels: np.ndarray) -> np.ndarray:
@@ -39,12 +37,13 @@ def rgba(pixels: np.ndarray) -> np.ndarray:
 
 
 def mosaic(
-    tiles: dict[tuple[int, int], np.ndarray], columns: int, rows: int, size: int
+    tiles: dict[tuple[int, int], np.ndarray], columns: int, rows: int, tile_shape: tuple[int, ...]
 ) -> np.ndarray:
     """Tiles side by side, row 0 at the north edge; a missing tile is transparent."""
-    image = np.zeros((rows * size, columns * size, RGBA), np.uint8)
+    height, width = tile_shape
+    image = np.zeros((rows * height, columns * width, RGBA), np.uint8)
     for (column, row), tile in tiles.items():
-        image[row * size : (row + 1) * size, column * size : (column + 1) * size] = tile
+        image[row * height : (row + 1) * height, column * width : (column + 1) * width] = tile
     return image
 
 
@@ -58,7 +57,7 @@ def _over(bottom: np.ndarray, top: np.ndarray) -> np.ndarray:
     return top + bottom * (1.0 - top[..., 3:])
 
 
-def compose(layers: list[tuple[list[np.ndarray], float]], shape: tuple[int, int]) -> np.ndarray:
+def compose(layers: list[tuple[list[np.ndarray], float]], shape: tuple[int, ...]) -> np.ndarray:
     """Each layer, its sources from the bottom up, laid over the layers below with its opacity."""
     result = np.zeros((*shape, RGBA), np.float32)
     for sources, opacity in layers:
@@ -75,33 +74,27 @@ def compose(layers: list[tuple[list[np.ndarray], float]], shape: tuple[int, int]
 def textures(
     maps: list[tuple[str, list[str]]],
     images: dict[str, np.ndarray],
-    states: dict[str, LayerState],
-    shape: tuple[int, int],
+    states: Mapping[str, LayerState],
+    shape: tuple[int, ...],
 ) -> tuple[np.ndarray, np.ndarray | None]:
     """Every visible map for the drape; the visible maps not cropped for the map around."""
     # A map the front did not describe is not shown
-    hidden = LayerState(visible=False)
-    visible = [(name, sources) for name, sources in maps if states.get(name, hidden).visible]
+    visible = [
+        (states[name], sources) for name, sources in maps if name in states and states[name].visible
+    ]
+    around = [(state, sources) for state, sources in visible if not state.crop]
 
-    def layers(names: list[tuple[str, list[str]]]) -> list[tuple[list[np.ndarray], float]]:
-        return [
-            (
-                [images[source] for source in sources if source in images],
-                states.get(name, hidden).opacity,
-            )
-            for name, sources in names
-        ]
+    def layers(
+        shown: list[tuple[LayerState, list[str]]],
+    ) -> list[tuple[list[np.ndarray], float]]:
+        return [([images[source] for source in sources], state.opacity) for state, sources in shown]
 
-    around = [(name, sources) for name, sources in visible if not states.get(name, hidden).crop]
     full = compose(layers(visible), shape)
-    if visible and len(around) == len(visible):
+    if not around:
+        return full, None
+    if len(around) == len(visible):
         return full, full
-    return full, compose(layers(around), shape) if around else None
-
-
-def flat_texture(full: vtkTexture, around: vtkTexture | None, *, draped: bool) -> vtkTexture:
-    # Without draped surface, cropping would hide the whole map: the flat map shows every map
-    return around if draped and around is not None else full
+    return full, compose(layers(around), shape)
 
 
 def read_tiles(folder: Path) -> dict[tuple[int, int], np.ndarray]:

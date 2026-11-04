@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 
 # Standard library imports
@@ -18,11 +16,15 @@ from vtkmodules.vtkRenderingCore import (
 
 # Local application imports
 from opengeodeweb_viewer.basemap_compose import (
-    LayerState,
     basemap_texture,
     mosaic,
     read_tiles,
     textures,
+)
+from opengeodeweb_viewer.basemap_drape import (
+    BASEMAP_POLYGON_OFFSET_UNITS,
+    DETAIL_POLYGON_OFFSET_UNITS,
+    style_basemap,
 )
 from opengeodeweb_viewer.object.object_methods import VtkObjectView
 from opengeodeweb_viewer.typed_rpc import typed_rpc
@@ -36,40 +38,19 @@ from . import schemas
 
 if TYPE_CHECKING:
     from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
-    from vtkmodules.vtkRenderingCore import vtkActor, vtkMapper
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_TILE_SIZE = 256
-# Added to the global offset (2, 0) of every mapper: the basemap is drawn behind flat data.
-# Only a constant depth offset: a slope factor would grow at grazing angles and let the
-# data sides just under the basemap show through it
-BASEMAP_POLYGON_OFFSET_UNITS = 4.0
-# A detail map lies on its base map: one unit closer, still behind flat data
-DETAIL_POLYGON_OFFSET_UNITS = BASEMAP_POLYGON_OFFSET_UNITS - 1.0
+# The Back writes the tiles of every source in this folder of the basemap data
+TILES_FOLDER = "tiles"
 
 
-def check_tiles_folder(name: str) -> None:
-    """The tiles folder is a folder of the data, never a path out of it."""
+def check_source_folder(name: str) -> None:
+    """A source folder is a folder of the tiles, never a path out of them."""
     if name in ("", ".", "..") or "/" in name or "\\" in name:
-        msg = f"Invalid tiles_folder {name!r}: expected a plain folder name"
+        msg = f"Invalid basemap source {name!r}: expected a plain folder name"
         raise ValueError(msg)
-
-
-def style_basemap(
-    actor: vtkActor, mapper: vtkMapper, offset_units: float = BASEMAP_POLYGON_OFFSET_UNITS
-) -> None:
-    # Map colours must not be shaded, and the basemap must not catch picks
-    properties = actor.GetProperty()
-    properties.LightingOff()
-    properties.SetAmbient(1.0)
-    properties.SetDiffuse(0.0)
-    actor.PickableOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, offset_units)
-
-
-def _layer_states(layers: list[schemas.MapState] | list[schemas.Layer]) -> dict[str, LayerState]:
-    return {layer.map: LayerState(layer.visible, layer.opacity, layer.crop) for layer in layers}
 
 
 class VtkMeshView(VtkObjectView):
@@ -146,23 +127,26 @@ class VtkMeshView(VtkObjectView):
 
     @typed_rpc(mesh_prefix, schemas.apply_basemap_route)
     def mesh_apply_basemap(self, params: schemas.ApplyBasemap) -> schemas.ApplyBasemapResponse:
-        check_tiles_folder(params.tiles_folder)
-        folder = Path(self.get_data_file_path(params.id, params.tiles_folder))
+        folder = Path(self.get_data_file_path(params.id, TILES_FOLDER))
         pipeline = self.get_vtk_pipeline(params.id)
         pipeline.basemap_maps = [(entry.map, list(entry.sources)) for entry in params.maps]
         sources = [source for _, names in pipeline.basemap_maps for source in names]
         for source in sources:
-            check_tiles_folder(source)
+            check_source_folder(source)
         tiles = {source: read_tiles(folder / source) for source in sources}
-        size = next(
-            (tile.shape[0] for source_tiles in tiles.values() for tile in source_tiles.values()),
-            DEFAULT_TILE_SIZE,
-        )
+        # The mosaics are stacked pixel on pixel: every tile must have the same size
+        sizes = {
+            tile.shape[:2] for source_tiles in tiles.values() for tile in source_tiles.values()
+        }
+        if len(sizes) > 1:
+            msg = f"Basemap tiles of different sizes: {sorted(sizes)}"
+            raise ValueError(msg)
+        tile_shape = sizes.pop() if sizes else (DEFAULT_TILE_SIZE, DEFAULT_TILE_SIZE)
         pipeline.basemap_images = {
-            source: mosaic(source_tiles, params.columns, params.rows, size)
+            source: mosaic(source_tiles, params.columns, params.rows, tile_shape)
             for source, source_tiles in tiles.items()
         }
-        pipeline.basemap_states = _layer_states(params.layers)
+        pipeline.basemap_states = {layer.map: layer for layer in params.layers}
         output = pipeline.reader.GetOutputAsDataSet()
         output.GetPointData().SetTCoords(output.GetPointData().GetArray("basemap_uv"))
         pipeline.filter.Modified()
@@ -177,24 +161,28 @@ class VtkMeshView(VtkObjectView):
         )
         # A basemap rebuilt while the data is clipped or exploded follows it at once
         pipeline.basemap = True
-        self._compose_basemap(pipeline, (params.rows * size, params.columns * size))
+        self._compose_basemap(
+            pipeline, (params.rows * tile_shape[0], params.columns * tile_shape[1])
+        )
         self.clip_basemap(pipeline)
+        self.mark_basemaps_dirty()
         return schemas.ApplyBasemapResponse()
 
     @typed_rpc(mesh_prefix, schemas.basemap_layers_route)
     def mesh_basemap_layers(self, params: schemas.BasemapLayers) -> schemas.BasemapLayersResponse:
         pipeline = self.get_vtk_pipeline(params.id)
-        pipeline.basemap_states = _layer_states(params.layers)
-        first = next(iter(pipeline.basemap_images.values()), None)
+        pipeline.basemap_states = {layer.map: layer for layer in params.layers}
         # Before apply_basemap there is no image to compose
-        if first is None:
+        if not pipeline.basemap_images:
             return schemas.BasemapLayersResponse()
-        self._compose_basemap(pipeline, (first.shape[0], first.shape[1]), rebuild_drape=False)
+        image = next(iter(pipeline.basemap_images.values()))
+        self._compose_basemap(pipeline, image.shape[:2])
+        # Same geometry: the existing actors only get the new textures
+        self.retexture_basemap(pipeline)
         return schemas.BasemapLayersResponse()
 
-    def _compose_basemap(
-        self, pipeline: VtkPipeline, shape: tuple[int, int], *, rebuild_drape: bool = True
-    ) -> None:
+    @staticmethod
+    def _compose_basemap(pipeline: VtkPipeline, shape: tuple[int, ...]) -> None:
         full, around = textures(
             pipeline.basemap_maps, pipeline.basemap_images, pipeline.basemap_states, shape
         )
@@ -205,11 +193,6 @@ class VtkMeshView(VtkObjectView):
             if around is full
             else (None if around is None else basemap_texture(around))
         )
-        if rebuild_drape:
-            self.mark_basemaps_dirty()
-        else:
-            # Same geometry: the existing actors only get the new textures
-            self.retexture_basemap(pipeline)
 
     @typed_rpc(mesh_prefix, schemas.basemap_drape_route)
     def mesh_basemap_drape(self, params: schemas.BasemapDrape) -> schemas.BasemapDrapeResponse:

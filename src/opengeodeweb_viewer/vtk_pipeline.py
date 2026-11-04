@@ -277,16 +277,17 @@ class VtkPipeline:
     threshold_filter: vtkThreshold | None = None
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
+    # Set by set_visibility: the basemap actors also hide on their own, without forgetting it
+    visibility: bool = True
     # A map under the data: excluded from the data bounds, follows the data clipping
     basemap: bool = False
-    # Basemap only: its drape over the top surfaces, the georeferenced data and "Map around"
+    # Basemap only: its drape and the georeferenced data it drapes
     drape_actor: vtkActor | None = None
     drape_ids: list[str] = field(default_factory=list)
     # Basemap detail only: the base basemap it lies on
     basemap_detail_of: str | None = None
-    # Basemap base only: the top surfaces it drapes and the height of its flat map, for its detail
+    # Basemap base only: the top surfaces it drapes, for its detail
     draped_surfaces: list[vtkPolyData] = field(default_factory=list)
-    flat_lift: float = 0.0
     # Basemap only: its maps and their sources, the source mosaics and the state of each map
     basemap_maps: list[tuple[str, list[str]]] = field(default_factory=list)
     basemap_images: dict[str, np.ndarray] = field(default_factory=dict)

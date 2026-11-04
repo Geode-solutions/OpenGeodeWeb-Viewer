@@ -4,21 +4,18 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from vtkmodules.vtkCommonCore import reference
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkPlaneSource
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
-from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkPolyDataMapper, vtkRenderer
+from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper, vtkRenderer
 
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
-    BASEMAP_POLYGON_OFFSET_UNITS,
-    DETAIL_POLYGON_OFFSET_UNITS,
+    TILES_FOLDER,
     VtkMeshView,
-    check_tiles_folder,
-    style_basemap,
+    check_source_folder,
 )
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
-from opengeodeweb_viewer.vtk_protocol import VtkView, basemap_clipping_filter, basemap_lift
+from opengeodeweb_viewer.vtk_protocol import VtkView, basemap_clipping_filter
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -107,7 +104,7 @@ def _apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str]) -
     )
     shutil.copytree(
         Path(__file__).parent.parent / "data" / "basemap_tiles",
-        Path(os.environ["DATA_FOLDER_PATH"]) / basemap_id / "basemap_tiles",
+        Path(os.environ["DATA_FOLDER_PATH"]) / basemap_id / TILES_FOLDER,
         dirs_exist_ok=True,
     )
     server.call(
@@ -119,7 +116,6 @@ def _apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str]) -
         [
             {
                 "id": basemap_id,
-                "tiles_folder": "basemap_tiles",
                 "columns": 2,
                 "rows": 2,
                 "maps": [{"map": "satellite", "sources": ["base"]}],
@@ -159,34 +155,10 @@ def test_basemap_drape(server: ServerMonitor, dataset_factory: Callable[..., str
     assert server.compare_image("mesh/apply_basemap.jpeg")
 
 
-def test_basemap_style_stays_behind_the_data() -> None:
-    actor = vtkActor()
-    mapper = vtkDataSetMapper()
-    style_basemap(actor, mapper)
-    # A constant offset pushes the basemap away from flat data at the same height,
-    # without a slope factor that would let the data sides show through at grazing angles
-    factor, units = reference(0.0), reference(0.0)
-    mapper.GetRelativeCoincidentTopologyPolygonOffsetParameters(factor, units)
-    assert (factor.get(), units.get()) == (0.0, 4.0)
-    assert not actor.GetPickable()
-    assert not actor.GetProperty().GetLighting()
-
-
 @pytest.mark.parametrize("name", ["", ".", "..", "../other", "a/b", "a\\b", "/etc"])
-def test_tiles_folder_must_be_a_plain_name(name: str) -> None:
-    with pytest.raises(ValueError, match="tiles_folder"):
-        check_tiles_folder(name)
-
-
-def test_tiles_folder_plain_name() -> None:
-    check_tiles_folder("tiles")
-
-
-def test_basemap_lift_follows_exploded_blocks() -> None:
-    # Exploded blocks only move up: the basemap rises to the highest one, never down
-    assert basemap_lift(0.0, []) == 0.0
-    assert basemap_lift(0.0, [-50.0]) == 0.0
-    assert basemap_lift(10.0, [5.0, 250.0]) == 240.0
+def test_source_folder_must_be_a_plain_name(name: str) -> None:
+    with pytest.raises(ValueError, match="basemap source"):
+        check_source_folder(name)
 
 
 def _actor(bounds: tuple[float, float, float, float, float, float]) -> vtkActor:
@@ -226,12 +198,3 @@ def test_basemap_clipping_keeps_texture_coordinates() -> None:
     output = geometry.GetOutput()
     assert output.GetBounds()[1] == pytest.approx(4)
     assert output.GetPointData().GetTCoords() is not None
-
-
-def test_detail_basemap_stays_in_front_of_the_base() -> None:
-    assert DETAIL_POLYGON_OFFSET_UNITS < BASEMAP_POLYGON_OFFSET_UNITS
-    actor, mapper = vtkActor(), vtkDataSetMapper()
-    style_basemap(actor, mapper, DETAIL_POLYGON_OFFSET_UNITS)
-    factor, units = reference(0.0), reference(0.0)
-    mapper.GetRelativeCoincidentTopologyPolygonOffsetParameters(factor, units)
-    assert units.get() == DETAIL_POLYGON_OFFSET_UNITS

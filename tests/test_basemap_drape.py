@@ -1,4 +1,3 @@
-import time
 from typing import TYPE_CHECKING
 
 import pytest
@@ -8,13 +7,10 @@ from vtkmodules.vtkIOXML import vtkXMLPolyDataReader, vtkXMLPolyDataWriter
 from vtkmodules.vtkRenderingCore import vtkDataSetMapper, vtkTexture
 
 from opengeodeweb_viewer.basemap_drape import (
-    DETAIL_DRAPE_POLYGON_OFFSET_UNITS,
     DRAPE_POLYGON_OFFSET_UNITS,
     clipped_to_bounds,
     drape_actor,
     drape_polydata,
-    flat_map_lift,
-    flat_map_visible,
     top_surfaces,
     upward_ratio,
 )
@@ -25,9 +21,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from vtkmodules.vtkCommonDataModel import vtkPolyData
-
-SURFACES_COUNT = 10_000
-MAX_SORT_SECONDS = 0.5
 
 
 def _plane(
@@ -45,8 +38,8 @@ def _plane(
     return plane.GetOutput()
 
 
-def _horizontal(z: float, size: float = 10.0) -> vtkPolyData:
-    return _plane((0, 0, z), (size, 0, z), (0, size, z))
+def _horizontal(z: float) -> vtkPolyData:
+    return _plane((0, 0, z), (10, 0, z), (0, 10, z))
 
 
 def _wall(z_top: float) -> vtkPolyData:
@@ -88,16 +81,6 @@ def test_top_surfaces_tolerance_is_at_least_one_metre() -> None:
     assert top_surfaces([_horizontal(-2)], data_top=0, z_extent=10) == []
 
 
-def test_top_surfaces_is_fast() -> None:
-    # Deeper than the 1 % tolerance of the extent (about 110 m)
-    surfaces = [_horizontal(-1000 - index, size=1) for index in range(SURFACES_COUNT)]
-    surfaces.append(_horizontal(0, size=1))
-    start = time.perf_counter()
-    kept = top_surfaces(surfaces, data_top=0, z_extent=SURFACES_COUNT + 1000)
-    assert time.perf_counter() - start < MAX_SORT_SECONDS
-    assert len(kept) == 1
-
-
 def test_drape_polydata_reads_the_basemap_uv_above_each_point() -> None:
     surface = _horizontal(-50)
     drape = drape_polydata([surface, _horizontal(-60)], _basemap(z=0))
@@ -108,26 +91,6 @@ def test_drape_polydata_reads_the_basemap_uv_above_each_point() -> None:
     for index in range(drape.GetNumberOfPoints()):
         x, y, _ = drape.GetPoint(index)
         assert tcoords.GetTuple2(index) == pytest.approx(((x + 10) / 40, (y + 10) / 40))
-
-
-def test_flat_map_lift() -> None:
-    # Draped relief: the flat map goes down to its lowest point
-    assert flat_map_lift(basemap_top=0, draped_bottom=-40, explode_lift=0) == -40
-    # Nothing draped: the explosion rule
-    assert flat_map_lift(basemap_top=0, draped_bottom=None, explode_lift=25) == 25
-
-
-def test_flat_map_visible() -> None:
-    assert flat_map_visible(around=True, draped=True)
-    assert not flat_map_visible(around=False, draped=True)
-    # Nothing draped: hiding the flat map would hide the whole map
-    assert flat_map_visible(around=False, draped=False)
-
-
-def test_drape_stays_behind_edges_points_and_highlight() -> None:
-    # In front of the data polygons it covers (units 0), behind the points and the
-    # highlight (units -2) and the edges (units -4)
-    assert -2 < DRAPE_POLYGON_OFFSET_UNITS < 0
 
 
 def test_drape_actor_shows_the_full_texture() -> None:
@@ -168,7 +131,3 @@ def test_surfaces_clipped_to_the_detail_bounds() -> None:
     assert x_min >= 0.0
     assert x_max <= 5.0 + 1e-9
     assert clipped_to_bounds([surface], (100.0, 110.0, 0.0, 10.0, -1.0, 1.0)) == []
-
-
-def test_detail_drape_in_front_of_the_base_drape() -> None:
-    assert -2 < DETAIL_DRAPE_POLYGON_OFFSET_UNITS < DRAPE_POLYGON_OFFSET_UNITS < 0

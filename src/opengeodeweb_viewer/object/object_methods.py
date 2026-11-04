@@ -80,6 +80,7 @@ class VtkObjectView(VtkView):
 
     def set_visibility(self, data_id: str, *, visibility: bool) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
+        pipeline.visibility = visibility
         pipeline.actor.SetVisibility(visibility)
         self.set_style_actors_visibility(pipeline, visibility=visibility)
         self.mark_basemaps_dirty()

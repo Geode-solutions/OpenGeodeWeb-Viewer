@@ -36,7 +36,6 @@ class ApplyBasemap(DataClassJsonMixin):
     layers: List[MapState]
     maps: List[Map]
     rows: int
-    tiles_folder: str
     detail_of: Optional[str] = None
 
 

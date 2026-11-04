@@ -1,8 +1,8 @@
 """Basemap draped on the top surfaces of the georeferenced data."""
 
-# Standard library imports
 from __future__ import annotations
 
+# Standard library imports
 from typing import TYPE_CHECKING, cast
 
 # Third party imports
@@ -20,10 +20,17 @@ from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper, vtkTexture
 
 if TYPE_CHECKING:
     from vtkmodules.vtkCommonCore import vtkDataArray
+    from vtkmodules.vtkRenderingCore import vtkMapper
 
 MIN_UPWARD_RATIO = 0.7
 TOP_TOLERANCE_RATIO = 0.01
 MIN_TOP_TOLERANCE = 1.0
+# Added to the global offset (2, 0) of every mapper: the basemap is drawn behind flat data.
+# Only a constant depth offset: a slope factor would grow at grazing angles and let the
+# data sides just under the basemap show through it
+BASEMAP_POLYGON_OFFSET_UNITS = 4.0
+# A detail map lies on its base map: one unit closer, still behind flat data
+DETAIL_POLYGON_OFFSET_UNITS = BASEMAP_POLYGON_OFFSET_UNITS - 1.0
 # Pulls the drape in front of the data surface it lies on (units 0), but not in front of
 # its points and highlight (-2) nor its edges (-4)
 DRAPE_POLYGON_OFFSET_UNITS = -1.0
@@ -33,10 +40,6 @@ DETAIL_DRAPE_POLYGON_OFFSET_UNITS = DRAPE_POLYGON_OFFSET_UNITS - 0.5
 
 def _to_numpy(array: vtkDataArray) -> np.ndarray:
     return cast("np.ndarray", vtk_to_numpy(array))  # type: ignore[no-untyped-call]
-
-
-def _to_vtk(array: np.ndarray) -> vtkDataArray:
-    return cast("vtkDataArray", numpy_to_vtk(array, deep=True))  # type: ignore[no-untyped-call]
 
 
 def upward_ratio(surface: vtkPolyData) -> float:
@@ -91,7 +94,7 @@ def drape_polydata(surfaces: list[vtkPolyData], basemap: vtkPolyData) -> vtkPoly
     coordinates = _to_numpy(drape.GetPoints().GetData()).astype(float)
     coordinates[:, 2] = basemap.GetBounds()[5]
     flat_points = vtkPoints()
-    flat_points.SetData(_to_vtk(coordinates))
+    flat_points.SetData(numpy_to_vtk(coordinates, deep=True))  # type: ignore[no-untyped-call]
     flat = vtkPolyData()
     flat.SetPoints(flat_points)
     probe = vtkProbeFilter()
@@ -100,18 +103,6 @@ def drape_polydata(surfaces: list[vtkPolyData], basemap: vtkPolyData) -> vtkPoly
     probe.Update()
     drape.GetPointData().SetTCoords(probe.GetOutput().GetPointData().GetArray("basemap_uv"))
     return drape
-
-
-def flat_map_lift(basemap_top: float, draped_bottom: float | None, explode_lift: float) -> float:
-    """Z offset of the flat map: under the draped relief, or on top of the exploded data."""
-    if draped_bottom is not None:
-        return draped_bottom - basemap_top
-    return explode_lift
-
-
-def flat_map_visible(*, around: bool, draped: bool) -> bool:
-    # Hiding the flat map with nothing draped would hide the whole map
-    return around or not draped
 
 
 def _clip_half_space(
@@ -146,20 +137,25 @@ def clipped_to_bounds(surfaces: list[vtkPolyData], bounds: tuple[float, ...]) ->
     return clipped
 
 
+def style_basemap(actor: vtkActor, mapper: vtkMapper, offset_units: float) -> None:
+    # Map colours must not be shaded, and the basemap must not catch picks
+    properties = actor.GetProperty()
+    properties.LightingOff()
+    properties.SetAmbient(1.0)
+    properties.SetDiffuse(0.0)
+    actor.PickableOff()
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, offset_units)
+
+
 def drape_actor(
     drape: vtkPolyData, texture: vtkTexture, offset_units: float = DRAPE_POLYGON_OFFSET_UNITS
 ) -> vtkActor:
     mapper = vtkPolyDataMapper()
     mapper.SetInputData(drape)
     mapper.ScalarVisibilityOff()
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, offset_units)
     actor = vtkActor()
     actor.SetMapper(mapper)
     # The opacity of each map is in the texture alpha
     actor.SetTexture(texture)
-    properties = actor.GetProperty()
-    properties.LightingOff()
-    properties.SetAmbient(1.0)
-    properties.SetDiffuse(0.0)
-    actor.PickableOff()
+    style_basemap(actor, mapper, offset_units)
     return actor
