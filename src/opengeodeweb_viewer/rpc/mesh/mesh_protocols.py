@@ -198,6 +198,8 @@ class VtkMeshView(VtkObjectView):
     def mesh_basemap_drape(self, params: schemas.BasemapDrape) -> schemas.BasemapDrapeResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         pipeline.drape_ids = list(params.data_ids)
+        # Cut like the data it now lies under
+        self.clip_basemap(pipeline)
         self.mark_basemaps_dirty()
         return schemas.BasemapDrapeResponse()
 

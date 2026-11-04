@@ -289,8 +289,13 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.fit_grid_scale()
 
     def set_clipping_planes(self, data_ids: list[str], planes_data: list[Plane]) -> None:
+        database = self.get_data_base()
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
+            # A basemap is cut like the data it lies under, below
+            if pipeline.basemap:
+                continue
+            pipeline.clipping_planes = planes_data
             if planes_data:
                 clipping_filter = vtkExtractGeometry()
                 clipping_filter.SetImplicitFunction(_clipping_function(planes_data))
@@ -298,15 +303,22 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             else:
                 pipeline.clipping_filter = None
             self.update_pipeline_filter(pipeline)
-        # The map is cut with the data: kept for the basemaps built later
-        self.coreServer.setSharedObject("basemap_clipping_planes", planes_data)
-        for pipeline in self.get_data_base().values():
-            if pipeline.basemap:
+        for pipeline in database.values():
+            if pipeline.basemap and not set(pipeline.drape_ids).isdisjoint(data_ids):
                 self.clip_basemap(pipeline)
         self.mark_basemaps_dirty()
 
     def clip_basemap(self, pipeline: VtkPipeline) -> None:
-        planes_data = cast("list[Plane] | None", self.getSharedObject("basemap_clipping_planes"))
+        """The basemap is cut like the georeferenced data it lies under."""
+        database = self.get_data_base()
+        planes_data = next(
+            (
+                database[data_id].clipping_planes
+                for data_id in pipeline.drape_ids
+                if data_id in database and database[data_id].clipping_planes
+            ),
+            None,
+        )
         pipeline.clipping_filter = basemap_clipping_filter(planes_data) if planes_data else None
         self.update_pipeline_filter(pipeline)
 

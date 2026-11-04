@@ -6,8 +6,9 @@ from typing import TYPE_CHECKING
 import pytest
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkPlaneSource
+from vtkmodules.vtkIOXML import vtkXMLPolyDataReader
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
-from vtkmodules.vtkRenderingCore import vtkActor, vtkPolyDataMapper, vtkRenderer
+from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkPolyDataMapper, vtkRenderer
 
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     TILES_FOLDER,
@@ -15,6 +16,7 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     check_source_folder,
 )
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
+from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView, basemap_clipping_filter
 
 if TYPE_CHECKING:
@@ -198,3 +200,41 @@ def test_basemap_clipping_keeps_texture_coordinates() -> None:
     output = geometry.GetOutput()
     assert output.GetBounds()[1] == pytest.approx(4)
     assert output.GetPointData().GetTCoords() is not None
+
+
+class _SharedObjects:
+    def __init__(self) -> None:
+        self.objects: dict[str, object] = {"db": {}}
+
+    def getSharedObject(self, key: str) -> object:  # noqa: N802 wslink API
+        return self.objects.get(key)
+
+    def setSharedObject(self, key: str, value: object) -> None:  # noqa: N802 wslink API
+        self.objects[key] = value
+
+
+def _view_with_basemap() -> tuple[VtkView, VtkPipeline]:
+    """A view holding a basemap draped on "data", and an "other" data."""
+    view = VtkView()
+    view.coreServer = _SharedObjects()
+    database = view.get_data_base()
+    for data_id in ("data", "other", "basemap"):
+        reader = vtkXMLPolyDataReader()
+        reader.SetFileName(str(Path(__file__).parent.parent / "data" / "basemap.vtp"))
+        reader.Update()
+        database[data_id] = VtkPipeline(reader, vtkDataSetMapper())
+    basemap = database["basemap"]
+    basemap.basemap = True
+    basemap.drape_ids = ["data"]
+    return view, basemap
+
+
+def test_basemap_follows_the_clipping_of_its_draped_data() -> None:
+    view, basemap = _view_with_basemap()
+    view.set_clipping_planes(["data"], [Plane(normal=[1, 0, 0], origin=[4, 0, 0])])
+    assert basemap.clipping_filter is not None
+    # Unclipping data the basemap does not lie over leaves it cut
+    view.set_clipping_planes(["other"], [])
+    assert basemap.clipping_filter is not None
+    view.set_clipping_planes(["data"], [])
+    assert basemap.clipping_filter is None

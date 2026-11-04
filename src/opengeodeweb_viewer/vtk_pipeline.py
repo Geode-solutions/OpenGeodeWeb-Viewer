@@ -69,6 +69,7 @@ if TYPE_CHECKING:
     from vtkmodules.vtkIOXML import vtkXMLReader
 
     from opengeodeweb_viewer.basemap_compose import LayerState
+    from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
 
 logger = logging.getLogger(__name__)
 
@@ -274,6 +275,8 @@ class VtkPipeline:
     actor: vtkActor = field(default_factory=vtkActor)
     slice_filter: vtkAppendFilter | None = None
     clipping_filter: vtkExtractGeometry | vtkTableBasedClipDataSet | None = None
+    # The planes of clipping_filter, followed by the basemaps lying over this data
+    clipping_planes: list[Plane] = field(default_factory=list)
     threshold_filters: list[vtkThreshold] = field(default_factory=list)
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
