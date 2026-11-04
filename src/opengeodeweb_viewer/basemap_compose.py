@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 # Standard library imports
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 # Third party imports
 import numpy as np
@@ -17,10 +17,17 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
 
-    from opengeodeweb_viewer.rpc.mesh.schemas import Layer, MapState
 
-    # The state of a map, as apply_basemap and basemap_layers send it
-    type LayerState = MapState | Layer
+class LayerState(Protocol):
+    """The state of a map, as apply_basemap and basemap_layers send it."""
+
+    @property
+    def visible(self) -> bool: ...
+    @property
+    def opacity(self) -> float: ...
+    @property
+    def crop(self) -> bool: ...
+
 
 RGB = 3
 RGBA = 4
