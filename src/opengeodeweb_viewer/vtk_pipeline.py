@@ -274,7 +274,7 @@ class VtkPipeline:
     actor: vtkActor = field(default_factory=vtkActor)
     slice_filter: vtkAppendFilter | None = None
     clipping_filter: vtkExtractGeometry | vtkTableBasedClipDataSet | None = None
-    threshold_filter: vtkThreshold | None = None
+    threshold_filters: list[vtkThreshold] = field(default_factory=list)
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
     # Set by set_visibility: the basemap actors also hide on their own, without forgetting it

@@ -10,43 +10,47 @@
         "maxLength": 32
       }
     },
-    "attribute": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "point",
+              "cell"
+            ]
+          },
+          "item": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minimum": {
+            "type": "number"
+          },
+          "maximum": {
+            "type": "number"
+          }
         },
-        "location": {
-          "type": "string",
-          "enum": [
-            "point",
-            "cell"
-          ]
-        },
-        "item": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "minimum": {
-          "type": "number"
-        },
-        "maximum": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "name",
-        "location",
-        "item",
-        "minimum",
-        "maximum"
-      ],
-      "additionalProperties": false
+        "required": [
+          "name",
+          "location",
+          "item",
+          "minimum",
+          "maximum"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [
-    "ids"
+    "ids",
+    "attributes"
   ],
   "additionalProperties": false,
   "response": {

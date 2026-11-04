@@ -259,7 +259,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             filter_obj
             for filter_obj in (
                 pipeline.clipping_filter,
-                pipeline.threshold_filter,
+                *pipeline.threshold_filters,
                 pipeline.shrink_filter,
             )
             if filter_obj is not None
@@ -401,10 +401,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             basemap.drape_actor.SetTexture(basemap.full_texture)
             basemap.drape_actor.SetVisibility(basemap.visibility)
 
-    def set_threshold(self, data_ids: list[str], attribute: Attribute | None) -> None:
+    def set_threshold(self, data_ids: list[str], attributes: list[Attribute]) -> None:
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
-            if attribute:
+            pipeline.threshold_filters = []
+            for attribute in attributes:
                 threshold_filter = vtkThreshold()
                 threshold_filter.SetInputArrayToProcess(
                     0,
@@ -420,9 +421,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 threshold_filter.SetSelectedComponent(attribute.item)
                 threshold_filter.SetLowerThreshold(attribute.minimum)
                 threshold_filter.SetUpperThreshold(attribute.maximum)
-                pipeline.threshold_filter = threshold_filter
-            else:
-                pipeline.threshold_filter = None
+                pipeline.threshold_filters.append(threshold_filter)
             self.update_pipeline_filter(pipeline)
         self.mark_basemaps_dirty()
 
