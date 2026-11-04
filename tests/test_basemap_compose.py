@@ -131,6 +131,8 @@ def test_read_tiles_and_texture(tmp_path: Path) -> None:
     writer.SetInputData(texture.GetInput())
     writer.SetFileName(str(tmp_path / "1_0.png"))
     writer.Write()
+    # Not a tile: left out
+    (tmp_path / ".DS_Store").write_bytes(b"")
     tiles = read_tiles(tmp_path)
     assert list(tiles) == [(1, 0)]
     # Read back with the north row first, as written

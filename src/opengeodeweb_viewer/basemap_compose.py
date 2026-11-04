@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 # Standard library imports
+import re
 from typing import TYPE_CHECKING, Protocol, cast
 
 # Third party imports
@@ -31,6 +32,8 @@ class LayerState(Protocol):
 
 RGB = 3
 RGBA = 4
+# The tiles the Back writes: <column>_<row>.png or .jpg
+TILE_NAME = re.compile(r"(\d+)_(\d+)\.(png|jpg)")
 MAX_CHANNEL = 255.0
 
 
@@ -105,12 +108,15 @@ def textures(
 
 
 def read_tiles(folder: Path) -> dict[tuple[int, int], np.ndarray]:
-    """Tiles named <column>_<row>, as RGBA arrays with the north row first."""
+    """Tiles named <column>_<row>, as RGBA arrays with the north row first; other files skipped."""
     if not folder.is_dir():
         return {}
     tiles: dict[tuple[int, int], np.ndarray] = {}
     for path in folder.iterdir():
-        column, row = (int(part) for part in path.stem.split("_"))
+        name = TILE_NAME.fullmatch(path.name)
+        if name is None:
+            continue
+        column, row = int(name[1]), int(name[2])
         reader = vtkImageReader2Factory.CreateImageReader2(str(path))
         reader.SetFileName(str(path))
         reader.Update()
