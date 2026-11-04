@@ -37,7 +37,11 @@ from opengeodeweb_viewer.vtk_pipeline import ColorMapKey, VtkPipeline
 from . import schemas
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from vtkmodules.vtkRenderingAnnotation import vtkScalarBarActor
+
+    from opengeodeweb_viewer.basemap_compose import LayerState
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +55,10 @@ def check_source_folder(name: str) -> None:
     if name in ("", ".", "..") or "/" in name or "\\" in name:
         msg = f"Invalid basemap source {name!r}: expected a plain folder name"
         raise ValueError(msg)
+
+
+def _state_values(states: Mapping[str, LayerState]) -> dict[str, tuple[bool, float, bool]]:
+    return {name: (state.visible, state.opacity, state.crop) for name, state in states.items()}
 
 
 class VtkMeshView(VtkObjectView):
@@ -171,7 +179,11 @@ class VtkMeshView(VtkObjectView):
     @typed_rpc(mesh_prefix, schemas.basemap_layers_route)
     def mesh_basemap_layers(self, params: schemas.BasemapLayers) -> schemas.BasemapLayersResponse:
         pipeline = self.get_vtk_pipeline(params.id)
-        pipeline.basemap_states = {layer.map: layer for layer in params.layers}
+        states: dict[str, LayerState] = {layer.map: layer for layer in params.layers}
+        # The same states again: the textures already show them
+        if _state_values(states) == _state_values(pipeline.basemap_states):
+            return schemas.BasemapLayersResponse()
+        pipeline.basemap_states = states
         # Before apply_basemap there is no image to compose
         if not pipeline.basemap_images:
             return schemas.BasemapLayersResponse()

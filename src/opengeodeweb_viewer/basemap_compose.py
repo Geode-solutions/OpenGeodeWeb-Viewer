@@ -63,22 +63,29 @@ def _premultiplied(image: np.ndarray) -> np.ndarray:
     return pixels
 
 
-def _over(bottom: np.ndarray, top: np.ndarray) -> np.ndarray:
-    return top + bottom * (1.0 - top[..., 3:])
+def _over(bottom: np.ndarray, top: np.ndarray) -> None:
+    """Lays top over bottom, in place: no image sized temporary."""
+    bottom *= 1.0 - top[..., 3:]
+    bottom += top
 
 
 def compose(layers: list[tuple[list[np.ndarray], float]], shape: tuple[int, ...]) -> np.ndarray:
     """Each layer, its sources from the bottom up, laid over the layers below with its opacity."""
     result = np.zeros((*shape, RGBA), np.float32)
     for sources, opacity in layers:
-        layer = np.zeros_like(result)
-        for source in sources:
-            layer = _over(layer, _premultiplied(source))
-        result = _over(result, layer * opacity)
+        # A transparent layer changes nothing
+        if not sources or opacity <= 0:
+            continue
+        layer = _premultiplied(sources[0])
+        for source in sources[1:]:
+            _over(layer, _premultiplied(source))
+        layer *= opacity
+        _over(result, layer)
     alpha = result[..., 3:]
-    colors = np.divide(result[..., :3], alpha, out=np.zeros_like(result[..., :3]), where=alpha > 0)
-    straight = np.concatenate([colors, alpha], axis=2)
-    return np.rint(straight * MAX_CHANNEL).astype(np.uint8)
+    # Premultiplied colours are 0 where the alpha is: they stay 0
+    np.divide(result[..., :3], alpha, out=result[..., :3], where=alpha > 0)
+    result *= MAX_CHANNEL
+    return np.rint(result, out=result).astype(np.uint8)
 
 
 def textures(
