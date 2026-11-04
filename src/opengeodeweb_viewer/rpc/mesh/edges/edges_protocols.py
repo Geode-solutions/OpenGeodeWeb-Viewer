@@ -33,3 +33,8 @@ class VtkMeshEdgesView(VtkMeshView):
     def set_mesh_edges_width(self, params: schemas.Width) -> schemas.WidthResponse:
         self.set_edges_width(params.id, params.width)
         return schemas.WidthResponse()
+
+    @typed_rpc(mesh_edges_prefix, schemas.opacity_route)
+    def set_mesh_edges_opacity(self, params: schemas.Opacity) -> schemas.OpacityResponse:
+        self.set_edges_opacity(params.id, params.opacity)
+        return schemas.OpacityResponse()

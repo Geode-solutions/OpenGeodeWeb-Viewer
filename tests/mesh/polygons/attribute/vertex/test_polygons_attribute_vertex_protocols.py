@@ -7,6 +7,7 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.mesh.polygons.attribute.vertex import (
     polygons_attribute_vertex_protocols,
 )
+from opengeodeweb_viewer.rpc.mesh.polygons.polygons_protocols import VtkMeshPolygonsView
 
 # Local application imports
 
@@ -396,3 +397,18 @@ def test_polygons_vertex_no_data(
     )
 
     assert server.compare_image("mesh/polygons/vertex_no_data.jpeg")
+
+
+def test_polygons_vertex_color_map_opacity(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_polygons_vertex_color_map(server, dataset_factory)
+
+    # Opacity must not replace the attribute coloring by the constant color
+    server.call(
+        VtkMeshPolygonsView.mesh_polygons_prefix
+        + VtkMeshPolygonsView.mesh_polygons_schemas_dict["opacity"]["rpc"],
+        [{"id": mesh_id, "opacity": 0.5}],
+    )
+    assert server.compare_image("mesh/polygons/vertex_color_map_opacity.jpeg")
