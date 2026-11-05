@@ -37,7 +37,9 @@ def compose(basemap: BasemapState, shape: tuple[int, ...]) -> None:
     )
 
 
-def basemaps(database: Mapping[str, VtkPipeline]) -> list[tuple[VtkPipeline, BasemapState]]:
+def basemaps(
+    database: Mapping[str, VtkPipeline],
+) -> list[tuple[VtkPipeline, BasemapState]]:
     return [
         (pipeline, pipeline.basemap)
         for pipeline in database.values()
@@ -67,7 +69,9 @@ def pipeline_surfaces(pipeline: VtkPipeline) -> list[vtkPolyData]:
     return [output] if output.GetNumberOfPolys() > 0 else []
 
 
-def drape_planes(database: Mapping[str, VtkPipeline], basemap: BasemapState) -> list[Plane]:
+def drape_planes(
+    database: Mapping[str, VtkPipeline], basemap: BasemapState
+) -> list[Plane]:
     """The clipping planes of the georeferenced data the basemap lies under."""
     return next(
         (
@@ -79,8 +83,12 @@ def drape_planes(database: Mapping[str, VtkPipeline], basemap: BasemapState) -> 
     )
 
 
-def basemaps_follow(database: Mapping[str, VtkPipeline], data_ids: Iterable[str]) -> bool:
-    draped = {data_id for _, basemap in basemaps(database) for data_id in basemap.drape_ids}
+def basemaps_follow(
+    database: Mapping[str, VtkPipeline], data_ids: Iterable[str]
+) -> bool:
+    draped = {
+        data_id for _, basemap in basemaps(database) for data_id in basemap.drape_ids
+    }
     # Exploded data lift the flat map, and an unknown id may be anything
     return any(
         data_id in draped
@@ -110,7 +118,9 @@ def update_basemaps(database: Mapping[str, VtkPipeline], renderer: vtkRenderer) 
         and pipeline.actor.GetVisibility()
     ]
     # A detail reads what its base just drew
-    for pipeline, basemap in sorted(basemaps(database), key=lambda p: p[1].detail_of is not None):
+    for pipeline, basemap in sorted(
+        basemaps(database), key=lambda p: p[1].detail_of is not None
+    ):
         if basemap.drape_actor is not None:
             renderer.RemoveActor(basemap.drape_actor)
             basemap.drape_actor = None
@@ -141,13 +151,17 @@ def _update_base(
         data_top = max(bound[5] for bound in bounds)
         z_extent = data_top - min(bound[4] for bound in bounds)
         surfaces = [
-            surface for data_pipeline in data for surface in pipeline_surfaces(data_pipeline)
+            surface
+            for data_pipeline in data
+            for surface in pipeline_surfaces(data_pipeline)
         ]
         draped = top_surfaces(surfaces, data_top, z_extent)
     dataset = cast("vtkPolyData", pipeline.reader.GetOutputAsDataSet())
     basemap_top = dataset.GetBounds()[5]
     if draped:
-        basemap.drape_actor = drape_actor(drape_polydata(draped, dataset), basemap.full_texture)
+        basemap.drape_actor = drape_actor(
+            drape_polydata(draped, dataset), basemap.full_texture
+        )
         renderer.AddActor(basemap.drape_actor)
         # The flat map goes under the draped relief
         lift = min(surface.GetBounds()[4] for surface in draped) - basemap_top
@@ -189,7 +203,9 @@ def retexture(database: Mapping[str, VtkPipeline], pipeline: VtkPipeline) -> Non
     # Without draped surface, cropping would hide the whole map: the flat map shows every map
     around = basemap.around_texture
     draped = base is not None and bool(base.draped_surfaces)
-    pipeline.actor.SetTexture(around if draped and around is not None else basemap.full_texture)
+    pipeline.actor.SetTexture(
+        around if draped and around is not None else basemap.full_texture
+    )
     # Hiding the flat map with nothing draped would hide the whole map
     flat_visible = around is not None or not draped
     pipeline.actor.SetVisibility(pipeline.visibility and flat_visible)

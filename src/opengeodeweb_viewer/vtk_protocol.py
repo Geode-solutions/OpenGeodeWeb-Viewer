@@ -47,7 +47,11 @@ from opengeodeweb_viewer.basemap_pipeline import (
 )
 from opengeodeweb_viewer.orientation_marker import style_marker
 from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
-from opengeodeweb_viewer.text_style import TextStyle, apply_text_property, style_grid_scale
+from opengeodeweb_viewer.text_style import (
+    TextStyle,
+    apply_text_property,
+    style_grid_scale,
+)
 from opengeodeweb_viewer.vtk_pipeline import (
     RulerPipeline,
     ViewerData,
@@ -233,7 +237,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     ) -> None:
         node = pipeline.highlight.selection_node
         node.SetContentType(vtkSelectionNode.INDICES)
-        node.SetFieldType(vtkSelectionNode.CELL if field_type == "CELL" else vtkSelectionNode.POINT)
+        node.SetFieldType(
+            vtkSelectionNode.CELL if field_type == "CELL" else vtkSelectionNode.POINT
+        )
         selection_list = vtkIdTypeArray()
         selection_list.SetNumberOfComponents(1)
         selection_list.InsertNextValue(id_to_select)
@@ -270,11 +276,15 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         pipeline.filter.SetInputConnection(current_input_port)
         pipeline.filter.Update()
         filtered_dataset = pipeline.filter.GetOutputDataObject(0)
-        if isinstance(filtered_dataset, vtkPointSet) and (points := filtered_dataset.GetPoints()):
+        if isinstance(filtered_dataset, vtkPointSet) and (
+            points := filtered_dataset.GetPoints()
+        ):
             # Unfiltered input points are passed through, older than the cached filtered bounds
             points.Modified()
         if isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
-            if pipeline.explode_factor > 0 and isinstance(filtered_dataset, vtkMultiBlockDataSet):
+            if pipeline.explode_factor > 0 and isinstance(
+                filtered_dataset, vtkMultiBlockDataSet
+            ):
                 filtered_dataset = pipeline.explode_blocks(filtered_dataset)
             pipeline.sync_composite_pipeline(filtered_dataset)
         else:
@@ -288,7 +298,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         # A shown grid scale keeps its bounds on render, so refit it on geometry changes
         self.fit_grid_scale()
 
-    def set_clipping_planes(self, data_ids: list[str], planes_data: list[Plane]) -> None:
+    def set_clipping_planes(
+        self, data_ids: list[str], planes_data: list[Plane]
+    ) -> None:
         database = self.get_data_base()
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
@@ -311,15 +323,21 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def clip_basemap(self, pipeline: VtkPipeline) -> None:
         """The basemap is cut like the georeferenced data it lies under."""
         planes_data = (
-            [] if pipeline.basemap is None else drape_planes(self.get_data_base(), pipeline.basemap)
+            []
+            if pipeline.basemap is None
+            else drape_planes(self.get_data_base(), pipeline.basemap)
         )
-        pipeline.clipping_filter = basemap_clipping_filter(planes_data) if planes_data else None
+        pipeline.clipping_filter = (
+            basemap_clipping_filter(planes_data) if planes_data else None
+        )
         self.update_pipeline_filter(pipeline)
 
     def mark_basemaps_dirty(self, data_ids: Iterable[str] | None = None) -> None:
         """The drapes are rebuilt once, at the next render, when a change on data_ids moves them."""
         if data_ids is None or basemaps_follow(self.get_data_base(), data_ids):
-            self.coreServer.setSharedObject("basemaps_dirty", True)  # noqa: FBT003 VTK API
+            self.coreServer.setSharedObject(
+                "basemaps_dirty", True
+            )  # noqa: FBT003 VTK API
 
     def set_threshold(self, data_ids: list[str], attributes: list[Attribute]) -> None:
         for data_id in data_ids:
@@ -375,9 +393,12 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if not isinstance(image, vtkImageData):
                 continue
             extent = image.GetExtent()
-            last_indices = [extent[2 * axis + 1] - extent[2 * axis] for axis in range(3)]
+            last_indices = [
+                extent[2 * axis + 1] - extent[2 * axis] for axis in range(3)
+            ]
             max_indices = [
-                max(current, last) for current, last in zip(max_indices, last_indices, strict=True)
+                max(current, last)
+                for current, last in zip(max_indices, last_indices, strict=True)
             ]
             if not slices:
                 if pipeline.slice_filter is None:
@@ -387,7 +408,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 slice_filter = vtkAppendFilter()
                 for slice_item in slices:
                     voi = list(extent)
-                    voi[2 * slice_item.axis] += min(slice_item.index, last_indices[slice_item.axis])
+                    voi[2 * slice_item.axis] += min(
+                        slice_item.index, last_indices[slice_item.axis]
+                    )
                     voi[2 * slice_item.axis + 1] = voi[2 * slice_item.axis]
                     extract_voi = vtkExtractVOI()
                     extract_voi.SetInputConnection(pipeline.reader.GetOutputPort())
@@ -429,7 +452,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             ),
             None,
         )
-        id_to_select = picker.GetCellId() if field_type == "CELL" else picker.GetPointId()
+        id_to_select = (
+            picker.GetCellId() if field_type == "CELL" else picker.GetPointId()
+        )
         return data_id, id_to_select
 
     def pick_actors_under_coordinate(
@@ -469,7 +494,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         )
         return dataset, geode_id
 
-    def get_array_values(self, array: vtkDataArray, id_to_select: int) -> list[float] | float:
+    def get_array_values(
+        self, array: vtkDataArray, id_to_select: int
+    ) -> list[float] | float:
         components = array.GetNumberOfComponents()
         if components == 1:
             return float(array.GetComponent(id_to_select, 0))
@@ -486,7 +513,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if not isinstance(data_object, vtkDataSet):
             return {}
         field_data = (
-            data_object.GetCellData() if field_type == "CELL" else data_object.GetPointData()
+            data_object.GetCellData()
+            if field_type == "CELL"
+            else data_object.GetPointData()
         )
         attributes = {}
         for i in range(field_data.GetNumberOfArrays()):
@@ -509,7 +538,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             if final_bounds[0] <= final_bounds[1]:
                 for axis in range(3):
                     dist = self._axis_display_length(renderer, final_bounds, axis)
-                    self._update_grid_scale_axis_labels(grid_scale, final_bounds, axis, dist)
+                    self._update_grid_scale_axis_labels(
+                        grid_scale, final_bounds, axis, dist
+                    )
         self.reset_camera_clipping_range()
 
     def fit_grid_scale(self) -> None:
@@ -521,7 +552,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
     @staticmethod
     def fit_grid_scale_to_visible_props(
-        grid_scale: vtkCubeAxesActor, renderer: vtkRenderer, excluded: AbstractSet[vtkProp]
+        grid_scale: vtkCubeAxesActor,
+        renderer: vtkRenderer,
+        excluded: AbstractSet[vtkProp],
     ) -> None:
         bounds = vtkBoundingBox()
         props = renderer.GetViewProps()
@@ -544,7 +577,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             grid_scale.SetBounds(final_bounds)
 
     @staticmethod
-    def _axis_display_length(renderer: vtkRenderer, final_bounds: list[float], axis: int) -> float:
+    def _axis_display_length(
+        renderer: vtkRenderer, final_bounds: list[float], axis: int
+    ) -> float:
         p1 = [final_bounds[0], final_bounds[2], final_bounds[4]]
         p2 = list(p1)
         p2[axis] = final_bounds[axis * 2 + 1]
@@ -601,10 +636,14 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self, data_id: str, pipeline: VtkPipeline
     ) -> list[tuple[vtkScalarBarActor, str, str, VtkPipeline]]:
         visible_bars: list[tuple[vtkScalarBarActor, str, str, VtkPipeline]] = []
-        if pipeline.scalar_bar.GetVisibility() and pipeline.scalar_bar.GetLookupTable() is not None:
+        if (
+            pipeline.scalar_bar.GetVisibility()
+            and pipeline.scalar_bar.GetLookupTable() is not None
+        ):
             dataset = pipeline.filter.GetOutputDataObject(0)
             scalars = (
-                dataset.GetPointData().GetScalars() or dataset.GetCellData().GetScalars()
+                dataset.GetPointData().GetScalars()
+                or dataset.GetCellData().GetScalars()
                 if isinstance(dataset, vtkDataSet)
                 else None
             )
@@ -632,7 +671,10 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             visible_bars.append((edges_bar, edges_attr_name, data_id, pipeline))
 
         for attr_name, scalar_bar in pipeline.scalar_bars.items():
-            if scalar_bar.actor.GetVisibility() and scalar_bar.actor.GetLookupTable() is not None:
+            if (
+                scalar_bar.actor.GetVisibility()
+                and scalar_bar.actor.GetLookupTable() is not None
+            ):
                 visible_bars.append((scalar_bar.actor, attr_name, data_id, pipeline))
         return visible_bars
 
@@ -658,7 +700,11 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
         for i, (bar, attr_name, data_id, pipeline) in enumerate(visible_bars):
             dataset = pipeline.filter.GetOutputDataObject(0)
-            data_name = dataset.GetObjectName() if dataset and dataset.GetObjectName() else data_id
+            data_name = (
+                dataset.GetObjectName()
+                if dataset and dataset.GetObjectName()
+                else data_id
+            )
 
             bar.UnconstrainedFontSizeOn()
             bar.GetLabelTextProperty().SetFontSize(14)
@@ -700,7 +746,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
     def render(self, view: int = -1) -> None:
         if self.getSharedObject("basemaps_dirty"):
-            self.coreServer.setSharedObject("basemaps_dirty", False)  # noqa: FBT003 VTK API
+            self.coreServer.setSharedObject(
+                "basemaps_dirty", False
+            )  # noqa: FBT003 VTK API
             update_basemaps(self.get_data_base(), self.get_renderer())
         self.update_grid_scale_and_clipping_range()
         self.getSharedObject("publisher").imagePush({"view": view})
