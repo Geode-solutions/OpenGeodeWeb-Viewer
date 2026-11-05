@@ -268,6 +268,26 @@ def style_actor_key(style: ModelPointsStyle | ModelEdgesStyle) -> float:
 
 
 @dataclass
+class BasemapState:
+    """A map under the data: excluded from the data bounds, follows the data clipping."""
+
+    # Its maps and their sources, the source mosaics and the state of each map
+    maps: list[tuple[str, list[str]]]
+    images: dict[str, np.ndarray]
+    layers: Mapping[str, LayerState]
+    # Detail only: the base basemap it lies on
+    detail_of: str | None = None
+    # Its drape and the georeferenced data it drapes
+    drape_ids: list[str] = field(default_factory=list)
+    drape_actor: vtkActor | None = None
+    # Base only: the top surfaces it drapes, for its detail
+    draped_surfaces: list[vtkPolyData] = field(default_factory=list)
+    # Every visible map (drape), and the visible maps not cropped (flat map around)
+    full_texture: vtkTexture | None = None
+    around_texture: vtkTexture | None = None
+
+
+@dataclass
 class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
@@ -282,22 +302,8 @@ class VtkPipeline:
     explode_factor: float = 0.0
     # Set by set_visibility: the basemap actors also hide on their own, without forgetting it
     visibility: bool = True
-    # A map under the data: excluded from the data bounds, follows the data clipping
-    basemap: bool = False
-    # Basemap only: its drape and the georeferenced data it drapes
-    drape_actor: vtkActor | None = None
-    drape_ids: list[str] = field(default_factory=list)
-    # Basemap detail only: the base basemap it lies on
-    basemap_detail_of: str | None = None
-    # Basemap base only: the top surfaces it drapes, for its detail
-    draped_surfaces: list[vtkPolyData] = field(default_factory=list)
-    # Basemap only: its maps and their sources, the source mosaics and the state of each map
-    basemap_maps: list[tuple[str, list[str]]] = field(default_factory=list)
-    basemap_images: dict[str, np.ndarray] = field(default_factory=dict)
-    basemap_states: dict[str, LayerState] = field(default_factory=dict)
-    # Every visible map (drape), and the visible maps not cropped (flat map around)
-    full_texture: vtkTexture | None = None
-    around_texture: vtkTexture | None = None
+    # Set by apply_basemap: the data is a map under the other data
+    basemap: BasemapState | None = None
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)

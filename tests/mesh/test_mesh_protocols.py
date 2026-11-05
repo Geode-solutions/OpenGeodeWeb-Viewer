@@ -16,7 +16,7 @@ from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     check_source_folder,
 )
 from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
-from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
+from opengeodeweb_viewer.vtk_pipeline import BasemapState, VtkPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView, basemap_clipping_filter
 
 if TYPE_CHECKING:
@@ -224,8 +224,7 @@ def _view_with_basemap() -> tuple[VtkView, VtkPipeline]:
         reader.Update()
         database[data_id] = VtkPipeline(reader, vtkDataSetMapper())
     basemap = database["basemap"]
-    basemap.basemap = True
-    basemap.drape_ids = ["data"]
+    basemap.basemap = BasemapState(maps=[], images={}, layers={}, drape_ids=["data"])
     return view, basemap
 
 

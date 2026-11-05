@@ -14,8 +14,8 @@ from opengeodeweb_viewer.basemap_drape import (
     top_surfaces,
     upward_ratio,
 )
+from opengeodeweb_viewer.basemap_pipeline import pipeline_surfaces
 from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
-from opengeodeweb_viewer.vtk_protocol import pipeline_surfaces
 
 if TYPE_CHECKING:
     from pathlib import Path

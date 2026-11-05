@@ -72,8 +72,8 @@ class VtkObjectView(VtkView):
         renderer.RemoveViewProp(pipeline.scalar_bar)
         for scalar_bar in pipeline.scalar_bars.values():
             renderer.RemoveViewProp(scalar_bar.actor)
-        if pipeline.drape_actor is not None:
-            renderer.RemoveActor(pipeline.drape_actor)
+        if pipeline.basemap is not None and pipeline.basemap.drape_actor is not None:
+            renderer.RemoveActor(pipeline.basemap.drape_actor)
         # Before the deregistration: an unknown id always marks them dirty
         self.mark_basemaps_dirty([data_id])
         self.deregister_object(data_id)
