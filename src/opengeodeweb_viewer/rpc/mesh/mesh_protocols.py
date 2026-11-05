@@ -56,10 +56,7 @@ def check_source_folder(name: str) -> None:
 def _state_values(
     states: Mapping[str, LayerState],
 ) -> dict[str, tuple[bool, float, bool]]:
-    return {
-        name: (state.visible, state.opacity, state.crop)
-        for name, state in states.items()
-    }
+    return {name: (state.visible, state.opacity, state.crop) for name, state in states.items()}
 
 
 class VtkMeshView(VtkObjectView):
@@ -96,9 +93,7 @@ class VtkMeshView(VtkObjectView):
         return schemas.DeregisterResponse()
 
     @typed_rpc(mesh_prefix, schemas.visibility_route)
-    def set_mesh_visibility(
-        self, params: schemas.Visibility
-    ) -> schemas.VisibilityResponse:
+    def set_mesh_visibility(self, params: schemas.Visibility) -> schemas.VisibilityResponse:
         self.set_visibility(params.id, visibility=params.visibility)
         return schemas.VisibilityResponse()
 
@@ -109,9 +104,7 @@ class VtkMeshView(VtkObjectView):
         return schemas.ColorResponse()
 
     @typed_rpc(mesh_prefix, schemas.apply_textures_route)
-    def mesh_apply_textures(
-        self, params: schemas.ApplyTextures
-    ) -> schemas.ApplyTexturesResponse:
+    def mesh_apply_textures(self, params: schemas.ApplyTextures) -> schemas.ApplyTexturesResponse:
         mesh_id = params.id
         for tex_info in params.textures:
             texture_id = tex_info.id
@@ -139,9 +132,7 @@ class VtkMeshView(VtkObjectView):
         return schemas.ApplyTexturesResponse()
 
     @typed_rpc(mesh_prefix, schemas.apply_basemap_route)
-    def mesh_apply_basemap(
-        self, params: schemas.ApplyBasemap
-    ) -> schemas.ApplyBasemapResponse:
+    def mesh_apply_basemap(self, params: schemas.ApplyBasemap) -> schemas.ApplyBasemapResponse:
         folder = Path(self.get_data_file_path(params.id, TILES_FOLDER))
         pipeline = self.get_vtk_pipeline(params.id)
         maps = [(entry.map, list(entry.sources)) for entry in params.maps]
@@ -151,9 +142,7 @@ class VtkMeshView(VtkObjectView):
         tiles = {source: read_tiles(folder / source) for source in sources}
         # The mosaics are stacked pixel on pixel: every tile must have the same size
         sizes = {
-            tile.shape[:2]
-            for source_tiles in tiles.values()
-            for tile in source_tiles.values()
+            tile.shape[:2] for source_tiles in tiles.values() for tile in source_tiles.values()
         }
         if len(sizes) > 1:
             msg = f"Basemap tiles of different sizes: {sorted(sizes)}"
@@ -193,9 +182,7 @@ class VtkMeshView(VtkObjectView):
         return schemas.ApplyBasemapResponse()
 
     @typed_rpc(mesh_prefix, schemas.basemap_layers_route)
-    def mesh_basemap_layers(
-        self, params: schemas.BasemapLayers
-    ) -> schemas.BasemapLayersResponse:
+    def mesh_basemap_layers(self, params: schemas.BasemapLayers) -> schemas.BasemapLayersResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         basemap = pipeline.basemap
         # Before apply_basemap there is no image to compose
@@ -213,9 +200,7 @@ class VtkMeshView(VtkObjectView):
         return schemas.BasemapLayersResponse()
 
     @typed_rpc(mesh_prefix, schemas.basemap_drape_route)
-    def mesh_basemap_drape(
-        self, params: schemas.BasemapDrape
-    ) -> schemas.BasemapDrapeResponse:
+    def mesh_basemap_drape(self, params: schemas.BasemapDrape) -> schemas.BasemapDrapeResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         if pipeline.basemap is None:
             msg = f"Data {params.id} is not a basemap: apply_basemap first"
@@ -226,9 +211,7 @@ class VtkMeshView(VtkObjectView):
         self.mark_basemaps_dirty()
         return schemas.BasemapDrapeResponse()
 
-    def display_attribute_on_vertices(
-        self, data_id: str, attribute: AttributeProtocol
-    ) -> None:
+    def display_attribute_on_vertices(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         name = attribute.name
         pipeline.reader.GetOutputAsDataSet().GetPointData().SetActiveScalars(name)
@@ -240,9 +223,7 @@ class VtkMeshView(VtkObjectView):
         pipeline.mapper.ColorByArrayComponent(name, attribute.item)
         self.setup_color_map(data_id, attribute)
 
-    def display_attribute_on_points(
-        self, data_id: str, attribute: AttributeProtocol
-    ) -> None:
+    def display_attribute_on_points(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         self.ensure_points_actor(pipeline)
         if pipeline.points_mapper is None:
@@ -253,9 +234,7 @@ class VtkMeshView(VtkObjectView):
         self.update_style_scalar_bars_visibility(pipeline)
         self.update_scalar_bars_layout()
 
-    def display_attribute_on_edges(
-        self, data_id: str, attribute: AttributeProtocol
-    ) -> None:
+    def display_attribute_on_edges(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         self.ensure_edges_actor(pipeline)
         if pipeline.edges_mapper is None:
@@ -299,9 +278,7 @@ class VtkMeshView(VtkObjectView):
             tuple(attribute.points),
         )
 
-    def display_attribute_on_cells(
-        self, data_id: str, attribute: AttributeProtocol
-    ) -> None:
+    def display_attribute_on_cells(self, data_id: str, attribute: AttributeProtocol) -> None:
         pipeline = self.get_vtk_pipeline(data_id)
         name = attribute.name
         pipeline.reader.GetOutputAsDataSet().GetCellData().SetActiveScalars(name)
@@ -313,12 +290,8 @@ class VtkMeshView(VtkObjectView):
         pipeline.mapper.ColorByArrayComponent(name, attribute.item)
         self.setup_color_map(data_id, attribute)
 
-    def display_scalar_range(
-        self, data_id: str, minimum: float, maximum: float
-    ) -> None:
-        logger.debug(
-            "Setting scalar range for %s to (%s, %s)", data_id, minimum, maximum
-        )
+    def display_scalar_range(self, data_id: str, minimum: float, maximum: float) -> None:
+        logger.debug("Setting scalar range for %s to (%s, %s)", data_id, minimum, maximum)
         data = self.get_vtk_pipeline(data_id)
         data.mapper.SetScalarRange(minimum, maximum)
         data.mapper.GetLookupTable().SetRange(minimum, maximum)
@@ -347,9 +320,7 @@ class VtkMeshView(VtkObjectView):
         self.update_scalar_bars_layout()
 
     @typed_rpc(mesh_prefix, schemas.highlight_route)
-    def set_mesh_highlight(
-        self, params: schemas.Highlight
-    ) -> schemas.HighlightResponse:
+    def set_mesh_highlight(self, params: schemas.Highlight) -> schemas.HighlightResponse:
         pipeline = self.get_vtk_pipeline(params.id)
         if params.visibility:
             dataset = pipeline.reader.GetOutputDataObject(0)

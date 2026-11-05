@@ -33,12 +33,8 @@ if TYPE_CHECKING:
 mesh_id = "12345678901234567890123456789012"
 
 
-def test_register_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
-    dataset_factory(
-        data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons"
-    )
+def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    dataset_factory(data_id=mesh_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
 
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
@@ -47,9 +43,7 @@ def test_register_mesh(
     assert server.compare_image("mesh/register.jpeg")
 
 
-def test_deregister_mesh(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_deregister_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
     server.call(
@@ -85,9 +79,7 @@ def test_color(server: ServerMonitor, dataset_factory: Callable[..., str]) -> No
     assert server.compare_image("mesh/color.jpeg")
 
 
-def test_apply_textures(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_apply_textures(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
     dataset_factory(
         data_id="00000000000000000000000987654321",
@@ -96,8 +88,7 @@ def test_apply_textures(
     )
 
     server.call(
-        VtkMeshView.mesh_prefix
-        + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["apply_textures"]["rpc"],
         [
             {
                 "id": mesh_id,
@@ -135,44 +126,33 @@ def _apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str]) -
                 "columns": 2,
                 "rows": 2,
                 "maps": [{"map": "satellite", "sources": ["base"]}],
-                "layers": [
-                    {"map": "satellite", "visible": True, "opacity": 1.0, "crop": False}
-                ],
+                "layers": [{"map": "satellite", "visible": True, "opacity": 1.0, "crop": False}],
             }
         ],
     )
     return basemap_id
 
 
-def test_apply_basemap(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_apply_basemap(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     _apply_basemap(server, dataset_factory)
     assert server.compare_image("mesh/apply_basemap.jpeg")
 
 
-def test_basemap_layers(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_basemap_layers(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     basemap_id = _apply_basemap(server, dataset_factory)
     server.call(
-        VtkMeshView.mesh_prefix
-        + VtkMeshView.mesh_schemas_dict["basemap_layers"]["rpc"],
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["basemap_layers"]["rpc"],
         [
             {
                 "id": basemap_id,
-                "layers": [
-                    {"map": "satellite", "visible": True, "opacity": 0.5, "crop": False}
-                ],
+                "layers": [{"map": "satellite", "visible": True, "opacity": 0.5, "crop": False}],
             }
         ],
     )
     assert server.compare_image("mesh/basemap_layers.jpeg")
 
 
-def test_basemap_drape(
-    server: ServerMonitor, dataset_factory: Callable[..., str]
-) -> None:
+def test_basemap_drape(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     basemap_id = _apply_basemap(server, dataset_factory)
     server.call(
         VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["basemap_drape"]["rpc"],

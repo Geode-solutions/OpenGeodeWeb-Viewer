@@ -72,9 +72,7 @@ def test_top_surfaces_keeps_the_topography_only() -> None:
     wall = _wall(0)
     # Within 1 % of a 600 m extent
     almost_top = _horizontal(-5)
-    kept = top_surfaces(
-        [topography, horizon, wall, almost_top], data_top=0, z_extent=600
-    )
+    kept = top_surfaces([topography, horizon, wall, almost_top], data_top=0, z_extent=600)
     assert kept == [topography, almost_top]
 
 
@@ -102,9 +100,7 @@ def test_drape_actor_shows_the_full_texture() -> None:
     assert not actor.GetPickable()
     assert not actor.GetProperty().GetLighting()
     factor, units = reference(0.0), reference(0.0)
-    actor.GetMapper().GetRelativeCoincidentTopologyPolygonOffsetParameters(
-        factor, units
-    )
+    actor.GetMapper().GetRelativeCoincidentTopologyPolygonOffsetParameters(factor, units)
     assert (factor.get(), units.get()) == (0.0, DRAPE_POLYGON_OFFSET_UNITS)
 
 

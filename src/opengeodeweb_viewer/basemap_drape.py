@@ -74,12 +74,9 @@ def top_surfaces(
     touching = [
         surface
         for surface in surfaces
-        if surface.GetNumberOfPolys() > 0
-        and surface.GetBounds()[5] >= data_top - tolerance
+        if surface.GetNumberOfPolys() > 0 and surface.GetBounds()[5] >= data_top - tolerance
     ]
-    return [
-        surface for surface in touching if upward_ratio(surface) >= MIN_UPWARD_RATIO
-    ]
+    return [surface for surface in touching if upward_ratio(surface) >= MIN_UPWARD_RATIO]
 
 
 def drape_polydata(surfaces: list[vtkPolyData], basemap: vtkPolyData) -> vtkPolyData:
@@ -104,9 +101,7 @@ def drape_polydata(surfaces: list[vtkPolyData], basemap: vtkPolyData) -> vtkPoly
     probe.SetInputData(flat)
     probe.SetSourceData(basemap)
     probe.Update()
-    drape.GetPointData().SetTCoords(
-        probe.GetOutput().GetPointData().GetArray("basemap_uv")
-    )
+    drape.GetPointData().SetTCoords(probe.GetOutput().GetPointData().GetArray("basemap_uv"))
     return drape
 
 
@@ -123,9 +118,7 @@ def _clip_half_space(
     return cast("vtkPolyData", clip.GetOutput())
 
 
-def clipped_to_bounds(
-    surfaces: list[vtkPolyData], bounds: tuple[float, ...]
-) -> list[vtkPolyData]:
+def clipped_to_bounds(surfaces: list[vtkPolyData], bounds: tuple[float, ...]) -> list[vtkPolyData]:
     """The parts of the surfaces inside the XY bounds of a detail map."""
     # One plane per side: exact on coarse cells, which a box function interpolates badly
     sides = [

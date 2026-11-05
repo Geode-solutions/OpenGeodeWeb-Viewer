@@ -113,15 +113,11 @@ class RulerPipeline:
 
     def __post_init__(self) -> None:
         self.line_actor = vtkActor()
-        self._setup_actor(
-            self.line_actor, self._line_source, self._PRIMARY_COLOR, line_width=3.0
-        )
+        self._setup_actor(self.line_actor, self._line_source, self._PRIMARY_COLOR, line_width=3.0)
         self._point1_source, self.point1_actor = self._make_sphere()
         self._point2_source, self.point2_actor = self._make_sphere()
         self.text_follower = vtkFollower()
-        self._setup_actor(
-            self.text_follower, self._text_source, self._TEXT_COLOR, offset=-50000.0
-        )
+        self._setup_actor(self.text_follower, self._text_source, self._TEXT_COLOR, offset=-50000.0)
 
     def add_to_renderer(self, renderer: vtkRenderer) -> None:
         self.text_follower.SetCamera(renderer.GetActiveCamera())
@@ -134,9 +130,7 @@ class RulerPipeline:
             actor.VisibilityOff()
             renderer.AddActor(actor)
 
-    def set_text_color(
-        self, rgb: tuple[float, float, float] | None, opacity: float = 1.0
-    ) -> None:
+    def set_text_color(self, rgb: tuple[float, float, float] | None, opacity: float = 1.0) -> None:
         # None restores the ruler's own text color
         text_property = self.text_follower.GetProperty()
         text_property.SetColor(*(self._TEXT_COLOR if rgb is None else rgb))
@@ -176,22 +170,15 @@ class RulerPipeline:
         if self._point1 is None or renderer is None:
             return
         camera_position = renderer.GetActiveCamera().GetPosition()
-        self._point1_source.SetRadius(
-            max(math.dist(self._point1, camera_position) * 0.003, 0.0001)
-        )
+        self._point1_source.SetRadius(max(math.dist(self._point1, camera_position) * 0.003, 0.0001))
         if self._point2 is None:
             return
-        self._point2_source.SetRadius(
-            max(math.dist(self._point2, camera_position) * 0.003, 0.0001)
-        )
+        self._point2_source.SetRadius(max(math.dist(self._point2, camera_position) * 0.003, 0.0001))
         midpoint = tuple(
-            (coord1 + coord2) / 2
-            for coord1, coord2 in zip(self._point1, self._point2, strict=True)
+            (coord1 + coord2) / 2 for coord1, coord2 in zip(self._point1, self._point2, strict=True)
         )
         text_scale = max(math.dist(midpoint, camera_position) * 0.008, 0.001)
-        self.text_follower.SetPosition(
-            midpoint[0], midpoint[1] + text_scale * 1.2, midpoint[2]
-        )
+        self.text_follower.SetPosition(midpoint[0], midpoint[1] + text_scale * 1.2, midpoint[2])
         self.text_follower.SetScale(text_scale, text_scale, text_scale)
 
     def reset(self) -> None:
@@ -356,9 +343,7 @@ class VtkPipeline:
         if self.edges_mapper is not None:
             self.edges_mapper.SetInputConnection(self.filter.GetOutputPort())
 
-    def extract_blocks(
-        self, multiblock: vtkDataObject | None
-    ) -> list[vtkDataObject | None]:
+    def extract_blocks(self, multiblock: vtkDataObject | None) -> list[vtkDataObject | None]:
         if not isinstance(multiblock, vtkMultiBlockDataSet):
             return []
         blocks: list[vtkDataObject | None] = []
@@ -373,10 +358,7 @@ class VtkPipeline:
             "[extract_blocks] Total slots=%s (None count=%s): %s",
             len(blocks),
             blocks.count(None),
-            [
-                (index, type(obj).__name__ if obj else None)
-                for index, obj in enumerate(blocks)
-            ],
+            [(index, type(obj).__name__ if obj else None) for index, obj in enumerate(blocks)],
         )
         return blocks
 
@@ -409,9 +391,7 @@ class VtkPipeline:
         while not iterator.IsDoneWithTraversal():
             component = iterator.GetCurrentDataObject()
             if isinstance(component, vtkMultiBlockDataSet):
-                component_type = iterator.GetCurrentMetaData().Get(
-                    vtkCompositeDataSet.NAME()
-                )
+                component_type = iterator.GetCurrentMetaData().Get(vtkCompositeDataSet.NAME())
             elif isinstance(component, vtkDataSet):
                 bbox = vtkBoundingBox(component.GetBounds())
                 if bbox.IsValid():
@@ -442,13 +422,9 @@ class VtkPipeline:
             shifts[flat_index] = max(
                 [0.0]
                 + [
-                    placed_bbox.GetBound(5)
-                    + shifts[placed_index]
-                    + vertical_gap
-                    - bbox.GetBound(4)
+                    placed_bbox.GetBound(5) + shifts[placed_index] + vertical_gap - bbox.GetBound(4)
                     for placed_index, placed_bbox in stacked_blocks.items()
-                    if placed_index in shifts
-                    and VtkPipeline.overlaps_in_xy(bbox, placed_bbox)
+                    if placed_index in shifts and VtkPipeline.overlaps_in_xy(bbox, placed_bbox)
                 ]
             )
         return shifts
@@ -466,9 +442,7 @@ class VtkPipeline:
             for flat_index, bbox in stacked_blocks.items()
             if bbox.Contains(component_bbox)
         ] or [
-            flat_index
-            for flat_index, bbox in stacked_blocks.items()
-            if bbox.ContainsPoint(center)
+            flat_index for flat_index, bbox in stacked_blocks.items() if bbox.ContainsPoint(center)
         ]
         if not containing_ids:
             return 0.0
@@ -588,16 +562,10 @@ class VtkPipeline:
             attributes.SetBlockLookupTable(block, lut)
             attributes.SetBlockArrayName(block, style["name"])
             attributes.SetBlockArrayComponent(block, item)
-            attributes.SetBlockScalarRange(
-                block, vtkVector2d(style["minimum"], style["maximum"])
-            )
+            attributes.SetBlockScalarRange(block, vtkVector2d(style["minimum"], style["maximum"]))
             attributes.SetBlockScalarMode(
                 block,
-                (
-                    VTK_SCALAR_MODE_USE_POINT_DATA
-                    if is_point
-                    else VTK_SCALAR_MODE_USE_CELL_DATA
-                ),
+                (VTK_SCALAR_MODE_USE_POINT_DATA if is_point else VTK_SCALAR_MODE_USE_CELL_DATA),
             )
             attributes.SetBlockInterpolateScalarsBeforeMapping(block, is_point)
             attributes.SetBlockScalarVisibility(block, True)  # noqa: FBT003 VTK API
@@ -615,9 +583,7 @@ class VtkPipeline:
         while not iterator.IsDoneWithTraversal():
             component = iterator.GetCurrentDataObject()
             if isinstance(component, vtkMultiBlockDataSet):
-                component_type = iterator.GetCurrentMetaData().Get(
-                    vtkCompositeDataSet.NAME()
-                )
+                component_type = iterator.GetCurrentMetaData().Get(vtkCompositeDataSet.NAME())
             elif component is not None:
                 component_types[iterator.GetCurrentFlatIndex()] = component_type
             iterator.GoToNextItem()
@@ -658,15 +624,11 @@ class VtkPipeline:
 
     def update_points_size_actors(self) -> None:
         for size, size_actor in self.points_size_actors.items():
-            self.update_style_actor_attributes(
-                size_actor.mapper, self.points_block_styles, size
-            )
+            self.update_style_actor_attributes(size_actor.mapper, self.points_block_styles, size)
 
     def update_edges_width_actors(self) -> None:
         for width, width_actor in self.edges_width_actors.items():
-            self.update_style_actor_attributes(
-                width_actor.mapper, self.edges_block_styles, width
-            )
+            self.update_style_actor_attributes(width_actor.mapper, self.edges_block_styles, width)
 
     @staticmethod
     def set_block_point_attribute(
@@ -693,9 +655,7 @@ class VtkPipeline:
         attributes.SetBlockScalarRange(
             block, vtkVector2d(attribute["minimum"], attribute["maximum"])
         )
-        attributes.SetBlockInterpolateScalarsBeforeMapping(
-            block, True
-        )  # noqa: FBT003 VTK API
+        attributes.SetBlockInterpolateScalarsBeforeMapping(block, True)  # noqa: FBT003 VTK API
         attributes.SetBlockScalarVisibility(block, True)  # noqa: FBT003 VTK API
 
     @staticmethod
@@ -707,9 +667,7 @@ class VtkPipeline:
         attributes = mapper.GetCompositeDataDisplayAttributes()
         synced_attributes = vtkCompositeDataDisplayAttributes()
         color_rgb = [0.0, 0.0, 0.0]
-        for source_block, destination_block in zip(
-            source_blocks, new_blocks, strict=False
-        ):
+        for source_block, destination_block in zip(source_blocks, new_blocks, strict=False):
             if source_block and destination_block:
                 if attributes.HasBlockColor(source_block):
                     attributes.GetBlockColor(source_block, color_rgb)
@@ -724,9 +682,7 @@ class VtkPipeline:
                     )
         mapper.SetCompositeDataDisplayAttributes(synced_attributes)
 
-    def sync_block_display_attributes(
-        self, new_blocks: list[vtkDataObject | None]
-    ) -> None:
+    def sync_block_display_attributes(self, new_blocks: list[vtkDataObject | None]) -> None:
         mapper = cast("vtkCompositePolyDataMapper", self.mapper)
         self.sync_mapper_display_attributes(mapper, self.block_data_sets, new_blocks)
         self.block_data_sets = new_blocks
@@ -753,6 +709,4 @@ class VtkPipeline:
         if self.pick_mapper and isinstance(dataset, vtkMultiBlockDataSet):
             mapper = cast("vtkCompositePolyDataMapper", self.mapper)
             attributes = mapper.GetCompositeDataDisplayAttributes()
-            self.pick_mapper.SetInputDataObject(
-                self.prune_hidden_blocks(dataset, attributes)
-            )
+            self.pick_mapper.SetInputDataObject(self.prune_hidden_blocks(dataset, attributes))

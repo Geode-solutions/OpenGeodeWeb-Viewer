@@ -102,13 +102,9 @@ class VtkObjectView(VtkView):
             self.update_style_scalar_bars_visibility(pipeline)
         self.update_scalar_bars_layout()
 
-    def set_style_actors_visibility(
-        self, pipeline: VtkPipeline, *, visibility: bool
-    ) -> None:
+    def set_style_actors_visibility(self, pipeline: VtkPipeline, *, visibility: bool) -> None:
         if pipeline.points_actor is not None:
-            pipeline.points_actor.SetVisibility(
-                visibility and pipeline.points_visibility
-            )
+            pipeline.points_actor.SetVisibility(visibility and pipeline.points_visibility)
         for size_actor in pipeline.points_size_actors.values():
             size_actor.actor.SetVisibility(visibility)
         if pipeline.edges_actor is not None:
@@ -124,9 +120,7 @@ class VtkObjectView(VtkView):
         pipeline = self.get_vtk_pipeline(data_id)
         pipeline.mapper.ScalarVisibilityOff()
         actor = pipeline.actor
-        actor.GetProperty().SetColor(
-            [color.red / 255, color.green / 255, color.blue / 255]
-        )
+        actor.GetProperty().SetColor([color.red / 255, color.green / 255, color.blue / 255])
         actor.GetProperty().SetOpacity(color.alpha)
         # Points and edges bars that reused the polygons one now show their own
         pipeline.scalar_bar.VisibilityOff()
@@ -142,9 +136,7 @@ class VtkObjectView(VtkView):
             pipeline.actor.GetProperty().SetEdgeVisibility(visibility)
             return
         pipeline.edges_visibility = visibility
-        pipeline.edges_actor.SetVisibility(
-            pipeline.actor.GetVisibility() and visibility
-        )
+        pipeline.edges_actor.SetVisibility(pipeline.actor.GetVisibility() and visibility)
         self.update_style_scalar_bars_visibility(pipeline)
         self.update_scalar_bars_layout()
 
@@ -286,9 +278,7 @@ class VtkObjectView(VtkView):
         edges_property.SetLineWidth(main_property.GetLineWidth())
         edges_property.SetColor(*main_property.GetEdgeColor())
         pipeline.edges_visibility = bool(main_property.GetEdgeVisibility())
-        actor.SetVisibility(
-            pipeline.actor.GetVisibility() and pipeline.edges_visibility
-        )
+        actor.SetVisibility(pipeline.actor.GetVisibility() and pipeline.edges_visibility)
         main_property.EdgeVisibilityOff()
         scalar_bar = vtkScalarBarActor()
         scalar_bar.VisibilityOff()

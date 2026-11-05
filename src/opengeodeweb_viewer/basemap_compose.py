@@ -40,15 +40,9 @@ MAX_CHANNEL = 255.0
 def rgba(pixels: np.ndarray) -> np.ndarray:
     """Grey, grey and alpha, RGB or RGBA pixels as RGBA; a missing alpha is opaque."""
     channels = pixels.shape[2]
-    colors = (
-        pixels[..., :3] if channels >= RGB else np.repeat(pixels[..., :1], 3, axis=2)
-    )
+    colors = pixels[..., :3] if channels >= RGB else np.repeat(pixels[..., :1], 3, axis=2)
     has_alpha = channels in (2, RGBA)
-    alpha = (
-        pixels[..., -1:]
-        if has_alpha
-        else np.full((*pixels.shape[:2], 1), 255, np.uint8)
-    )
+    alpha = pixels[..., -1:] if has_alpha else np.full((*pixels.shape[:2], 1), 255, np.uint8)
     return np.concatenate([colors, alpha], axis=2).astype(np.uint8)
 
 
@@ -62,9 +56,7 @@ def mosaic(
     height, width = tile_shape
     image = np.zeros((rows * height, columns * width, RGBA), np.uint8)
     for (column, row), tile in tiles.items():
-        image[
-            row * height : (row + 1) * height, column * width : (column + 1) * width
-        ] = tile
+        image[row * height : (row + 1) * height, column * width : (column + 1) * width] = tile
     return image
 
 
@@ -80,9 +72,7 @@ def _over(bottom: np.ndarray, top: np.ndarray) -> None:
     bottom += top
 
 
-def compose(
-    layers: list[tuple[list[np.ndarray], float]], shape: tuple[int, ...]
-) -> np.ndarray:
+def compose(layers: list[tuple[list[np.ndarray], float]], shape: tuple[int, ...]) -> np.ndarray:
     """Each layer, its sources from the bottom up, laid over the layers below with its opacity."""
     result = np.zeros((*shape, RGBA), np.float32)
     for sources, opacity in layers:
@@ -110,19 +100,14 @@ def textures(
     """Every visible map for the drape; the visible maps not cropped for the map around."""
     # A map the front did not describe is not shown
     visible = [
-        (states[name], sources)
-        for name, sources in maps
-        if name in states and states[name].visible
+        (states[name], sources) for name, sources in maps if name in states and states[name].visible
     ]
     around = [(state, sources) for state, sources in visible if not state.crop]
 
     def layers(
         shown: list[tuple[LayerState, list[str]]],
     ) -> list[tuple[list[np.ndarray], float]]:
-        return [
-            ([images[source] for source in sources], state.opacity)
-            for state, sources in shown
-        ]
+        return [([images[source] for source in sources], state.opacity) for state, sources in shown]
 
     full = compose(layers(visible), shape)
     if not around:
