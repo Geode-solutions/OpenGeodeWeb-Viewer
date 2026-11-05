@@ -28,7 +28,7 @@ from vtkmodules.vtkFiltersGeneral import (
     vtkShrinkFilter,
     vtkTableBasedClipDataSet,
     vtkTransformFilter,
-),
+)
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkLineSource, vtkSphereSource
 from vtkmodules.vtkRenderingAnnotation import (
