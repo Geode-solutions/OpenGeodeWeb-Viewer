@@ -246,6 +246,34 @@
             "additionalProperties": false
           }
         },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.cells.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
         "color": {
           "$id": "opengeodeweb_viewer.mesh.cells.color",
           "rpc": "color",
@@ -523,6 +551,34 @@
             "additionalProperties": false
           }
         },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.edges.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
         "color": {
           "$id": "opengeodeweb_viewer.mesh.edges.color",
           "rpc": "color",
@@ -718,6 +774,34 @@
           "required": [
             "id",
             "size"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.points.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
           ],
           "additionalProperties": false,
           "response": {
@@ -978,6 +1062,34 @@
             "additionalProperties": false
           }
         },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.polygons.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
         "color": {
           "$id": "opengeodeweb_viewer.mesh.polygons.color",
           "rpc": "color",
@@ -1220,6 +1332,34 @@
           "required": [
             "id",
             "visibility"
+          ],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "opacity": {
+          "$id": "opengeodeweb_viewer.mesh.polyhedra.opacity",
+          "rpc": "opacity",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "id",
+            "opacity"
           ],
           "additionalProperties": false,
           "response": {
@@ -4345,43 +4485,47 @@
               "maxLength": 32
             }
           },
-          "attribute": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "location": {
+                  "type": "string",
+                  "enum": [
+                    "point",
+                    "cell"
+                  ]
+                },
+                "item": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum": {
+                  "type": "number"
+                },
+                "maximum": {
+                  "type": "number"
+                }
               },
-              "location": {
-                "type": "string",
-                "enum": [
-                  "point",
-                  "cell"
-                ]
-              },
-              "item": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "minimum": {
-                "type": "number"
-              },
-              "maximum": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "name",
-              "location",
-              "item",
-              "minimum",
-              "maximum"
-            ],
-            "additionalProperties": false
+              "required": [
+                "name",
+                "location",
+                "item",
+                "minimum",
+                "maximum"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
-          "ids"
+          "ids",
+          "attributes"
         ],
         "additionalProperties": false,
         "response": {

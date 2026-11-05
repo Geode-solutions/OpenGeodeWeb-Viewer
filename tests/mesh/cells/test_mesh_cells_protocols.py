@@ -46,6 +46,18 @@ def test_cells_color(server: ServerMonitor, dataset_factory: Callable[..., str])
     assert server.compare_image("mesh/cells/color.jpeg")
 
 
+def test_cells_opacity(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkMeshCellsView.mesh_cells_prefix
+        + VtkMeshCellsView.mesh_cells_schemas_dict["opacity"]["rpc"],
+        [{"id": mesh_id, "opacity": 0.5}],
+    )
+    assert server.compare_image("mesh/cells/opacity.jpeg")
+
+
 def test_cells_visibility(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register(server, dataset_factory)
@@ -224,13 +236,15 @@ def test_cells_threshold(server: ServerMonitor, dataset_factory: Callable[..., s
         [
             {
                 "ids": [mesh_id],
-                "attribute": {
-                    "name": "RGB_data",
-                    "location": "cell",
-                    "item": 0,
-                    "minimum": 0.0,
-                    "maximum": 128.0,
-                },
+                "attributes": [
+                    {
+                        "name": "RGB_data",
+                        "location": "cell",
+                        "item": 0,
+                        "minimum": 0.0,
+                        "maximum": 128.0,
+                    }
+                ],
             }
         ],
     )
@@ -238,6 +252,39 @@ def test_cells_threshold(server: ServerMonitor, dataset_factory: Callable[..., s
 
     server.call(
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
-        [{"ids": [mesh_id]}],
+        [{"ids": [mesh_id], "attributes": []}],
     )
     assert server.compare_image("mesh/cells/register.jpeg")
+
+
+def test_cells_multiple_thresholds(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register(server, dataset_factory)
+
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["threshold"]["rpc"],
+        [
+            {
+                "ids": [mesh_id],
+                "attributes": [
+                    {
+                        "name": "RGB_data",
+                        "location": "cell",
+                        "item": 0,
+                        "minimum": 0.0,
+                        "maximum": 128.0,
+                    },
+                    {
+                        "name": "RGB_data",
+                        "location": "cell",
+                        "item": 1,
+                        "minimum": 0.0,
+                        "maximum": 128.0,
+                    },
+                ],
+            }
+        ],
+    )
+    assert server.compare_image("mesh/cells/multiple_thresholds.jpeg")

@@ -509,3 +509,17 @@ def test_polygons_points_attribute_then_color(
     )
     # Red points, no points scalar bar
     assert server.compare_image("mesh/points/polygons_points_attribute_then_color.jpeg")
+
+
+def test_polygons_points_attribute_then_opacity(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_polygons_points_vertex_attribute(server, dataset_factory)
+    server.call(
+        VtkMeshPointsView.mesh_points_prefix
+        + VtkMeshPointsView.mesh_points_schemas_dict["opacity"]["rpc"],
+        [{"id": mesh_id, "opacity": 0.5}],
+    )
+    # Points keep their color map, only more transparent
+    assert server.compare_image("mesh/points/polygons_points_attribute_then_opacity.jpeg")

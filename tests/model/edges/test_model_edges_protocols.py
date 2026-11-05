@@ -22,7 +22,11 @@ from opengeodeweb_viewer.rpc.model.surfaces.model_surfaces_protocols import (
 from opengeodeweb_viewer.rpc.viewer.viewer_protocols import VtkViewerView
 
 # Local application imports
-from tests.model.test_model_protocols import test_model_cube_side_view, test_register_model
+from tests.model.test_model_protocols import (
+    test_model_cube_side_view,
+    test_register_model,
+    test_register_model_cube,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -162,6 +166,31 @@ def test_surfaces_edges_explode(server: ServerMonitor, dataset_factory: Callable
         [{"ids": [model_id], "explode_factor": 1.0}],
     )
     assert server.compare_image("model/edges/surfaces_edges_explode.jpeg")
+
+
+def test_surfaces_edges_behind_surface(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    test_register_model_cube(server, dataset_factory)
+    call_surfaces_edges(server, "visibility", {"block_ids": surfaces_ids, "visibility": True})
+    call_surfaces_edges(server, "width", {"block_ids": surfaces_ids, "width": 4})
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["update_camera"]["rpc"],
+        [
+            {
+                "camera_options": {
+                    "focal_point": [5.0, 0.0, 5.0],
+                    "view_up": [0.0, 0.0, 1.0],
+                    "position": [5.0, -6.0, 13.0],
+                    "view_angle": 30.0,
+                    "clipping_range": [0.5, 30.0],
+                }
+            }
+        ],
+    )
+    # Grazing view of a face: the edges of the surfaces behind it stay hidden
+    assert server.compare_image("model/edges/surfaces_edges_behind_surface.jpeg")
 
 
 def test_model_edges_width_after_component_width(

@@ -446,6 +446,21 @@ def test_polygons_edges_attribute_then_color(
     assert server.compare_image("mesh/edges/polygons_edges_attribute_then_color.jpeg")
 
 
+def test_polygons_edges_attribute_then_opacity(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+
+    register_hat_with_edges(server, dataset_factory)
+    set_edges_vertex_attribute(server, HAT_ATTRIBUTE)
+    server.call(
+        VtkMeshEdgesView.mesh_edges_prefix
+        + VtkMeshEdgesView.mesh_edges_schemas_dict["opacity"]["rpc"],
+        [{"id": mesh_id, "opacity": 0.5}],
+    )
+    # Edges keep their color map, only more transparent
+    assert server.compare_image("mesh/edges/polygons_edges_attribute_then_opacity.jpeg")
+
+
 def test_polygons_edges_hidden_with_object(
     server: ServerMonitor, dataset_factory: Callable[..., str]
 ) -> None:

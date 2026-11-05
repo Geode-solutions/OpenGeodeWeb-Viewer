@@ -196,6 +196,39 @@ def test_grid_scale(server: ServerMonitor, dataset_factory: Callable[..., str]) 
     assert server.compare_image("viewer/grid_scale_on.jpeg")
 
 
+def test_grid_scale_after_clipping_removal(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    data_id = "00000000000000000000000123456789"
+    dataset_factory(data_id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
+    server.call(
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["reset_visualization"]["rpc"],
+    )
+    server.call(
+        VtkMeshView.mesh_prefix + VtkMeshView.mesh_schemas_dict["register"]["rpc"],
+        [{"id": data_id, "name": "hat.vtp"}],
+    )
+    assert server.compare_image("viewer/register_hat.jpeg")
+
+    clipping_planes_rpc = (
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["clipping_planes"]["rpc"]
+    )
+    server.call(
+        clipping_planes_rpc,
+        [{"ids": [data_id], "planes": [{"origin": [0.0, 0.0, 0.0], "normal": [1.0, 0.0, 0.0]}]}],
+    )
+    assert not server.compare_image("viewer/register_hat.jpeg")
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["grid_scale"]["rpc"],
+        [{"visibility": True}],
+    )
+    assert not server.compare_image("viewer/grid_scale_on.jpeg")
+
+    server.call(clipping_planes_rpc, [{"ids": [data_id], "planes": []}])
+    assert server.compare_image("viewer/grid_scale_on.jpeg")
+
+
 def test_axes(server: ServerMonitor) -> None:
 
     test_reset_visualization(server)
