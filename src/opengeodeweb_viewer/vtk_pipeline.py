@@ -21,7 +21,11 @@ from vtkmodules.vtkFiltersExtraction import (
     vtkExtractGeometry,
     vtkExtractSelection,
 )
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTransformFilter
+from vtkmodules.vtkFiltersGeneral import (
+    vtkShrinkFilter,
+    vtkTableBasedClipDataSet,
+    vtkTransformFilter,
+)
 from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkLineSource, vtkSphereSource
 from vtkmodules.vtkRenderingAnnotation import (
@@ -42,6 +46,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkMapper,
     vtkPolyDataMapper,
     vtkRenderer,
+    vtkTexture,
 )
 from vtkmodules.vtkRenderingFreeType import vtkVectorText
 
@@ -53,13 +58,18 @@ from opengeodeweb_viewer.utils_functions import (
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    import numpy as np
     from opengeodeweb_microservice.database.data_types import (
         ViewerElementsType,
         ViewerType,
     )
+    from vtkmodules.vtkCommonDataModel import vtkPolyData
     from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
     from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
     from vtkmodules.vtkIOXML import vtkXMLReader
+
+    from opengeodeweb_viewer.basemap_compose import LayerState
+    from opengeodeweb_viewer.rpc.viewer.schemas.clipping_planes import Plane
 
 logger = logging.getLogger(__name__)
 
@@ -264,16 +274,42 @@ def style_actor_key(style: ModelPointsStyle | ModelEdgesStyle) -> float:
 
 
 @dataclass
+class BasemapState:
+    """A map under the data: excluded from the data bounds, follows the data clipping."""
+
+    # Its maps and their sources, the source mosaics and the state of each map
+    maps: list[tuple[str, list[str]]]
+    images: dict[str, np.ndarray]
+    layers: Mapping[str, LayerState]
+    # Detail only: the base basemap it lies on
+    detail_of: str | None = None
+    # Its drape and the georeferenced data it drapes
+    drape_ids: list[str] = field(default_factory=list)
+    drape_actor: vtkActor | None = None
+    # Base only: the top surfaces it drapes, for its detail
+    draped_surfaces: list[vtkPolyData] = field(default_factory=list)
+    # Every visible map (drape), and the visible maps not cropped (flat map around)
+    full_texture: vtkTexture | None = None
+    around_texture: vtkTexture | None = None
+
+
+@dataclass
 class VtkPipeline:
     reader: vtkXMLReader
     mapper: vtkMapper
     filter: vtkGeometryFilter = field(default_factory=vtkGeometryFilter)
     actor: vtkActor = field(default_factory=vtkActor)
     slice_filter: vtkAppendFilter | None = None
-    clipping_filter: vtkExtractGeometry | None = None
+    clipping_filter: vtkExtractGeometry | vtkTableBasedClipDataSet | None = None
+    # The planes of clipping_filter, followed by the basemaps lying over this data
+    clipping_planes: list[Plane] = field(default_factory=list)
     threshold_filters: list[vtkThreshold] = field(default_factory=list)
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
+    # Set by set_visibility: the basemap actors also hide on their own, without forgetting it
+    visibility: bool = True
+    # Set by apply_basemap: the data is a map under the other data
+    basemap: BasemapState | None = None
     highlight: HighlightPipeline = field(default_factory=HighlightPipeline)
     block_data_sets: list[vtkDataObject | None] = field(default_factory=list)
     block_geode_ids: list[str] = field(default_factory=list)
