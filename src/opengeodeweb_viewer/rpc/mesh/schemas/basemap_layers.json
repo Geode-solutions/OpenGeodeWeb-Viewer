@@ -1,0 +1,24 @@
+{
+  "rpc": "basemap_layers",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "minLength": 32, "maxLength": 32 },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "map": { "type": "string", "minLength": 1 },
+          "visible": { "type": "boolean" },
+          "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+          "crop": { "type": "boolean" }
+        },
+        "required": ["map", "visible", "opacity", "crop"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["id", "layers"],
+  "additionalProperties": false,
+  "response": { "type": "object", "properties": {}, "required": [], "additionalProperties": false }
+}

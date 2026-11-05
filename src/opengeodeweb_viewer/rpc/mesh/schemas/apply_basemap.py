@@ -1,0 +1,56 @@
+from pathlib import Path
+from opengeodeweb_microservice.schemas import Route, load_schema
+from dataclasses_json import DataClassJsonMixin
+from opengeodeweb_microservice.schemas import print_dataclass
+from dataclasses import dataclass
+from typing import List, Optional
+
+
+@dataclass
+class MapState(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    crop: bool
+    map: str
+    opacity: float
+    visible: bool
+
+
+@dataclass
+class Map(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    map: str
+    sources: List[str]
+
+
+@dataclass
+class ApplyBasemap(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    columns: int
+    id: str
+    layers: List[MapState]
+    maps: List[Map]
+    rows: int
+    detail_of: Optional[str] = None
+
+
+@dataclass
+class ApplyBasemapResponse(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    pass
+
+
+apply_basemap_route = Route(
+    schema=load_schema(Path(__file__)),
+    params=ApplyBasemap,
+    response=ApplyBasemapResponse,
+)
+
+__all__ = ["MapState", "Map", "ApplyBasemap", "ApplyBasemapResponse", "apply_basemap_route"]

@@ -26,17 +26,25 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
 from vtkmodules.vtkFiltersExtraction import vtkExtractGeometry
-from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
+from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter, vtkTableBasedClipDataSet
 from vtkmodules.vtkImagingCore import vtkExtractVOI
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkCellPicker,
     vtkCompositePolyDataMapper,
+    vtkProp,
     vtkRenderer,
     vtkRenderWindow,
 )
 from vtkmodules.web import protocols as vtk_protocols
 
+from opengeodeweb_viewer.basemap_pipeline import (
+    basemap_actors,
+    basemaps,
+    basemaps_follow,
+    drape_planes,
+    update_basemaps,
+)
 from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
 from opengeodeweb_viewer.vtk_pipeline import (
     RulerPipeline,
@@ -45,6 +53,9 @@ from opengeodeweb_viewer.vtk_pipeline import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+    from collections.abc import Set as AbstractSet
+
     from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
     from vtkmodules.vtkRenderingAnnotation import (
         vtkAxesActor,
@@ -59,6 +70,26 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 MAX_DATA_NAME_LENGTH = 22
+
+
+def _clipping_function(planes_data: list[Plane]) -> vtkImplicitBoolean:
+    implicit_boolean = vtkImplicitBoolean()
+    implicit_boolean.SetOperationTypeToIntersection()
+    for plane_info in planes_data:
+        plane = vtkPlane()
+        plane.SetOrigin(plane_info.origin)
+        plane.SetNormal(plane_info.normal)
+        implicit_boolean.AddFunction(plane)
+    return implicit_boolean
+
+
+def basemap_clipping_filter(planes_data: list[Plane]) -> vtkTableBasedClipDataSet:
+    """Cut the basemap exactly along the planes: its cells are too large to be extracted whole."""
+    clip = vtkTableBasedClipDataSet()
+    clip.SetClipFunction(_clipping_function(planes_data))
+    # Keep the inside of the planes, like the data clipping
+    clip.InsideOutOn()
+    return clip
 
 
 class VtkTypingMixin:
@@ -236,22 +267,37 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         self.fit_grid_scale()
 
     def set_clipping_planes(self, data_ids: list[str], planes_data: list[Plane]) -> None:
+        database = self.get_data_base()
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
+            # A basemap is cut like the data it lies under, below
+            if pipeline.basemap is not None:
+                continue
+            pipeline.clipping_planes = planes_data
             if planes_data:
                 clipping_filter = vtkExtractGeometry()
-                implicit_boolean = vtkImplicitBoolean()
-                implicit_boolean.SetOperationTypeToIntersection()
-                for plane_info in planes_data:
-                    plane = vtkPlane()
-                    plane.SetOrigin(plane_info.origin)
-                    plane.SetNormal(plane_info.normal)
-                    implicit_boolean.AddFunction(plane)
-                clipping_filter.SetImplicitFunction(implicit_boolean)
+                clipping_filter.SetImplicitFunction(_clipping_function(planes_data))
                 pipeline.clipping_filter = clipping_filter
             else:
                 pipeline.clipping_filter = None
             self.update_pipeline_filter(pipeline)
+        for pipeline, basemap in basemaps(database):
+            if not set(basemap.drape_ids).isdisjoint(data_ids):
+                self.clip_basemap(pipeline)
+        self.mark_basemaps_dirty(data_ids)
+
+    def clip_basemap(self, pipeline: VtkPipeline) -> None:
+        """The basemap is cut like the georeferenced data it lies under."""
+        planes_data = (
+            [] if pipeline.basemap is None else drape_planes(self.get_data_base(), pipeline.basemap)
+        )
+        pipeline.clipping_filter = basemap_clipping_filter(planes_data) if planes_data else None
+        self.update_pipeline_filter(pipeline)
+
+    def mark_basemaps_dirty(self, data_ids: Iterable[str] | None = None) -> None:
+        """The drapes are rebuilt once, at the next render, when a change on data_ids moves them."""
+        if data_ids is None or basemaps_follow(self.get_data_base(), data_ids):
+            self.coreServer.setSharedObject("basemaps_dirty", True)  # noqa: FBT003 VTK API
 
     def set_threshold(self, data_ids: list[str], attributes: list[Attribute]) -> None:
         for data_id in data_ids:
@@ -275,6 +321,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 threshold_filter.SetUpperThreshold(attribute.maximum)
                 pipeline.threshold_filters.append(threshold_filter)
             self.update_pipeline_filter(pipeline)
+        self.mark_basemaps_dirty(data_ids)
 
     def set_shrink(self, data_ids: list[str], shrink_factor: float) -> None:
         for data_id in data_ids:
@@ -286,6 +333,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             else:
                 pipeline.shrink_filter = None
             self.update_pipeline_filter(pipeline)
+        self.mark_basemaps_dirty(data_ids)
 
     def set_explode(self, data_ids: list[str], explode_factor: float) -> None:
         for data_id in data_ids:
@@ -294,6 +342,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
                 continue
             pipeline.explode_factor = explode_factor
             self.update_pipeline_filter(pipeline)
+        # Even back to 0: the flat map was lifted over the exploded blocks
+        self.mark_basemaps_dirty()
 
     def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:
         max_indices = [0, 0, 0]
@@ -430,7 +480,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         if grid_scale is not None:
             renderer = self.get_renderer()
             if not grid_scale.GetVisibility():
-                self._fit_grid_scale_to_visible_props(grid_scale, renderer)
+                self.fit_grid_scale_to_visible_props(
+                    grid_scale, renderer, basemap_actors(self.get_data_base())
+                )
             final_bounds = list(grid_scale.GetBounds())
             if final_bounds[0] <= final_bounds[1]:
                 for axis in range(3):
@@ -441,18 +493,25 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
     def fit_grid_scale(self) -> None:
         grid_scale = self.get_grid_scale()
         if grid_scale is not None:
-            self._fit_grid_scale_to_visible_props(grid_scale, self.get_renderer())
+            self.fit_grid_scale_to_visible_props(
+                grid_scale, self.get_renderer(), basemap_actors(self.get_data_base())
+            )
 
     @staticmethod
-    def _fit_grid_scale_to_visible_props(
-        grid_scale: vtkCubeAxesActor, renderer: vtkRenderer
+    def fit_grid_scale_to_visible_props(
+        grid_scale: vtkCubeAxesActor, renderer: vtkRenderer, excluded: AbstractSet[vtkProp]
     ) -> None:
         bounds = vtkBoundingBox()
         props = renderer.GetViewProps()
         props.InitTraversal()
         prop = props.GetNextProp()
         while prop is not None:
-            if prop.GetVisibility() and prop.GetUseBounds() and prop != grid_scale:
+            if (
+                prop.GetVisibility()
+                and prop.GetUseBounds()
+                and prop != grid_scale
+                and prop not in excluded
+            ):
                 prop_bounds = prop.GetBounds()
                 if prop_bounds is not None:
                     bounds.AddBounds(prop_bounds)
@@ -617,6 +676,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             bar.SetHeight(bar_height)
 
     def render(self, view: int = -1) -> None:
+        if self.getSharedObject("basemaps_dirty"):
+            self.coreServer.setSharedObject("basemaps_dirty", False)  # noqa: FBT003 VTK API
+            update_basemaps(self.get_data_base(), self.get_renderer())
         self.update_grid_scale_and_clipping_range()
         self.getSharedObject("publisher").imagePush({"view": view})
 

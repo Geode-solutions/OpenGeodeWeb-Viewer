@@ -1580,6 +1580,88 @@
           "additionalProperties": false
         }
       },
+      "basemap_layers": {
+        "$id": "opengeodeweb_viewer.mesh.basemap_layers",
+        "rpc": "basemap_layers",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "layers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "map": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "visible": {
+                  "type": "boolean"
+                },
+                "opacity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "crop": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "map",
+                "visible",
+                "opacity",
+                "crop"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "layers"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "basemap_drape": {
+        "$id": "opengeodeweb_viewer.mesh.basemap_drape",
+        "rpc": "basemap_drape",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "data_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "data_ids"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
       "apply_textures": {
         "$id": "opengeodeweb_viewer.mesh.apply_textures",
         "rpc": "apply_textures",
@@ -1617,6 +1699,101 @@
         "required": [
           "id",
           "textures"
+        ],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "apply_basemap": {
+        "$id": "opengeodeweb_viewer.mesh.apply_basemap",
+        "rpc": "apply_basemap",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "detail_of": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32
+          },
+          "columns": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "rows": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "map": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "map",
+                "sources"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "layers": {
+            "type": "array",
+            "items": {
+              "title": "MapState",
+              "type": "object",
+              "properties": {
+                "map": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "visible": {
+                  "type": "boolean"
+                },
+                "opacity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "crop": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "map",
+                "visible",
+                "opacity",
+                "crop"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "columns",
+          "rows",
+          "maps",
+          "layers"
         ],
         "additionalProperties": false,
         "response": {
