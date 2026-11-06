@@ -5421,6 +5421,7 @@
                   "maxItems": 3
                 },
                 "color": {
+                  "title": "PlaneColor",
                   "type": "object",
                   "properties": {
                     "red": {
