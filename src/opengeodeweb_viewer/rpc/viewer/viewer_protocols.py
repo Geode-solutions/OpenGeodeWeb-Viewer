@@ -26,7 +26,9 @@ from vtkmodules.vtkRenderingCore import (
     vtkWorldPointPicker,
 )
 
+from opengeodeweb_viewer.orientation_marker import build_marker, style_marker
 from opengeodeweb_viewer.rpc.viewer import schemas
+from opengeodeweb_viewer.text_style import TextStyle
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 
 # Local application imports
@@ -59,18 +61,6 @@ class VtkViewerView(VtkView):
         grid_scale.DrawYGridlinesOn()
         grid_scale.DrawZGridlinesOn()
         grid_scale.SetGridLineLocation(grid_scale.VTK_GRID_LINES_FURTHEST)
-        grid_scale.GetTitleTextProperty(0).SetColor(0, 0, 0)
-        grid_scale.GetTitleTextProperty(1).SetColor(0, 0, 0)
-        grid_scale.GetTitleTextProperty(2).SetColor(0, 0, 0)
-        grid_scale.GetXAxesLinesProperty().SetColor(0, 0, 0)
-        grid_scale.GetYAxesLinesProperty().SetColor(0, 0, 0)
-        grid_scale.GetZAxesLinesProperty().SetColor(0, 0, 0)
-        grid_scale.GetLabelTextProperty(0).SetColor(0, 0, 0)
-        grid_scale.GetLabelTextProperty(1).SetColor(0, 0, 0)
-        grid_scale.GetLabelTextProperty(2).SetColor(0, 0, 0)
-        grid_scale.GetXAxesGridlinesProperty().SetColor(0, 0, 0)
-        grid_scale.GetYAxesGridlinesProperty().SetColor(0, 0, 0)
-        grid_scale.GetZAxesGridlinesProperty().SetColor(0, 0, 0)
         grid_scale.SetFlyModeToOuterEdges()
         grid_scale.SetXTitle("X")
         grid_scale.SetYTitle("Y")
@@ -100,6 +90,9 @@ class VtkViewerView(VtkView):
         ruler.add_to_renderer(renderer)
         self.set_ruler(ruler)
 
+        self.set_scene_text_style(TextStyle())
+        self.apply_scene_text_style()
+
         renderer.SetBackground([180 / 255, 180 / 255, 180 / 255])
 
         renderer.ResetCamera()
@@ -115,6 +108,36 @@ class VtkViewerView(VtkView):
 
         renderer.SetBackground([color.r / 255, color.g / 255, color.b / 255])
         return schemas.SetBackgroundColorResponse()
+
+    @typed_rpc(viewer_prefix, schemas.set_text_style_route)
+    def update_text_style(self, params: schemas.SetTextStyle) -> schemas.SetTextStyleResponse:
+        color = params.color
+        self.set_scene_text_style(
+            TextStyle(
+                color=(color.r, color.g, color.b),
+                font_family=params.font_family.value,
+                opacity=params.opacity,
+            )
+        )
+        self.apply_scene_text_style()
+        return schemas.SetTextStyleResponse()
+
+    @typed_rpc(viewer_prefix, schemas.set_orientation_widget_route)
+    def update_orientation_widget(
+        self, params: schemas.SetOrientationWidget
+    ) -> schemas.SetOrientationWidgetResponse:
+        widget = self.get_widget()
+        if widget is None:
+            return schemas.SetOrientationWidgetResponse()
+        visibility = widget.GetOrientationMarker().GetVisibility()
+        marker = build_marker(params.marker.value)
+        style_marker(marker, self.get_scene_text_style())
+        widget.EnabledOff()
+        widget.SetOrientationMarker(marker)
+        widget.EnabledOn()
+        widget.InteractiveOff()
+        marker.SetVisibility(visibility)
+        return schemas.SetOrientationWidgetResponse()
 
     @typed_rpc(viewer_prefix, schemas.reset_camera_route)
     def reset_camera(self, _params: schemas.ResetCamera) -> schemas.ResetCameraResponse:
@@ -270,9 +293,9 @@ class VtkViewerView(VtkView):
 
     @typed_rpc(viewer_prefix, schemas.axes_route)
     def toggle_axes(self, params: schemas.Axes) -> schemas.AxesResponse:
-        axes = self.get_axes()
-        if axes is not None:
-            axes.SetVisibility(params.visibility)
+        widget = self.get_widget()
+        if widget is not None:
+            widget.GetOrientationMarker().SetVisibility(params.visibility)
         return schemas.AxesResponse()
 
     @typed_rpc(viewer_prefix, schemas.update_camera_route)

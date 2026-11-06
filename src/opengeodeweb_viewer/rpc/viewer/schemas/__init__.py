@@ -5,6 +5,8 @@ from .take_screenshot import *
 from .slice import *
 from .shrink import *
 from .set_z_scaling import *
+from .set_text_style import *
+from .set_orientation_widget import *
 from .set_background_color import *
 from .ruler import *
 from .reset_visualization import *

@@ -148,7 +148,9 @@ def style_basemap(actor: vtkActor, mapper: vtkMapper, offset_units: float) -> No
 
 
 def drape_actor(
-    drape: vtkPolyData, texture: vtkTexture, offset_units: float = DRAPE_POLYGON_OFFSET_UNITS
+    drape: vtkPolyData,
+    texture: vtkTexture,
+    offset_units: float = DRAPE_POLYGON_OFFSET_UNITS,
 ) -> vtkActor:
     mapper = vtkPolyDataMapper()
     mapper.SetInputData(drape)

@@ -8,7 +8,12 @@ from vtkmodules.vtkFiltersGeometry import vtkGeometryFilter
 from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkPlaneSource
 from vtkmodules.vtkIOXML import vtkXMLPolyDataReader
 from vtkmodules.vtkRenderingAnnotation import vtkCubeAxesActor
-from vtkmodules.vtkRenderingCore import vtkActor, vtkDataSetMapper, vtkPolyDataMapper, vtkRenderer
+from vtkmodules.vtkRenderingCore import (
+    vtkActor,
+    vtkDataSetMapper,
+    vtkPolyDataMapper,
+    vtkRenderer,
+)
 
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     TILES_FOLDER,

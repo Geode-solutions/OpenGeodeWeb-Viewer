@@ -53,7 +53,9 @@ def check_source_folder(name: str) -> None:
         raise ValueError(msg)
 
 
-def _state_values(states: Mapping[str, LayerState]) -> dict[str, tuple[bool, float, bool]]:
+def _state_values(
+    states: Mapping[str, LayerState],
+) -> dict[str, tuple[bool, float, bool]]:
     return {name: (state.visible, state.opacity, state.crop) for name, state in states.items()}
 
 
@@ -164,9 +166,11 @@ class VtkMeshView(VtkObjectView):
         style_basemap(
             pipeline.actor,
             pipeline.mapper,
-            BASEMAP_POLYGON_OFFSET_UNITS
-            if params.detail_of is None
-            else DETAIL_POLYGON_OFFSET_UNITS,
+            (
+                BASEMAP_POLYGON_OFFSET_UNITS
+                if params.detail_of is None
+                else DETAIL_POLYGON_OFFSET_UNITS
+            ),
         )
         if pipeline.basemap is not None:
             basemap.drape_ids = pipeline.basemap.drape_ids
