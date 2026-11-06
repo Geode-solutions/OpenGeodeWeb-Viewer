@@ -85,7 +85,10 @@ def test_map_around_is_the_drape_when_nothing_is_cropped() -> None:
     maps = [("satellite", ["s"]), ("routes", ["r"])]
     images = {"s": SATELLITE, "r": ROADS}
     full, around = textures(
-        maps, images, {"satellite": _state("satellite"), "routes": _state("routes")}, SHAPE
+        maps,
+        images,
+        {"satellite": _state("satellite"), "routes": _state("routes")},
+        SHAPE,
     )
     # Nothing cropped: one composition for both textures
     assert around is full

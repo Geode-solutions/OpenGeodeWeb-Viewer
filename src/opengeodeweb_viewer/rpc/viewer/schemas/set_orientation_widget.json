@@ -1,0 +1,23 @@
+{
+  "rpc": "set_orientation_widget",
+  "type": "object",
+  "properties": {
+    "marker": {
+      "type": "string",
+      "enum": [
+        "axes",
+        "compass"
+      ]
+    }
+  },
+  "required": [
+    "marker"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

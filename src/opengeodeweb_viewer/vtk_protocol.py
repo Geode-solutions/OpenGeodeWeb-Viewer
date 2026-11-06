@@ -45,7 +45,13 @@ from opengeodeweb_viewer.basemap_pipeline import (
     drape_planes,
     update_basemaps,
 )
+from opengeodeweb_viewer.orientation_marker import style_marker
 from opengeodeweb_viewer.rpc.viewer.schemas.threshold import Attribute, Location
+from opengeodeweb_viewer.text_style import (
+    TextStyle,
+    apply_text_property,
+    style_grid_scale,
+)
 from opengeodeweb_viewer.vtk_pipeline import (
     RulerPipeline,
     ViewerData,
@@ -139,6 +145,26 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
     def set_ruler(self, ruler: RulerPipeline) -> None:
         self.coreServer.setSharedObject("ruler", ruler)
+
+    def get_scene_text_style(self) -> TextStyle:
+        style = self.getSharedObject("text_style")
+        return style if isinstance(style, TextStyle) else TextStyle()
+
+    def set_scene_text_style(self, style: TextStyle) -> None:
+        self.coreServer.setSharedObject("text_style", style)
+
+    def apply_scene_text_style(self) -> None:
+        style = self.get_scene_text_style()
+        grid_scale = self.get_grid_scale()
+        if grid_scale is not None:
+            style_grid_scale(grid_scale, style)
+        widget = self.get_widget()
+        if widget is not None:
+            style_marker(widget.GetOrientationMarker(), style)
+        ruler = self.get_ruler()
+        if ruler is not None:
+            ruler.set_text_color(None if style.is_default else style.rgb, style.opacity)
+        self.update_scalar_bars_layout()
 
     def get_viewer_data(self, data_id: str) -> ViewerData:
         if Data is None:
@@ -499,7 +525,9 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
 
     @staticmethod
     def fit_grid_scale_to_visible_props(
-        grid_scale: vtkCubeAxesActor, renderer: vtkRenderer, excluded: AbstractSet[vtkProp]
+        grid_scale: vtkCubeAxesActor,
+        renderer: vtkRenderer,
+        excluded: AbstractSet[vtkProp],
     ) -> None:
         bounds = vtkBoundingBox()
         props = renderer.GetViewProps()
@@ -632,6 +660,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
         cols = 5
         actual_width = 0.10
         row_height = 0.12
+        text_style = self.get_scene_text_style()
 
         for i, (bar, attr_name, data_id, pipeline) in enumerate(visible_bars):
             dataset = pipeline.filter.GetOutputDataObject(0)
@@ -640,8 +669,8 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             bar.UnconstrainedFontSizeOn()
             bar.GetLabelTextProperty().SetFontSize(14)
             bar.GetTitleTextProperty().SetFontSize(14)
-            bar.GetLabelTextProperty().SetColor(0, 0, 0)
-            bar.GetTitleTextProperty().SetColor(0, 0, 0)
+            apply_text_property(bar.GetLabelTextProperty(), text_style)
+            apply_text_property(bar.GetTitleTextProperty(), text_style)
             bar.GetLabelTextProperty().ShadowOff()
             bar.GetTitleTextProperty().ShadowOff()
 

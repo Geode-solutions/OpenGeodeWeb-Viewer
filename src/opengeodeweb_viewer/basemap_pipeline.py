@@ -37,7 +37,9 @@ def compose(basemap: BasemapState, shape: tuple[int, ...]) -> None:
     )
 
 
-def basemaps(database: Mapping[str, VtkPipeline]) -> list[tuple[VtkPipeline, BasemapState]]:
+def basemaps(
+    database: Mapping[str, VtkPipeline],
+) -> list[tuple[VtkPipeline, BasemapState]]:
     return [
         (pipeline, pipeline.basemap)
         for pipeline in database.values()

@@ -47,7 +47,10 @@ def rgba(pixels: np.ndarray) -> np.ndarray:
 
 
 def mosaic(
-    tiles: dict[tuple[int, int], np.ndarray], columns: int, rows: int, tile_shape: tuple[int, ...]
+    tiles: dict[tuple[int, int], np.ndarray],
+    columns: int,
+    rows: int,
+    tile_shape: tuple[int, ...],
 ) -> np.ndarray:
     """Tiles side by side, row 0 at the north edge; a missing tile is transparent."""
     height, width = tile_shape
