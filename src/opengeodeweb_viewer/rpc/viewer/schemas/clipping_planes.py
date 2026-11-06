@@ -7,14 +7,24 @@ from typing import List, Optional
 
 
 @dataclass
+class Color(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    alpha: float
+    blue: int
+    green: int
+    red: int
+
+
+@dataclass
 class Plane(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
     normal: List[float]
     origin: List[float]
-    color: Optional[List[float]] = None
-    opacity: Optional[float] = None
+    color: Optional[Color] = None
 
 
 @dataclass
@@ -40,4 +50,4 @@ clipping_planes_route = Route(
     response=ClippingPlanesResponse,
 )
 
-__all__ = ["Plane", "ClippingPlanes", "ClippingPlanesResponse", "clipping_planes_route"]
+__all__ = ["Color", "Plane", "ClippingPlanes", "ClippingPlanesResponse", "clipping_planes_route"]

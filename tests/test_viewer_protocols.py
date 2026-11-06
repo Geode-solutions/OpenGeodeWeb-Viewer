@@ -468,8 +468,7 @@ def test_clipping_planes(server: ServerMonitor, dataset_factory: Callable[..., s
                     {
                         "origin": [0.0, 0.0, 0.0],
                         "normal": [1.0, 0.0, 1.0],
-                        "color": [0.9, 0.22, 0.21],
-                        "opacity": 0.5,
+                        "color": {"red": 230, "green": 56, "blue": 54, "alpha": 0.5},
                     }
                 ],
             }

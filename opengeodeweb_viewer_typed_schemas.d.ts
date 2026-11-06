@@ -1477,10 +1477,16 @@ export interface ViewerClippingPlanesParams {
 }
 
 export interface Plane {
-    color?:   number[];
-    normal:   number[];
-    opacity?: number;
-    origin:   number[];
+    color?: PlaneColor;
+    normal: number[];
+    origin: number[];
+}
+
+export interface PlaneColor {
+    alpha: number;
+    blue:  number;
+    green: number;
+    red:   number;
 }
 
 export interface ViewerClippingPlanesResponse {

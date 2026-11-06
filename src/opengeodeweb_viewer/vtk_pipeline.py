@@ -101,12 +101,12 @@ class HighlightPipeline:
 class ClippingPlanePreview:
     _DEFAULT_OPACITY = 0.1
     _DEFAULT_COLOR = (0.12, 0.53, 0.9)
+    _RGB_MAX = 255
 
     bounds: list[float]
     origin: list[float]
     normal: list[float]
-    color: list[float] | None = None
-    opacity: float | None = None
+    color: ColorClassProtocol | None = None
     actor: vtkActor = field(default_factory=vtkActor)
 
     def __post_init__(self) -> None:
@@ -128,8 +128,16 @@ class ClippingPlanePreview:
         self.actor.SetMapper(mapper)
         self.actor.PickableOff()
         actor_property = self.actor.GetProperty()
-        actor_property.SetColor(*(self.color or self._DEFAULT_COLOR))
-        actor_property.SetOpacity(self._DEFAULT_OPACITY if self.opacity is None else self.opacity)
+        if self.color is None:
+            actor_property.SetColor(*self._DEFAULT_COLOR)
+            actor_property.SetOpacity(self._DEFAULT_OPACITY)
+        else:
+            actor_property.SetColor(
+                self.color.red / self._RGB_MAX,
+                self.color.green / self._RGB_MAX,
+                self.color.blue / self._RGB_MAX,
+            )
+            actor_property.SetOpacity(self.color.alpha)
         actor_property.SetAmbient(1.0)
         actor_property.SetDiffuse(0.0)
 

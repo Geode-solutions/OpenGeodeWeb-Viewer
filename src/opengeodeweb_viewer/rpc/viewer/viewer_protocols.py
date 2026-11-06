@@ -463,7 +463,6 @@ class VtkViewerView(VtkView):
                 origin=plane_info.origin,
                 normal=plane_info.normal,
                 color=plane_info.color,
-                opacity=plane_info.opacity,
             )
             renderer.AddActor(preview.actor)
             self._clipping_plane_previews.append(preview)
