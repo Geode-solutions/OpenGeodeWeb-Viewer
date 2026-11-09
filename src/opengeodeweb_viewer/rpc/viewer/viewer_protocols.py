@@ -166,29 +166,41 @@ class VtkViewerView(VtkView):
             render_window.SetAlphaBitPlanes(0)
             w2if.SetInputBufferTypeToRGB()
 
-        render_window.Render()
+        original_size = tuple(render_window.GetSize())
+        target_size = (
+            (params.width, params.height) if params.width and params.height else original_size
+        )
+        resized = target_size != original_size
+        try:
+            if resized:
+                render_window.SetSize(*target_size)
+            render_window.Render()
 
-        w2if.SetInput(render_window)
-        w2if.ReadFrontBufferOff()
-        w2if.Update()
-        output_extension = params.output_extension
-        writer: vtkPNGWriter | vtkJPEGWriter
-        if output_extension == schemas.take_screenshot.OutputExtension.PNG:
-            writer = vtkPNGWriter()
-        elif output_extension == schemas.take_screenshot.OutputExtension.JPG:
-            if not include_background:
-                msg = "output_extension not supported with background"
+            w2if.SetInput(render_window)
+            w2if.ReadFrontBufferOff()
+            w2if.Update()
+            output_extension = params.output_extension
+            writer: vtkPNGWriter | vtkJPEGWriter
+            if output_extension == schemas.take_screenshot.OutputExtension.PNG:
+                writer = vtkPNGWriter()
+            elif output_extension == schemas.take_screenshot.OutputExtension.JPG:
+                if not include_background:
+                    msg = "output_extension not supported with background"
+                    raise ValueError(msg)
+                writer = vtkJPEGWriter()
+            else:
+                msg = "output_extension not supported"
                 raise ValueError(msg)
-            writer = vtkJPEGWriter()
-        else:
-            msg = "output_extension not supported"
-            raise ValueError(msg)
 
-        new_filename = params.filename + "." + output_extension.value
-        file_path = Path(self.DATA_FOLDER_PATH) / new_filename
-        writer.SetFileName(str(file_path))
-        writer.SetInputConnection(w2if.GetOutputPort())
-        writer.Write()
+            new_filename = params.filename + "." + output_extension.value
+            file_path = Path(self.DATA_FOLDER_PATH) / new_filename
+            writer.SetFileName(str(file_path))
+            writer.SetInputConnection(w2if.GetOutputPort())
+            writer.Write()
+        finally:
+            if resized:
+                render_window.SetSize(*original_size)
+                render_window.Render()
 
         file_content = file_path.read_bytes()
 

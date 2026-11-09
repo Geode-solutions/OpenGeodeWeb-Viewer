@@ -195,6 +195,43 @@ def test_take_screenshot(server: ServerMonitor, dataset_factory: Callable[..., s
     assert server.images_diff(first_image_path, second_image_path) == 0.0
 
 
+def _png_size(blob: bytes) -> tuple[int, int]:
+    return int.from_bytes(blob[16:20], "big"), int.from_bytes(blob[20:24], "big")
+
+
+def test_take_screenshot_custom_size(
+    server: ServerMonitor, dataset_factory: Callable[..., str]
+) -> None:
+    test_register_mesh(server, dataset_factory)
+    rpc = VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["take_screenshot"]["rpc"]
+
+    def screenshot(**size: int) -> bytes:
+        server.call(
+            rpc,
+            [
+                {
+                    "filename": "take_screenshot_size",
+                    "output_extension": "png",
+                    "include_background": True,
+                    **size,
+                }
+            ],
+        )
+        blob = server.get_result(rpc)["blob"]
+        assert type(blob) is bytes
+        return blob
+
+    original_width, original_height = _png_size(screenshot())
+
+    assert _png_size(screenshot(width=original_width * 2, height=original_height * 2)) == (
+        original_width * 2,
+        original_height * 2,
+    )
+
+    # The window size is restored: a screenshot without size has the original dimensions again
+    assert _png_size(screenshot()) == (original_width, original_height)
+
+
 def test_picked_ids(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
 
     test_register_mesh(server, dataset_factory)
