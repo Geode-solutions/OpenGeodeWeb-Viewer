@@ -5,6 +5,7 @@ from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from enum import Enum
 from dataclasses import dataclass
+from typing import Optional
 
 
 class OutputExtension(Enum):
@@ -20,6 +21,8 @@ class TakeScreenshot(DataClassJsonMixin):
     filename: str
     include_background: bool
     output_extension: OutputExtension
+    height: Optional[int] = None
+    width: Optional[int] = None
 
 
 @dataclass

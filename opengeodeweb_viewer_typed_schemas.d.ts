@@ -1274,8 +1274,10 @@ export interface ViewerThresholdResponse {
 
 export interface ViewerTakeScreenshotParams {
     filename:           string;
+    height?:            number;
     include_background: boolean;
     output_extension:   OutputExtension;
+    width?:             number;
 }
 
 export type OutputExtension = "png" | "jpg";
