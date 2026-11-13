@@ -61,4 +61,3 @@ wslink==2.6.0
 yarl==1.*
     # via aiohttp
 
-opengeodeweb-microservice==1.*,>=1.3.2
