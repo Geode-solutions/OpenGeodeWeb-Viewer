@@ -1,13 +1,24 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_data_files
 from PyInstaller.utils.hooks import collect_all
+import sys
 
 datas = []
 binaries = []
 hiddenimports = []
+runtime_hooks = []
 datas += collect_data_files('opengeodeweb_viewer')
 tmp_ret = collect_all('vtkmodules')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+
+# Bundle the software rendering (OSMesa and the Mesa drivers) on Linux, with a
+# runtime hook pointing LIBGL_DRIVERS_PATH at them, as Vease-Viewer does
+if sys.platform.startswith('linux'):
+    binaries.append(('/usr/lib/x86_64-linux-gnu/libGL*.so*', '.'))
+    binaries.append(('/usr/lib/x86_64-linux-gnu/libOSMesa*.so*', '.'))
+    binaries.append(('/usr/lib/x86_64-linux-gnu/libglapi.so*', '.'))
+    binaries.append(('/usr/lib/x86_64-linux-gnu/dri', 'dri'))
+    runtime_hooks.append('hook.py')
 
 a = Analysis(
     ['src/opengeodeweb_viewer/app.py'],
@@ -17,7 +28,7 @@ a = Analysis(
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
+    runtime_hooks=runtime_hooks,
     excludes=[],
     noarchive=False,
     optimize=0,
