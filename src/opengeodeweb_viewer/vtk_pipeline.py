@@ -42,6 +42,7 @@ from vtkmodules.vtkRenderingCore import (
     VTK_SCALAR_MODE_USE_POINT_DATA,
     VTK_SCALAR_MODE_USE_POINT_FIELD_DATA,
     vtkActor,
+    vtkColorTransferFunction,
     vtkCompositeDataDisplayAttributes,
     vtkCompositePolyDataMapper,
     vtkDataSetMapper,
@@ -364,6 +365,9 @@ class VtkPipeline:
     scalar_bar: vtkScalarBarActor = field(default_factory=vtkScalarBarActor)
     scalar_bars: dict[str, ModelScalarBar] = field(default_factory=dict)
     block_styles: dict[int, BlockStyle] = field(default_factory=dict)
+    # One lookup table per block, refilled in place: the composite mapper keys its
+    # per-block state on the table address, which a freed table could hand to a new one
+    block_lookup_tables: dict[int, vtkColorTransferFunction] = field(default_factory=dict)
     pick_mapper: vtkMapper | None = None
     points_mapper: vtkDataSetMapper | None = None
     points_actor: vtkActor | None = None
@@ -599,9 +603,16 @@ class VtkPipeline:
             return
         item = style.get("item", 0)
         no_data_color = style.get("no_data_color")
-        lut = create_color_transfer_function(
+        if block_id not in self.block_lookup_tables:
+            self.block_lookup_tables[block_id] = vtkColorTransferFunction()
+        lut = self.block_lookup_tables[block_id]
+        source_lut = create_color_transfer_function(
             style["points"], style["minimum"], style["maximum"], item, no_data_color
         )
+        lut.DeepCopy(source_lut)
+        # DeepCopy leaves the no data color behind
+        lut.SetNanColor(source_lut.GetNanColor())
+        lut.SetNanOpacity(source_lut.GetNanOpacity())
         field_data.SetActiveScalars(style["name"])
         other_field_data.SetActiveScalars("")
         if isinstance(self.mapper, vtkCompositePolyDataMapper):
