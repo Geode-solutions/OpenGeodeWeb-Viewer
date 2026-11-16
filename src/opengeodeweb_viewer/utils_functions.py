@@ -1,4 +1,6 @@
+import contextlib
 import logging
+import time
 
 # Standard library imports
 # Third party imports
@@ -8,9 +10,21 @@ import fastjsonschema  # type: ignore[import-untyped]
 from vtkmodules.vtkRenderingCore import vtkColorTransferFunction
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     from opengeodeweb_microservice.schemas import SchemaDict
 
 logger = logging.getLogger(__name__)
+
+
+@contextlib.contextmanager
+def log_duration(step: str) -> Iterator[None]:
+    """Log how long a step takes, to compare import timings across platforms."""
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        logger.info("[timing] %s: %.2fs", step, time.perf_counter() - start)
 
 
 class ColorClassProtocol(Protocol):

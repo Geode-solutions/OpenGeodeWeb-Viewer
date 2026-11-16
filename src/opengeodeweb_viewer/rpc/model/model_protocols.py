@@ -27,6 +27,7 @@ from opengeodeweb_viewer.utils_functions import (
     AttributeProtocol,
     create_color_transfer_function,
     deterministic_color,
+    log_duration,
 )
 from opengeodeweb_viewer.vtk_pipeline import (
     BlockStyle,
@@ -489,12 +490,16 @@ class VtkModelView(VtkObjectView):
 
             reader = vtkXMLMultiBlockDataReader()
             reader.SetFileName(str(Path(self.DATA_FOLDER_PATH) / data_id / file_name))
-            reader.Update()
+            with log_duration(f"register_model read {file_name}"):
+                reader.Update()
             mapper = vtkCompositePolyDataMapper()
             attributes = vtkCompositeDataDisplayAttributes()
             mapper.SetCompositeDataDisplayAttributes(attributes)
             data = VtkPipeline(reader, mapper)
-            geometry_output = cast("vtkMultiBlockDataSet", self.setup_pipeline(data, params.name))
+            with log_duration("register_model geometry filter"):
+                geometry_output = cast(
+                    "vtkMultiBlockDataSet", self.setup_pipeline(data, params.name)
+                )
             self.highlight(data)
             iterator = geometry_output.NewTreeIterator()
             iterator.InitTraversal()
