@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 from threading import Timer
+from typing import cast
 
 from opengeodeweb_microservice.database import connection
 
@@ -10,7 +11,6 @@ from opengeodeweb_microservice.database import connection
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
-from opengeodeweb_viewer import egl_device
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
@@ -36,7 +36,8 @@ class VtkUtilsView(VtkView):
     def rendering_warnings(
         self, _params: schemas.RenderingWarnings
     ) -> schemas.RenderingWarningsResponse:
-        return schemas.RenderingWarningsResponse(warnings=list(egl_device.rendering_warnings))
+        warnings = cast("list[str]", self.getSharedObject("rendering_warnings"))
+        return schemas.RenderingWarningsResponse(warnings=list(warnings))
 
     @typed_rpc(utils_prefix, schemas.import_project_route)
     def import_project(self, _params: schemas.ImportProject) -> schemas.ImportProjectResponse:

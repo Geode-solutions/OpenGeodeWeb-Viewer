@@ -39,6 +39,8 @@ class _Server(VtkTypingMixin, ServerProtocol):
     authKey = "wslink-secret"  # noqa: N815 wslink option name
     view = None
     debug = False
+    # Set by run_server before the server starts
+    rendering_warnings: tuple[str, ...] = ()
 
     @staticmethod
     def add_arguments(parser: argparse.ArgumentParser) -> None:
@@ -60,6 +62,7 @@ class _Server(VtkTypingMixin, ServerProtocol):
         publisher.deltaStaleTimeBeforeRender = 0.1
         self.registerVtkWebProtocol(publisher)
         self.setSharedObject("db", {})
+        self.setSharedObject("rendering_warnings", list(_Server.rendering_warnings))
         self.setSharedObject("publisher", publisher)
 
         # Custom API
@@ -126,7 +129,7 @@ def run_server(server_protocol: type[ServerProtocol] = _Server) -> None:
 
     python_env = os.environ.get("PYTHON_ENV", "prod").strip().lower()
     _configure_logging(python_env)
-    select_egl_device()
+    _Server.rendering_warnings = tuple(select_egl_device())
 
     app_config: Config
     if python_env == "prod":

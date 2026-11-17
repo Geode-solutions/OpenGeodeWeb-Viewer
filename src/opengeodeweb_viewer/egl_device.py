@@ -20,25 +20,23 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 EGL_DEVICE_INDEX_ENV = "VTK_DEFAULT_EGL_DEVICE_INDEX"
+_EGL_EXTENSIONS = 0x3055
 _EGL_DRM_DEVICE_FILE_EXT = 0x3233
+# Extension Mesa exposes on its software rendering device (llvmpipe)
+_SOFTWARE_DEVICE_EXTENSION = "EGL_MESA_device_software"
 _UNRELIABLE_DRIVERS = frozenset({"nouveau"})
 SOFTWARE_FALLBACK_WARNING = (
     "The NVIDIA GPU driver (nouveau) draws meshes with missing triangles: "
     "the 3D view is rendered without the GPU, which is slower. "
     "Install the proprietary NVIDIA driver to render on the GPU."
 )
-# Warnings about the rendering setup, shown to the user by the client
-rendering_warnings: list[str] = []
 
 
 @dataclass(frozen=True)
 class EglDevice:
     drm_file: str | None
     driver: str | None
-
-    @property
-    def is_software(self) -> bool:
-        return self.drm_file is None
+    is_software: bool = False
 
 
 def _drm_driver(drm_file: str) -> str | None:
@@ -79,7 +77,15 @@ def list_egl_devices() -> list[EglDevice]:
         raw_file = query_string(handle, _EGL_DRM_DEVICE_FILE_EXT)
         drm_file = raw_file.decode() if raw_file else None
         driver = _drm_driver(drm_file) if drm_file else None
-        devices.append(EglDevice(drm_file=drm_file, driver=driver))
+        raw_extensions = query_string(handle, _EGL_EXTENSIONS)
+        extensions = raw_extensions.decode().split() if raw_extensions else []
+        devices.append(
+            EglDevice(
+                drm_file=drm_file,
+                driver=driver,
+                is_software=_SOFTWARE_DEVICE_EXTENSION in extensions,
+            )
+        )
     return devices
 
 
@@ -101,22 +107,25 @@ def choose_egl_device_index(devices: list[EglDevice]) -> int | None:
 
 def select_egl_device(
     list_devices: Callable[[], list[EglDevice]] = list_egl_devices,
-) -> None:
-    """Set VTK's EGL device before the first render window is created."""
+) -> list[str]:
+    """Set VTK's EGL device before the first render window is created.
+
+    Returns the warnings about the rendering setup, to show to the user.
+    """
     if not sys.platform.startswith("linux") or EGL_DEVICE_INDEX_ENV in os.environ:
-        return
+        return []
     try:
         devices = list_devices()
     except (OSError, AttributeError) as error:
         logger.debug("EGL devices not enumerated: %s", error)
-        return
+        return []
     index = choose_egl_device_index(devices)
     if index is None:
-        return
+        return []
     os.environ[EGL_DEVICE_INDEX_ENV] = str(index)
     chosen = devices[index]
     if chosen.is_software and any(d.driver in _UNRELIABLE_DRIVERS for d in devices):
         logger.warning(SOFTWARE_FALLBACK_WARNING)
-        rendering_warnings.append(SOFTWARE_FALLBACK_WARNING)
-        return
+        return [SOFTWARE_FALLBACK_WARNING]
     logger.info("Rendering on EGL device %d (%s)", index, chosen.driver or "software")
+    return []
