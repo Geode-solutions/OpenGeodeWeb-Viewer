@@ -27,10 +27,10 @@ from vtkmodules.vtkRenderingCore import (
     vtkDataSetMapper,
     vtkPropPicker,
     vtkRenderer,
-    vtkRenderWindowInteractor,
     vtkWindowToImageFilter,
     vtkWorldPointPicker,
 )
+from vtkmodules.vtkRenderingUI import vtkGenericRenderWindowInteractor
 
 from opengeodeweb_viewer.orientation_marker import build_marker, style_marker
 from opengeodeweb_viewer.rpc.viewer import schemas
@@ -79,7 +79,7 @@ class VtkViewerView(VtkView):
 
         renderer.AddActor(grid_scale)
 
-        render_window_interactor = vtkRenderWindowInteractor()
+        render_window_interactor = vtkGenericRenderWindowInteractor()
         render_window_interactor.SetRenderWindow(render_window)
         style = vtkInteractorStyleTrackball()
         render_window_interactor.SetInteractorStyle(style)
