@@ -2,8 +2,10 @@ import logging
 import os
 from typing import TYPE_CHECKING
 
+from opengeodeweb_viewer import egl_device
 from opengeodeweb_viewer.egl_device import (
     EGL_DEVICE_INDEX_ENV,
+    SOFTWARE_FALLBACK_WARNING,
     EglDevice,
     choose_egl_device_index,
     select_egl_device,
@@ -63,16 +65,20 @@ def test_select_warns_on_software_fallback(
     monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
     monkeypatch.delenv(EGL_DEVICE_INDEX_ENV, raising=False)
+    monkeypatch.setattr(egl_device, "rendering_warnings", [])
     with caplog.at_level(logging.WARNING, logger="opengeodeweb_viewer.egl_device"):
         select_egl_device(lambda: [NOUVEAU, SOFTWARE])
     assert os.environ[EGL_DEVICE_INDEX_ENV] == "1"
     assert "nouveau" in caplog.text
+    assert egl_device.rendering_warnings == [SOFTWARE_FALLBACK_WARNING]
 
 
 def test_select_does_not_warn_on_gpu(
     monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
     monkeypatch.delenv(EGL_DEVICE_INDEX_ENV, raising=False)
+    monkeypatch.setattr(egl_device, "rendering_warnings", [])
     with caplog.at_level(logging.WARNING, logger="opengeodeweb_viewer.egl_device"):
         select_egl_device(lambda: [NOUVEAU, INTEL, SOFTWARE])
     assert not caplog.records
+    assert egl_device.rendering_warnings == []

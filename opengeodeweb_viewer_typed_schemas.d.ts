@@ -1212,6 +1212,13 @@ export interface ModelSurfacesApplyTexturesParamsTexture {
 export interface ModelSurfacesApplyTexturesResponse {
 }
 
+export interface RenderingWarningsParams {
+}
+
+export interface RenderingWarningsResponse {
+    warnings: string[];
+}
+
 export interface ReleaseDatabaseParams {
 }
 
@@ -1706,6 +1713,7 @@ export interface Schemas {
         readonly apply_textures: (typeof json)["opengeodeweb_viewer"]["model"]["surfaces"]["apply_textures"] & TypedSchema<ModelSurfacesApplyTexturesParams, ModelSurfacesApplyTexturesResponse>;
       };
     };
+    readonly rendering_warnings: (typeof json)["opengeodeweb_viewer"]["rendering_warnings"] & TypedSchema<RenderingWarningsParams, RenderingWarningsResponse>;
     readonly release_database: (typeof json)["opengeodeweb_viewer"]["release_database"] & TypedSchema<ReleaseDatabaseParams, ReleaseDatabaseResponse>;
     readonly kill: (typeof json)["opengeodeweb_viewer"]["kill"] & TypedSchema<KillParams, KillResponse>;
     readonly import_project: (typeof json)["opengeodeweb_viewer"]["import_project"] & TypedSchema<ImportProjectParams, ImportProjectResponse>;

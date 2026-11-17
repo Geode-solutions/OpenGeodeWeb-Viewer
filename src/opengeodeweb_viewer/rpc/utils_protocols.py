@@ -10,6 +10,7 @@ from opengeodeweb_microservice.database import connection
 # Local application imports
 from opengeodeweb_microservice.schemas import get_schemas_dict
 
+from opengeodeweb_viewer import egl_device
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
@@ -30,6 +31,12 @@ class VtkUtilsView(VtkView):
         logger.info("Manual viewer kill, shutting down...")
         Timer(0.5, os._exit, [0]).start()
         return schemas.KillResponse()
+
+    @typed_rpc(utils_prefix, schemas.rendering_warnings_route)
+    def rendering_warnings(
+        self, _params: schemas.RenderingWarnings
+    ) -> schemas.RenderingWarningsResponse:
+        return schemas.RenderingWarningsResponse(warnings=list(egl_device.rendering_warnings))
 
     @typed_rpc(utils_prefix, schemas.import_project_route)
     def import_project(self, _params: schemas.ImportProject) -> schemas.ImportProjectResponse:

@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 EGL_DEVICE_INDEX_ENV = "VTK_DEFAULT_EGL_DEVICE_INDEX"
 _EGL_DRM_DEVICE_FILE_EXT = 0x3233
 _UNRELIABLE_DRIVERS = frozenset({"nouveau"})
+SOFTWARE_FALLBACK_WARNING = (
+    "The NVIDIA GPU driver (nouveau) draws meshes with missing triangles: "
+    "the 3D view is rendered without the GPU, which is slower. "
+    "Install the proprietary NVIDIA driver to render on the GPU."
+)
+# Warnings about the rendering setup, shown to the user by the client
+rendering_warnings: list[str] = []
 
 
 @dataclass(frozen=True)
@@ -109,10 +116,7 @@ def select_egl_device(
     os.environ[EGL_DEVICE_INDEX_ENV] = str(index)
     chosen = devices[index]
     if chosen.is_software and any(d.driver in _UNRELIABLE_DRIVERS for d in devices):
-        logger.warning(
-            "The GPU driver (nouveau) renders meshes with missing triangles: "
-            "rendering in software instead, which is slower. "
-            "Install the proprietary NVIDIA driver to render on the GPU."
-        )
+        logger.warning(SOFTWARE_FALLBACK_WARNING)
+        rendering_warnings.append(SOFTWARE_FALLBACK_WARNING)
         return
     logger.info("Rendering on EGL device %d (%s)", index, chosen.driver or "software")

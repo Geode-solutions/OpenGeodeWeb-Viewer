@@ -74,3 +74,9 @@ def test_scene_style_after_import(server: ServerMonitor) -> None:
         [{"marker": "compass"}],
     )
     assert server.compare_image("viewer/orientation_widget_compass.jpeg") is True
+
+
+def test_rendering_warnings(server: ServerMonitor) -> None:
+    rpc = VtkUtilsView.utils_prefix + VtkUtilsView.utils_schemas_dict["rendering_warnings"]["rpc"]
+    server.call(rpc)
+    assert server.get_result(rpc) == {"warnings": []}
