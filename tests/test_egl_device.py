@@ -1,6 +1,7 @@
 import logging
 import os
-from typing import TYPE_CHECKING
+
+import pytest
 
 from opengeodeweb_viewer import egl_device
 from opengeodeweb_viewer.egl_device import (
@@ -11,13 +12,16 @@ from opengeodeweb_viewer.egl_device import (
     select_egl_device,
 )
 
-if TYPE_CHECKING:
-    import pytest
-
 NOUVEAU = EglDevice(drm_file="/dev/dri/card2", driver="nouveau")
 INTEL = EglDevice(drm_file="/dev/dri/card1", driver="i915")
 NVIDIA = EglDevice(drm_file="/dev/dri/card0", driver="nvidia")
 SOFTWARE = EglDevice(drm_file=None, driver=None)
+
+
+@pytest.fixture(autouse=True)
+def _on_linux(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The selection only runs on Linux, the CI also runs these tests on Windows
+    monkeypatch.setattr(egl_device.sys, "platform", "linux")
 
 
 def test_skips_nouveau_for_another_gpu() -> None:
@@ -82,3 +86,10 @@ def test_select_does_not_warn_on_gpu(
         select_egl_device(lambda: [NOUVEAU, INTEL, SOFTWARE])
     assert not caplog.records
     assert egl_device.rendering_warnings == []
+
+
+def test_select_does_nothing_outside_linux(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv(EGL_DEVICE_INDEX_ENV, raising=False)
+    monkeypatch.setattr(egl_device.sys, "platform", "win32")
+    select_egl_device(lambda: [NOUVEAU, INTEL])
+    assert EGL_DEVICE_INDEX_ENV not in os.environ
