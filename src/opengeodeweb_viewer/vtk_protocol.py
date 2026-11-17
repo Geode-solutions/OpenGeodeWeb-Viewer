@@ -187,7 +187,7 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             return ViewerData(
                 id=data.id,
                 viewable_file=data.viewable_file,
-                viewer_object=data.viewer_object,
+                viewer_object_type=data.viewer_object_type,
                 viewer_elements_type=data.viewer_elements_type,
             )
 
