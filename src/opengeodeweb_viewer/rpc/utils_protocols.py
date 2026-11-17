@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 from threading import Timer
+from typing import cast
 
 from opengeodeweb_microservice.database import connection
 
@@ -30,6 +31,13 @@ class VtkUtilsView(VtkView):
         logger.info("Manual viewer kill, shutting down...")
         Timer(0.5, os._exit, [0]).start()
         return schemas.KillResponse()
+
+    @typed_rpc(utils_prefix, schemas.rendering_warnings_route)
+    def rendering_warnings(
+        self, _params: schemas.RenderingWarnings
+    ) -> schemas.RenderingWarningsResponse:
+        warnings = cast("list[str]", self.getSharedObject("rendering_warnings"))
+        return schemas.RenderingWarningsResponse(warnings=list(warnings))
 
     @typed_rpc(utils_prefix, schemas.import_project_route)
     def import_project(self, _params: schemas.ImportProject) -> schemas.ImportProjectResponse:

@@ -1,0 +1,22 @@
+{
+  "rpc": "rendering_warnings",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "warnings"
+    ],
+    "additionalProperties": false
+  }
+}
