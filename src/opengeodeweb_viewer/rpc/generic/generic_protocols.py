@@ -30,10 +30,10 @@ class VtkGenericView(VtkView):
     def register(self, params: schemas.Register) -> schemas.RegisterResponse:
         data_id = params.id
         specific_params = {"id": data_id, "name": params.name}
-        viewer_object = self.get_viewer_data(data_id).viewer_object
-        if viewer_object == "mesh":
+        viewer_object_type = self.get_viewer_data(data_id).viewer_object_type
+        if viewer_object_type == "mesh":
             self.mesh_protocols.register_mesh(specific_params)
-        elif viewer_object == "model":
+        elif viewer_object_type == "model":
             self.model_protocols.register_model(specific_params)
         return schemas.RegisterResponse()
 
@@ -41,9 +41,9 @@ class VtkGenericView(VtkView):
     def deregister(self, params: schemas.Deregister) -> schemas.DeregisterResponse:
         data_id = params.id
         specific_params = {"id": data_id}
-        viewer_object = self.get_viewer_data(data_id).viewer_object
-        if viewer_object == "mesh":
+        viewer_object_type = self.get_viewer_data(data_id).viewer_object_type
+        if viewer_object_type == "mesh":
             self.mesh_protocols.deregister_mesh(specific_params)
-        elif viewer_object == "model":
+        elif viewer_object_type == "model":
             self.model_protocols.deregister_model(specific_params)
         return schemas.DeregisterResponse()
