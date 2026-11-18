@@ -32,7 +32,7 @@ from vtkmodules.vtkRenderingCore import (
 )
 from vtkmodules.vtkRenderingUI import vtkGenericRenderWindowInteractor
 
-from opengeodeweb_viewer.orientation_marker import build_marker, style_marker
+from opengeodeweb_viewer.orientation_marker import NO_MARKER, build_marker, style_marker
 from opengeodeweb_viewer.rpc.viewer import schemas
 from opengeodeweb_viewer.text_style import TextStyle
 from opengeodeweb_viewer.typed_rpc import typed_rpc
@@ -138,9 +138,15 @@ class VtkViewerView(VtkView):
         if widget is None:
             return schemas.SetOrientationWidgetResponse()
         visibility = widget.GetOrientationMarker().GetVisibility()
+        widget.EnabledOff()
+        if params.marker.value == NO_MARKER:
+            # The front draws its own marker. Disabling the widget hides the current marker and
+            # resets its visibility flag: restore it, so axes toggles keep applying to it until
+            # a VTK marker is requested again
+            widget.GetOrientationMarker().SetVisibility(visibility)
+            return schemas.SetOrientationWidgetResponse()
         marker = build_marker(params.marker.value)
         style_marker(marker, self.get_scene_text_style())
-        widget.EnabledOff()
         widget.SetOrientationMarker(marker)
         widget.EnabledOn()
         widget.InteractiveOff()

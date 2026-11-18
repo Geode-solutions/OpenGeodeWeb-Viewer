@@ -9,6 +9,7 @@ from dataclasses import dataclass
 class Marker(Enum):
     AXES = "axes"
     COMPASS = "compass"
+    NONE = "none"
 
 
 @dataclass

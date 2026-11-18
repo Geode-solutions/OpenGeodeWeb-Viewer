@@ -1346,7 +1346,7 @@ export interface ViewerSetOrientationWidgetParams {
     marker: Marker;
 }
 
-export type Marker = "axes" | "compass";
+export type Marker = "axes" | "compass" | "none";
 
 export interface ViewerSetOrientationWidgetResponse {
 }

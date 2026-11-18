@@ -15,6 +15,9 @@ if TYPE_CHECKING:
     from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
     from vtkmodules.vtkRenderingCore import vtkProp, vtkTextProperty
 
+# Marker value hiding the VTK orientation marker, for fronts drawing their own
+NO_MARKER = "none"
+
 # VTK's own caption look, kept while the scene text style is the default one
 DEFAULT_CAPTION_COLOR = (1.0, 1.0, 1.0)
 

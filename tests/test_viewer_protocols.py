@@ -371,6 +371,36 @@ def test_orientation_widget_keeps_visibility(server: ServerMonitor) -> None:
     assert server.compare_image("viewer/axes_off.jpeg")
 
 
+def test_set_orientation_widget_none(server: ServerMonitor) -> None:
+    test_reset_visualization(server)
+    orientation_widget_rpc = (
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"]
+    )
+    server.call(orientation_widget_rpc, [{"marker": "none"}])
+    assert server.compare_image("viewer/axes_off.jpeg")
+
+    server.call(orientation_widget_rpc, [{"marker": "axes"}])
+    assert server.compare_image("viewer/reset_visualization.jpeg")
+
+
+def test_orientation_widget_none_keeps_visibility(server: ServerMonitor) -> None:
+    test_reset_visualization(server)
+    orientation_widget_rpc = (
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"]
+    )
+    server.call(orientation_widget_rpc, [{"marker": "none"}])
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["axes"]["rpc"],
+        [{"visibility": False}],
+    )
+    assert server.compare_image("viewer/axes_off.jpeg")
+
+    server.call(orientation_widget_rpc, [{"marker": "axes"}])
+    assert server.compare_image("viewer/axes_off.jpeg")
+
+
 def test_update_camera(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     test_register_mesh(server, dataset_factory)
 
