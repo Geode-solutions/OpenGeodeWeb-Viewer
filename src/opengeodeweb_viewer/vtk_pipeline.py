@@ -65,7 +65,7 @@ if TYPE_CHECKING:
     import numpy as np
     from opengeodeweb_microservice.database.data_types import (
         ViewerElementsType,
-        ViewerType,
+        ViewerObjectType,
     )
     from vtkmodules.vtkCommonDataModel import vtkPolyData
     from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
@@ -85,7 +85,7 @@ STACKING_GAP_RATIO = 0.05
 class ViewerData:
     id: str
     viewable_file: str | None
-    viewer_object: ViewerType
+    viewer_object_type: ViewerObjectType
     viewer_elements_type: ViewerElementsType
 
 

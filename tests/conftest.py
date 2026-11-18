@@ -214,7 +214,10 @@ def dataset_factory() -> Callable[..., str]:
         *, data_id: str, viewable_file: str, viewer_elements_type: str = "default"
     ) -> str:
         session = get_session()
-        viewer_object = "model" if viewable_file.lower().endswith(".vtm") else "mesh"
+        is_model = viewable_file.lower().endswith(".vtm")
+        viewer_object_type = "model" if is_model else "mesh"
+        # Required by the database, never read by the viewer
+        geode_object_type = "BRep" if is_model else "PolygonalSurface3D"
 
         row = session.get(Data, data_id)
         if row is None:
@@ -223,15 +226,15 @@ def dataset_factory() -> Callable[..., str]:
                     id=data_id,
                     geode_id="00000000-0000-0000-0000-000000000000",
                     viewable_file=viewable_file,
-                    geode_object=viewer_object,
-                    viewer_object=viewer_object,
+                    geode_object_type=geode_object_type,
+                    viewer_object_type=viewer_object_type,
                     viewer_elements_type=viewer_elements_type,
                 )
             )
         else:
             row.viewable_file = viewable_file
-            row.geode_object = viewer_object
-            row.viewer_object = viewer_object
+            row.geode_object_type = geode_object_type
+            row.viewer_object_type = viewer_object_type
             row.viewer_elements_type = viewer_elements_type
         session.commit()
 
