@@ -8,7 +8,7 @@ from opengeodeweb_microservice.schemas import print_dataclass
 ViewerId = int
 AttributeName = str
 Filename = str
-BlockIds = list[int]
+BlockIds = list[ViewerId]
 Visibility = bool
 Opacity = float
 PointSize = float

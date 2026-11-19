@@ -3,7 +3,7 @@
 export type ViewerId = number;
 export type AttributeName = string;
 export type Filename = string;
-export type BlockIds = number[];
+export type BlockIds = ViewerId[];
 export type Visibility = boolean;
 export type Opacity = number;
 export type PointSize = number;
