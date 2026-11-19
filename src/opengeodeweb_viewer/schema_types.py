@@ -5,6 +5,9 @@ from dataclasses import dataclass
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 
+ViewerId = int
+AttributeName = str
+Filename = str
 BlockIds = list[int]
 Visibility = bool
 Opacity = float
@@ -14,6 +17,16 @@ ColorMapPoints = list[float]
 AttributeItem = int
 AttributeRangeMinimum = float
 AttributeRangeMaximum = float
+
+
+@dataclass
+class Point3D(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    x: float
+    y: float
+    z: float
 
 
 @dataclass
@@ -33,6 +46,7 @@ class ColorRGBA(ColorRGB):
 
 __all__ = [
     "AttributeItem",
+    "AttributeName",
     "AttributeRangeMaximum",
     "AttributeRangeMinimum",
     "BlockIds",
@@ -40,7 +54,10 @@ __all__ = [
     "ColorRGB",
     "ColorRGBA",
     "EdgeWidth",
+    "Filename",
     "Opacity",
+    "Point3D",
     "PointSize",
+    "ViewerId",
     "Visibility",
 ]

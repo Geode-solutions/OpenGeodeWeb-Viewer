@@ -1,5 +1,5 @@
-from opengeodeweb_viewer.schema_types import BlockIds, ColorRGBA
-from opengeodeweb_microservice.schema_types import DataId, GeodeId, ViewerId
+from opengeodeweb_viewer.schema_types import BlockIds, ColorRGBA, ViewerId
+from opengeodeweb_microservice.schema_types import DataId, GeodeId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from typing import List

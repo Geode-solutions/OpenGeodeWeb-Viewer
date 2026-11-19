@@ -1,4 +1,4 @@
-from opengeodeweb_microservice.schema_types import Point3D
+from opengeodeweb_viewer.schema_types import Point3D
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin

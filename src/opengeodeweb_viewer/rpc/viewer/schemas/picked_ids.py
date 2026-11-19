@@ -1,4 +1,5 @@
-from opengeodeweb_microservice.schema_types import DataId, ViewerId
+from opengeodeweb_microservice.schema_types import DataId
+from opengeodeweb_viewer.schema_types import ViewerId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from typing import List, Optional

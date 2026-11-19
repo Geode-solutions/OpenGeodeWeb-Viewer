@@ -1,4 +1,35 @@
 {
+  "ViewerId": {
+    "type": "integer"
+  },
+  "AttributeName": {
+    "type": "string",
+    "minLength": 1
+  },
+  "Filename": {
+    "type": "string",
+    "minLength": 1
+  },
+  "Point3D": {
+    "type": "object",
+    "properties": {
+      "x": {
+        "type": "number"
+      },
+      "y": {
+        "type": "number"
+      },
+      "z": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "x",
+      "y",
+      "z"
+    ],
+    "additionalProperties": false
+  },
   "BlockIds": {
     "type": "array",
     "items": {
