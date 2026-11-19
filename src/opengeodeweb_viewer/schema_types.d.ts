@@ -7,6 +7,8 @@ export type PointSize = number;
 export type EdgeWidth = number;
 export type ColorMapPoints = number[];
 export type AttributeItem = number;
+export type AttributeRangeMinimum = number;
+export type AttributeRangeMaximum = number;
 
 export interface ColorRGB {
     blue:  number;

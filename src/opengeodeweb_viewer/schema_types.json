@@ -39,7 +39,11 @@
         "maximum": 255
       }
     },
-    "required": ["red", "green", "blue"],
+    "required": [
+      "red",
+      "green",
+      "blue"
+    ],
     "additionalProperties": false
   },
   "ColorRGBA": {
@@ -51,7 +55,9 @@
         "maximum": 1
       }
     },
-    "required": ["alpha"]
+    "required": [
+      "alpha"
+    ]
   },
   "ColorMapPoints": {
     "description": "Flat array of [value, r, g, b, ...]",
@@ -64,5 +70,11 @@
   "AttributeItem": {
     "type": "integer",
     "minimum": 0
+  },
+  "AttributeRangeMinimum": {
+    "type": "number"
+  },
+  "AttributeRangeMaximum": {
+    "type": "number"
   }
 }

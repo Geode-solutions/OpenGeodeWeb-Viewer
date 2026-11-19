@@ -28,10 +28,10 @@
             "title": "AttributeItem"
           },
           "minimum": {
-            "type": "number"
+            "title": "AttributeRangeMinimum"
           },
           "maximum": {
-            "type": "number"
+            "title": "AttributeRangeMaximum"
           }
         },
         "required": [

@@ -15,10 +15,10 @@
       "title": "ColorMapPoints"
     },
     "minimum": {
-      "type": "number"
+      "title": "AttributeRangeMinimum"
     },
     "maximum": {
-      "type": "number"
+      "title": "AttributeRangeMaximum"
     },
     "no_data_color": {
       "title": "ColorRGBA"

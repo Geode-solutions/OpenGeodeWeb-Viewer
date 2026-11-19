@@ -12,6 +12,8 @@ PointSize = float
 EdgeWidth = float
 ColorMapPoints = list[float]
 AttributeItem = int
+AttributeRangeMinimum = float
+AttributeRangeMaximum = float
 
 
 @dataclass
@@ -31,6 +33,8 @@ class ColorRGBA(ColorRGB):
 
 __all__ = [
     "AttributeItem",
+    "AttributeRangeMaximum",
+    "AttributeRangeMinimum",
     "BlockIds",
     "ColorMapPoints",
     "ColorRGB",
