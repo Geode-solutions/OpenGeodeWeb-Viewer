@@ -26,10 +26,7 @@ export interface MeshCellsAttributeCellAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 /**
@@ -45,10 +42,7 @@ export interface MeshCellsAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshCellsAttributeVertexAttributeResponse {
@@ -85,10 +79,7 @@ export interface MeshEdgesAttributeEdgeAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshEdgesAttributeEdgeAttributeResponse {
@@ -101,10 +92,7 @@ export interface MeshEdgesAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshEdgesAttributeVertexAttributeResponse {
@@ -149,10 +137,7 @@ export interface MeshPointsAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPointsAttributeVertexAttributeResponse {
@@ -199,10 +184,7 @@ export interface MeshPolygonsAttributePolygonAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolygonsAttributePolygonAttributeResponse {
@@ -215,10 +197,7 @@ export interface MeshPolygonsAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolygonsAttributeVertexAttributeResponse {
@@ -255,10 +234,7 @@ export interface MeshPolyhedraAttributePolyhedronAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolyhedraAttributePolyhedronAttributeResponse {
@@ -271,10 +247,7 @@ export interface MeshPolyhedraAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolyhedraAttributeVertexAttributeResponse {
@@ -411,10 +384,7 @@ export interface ModelBlocksAttributePolyhedronAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksAttributePolyhedronAttributeResponse {
@@ -428,10 +398,7 @@ export interface ModelBlocksAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksAttributeVertexAttributeResponse {
@@ -445,10 +412,7 @@ export interface ModelBlocksEdgesAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksEdgesAttributeVertexAttributeResponse {
@@ -489,10 +453,7 @@ export interface ModelBlocksPointsAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksPointsAttributeVertexAttributeResponse {
@@ -562,10 +523,7 @@ export interface ModelCornersAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelCornersAttributeVertexAttributeResponse {
@@ -622,10 +580,7 @@ export interface ModelLinesAttributeEdgeAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelLinesAttributeEdgeAttributeResponse {
@@ -639,10 +594,7 @@ export interface ModelLinesAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelLinesAttributeVertexAttributeResponse {
@@ -656,10 +608,7 @@ export interface ModelLinesPointsAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelLinesPointsAttributeVertexAttributeResponse {
@@ -784,10 +733,7 @@ export interface ModelSurfacesAttributePolygonAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesAttributePolygonAttributeResponse {
@@ -801,10 +747,7 @@ export interface ModelSurfacesAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesAttributeVertexAttributeResponse {
@@ -818,10 +761,7 @@ export interface ModelSurfacesEdgesAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesEdgesAttributeVertexAttributeResponse {
@@ -862,10 +802,7 @@ export interface ModelSurfacesPointsAttributeVertexAttributeParams {
     minimum:        AttributeRangeMinimum;
     name:           AttributeName;
     no_data_color?: ColorRGBA;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: ColorMapPoints;
+    points:         ColorMapPoints; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesPointsAttributeVertexAttributeResponse {
@@ -1016,10 +953,7 @@ export interface ViewerTakeScreenshotParams {
 export type OutputExtension = "png" | "jpg";
 
 export interface ViewerTakeScreenshotResponse {
-    /**
-     * Image file content, sent as binary
-     */
-    blob: any;
+    blob: any; // Image file content, sent as binary
 }
 
 export interface ViewerSliceParams {
