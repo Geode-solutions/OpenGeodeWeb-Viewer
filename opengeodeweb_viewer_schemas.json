@@ -87,9 +87,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -175,9 +177,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -382,9 +386,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -470,9 +476,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -705,9 +713,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -954,9 +964,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -1042,9 +1054,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -1249,9 +1263,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -1337,9 +1353,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -1948,9 +1966,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -2046,9 +2066,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -2147,9 +2169,11 @@
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
@@ -2392,9 +2416,11 @@
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
@@ -2817,9 +2843,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -3156,9 +3184,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -3254,9 +3284,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -3355,9 +3387,11 @@
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
@@ -3998,9 +4032,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -4096,9 +4132,11 @@
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
@@ -4197,9 +4235,11 @@
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
@@ -4442,9 +4482,11 @@
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
@@ -5059,9 +5101,11 @@
                   "minimum": 0
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 }
               },

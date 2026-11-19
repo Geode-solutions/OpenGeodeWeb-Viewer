@@ -7,6 +7,12 @@
     "type": "string",
     "minLength": 1
   },
+  "AttributeRangeMaximum": {
+    "type": "number"
+  },
+  "AttributeRangeMinimum": {
+    "type": "number"
+  },
   "BlockIds": {
     "type": "array",
     "items": {

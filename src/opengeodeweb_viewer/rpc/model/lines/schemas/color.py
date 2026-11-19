@@ -1,12 +1,13 @@
-from opengeodeweb_viewer.schema_types import ColorRGBA
+from opengeodeweb_viewer.schema_types import BlockIds, ColorRGBA
+from opengeodeweb_microservice.schema_types import DataId, GeodeId, ViewerId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from typing import List
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
-from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
+from dataclasses import dataclass
+from typing import Optional
 
 
 class ColorMode(Enum):
@@ -19,10 +20,10 @@ class Color(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    block_ids: List[int]
+    block_ids: BlockIds
     color_mode: ColorMode
-    id: str
-    collection_id: Optional[str] = None
+    id: DataId
+    collection_id: Optional[GeodeId] = None
     color: Optional[ColorRGBA] = None
 
 
@@ -32,8 +33,8 @@ class ColorResult(DataClassJsonMixin):
         print_dataclass(self)
 
     color: ColorRGBA
-    geode_id: str
-    viewer_id: int
+    geode_id: GeodeId
+    viewer_id: ViewerId
 
 
 @dataclass

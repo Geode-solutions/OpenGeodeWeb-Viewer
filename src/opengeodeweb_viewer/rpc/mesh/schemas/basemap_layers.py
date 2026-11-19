@@ -1,3 +1,5 @@
+from opengeodeweb_microservice.schema_types import DataId
+from opengeodeweb_viewer.schema_types import Opacity
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -13,7 +15,7 @@ class Layer(DataClassJsonMixin):
 
     crop: bool
     map: str
-    opacity: float
+    opacity: Opacity
     visible: bool
 
 
@@ -22,7 +24,7 @@ class BasemapLayers(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    id: str
+    id: DataId
     layers: List[Layer]
 
 

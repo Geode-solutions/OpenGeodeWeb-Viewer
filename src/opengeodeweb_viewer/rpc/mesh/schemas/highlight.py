@@ -1,3 +1,5 @@
+from opengeodeweb_microservice.schema_types import DataId
+from opengeodeweb_viewer.schema_types import Visibility
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -10,8 +12,8 @@ class Highlight(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    id: str
-    visibility: bool
+    id: DataId
+    visibility: Visibility
 
 
 @dataclass

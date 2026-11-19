@@ -1,10 +1,11 @@
-from opengeodeweb_viewer.schema_types import ColorRGBA
+from opengeodeweb_microservice.schema_types import AttributeName, DataId
+from opengeodeweb_viewer.schema_types import AttributeItem, AttributeRangeMaximum, AttributeRangeMinimum, ColorMapPoints, ColorRGBA
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -12,12 +13,12 @@ class Attribute(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    id: str
-    item: int
-    maximum: float
-    minimum: float
-    name: str
-    points: List[float]
+    id: DataId
+    item: AttributeItem
+    maximum: AttributeRangeMaximum
+    minimum: AttributeRangeMinimum
+    name: AttributeName
+    points: ColorMapPoints
     """Flat array of [value, r, g, b, ...]"""
 
     no_data_color: Optional[ColorRGBA] = None

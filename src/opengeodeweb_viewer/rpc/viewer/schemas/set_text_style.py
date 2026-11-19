@@ -1,4 +1,4 @@
-from opengeodeweb_viewer.schema_types import ColorRGB
+from opengeodeweb_viewer.schema_types import ColorRGB, Opacity
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -20,7 +20,7 @@ class SetTextStyle(DataClassJsonMixin):
 
     color: ColorRGB
     font_family: FontFamily
-    opacity: float
+    opacity: Opacity
 
 
 @dataclass
