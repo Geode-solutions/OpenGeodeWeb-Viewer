@@ -3,32 +3,19 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+      "title": "DataId"
     },
     "block_ids": {
-      "type": "array",
-      "items": {
-        "type": "integer"
-      },
-      "minItems": 1
+      "title": "BlockIds"
     },
     "name": {
-      "type": "string",
-      "minLength": 1
+      "title": "AttributeName"
     },
     "item": {
-      "type": "integer",
-      "minimum": 0
+      "title": "AttributeItem"
     },
     "points": {
-      "type": "array",
-      "description": "Flat array of [value, r, g, b, ...]",
-      "items": {
-        "type": "number"
-      },
-      "minItems": 8
+      "title": "ColorMapPoints"
     },
     "minimum": {
       "type": "number"
@@ -37,36 +24,7 @@
       "type": "number"
     },
     "no_data_color": {
-      "type": "object",
-      "properties": {
-        "red": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "green": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "blue": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "alpha": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1
-        }
-      },
-      "required": [
-        "red",
-        "green",
-        "blue",
-        "alpha"
-      ],
-      "additionalProperties": false
+      "title": "ColorRGBA"
     }
   },
   "required": [

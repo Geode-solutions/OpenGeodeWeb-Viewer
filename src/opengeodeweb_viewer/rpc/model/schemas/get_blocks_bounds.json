@@ -3,15 +3,10 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+      "title": "DataId"
     },
     "block_ids": {
-      "type": "array",
-      "items": {
-        "type": "integer"
-      }
+      "title": "BlockIds"
     }
   },
   "required": [

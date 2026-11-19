@@ -1,19 +1,10 @@
+from opengeodeweb_viewer.schema_types import ColorRGB
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
 from enum import Enum
-
-
-@dataclass
-class TextColor(DataClassJsonMixin):
-    def __post_init__(self) -> None:
-        print_dataclass(self)
-
-    b: int
-    g: int
-    r: int
 
 
 class FontFamily(Enum):
@@ -27,7 +18,7 @@ class SetTextStyle(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    color: TextColor
+    color: ColorRGB
     font_family: FontFamily
     opacity: float
 
@@ -46,4 +37,4 @@ set_text_style_route = Route(
     response=SetTextStyleResponse,
 )
 
-__all__ = ["TextColor", "SetTextStyle", "SetTextStyleResponse", "set_text_style_route"]
+__all__ = ["ColorRGB", "SetTextStyle", "SetTextStyleResponse", "set_text_style_route"]

@@ -1,3 +1,4 @@
+from opengeodeweb_viewer.schema_types import ColorRGBA
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -7,24 +8,13 @@ from typing import List, Optional
 
 
 @dataclass
-class PlaneColor(DataClassJsonMixin):
-    def __post_init__(self) -> None:
-        print_dataclass(self)
-
-    alpha: float
-    blue: int
-    green: int
-    red: int
-
-
-@dataclass
 class Plane(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
     normal: List[float]
     origin: List[float]
-    color: Optional[PlaneColor] = None
+    color: Optional[ColorRGBA] = None
 
 
 @dataclass
@@ -50,4 +40,4 @@ clipping_planes_route = Route(
     response=ClippingPlanesResponse,
 )
 
-__all__ = ["PlaneColor", "Plane", "ClippingPlanes", "ClippingPlanesResponse", "clipping_planes_route"]
+__all__ = ["ColorRGBA", "Plane", "ClippingPlanes", "ClippingPlanesResponse", "clipping_planes_route"]

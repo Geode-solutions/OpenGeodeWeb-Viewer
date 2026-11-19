@@ -3,19 +3,13 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+      "title": "DataId"
     },
     "block_ids": {
-      "type": "array",
-      "items": {
-        "type": "integer"
-      },
-      "minItems": 1
+      "title": "BlockIds"
     },
     "size": {
-      "type": "number"
+      "title": "PointSize"
     }
   },
   "required": [

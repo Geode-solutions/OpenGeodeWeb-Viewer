@@ -5,9 +5,7 @@
     "ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "minLength": 32,
-        "maxLength": 32
+        "title": "DataId"
       }
     },
     "planes": {
@@ -32,37 +30,7 @@
             "maxItems": 3
           },
           "color": {
-            "title": "PlaneColor",
-            "type": "object",
-            "properties": {
-              "red": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 255
-              },
-              "green": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 255
-              },
-              "blue": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 255
-              },
-              "alpha": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              }
-            },
-            "required": [
-              "red",
-              "green",
-              "blue",
-              "alpha"
-            ],
-            "additionalProperties": false
+            "title": "ColorRGBA"
           }
         },
         "required": [

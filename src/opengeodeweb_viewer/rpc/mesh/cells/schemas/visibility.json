@@ -3,12 +3,10 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+      "title": "DataId"
     },
     "visibility": {
-      "type": "boolean"
+      "title": "Visibility"
     }
   },
   "required": [

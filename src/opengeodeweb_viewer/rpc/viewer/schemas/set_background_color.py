@@ -1,3 +1,4 @@
+from opengeodeweb_viewer.schema_types import ColorRGB
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -6,21 +7,11 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Color(DataClassJsonMixin):
-    def __post_init__(self) -> None:
-        print_dataclass(self)
-
-    b: int
-    g: int
-    r: int
-
-
-@dataclass
 class SetBackgroundColor(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    color: Color
+    color: ColorRGB
 
 
 @dataclass
@@ -37,4 +28,4 @@ set_background_color_route = Route(
     response=SetBackgroundColorResponse,
 )
 
-__all__ = ["Color", "SetBackgroundColor", "SetBackgroundColorResponse", "set_background_color_route"]
+__all__ = ["ColorRGB", "SetBackgroundColor", "SetBackgroundColorResponse", "set_background_color_route"]

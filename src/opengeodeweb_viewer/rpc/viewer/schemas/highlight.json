@@ -17,9 +17,7 @@
     "ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "minLength": 32,
-        "maxLength": 32
+        "title": "DataId"
       }
     }
   },
@@ -34,7 +32,7 @@
     "type": "object",
     "properties": {
       "id": {
-        "type": "string"
+        "title": "DataId"
       },
       "picked_id": {
         "type": "integer"
@@ -47,7 +45,7 @@
         ]
       },
       "geode_id": {
-        "type": "string"
+        "title": "GeodeId"
       },
       "attributes": {
         "type": "object",
