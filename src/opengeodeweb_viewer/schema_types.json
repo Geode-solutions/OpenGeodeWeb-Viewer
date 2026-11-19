@@ -1,0 +1,68 @@
+{
+  "BlockIds": {
+    "type": "array",
+    "items": {
+      "title": "ViewerId"
+    },
+    "minItems": 1
+  },
+  "Visibility": {
+    "type": "boolean"
+  },
+  "Opacity": {
+    "type": "number",
+    "minimum": 0,
+    "maximum": 1
+  },
+  "PointSize": {
+    "type": "number"
+  },
+  "EdgeWidth": {
+    "type": "number"
+  },
+  "ColorRGB": {
+    "type": "object",
+    "properties": {
+      "red": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "green": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "blue": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      }
+    },
+    "required": ["red", "green", "blue"],
+    "additionalProperties": false
+  },
+  "ColorRGBA": {
+    "extends": "ColorRGB",
+    "properties": {
+      "alpha": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    },
+    "required": ["alpha"]
+  },
+  "ColorMapPoints": {
+    "description": "Flat array of [value, r, g, b, ...]",
+    "type": "array",
+    "items": {
+      "type": "number"
+    },
+    "minItems": 8
+  },
+  "AttributeItem": {
+    "type": "integer",
+    "minimum": 0
+  }
+}
