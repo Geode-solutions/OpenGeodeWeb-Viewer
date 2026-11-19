@@ -5,6 +5,14 @@ from dataclasses import dataclass
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 
+BlockIds = list[int]
+Visibility = bool
+Opacity = float
+PointSize = float
+EdgeWidth = float
+ColorMapPoints = list[float]
+AttributeItem = int
+
 
 @dataclass
 class ColorRGB(DataClassJsonMixin):
@@ -22,6 +30,13 @@ class ColorRGBA(ColorRGB):
 
 
 __all__ = [
+    "AttributeItem",
+    "BlockIds",
+    "ColorMapPoints",
     "ColorRGB",
     "ColorRGBA",
+    "EdgeWidth",
+    "Opacity",
+    "PointSize",
+    "Visibility",
 ]
