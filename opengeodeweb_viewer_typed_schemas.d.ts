@@ -23,10 +23,7 @@ export interface MeshCellsAttributeCellAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshCellsAttributeCellAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshCellsAttributeCellAttributeParamsNoDataColor {
@@ -46,10 +43,7 @@ export interface MeshCellsAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshCellsAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshCellsAttributeVertexAttributeParamsNoDataColor {
@@ -100,10 +94,7 @@ export interface MeshEdgesAttributeEdgeAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshEdgesAttributeEdgeAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshEdgesAttributeEdgeAttributeParamsNoDataColor {
@@ -123,10 +114,7 @@ export interface MeshEdgesAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshEdgesAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshEdgesAttributeVertexAttributeParamsNoDataColor {
@@ -185,10 +173,7 @@ export interface MeshPointsAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshPointsAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPointsAttributeVertexAttributeParamsNoDataColor {
@@ -249,10 +234,7 @@ export interface MeshPolygonsAttributePolygonAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshPolygonsAttributePolygonAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolygonsAttributePolygonAttributeParamsNoDataColor {
@@ -272,10 +254,7 @@ export interface MeshPolygonsAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshPolygonsAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolygonsAttributeVertexAttributeParamsNoDataColor {
@@ -326,10 +305,7 @@ export interface MeshPolyhedraAttributePolyhedronAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshPolyhedraAttributePolyhedronAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolyhedraAttributePolyhedronAttributeParamsNoDataColor {
@@ -349,10 +325,7 @@ export interface MeshPolyhedraAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: MeshPolyhedraAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface MeshPolyhedraAttributeVertexAttributeParamsNoDataColor {
@@ -510,10 +483,7 @@ export interface ModelBlocksAttributePolyhedronAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelBlocksAttributePolyhedronAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksAttributePolyhedronAttributeParamsNoDataColor {
@@ -534,10 +504,7 @@ export interface ModelBlocksAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelBlocksAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksAttributeVertexAttributeParamsNoDataColor {
@@ -558,10 +525,7 @@ export interface ModelBlocksEdgesAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelBlocksEdgesAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksEdgesAttributeVertexAttributeParamsNoDataColor {
@@ -616,10 +580,7 @@ export interface ModelBlocksPointsAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelBlocksPointsAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelBlocksPointsAttributeVertexAttributeParamsNoDataColor {
@@ -717,10 +678,7 @@ export interface ModelCornersAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelCornersAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelCornersAttributeVertexAttributeParamsNoDataColor {
@@ -798,10 +756,7 @@ export interface ModelLinesAttributeEdgeAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelLinesAttributeEdgeAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelLinesAttributeEdgeAttributeParamsNoDataColor {
@@ -822,10 +777,7 @@ export interface ModelLinesAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelLinesAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelLinesAttributeVertexAttributeParamsNoDataColor {
@@ -846,10 +798,7 @@ export interface ModelLinesPointsAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelLinesPointsAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelLinesPointsAttributeVertexAttributeParamsNoDataColor {
@@ -1002,10 +951,7 @@ export interface ModelSurfacesAttributePolygonAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelSurfacesAttributePolygonAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesAttributePolygonAttributeParamsNoDataColor {
@@ -1026,10 +972,7 @@ export interface ModelSurfacesAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelSurfacesAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesAttributeVertexAttributeParamsNoDataColor {
@@ -1050,10 +993,7 @@ export interface ModelSurfacesEdgesAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelSurfacesEdgesAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesEdgesAttributeVertexAttributeParamsNoDataColor {
@@ -1108,10 +1048,7 @@ export interface ModelSurfacesPointsAttributeVertexAttributeParams {
     minimum:        number;
     name:           string;
     no_data_color?: ModelSurfacesPointsAttributeVertexAttributeParamsNoDataColor;
-    /**
-     * Flat array of [value, r, g, b, ...]
-     */
-    points: number[];
+    points:         number[]; // Flat array of [value, r, g, b, ...]
 }
 
 export interface ModelSurfacesPointsAttributeVertexAttributeParamsNoDataColor {
@@ -1290,10 +1227,7 @@ export interface ViewerTakeScreenshotParams {
 export type OutputExtension = "png" | "jpg";
 
 export interface ViewerTakeScreenshotResponse {
-    /**
-     * Image file content, sent as binary
-     */
-    blob: any;
+    blob: any; // Image file content, sent as binary
 }
 
 export interface ViewerSliceParams {
