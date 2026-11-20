@@ -391,6 +391,7 @@ class VtkModelView(VtkObjectView):
             mapper.SetInputDataObject(pipeline.mapper.GetInputDataObject(0, 0))
             mapper.ScalarVisibilityOn()
             mapper.SetColorModeToMapScalars()
+            self.match_edges_depth_to_polygons(mapper)
             actor = vtkActor()
             actor.SetMapper(mapper)
             actor.PickableOff()
