@@ -1,3 +1,4 @@
+from opengeodeweb_viewer.schema_types import ViewerId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from typing import List, Optional
@@ -20,7 +21,7 @@ class PickColormapResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    block_ids: Optional[List[int]] = None
+    block_ids: Optional[List[ViewerId]] = None
     data_id: Optional[str] = None
 
 

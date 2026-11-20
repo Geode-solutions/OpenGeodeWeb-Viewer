@@ -3,9 +3,7 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+      "title": "DataId"
     },
     "detail_of": {
       "type": "string",
@@ -59,9 +57,7 @@
             "type": "boolean"
           },
           "opacity": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
+            "title": "Opacity"
           },
           "crop": {
             "type": "boolean"

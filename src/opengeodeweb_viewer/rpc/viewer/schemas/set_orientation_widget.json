@@ -6,7 +6,8 @@
       "type": "string",
       "enum": [
         "axes",
-        "compass"
+        "compass",
+        "none"
       ]
     }
   },

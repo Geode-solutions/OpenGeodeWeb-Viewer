@@ -66,7 +66,7 @@ def test_scene_style_after_import(server: ServerMonitor) -> None:
     )
     server.call(
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
-        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "arial", "opacity": 1.0}],
+        [{"color": {"red": 255, "green": 0, "blue": 0}, "font_family": "arial", "opacity": 1.0}],
     )
     server.call(
         VtkViewerView.viewer_prefix

@@ -53,7 +53,7 @@ def test_set_viewer_background_color(server: ServerMonitor) -> None:
     server.call(
         VtkViewerView.viewer_prefix
         + VtkViewerView.viewer_schemas_dict["set_background_color"]["rpc"],
-        [{"color": {"r": 0, "g": 0, "b": 255}}],
+        [{"color": {"red": 0, "green": 0, "blue": 255}}],
     )
     assert server.compare_image("viewer/set_background_color.jpeg")
 
@@ -62,7 +62,7 @@ def test_set_text_style(server: ServerMonitor, dataset_factory: Callable[..., st
     test_grid_scale(server, dataset_factory)
     server.call(
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
-        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "courier", "opacity": 0.5}],
+        [{"color": {"red": 255, "green": 0, "blue": 0}, "font_family": "courier", "opacity": 0.5}],
     )
     assert server.compare_image("viewer/set_text_style.jpeg")
 
@@ -73,7 +73,7 @@ def test_set_text_style_then_attribute(
     test_reset_visualization(server)
     server.call(
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
-        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "times", "opacity": 1.0}],
+        [{"color": {"red": 255, "green": 0, "blue": 0}, "font_family": "times", "opacity": 1.0}],
     )
     test_register_points(server, dataset_factory)
     server.call(
@@ -329,7 +329,7 @@ def test_set_orientation_widget_compass(server: ServerMonitor) -> None:
     test_reset_visualization(server)
     server.call(
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
-        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "arial", "opacity": 1.0}],
+        [{"color": {"red": 255, "green": 0, "blue": 0}, "font_family": "arial", "opacity": 1.0}],
     )
     server.call(
         VtkViewerView.viewer_prefix
@@ -350,7 +350,7 @@ def test_set_text_style_after_compass(server: ServerMonitor) -> None:
     )
     server.call(
         VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["set_text_style"]["rpc"],
-        [{"color": {"r": 255, "g": 0, "b": 0}, "font_family": "arial", "opacity": 1.0}],
+        [{"color": {"red": 255, "green": 0, "blue": 0}, "font_family": "arial", "opacity": 1.0}],
     )
     assert server.compare_image("viewer/orientation_widget_compass.jpeg")
 
@@ -368,6 +368,36 @@ def test_orientation_widget_keeps_visibility(server: ServerMonitor) -> None:
         + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"],
         [{"marker": "compass"}],
     )
+    assert server.compare_image("viewer/axes_off.jpeg")
+
+
+def test_set_orientation_widget_none(server: ServerMonitor) -> None:
+    test_reset_visualization(server)
+    orientation_widget_rpc = (
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"]
+    )
+    server.call(orientation_widget_rpc, [{"marker": "none"}])
+    assert server.compare_image("viewer/axes_off.jpeg")
+
+    server.call(orientation_widget_rpc, [{"marker": "axes"}])
+    assert server.compare_image("viewer/reset_visualization.jpeg")
+
+
+def test_orientation_widget_none_keeps_visibility(server: ServerMonitor) -> None:
+    test_reset_visualization(server)
+    orientation_widget_rpc = (
+        VtkViewerView.viewer_prefix
+        + VtkViewerView.viewer_schemas_dict["set_orientation_widget"]["rpc"]
+    )
+    server.call(orientation_widget_rpc, [{"marker": "none"}])
+    server.call(
+        VtkViewerView.viewer_prefix + VtkViewerView.viewer_schemas_dict["axes"]["rpc"],
+        [{"visibility": False}],
+    )
+    assert server.compare_image("viewer/axes_off.jpeg")
+
+    server.call(orientation_widget_rpc, [{"marker": "axes"}])
     assert server.compare_image("viewer/axes_off.jpeg")
 
 
