@@ -37,6 +37,7 @@ from opengeodeweb_viewer.vtk_pipeline import (
     PointsSizeActor,
     VtkPipeline,
 )
+from opengeodeweb_viewer.vtm_prefetch import prefetch_vtm_pieces
 
 from . import schemas
 
@@ -487,8 +488,10 @@ class VtkModelView(VtkObjectView):
             viewer_data = self.get_viewer_data(data_id)
             file_name = str(viewer_data.viewable_file)
 
+            vtm_path = Path(self.DATA_FOLDER_PATH) / data_id / file_name
             reader = vtkXMLMultiBlockDataReader()
-            reader.SetFileName(str(Path(self.DATA_FOLDER_PATH) / data_id / file_name))
+            reader.SetFileName(str(vtm_path))
+            prefetch_vtm_pieces(vtm_path)
             reader.Update()
             mapper = vtkCompositePolyDataMapper()
             attributes = vtkCompositeDataDisplayAttributes()
