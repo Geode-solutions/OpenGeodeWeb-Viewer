@@ -5611,7 +5611,10 @@
             "array_ids": {
               "type": "array",
               "items": {
-                "type": "string"
+                "title": "DataId",
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
               }
             },
             "viewer_id": {

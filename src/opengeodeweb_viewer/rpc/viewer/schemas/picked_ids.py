@@ -24,7 +24,7 @@ class PickedIDSResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    array_ids: List[str]
+    array_ids: List[DataId]
     viewer_id: Optional[ViewerId] = None
 
 

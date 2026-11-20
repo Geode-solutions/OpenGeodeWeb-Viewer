@@ -27,7 +27,7 @@
       "array_ids": {
         "type": "array",
         "items": {
-          "type": "string"
+          "title": "DataId"
         }
       },
       "viewer_id": {

@@ -1064,7 +1064,7 @@ export interface ViewerPickedIDSParams {
 }
 
 export interface ViewerPickedIDSResponse {
-    array_ids:  string[];
+    array_ids:  DataId[];
     viewer_id?: ViewerId;
 }
 
