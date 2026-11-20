@@ -21,7 +21,10 @@
         "type": "string"
       },
       "block_ids": {
-        "title": "BlockIds"
+        "type": "array",
+        "items": {
+          "title": "ViewerId"
+        }
       }
     },
     "required": [],

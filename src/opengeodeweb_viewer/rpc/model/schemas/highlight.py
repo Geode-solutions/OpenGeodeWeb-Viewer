@@ -1,10 +1,11 @@
-from opengeodeweb_viewer.schema_types import BlockIds, Visibility
+from opengeodeweb_viewer.schema_types import ViewerId, Visibility
 from opengeodeweb_microservice.schema_types import DataId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
 from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -12,7 +13,7 @@ class Highlight(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    block_ids: BlockIds
+    block_ids: List[ViewerId]
     id: DataId
     visibility: Visibility
 

@@ -6,7 +6,10 @@
       "title": "DataId"
     },
     "block_ids": {
-      "title": "BlockIds"
+      "type": "array",
+      "items": {
+        "title": "ViewerId"
+      }
     },
     "visibility": {
       "title": "Visibility"

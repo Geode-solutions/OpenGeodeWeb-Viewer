@@ -3896,13 +3896,11 @@
             "maxLength": 32
           },
           "block_ids": {
-            "title": "BlockIds",
             "type": "array",
             "items": {
               "title": "ViewerId",
               "type": "integer"
-            },
-            "minItems": 1
+            }
           },
           "visibility": {
             "title": "Visibility",
@@ -3934,13 +3932,11 @@
             "maxLength": 32
           },
           "block_ids": {
-            "title": "BlockIds",
             "type": "array",
             "items": {
               "title": "ViewerId",
               "type": "integer"
-            },
-            "minItems": 1
+            }
           }
         },
         "required": [
@@ -5653,13 +5649,11 @@
               "type": "string"
             },
             "block_ids": {
-              "title": "BlockIds",
               "type": "array",
               "items": {
                 "title": "ViewerId",
                 "type": "integer"
-              },
-              "minItems": 1
+              }
             }
           },
           "required": [],

@@ -701,7 +701,7 @@ export interface ModelRegisterResponse {
 }
 
 export interface ModelHighlightParams {
-    block_ids:  BlockIds;
+    block_ids:  ViewerId[];
     id:         DataId;
     visibility: Visibility;
 }
@@ -710,7 +710,7 @@ export interface ModelHighlightResponse {
 }
 
 export interface ModelGetBlocksBoundsParams {
-    block_ids: BlockIds;
+    block_ids: ViewerId[];
     id:        DataId;
 }
 
@@ -1075,7 +1075,7 @@ export interface ViewerPickColormapParams {
 }
 
 export interface ViewerPickColormapResponse {
-    block_ids?: BlockIds;
+    block_ids?: ViewerId[];
     data_id?:   string;
 }
 
