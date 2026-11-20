@@ -1,3 +1,4 @@
+from opengeodeweb_microservice.schema_types import DataId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -12,7 +13,7 @@ class BasemapDrape(DataClassJsonMixin):
         print_dataclass(self)
 
     data_ids: List[str]
-    id: str
+    id: DataId
 
 
 @dataclass

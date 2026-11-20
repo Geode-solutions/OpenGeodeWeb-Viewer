@@ -7,6 +7,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -33,6 +34,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -60,33 +62,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -143,33 +152,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -226,11 +242,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -252,11 +270,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "opacity": {
+              "title": "Opacity",
               "type": "number",
               "minimum": 0,
               "maximum": 1
@@ -280,11 +300,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -339,33 +361,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -422,33 +451,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -505,11 +541,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "width": {
+              "title": "EdgeWidth",
               "type": "number"
             }
           },
@@ -531,11 +569,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -557,11 +597,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "opacity": {
+              "title": "Opacity",
               "type": "number",
               "minimum": 0,
               "maximum": 1
@@ -585,11 +627,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -644,33 +688,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -727,11 +778,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -744,9 +797,13 @@
             "type": "object",
             "properties": {
               "id": {
-                "type": "string"
+                "title": "DataId",
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
               },
               "visibility": {
+                "title": "Visibility",
                 "type": "boolean"
               }
             },
@@ -763,11 +820,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "size": {
+              "title": "PointSize",
               "type": "number"
             }
           },
@@ -789,11 +848,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "opacity": {
+              "title": "Opacity",
               "type": "number",
               "minimum": 0,
               "maximum": 1
@@ -817,11 +878,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -876,33 +939,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -959,33 +1029,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -1042,11 +1119,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -1068,11 +1147,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "opacity": {
+              "title": "Opacity",
               "type": "number",
               "minimum": 0,
               "maximum": 1
@@ -1096,11 +1177,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -1155,33 +1238,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -1238,33 +1328,40 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -1321,11 +1418,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -1347,11 +1446,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "opacity": {
+              "title": "Opacity",
               "type": "number",
               "minimum": 0,
               "maximum": 1
@@ -1375,11 +1476,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -1431,11 +1534,13 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
           },
           "visibility": {
+            "title": "Visibility",
             "type": "boolean"
           }
         },
@@ -1457,6 +1562,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -1483,11 +1589,13 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
           },
           "visibility": {
+            "title": "Visibility",
             "type": "boolean"
           }
         },
@@ -1509,6 +1617,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -1531,11 +1640,13 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
           },
           "color": {
+            "title": "ColorRGBA",
             "type": "object",
             "properties": {
               "red": {
@@ -1586,6 +1697,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -1603,6 +1715,7 @@
                   "type": "boolean"
                 },
                 "opacity": {
+                  "title": "Opacity",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
@@ -1639,6 +1752,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -1668,6 +1782,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -1682,6 +1797,7 @@
                   "minLength": 1
                 },
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
@@ -1714,6 +1830,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -1770,6 +1887,7 @@
                   "type": "boolean"
                 },
                 "opacity": {
+                  "title": "Opacity",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
@@ -1814,40 +1932,49 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "block_ids": {
+                  "title": "BlockIds",
                   "type": "array",
                   "items": {
+                    "title": "ViewerId",
                     "type": "integer"
                   },
                   "minItems": 1
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -1905,40 +2032,49 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "block_ids": {
+                  "title": "BlockIds",
                   "type": "array",
                   "items": {
+                    "title": "ViewerId",
                     "type": "integer"
                   },
                   "minItems": 1
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -1999,40 +2135,49 @@
                 "type": "object",
                 "properties": {
                   "id": {
+                    "title": "DataId",
                     "type": "string",
                     "minLength": 32,
                     "maxLength": 32
                   },
                   "block_ids": {
+                    "title": "BlockIds",
                     "type": "array",
                     "items": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "minItems": 1
                   },
                   "name": {
+                    "title": "AttributeName",
                     "type": "string",
                     "minLength": 1
                   },
                   "item": {
+                    "title": "AttributeItem",
                     "type": "integer",
                     "minimum": 0
                   },
                   "points": {
-                    "type": "array",
+                    "title": "ColorMapPoints",
                     "description": "Flat array of [value, r, g, b, ...]",
+                    "type": "array",
                     "items": {
                       "type": "number"
                     },
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
+                    "title": "ColorRGBA",
                     "type": "object",
                     "properties": {
                       "red": {
@@ -2090,18 +2235,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "width": {
+                "title": "EdgeWidth",
                 "type": "number"
               }
             },
@@ -2124,18 +2273,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "visibility": {
+                "title": "Visibility",
                 "type": "boolean"
               }
             },
@@ -2158,18 +2311,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "color": {
+                "title": "ColorRGBA",
                 "type": "object",
                 "properties": {
                   "red": {
@@ -2225,40 +2382,49 @@
                 "type": "object",
                 "properties": {
                   "id": {
+                    "title": "DataId",
                     "type": "string",
                     "minLength": 32,
                     "maxLength": 32
                   },
                   "block_ids": {
+                    "title": "BlockIds",
                     "type": "array",
                     "items": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "minItems": 1
                   },
                   "name": {
+                    "title": "AttributeName",
                     "type": "string",
                     "minLength": 1
                   },
                   "item": {
+                    "title": "AttributeItem",
                     "type": "integer",
                     "minimum": 0
                   },
                   "points": {
-                    "type": "array",
+                    "title": "ColorMapPoints",
                     "description": "Flat array of [value, r, g, b, ...]",
+                    "type": "array",
                     "items": {
                       "type": "number"
                     },
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
+                    "title": "ColorRGBA",
                     "type": "object",
                     "properties": {
                       "red": {
@@ -2316,18 +2482,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "visibility": {
+                "title": "Visibility",
                 "type": "boolean"
               }
             },
@@ -2350,18 +2520,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "size": {
+                "title": "PointSize",
                 "type": "number"
               }
             },
@@ -2384,18 +2558,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "color": {
+                "title": "ColorRGBA",
                 "type": "object",
                 "properties": {
                   "red": {
@@ -2448,18 +2626,22 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -2482,13 +2664,16 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
@@ -2501,11 +2686,13 @@
               ]
             },
             "collection_id": {
+              "title": "GeodeId",
               "type": "string",
               "minLength": 36,
               "maxLength": 36
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -2554,26 +2741,38 @@
                   "title": "ColorResult",
                   "properties": {
                     "viewer_id": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "geode_id": {
-                      "type": "string"
+                      "title": "GeodeId",
+                      "type": "string",
+                      "minLength": 36,
+                      "maxLength": 36
                     },
                     "color": {
-                      "type": "object",
                       "title": "ColorRGBA",
+                      "type": "object",
                       "properties": {
                         "red": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "green": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "blue": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "alpha": {
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       },
                       "required": [
@@ -2610,40 +2809,49 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "block_ids": {
+                  "title": "BlockIds",
                   "type": "array",
                   "items": {
+                    "title": "ViewerId",
                     "type": "integer"
                   },
                   "minItems": 1
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -2701,18 +2909,22 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -2735,13 +2947,16 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
@@ -2754,11 +2969,13 @@
               ]
             },
             "collection_id": {
+              "title": "GeodeId",
               "type": "string",
               "minLength": 36,
               "maxLength": 36
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -2807,26 +3024,38 @@
                   "title": "ColorResult",
                   "properties": {
                     "viewer_id": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "geode_id": {
-                      "type": "string"
+                      "title": "GeodeId",
+                      "type": "string",
+                      "minLength": 36,
+                      "maxLength": 36
                     },
                     "color": {
-                      "type": "object",
                       "title": "ColorRGBA",
+                      "type": "object",
                       "properties": {
                         "red": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "green": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "blue": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "alpha": {
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       },
                       "required": [
@@ -2861,11 +3090,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "width": {
+              "title": "EdgeWidth",
               "type": "number"
             }
           },
@@ -2887,11 +3118,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -2917,40 +3150,49 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "block_ids": {
+                  "title": "BlockIds",
                   "type": "array",
                   "items": {
+                    "title": "ViewerId",
                     "type": "integer"
                   },
                   "minItems": 1
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -3008,40 +3250,49 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "block_ids": {
+                  "title": "BlockIds",
                   "type": "array",
                   "items": {
+                    "title": "ViewerId",
                     "type": "integer"
                   },
                   "minItems": 1
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -3102,40 +3353,49 @@
                 "type": "object",
                 "properties": {
                   "id": {
+                    "title": "DataId",
                     "type": "string",
                     "minLength": 32,
                     "maxLength": 32
                   },
                   "block_ids": {
+                    "title": "BlockIds",
                     "type": "array",
                     "items": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "minItems": 1
                   },
                   "name": {
+                    "title": "AttributeName",
                     "type": "string",
                     "minLength": 1
                   },
                   "item": {
+                    "title": "AttributeItem",
                     "type": "integer",
                     "minimum": 0
                   },
                   "points": {
-                    "type": "array",
+                    "title": "ColorMapPoints",
                     "description": "Flat array of [value, r, g, b, ...]",
+                    "type": "array",
                     "items": {
                       "type": "number"
                     },
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
+                    "title": "ColorRGBA",
                     "type": "object",
                     "properties": {
                       "red": {
@@ -3193,18 +3453,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "visibility": {
+                "title": "Visibility",
                 "type": "boolean"
               }
             },
@@ -3227,18 +3491,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "size": {
+                "title": "PointSize",
                 "type": "number"
               }
             },
@@ -3261,18 +3529,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "color": {
+                "title": "ColorRGBA",
                 "type": "object",
                 "properties": {
                   "red": {
@@ -3325,18 +3597,22 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -3359,13 +3635,16 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
@@ -3378,11 +3657,13 @@
               ]
             },
             "collection_id": {
+              "title": "GeodeId",
               "type": "string",
               "minLength": 36,
               "maxLength": 36
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -3431,26 +3712,38 @@
                   "title": "ColorResult",
                   "properties": {
                     "viewer_id": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "geode_id": {
-                      "type": "string"
+                      "title": "GeodeId",
+                      "type": "string",
+                      "minLength": 36,
+                      "maxLength": 36
                     },
                     "color": {
-                      "type": "object",
                       "title": "ColorRGBA",
+                      "type": "object",
                       "properties": {
                         "red": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "green": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "blue": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "alpha": {
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       },
                       "required": [
@@ -3485,11 +3778,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -3511,11 +3806,13 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "size": {
+              "title": "PointSize",
               "type": "number"
             }
           },
@@ -3538,11 +3835,13 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
           },
           "visibility": {
+            "title": "Visibility",
             "type": "boolean"
           }
         },
@@ -3564,6 +3863,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -3590,6 +3890,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -3597,10 +3898,12 @@
           "block_ids": {
             "type": "array",
             "items": {
+              "title": "ViewerId",
               "type": "integer"
             }
           },
           "visibility": {
+            "title": "Visibility",
             "type": "boolean"
           }
         },
@@ -3623,6 +3926,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -3630,6 +3934,7 @@
           "block_ids": {
             "type": "array",
             "items": {
+              "title": "ViewerId",
               "type": "integer"
             }
           }
@@ -3663,6 +3968,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -3688,40 +3994,49 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "block_ids": {
+                  "title": "BlockIds",
                   "type": "array",
                   "items": {
+                    "title": "ViewerId",
                     "type": "integer"
                   },
                   "minItems": 1
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -3779,40 +4094,49 @@
               "type": "object",
               "properties": {
                 "id": {
+                  "title": "DataId",
                   "type": "string",
                   "minLength": 32,
                   "maxLength": 32
                 },
                 "block_ids": {
+                  "title": "BlockIds",
                   "type": "array",
                   "items": {
+                    "title": "ViewerId",
                     "type": "integer"
                   },
                   "minItems": 1
                 },
                 "name": {
+                  "title": "AttributeName",
                   "type": "string",
                   "minLength": 1
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "points": {
-                  "type": "array",
+                  "title": "ColorMapPoints",
                   "description": "Flat array of [value, r, g, b, ...]",
+                  "type": "array",
                   "items": {
                     "type": "number"
                   },
                   "minItems": 8
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 },
                 "no_data_color": {
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -3873,40 +4197,49 @@
                 "type": "object",
                 "properties": {
                   "id": {
+                    "title": "DataId",
                     "type": "string",
                     "minLength": 32,
                     "maxLength": 32
                   },
                   "block_ids": {
+                    "title": "BlockIds",
                     "type": "array",
                     "items": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "minItems": 1
                   },
                   "name": {
+                    "title": "AttributeName",
                     "type": "string",
                     "minLength": 1
                   },
                   "item": {
+                    "title": "AttributeItem",
                     "type": "integer",
                     "minimum": 0
                   },
                   "points": {
-                    "type": "array",
+                    "title": "ColorMapPoints",
                     "description": "Flat array of [value, r, g, b, ...]",
+                    "type": "array",
                     "items": {
                       "type": "number"
                     },
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
+                    "title": "ColorRGBA",
                     "type": "object",
                     "properties": {
                       "red": {
@@ -3964,18 +4297,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "width": {
+                "title": "EdgeWidth",
                 "type": "number"
               }
             },
@@ -3998,18 +4335,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "visibility": {
+                "title": "Visibility",
                 "type": "boolean"
               }
             },
@@ -4032,18 +4373,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "color": {
+                "title": "ColorRGBA",
                 "type": "object",
                 "properties": {
                   "red": {
@@ -4099,40 +4444,49 @@
                 "type": "object",
                 "properties": {
                   "id": {
+                    "title": "DataId",
                     "type": "string",
                     "minLength": 32,
                     "maxLength": 32
                   },
                   "block_ids": {
+                    "title": "BlockIds",
                     "type": "array",
                     "items": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "minItems": 1
                   },
                   "name": {
+                    "title": "AttributeName",
                     "type": "string",
                     "minLength": 1
                   },
                   "item": {
+                    "title": "AttributeItem",
                     "type": "integer",
                     "minimum": 0
                   },
                   "points": {
-                    "type": "array",
+                    "title": "ColorMapPoints",
                     "description": "Flat array of [value, r, g, b, ...]",
+                    "type": "array",
                     "items": {
                       "type": "number"
                     },
                     "minItems": 8
                   },
                   "minimum": {
+                    "title": "AttributeRangeMinimum",
                     "type": "number"
                   },
                   "maximum": {
+                    "title": "AttributeRangeMaximum",
                     "type": "number"
                   },
                   "no_data_color": {
+                    "title": "ColorRGBA",
                     "type": "object",
                     "properties": {
                       "red": {
@@ -4190,18 +4544,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "visibility": {
+                "title": "Visibility",
                 "type": "boolean"
               }
             },
@@ -4224,18 +4582,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "size": {
+                "title": "PointSize",
                 "type": "number"
               }
             },
@@ -4258,18 +4620,22 @@
             "type": "object",
             "properties": {
               "id": {
+                "title": "DataId",
                 "type": "string",
                 "minLength": 32,
                 "maxLength": 32
               },
               "block_ids": {
+                "title": "BlockIds",
                 "type": "array",
                 "items": {
+                  "title": "ViewerId",
                   "type": "integer"
                 },
                 "minItems": 1
               },
               "color": {
+                "title": "ColorRGBA",
                 "type": "object",
                 "properties": {
                   "red": {
@@ -4322,18 +4688,22 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
             },
             "visibility": {
+              "title": "Visibility",
               "type": "boolean"
             }
           },
@@ -4356,13 +4726,16 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
             },
             "block_ids": {
+              "title": "BlockIds",
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               },
               "minItems": 1
@@ -4375,11 +4748,13 @@
               ]
             },
             "collection_id": {
+              "title": "GeodeId",
               "type": "string",
               "minLength": 36,
               "maxLength": 36
             },
             "color": {
+              "title": "ColorRGBA",
               "type": "object",
               "properties": {
                 "red": {
@@ -4428,26 +4803,38 @@
                   "title": "ColorResult",
                   "properties": {
                     "viewer_id": {
+                      "title": "ViewerId",
                       "type": "integer"
                     },
                     "geode_id": {
-                      "type": "string"
+                      "title": "GeodeId",
+                      "type": "string",
+                      "minLength": 36,
+                      "maxLength": 36
                     },
                     "color": {
-                      "type": "object",
                       "title": "ColorRGBA",
+                      "type": "object",
                       "properties": {
                         "red": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "green": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "blue": {
-                          "type": "integer"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "alpha": {
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       },
                       "required": [
@@ -4480,6 +4867,7 @@
           "type": "object",
           "properties": {
             "id": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
@@ -4593,6 +4981,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "title": "DataId",
             "type": "string",
             "minLength": 32,
             "maxLength": 32
@@ -4680,6 +5069,7 @@
           "ids": {
             "type": "array",
             "items": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
@@ -4702,13 +5092,16 @@
                   ]
                 },
                 "item": {
+                  "title": "AttributeItem",
                   "type": "integer",
                   "minimum": 0
                 },
                 "minimum": {
+                  "title": "AttributeRangeMinimum",
                   "type": "number"
                 },
                 "maximum": {
+                  "title": "AttributeRangeMaximum",
                   "type": "number"
                 }
               },
@@ -4741,6 +5134,7 @@
         "type": "object",
         "properties": {
           "filename": {
+            "title": "Filename",
             "type": "string",
             "minLength": 1
           },
@@ -4793,6 +5187,7 @@
           "ids": {
             "type": "array",
             "items": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
@@ -4852,6 +5247,7 @@
           "ids": {
             "type": "array",
             "items": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
@@ -4902,29 +5298,29 @@
         "type": "object",
         "properties": {
           "color": {
-            "title": "TextColor",
+            "title": "ColorRGB",
             "type": "object",
             "properties": {
-              "r": {
+              "red": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               },
-              "g": {
+              "green": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               },
-              "b": {
+              "blue": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               }
             },
             "required": [
-              "r",
-              "g",
-              "b"
+              "red",
+              "green",
+              "blue"
             ],
             "additionalProperties": false
           },
@@ -4937,6 +5333,7 @@
             ]
           },
           "opacity": {
+            "title": "Opacity",
             "type": "number",
             "minimum": 0,
             "maximum": 1
@@ -4986,28 +5383,29 @@
         "type": "object",
         "properties": {
           "color": {
+            "title": "ColorRGB",
             "type": "object",
             "properties": {
-              "r": {
+              "red": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               },
-              "g": {
+              "green": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               },
-              "b": {
+              "blue": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 255
               }
             },
             "required": [
-              "r",
-              "g",
-              "b"
+              "red",
+              "green",
+              "blue"
             ],
             "additionalProperties": false
           }
@@ -5136,6 +5534,7 @@
           "points": {
             "type": "array",
             "items": {
+              "title": "Point3D",
               "type": "object",
               "properties": {
                 "x": {
@@ -5194,8 +5593,10 @@
           "ids": {
             "type": "array",
             "items": {
+              "title": "DataId",
               "type": "string",
-              "minLength": 1
+              "minLength": 32,
+              "maxLength": 32
             }
           }
         },
@@ -5211,10 +5612,14 @@
             "array_ids": {
               "type": "array",
               "items": {
-                "type": "string"
+                "title": "DataId",
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
               }
             },
             "viewer_id": {
+              "title": "ViewerId",
               "type": "integer"
             }
           },
@@ -5250,6 +5655,7 @@
             "block_ids": {
               "type": "array",
               "items": {
+                "title": "ViewerId",
                 "type": "integer"
               }
             }
@@ -5278,6 +5684,7 @@
           "ids": {
             "type": "array",
             "items": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
@@ -5295,7 +5702,10 @@
           "type": "object",
           "properties": {
             "id": {
-              "type": "string"
+              "title": "DataId",
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
             },
             "picked_id": {
               "type": "integer"
@@ -5308,7 +5718,10 @@
               ]
             },
             "geode_id": {
-              "type": "string"
+              "title": "GeodeId",
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36
             },
             "attributes": {
               "type": "object",
@@ -5337,6 +5750,7 @@
         "type": "object",
         "properties": {
           "visibility": {
+            "title": "Visibility",
             "type": "boolean"
           }
         },
@@ -5397,6 +5811,7 @@
           "ids": {
             "type": "array",
             "items": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
@@ -5428,6 +5843,7 @@
           "ids": {
             "type": "array",
             "items": {
+              "title": "DataId",
               "type": "string",
               "minLength": 32,
               "maxLength": 32
@@ -5455,7 +5871,7 @@
                   "maxItems": 3
                 },
                 "color": {
-                  "title": "PlaneColor",
+                  "title": "ColorRGBA",
                   "type": "object",
                   "properties": {
                     "red": {
@@ -5514,6 +5930,7 @@
         "type": "object",
         "properties": {
           "visibility": {
+            "title": "Visibility",
             "type": "boolean"
           }
         },

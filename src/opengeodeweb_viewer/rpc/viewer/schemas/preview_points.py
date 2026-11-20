@@ -1,3 +1,4 @@
+from opengeodeweb_viewer.schema_types import Point3D
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -5,16 +6,6 @@ from opengeodeweb_microservice.schemas import print_dataclass
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
-
-
-@dataclass
-class Point(DataClassJsonMixin):
-    def __post_init__(self) -> None:
-        print_dataclass(self)
-
-    x: float
-    y: float
-    z: float
 
 
 class Style(Enum):
@@ -28,7 +19,7 @@ class PreviewPoints(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    points: List[Point]
+    points: List[Point3D]
     style: Style
     closed: Optional[bool] = None
 
@@ -47,4 +38,4 @@ preview_points_route = Route(
     response=PreviewPointsResponse,
 )
 
-__all__ = ["Point", "PreviewPoints", "PreviewPointsResponse", "preview_points_route"]
+__all__ = ["Point3D", "PreviewPoints", "PreviewPointsResponse", "preview_points_route"]

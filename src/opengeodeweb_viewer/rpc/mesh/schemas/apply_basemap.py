@@ -1,3 +1,5 @@
+from opengeodeweb_microservice.schema_types import DataId
+from opengeodeweb_viewer.schema_types import Opacity
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -13,7 +15,7 @@ class MapState(DataClassJsonMixin):
 
     crop: bool
     map: str
-    opacity: float
+    opacity: Opacity
     visible: bool
 
 
@@ -32,7 +34,7 @@ class ApplyBasemap(DataClassJsonMixin):
         print_dataclass(self)
 
     columns: int
-    id: str
+    id: DataId
     layers: List[MapState]
     maps: List[Map]
     rows: int

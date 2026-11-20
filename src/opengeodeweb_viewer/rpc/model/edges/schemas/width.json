@@ -3,12 +3,10 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+      "title": "DataId"
     },
     "width": {
-      "type": "number"
+      "title": "EdgeWidth"
     }
   },
   "required": [

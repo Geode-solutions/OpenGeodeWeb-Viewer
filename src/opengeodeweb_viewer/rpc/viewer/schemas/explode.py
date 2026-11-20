@@ -1,3 +1,4 @@
+from opengeodeweb_microservice.schema_types import DataId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -12,7 +13,7 @@ class Explode(DataClassJsonMixin):
         print_dataclass(self)
 
     explode_factor: float
-    ids: List[str]
+    ids: List[DataId]
 
 
 @dataclass

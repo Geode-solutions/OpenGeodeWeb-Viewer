@@ -3,16 +3,10 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+      "title": "DataId"
     },
     "block_ids": {
-      "type": "array",
-      "items": {
-        "type": "integer"
-      },
-      "minItems": 1
+      "title": "BlockIds"
     },
     "color_mode": {
       "type": "string",
@@ -22,41 +16,10 @@
       ]
     },
     "collection_id": {
-      "type": "string",
-      "minLength": 36,
-      "maxLength": 36
+      "title": "GeodeId"
     },
     "color": {
-      "type": "object",
-      "properties": {
-        "red": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "green": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "blue": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "alpha": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1
-        }
-      },
-      "required": [
-        "red",
-        "green",
-        "blue",
-        "alpha"
-      ],
-      "additionalProperties": false
+      "title": "ColorRGBA"
     }
   },
   "required": [
@@ -75,35 +38,13 @@
           "title": "ColorResult",
           "properties": {
             "viewer_id": {
-              "type": "integer"
+              "title": "ViewerId"
             },
             "geode_id": {
-              "type": "string"
+              "title": "GeodeId"
             },
             "color": {
-              "type": "object",
-              "title": "ColorRGBA",
-              "properties": {
-                "red": {
-                  "type": "integer"
-                },
-                "green": {
-                  "type": "integer"
-                },
-                "blue": {
-                  "type": "integer"
-                },
-                "alpha": {
-                  "type": "number"
-                }
-              },
-              "required": [
-                "red",
-                "green",
-                "blue",
-                "alpha"
-              ],
-              "additionalProperties": false
+              "title": "ColorRGBA"
             }
           },
           "required": [

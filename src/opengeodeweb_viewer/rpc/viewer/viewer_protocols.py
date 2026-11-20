@@ -114,7 +114,7 @@ class VtkViewerView(VtkView):
         render_window = self.getView("-1")
         renderer = render_window.GetRenderers().GetFirstRenderer()
 
-        renderer.SetBackground([color.r / 255, color.g / 255, color.b / 255])
+        renderer.SetBackground([color.red / 255, color.green / 255, color.blue / 255])
         return schemas.SetBackgroundColorResponse()
 
     @typed_rpc(viewer_prefix, schemas.set_text_style_route)
@@ -122,7 +122,7 @@ class VtkViewerView(VtkView):
         color = params.color
         self.set_scene_text_style(
             TextStyle(
-                color=(color.r, color.g, color.b),
+                color=(color.red, color.green, color.blue),
                 font_family=params.font_family.value,
                 opacity=params.opacity,
             )
