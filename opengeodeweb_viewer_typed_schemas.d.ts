@@ -1108,6 +1108,8 @@ export interface ViewerGetPointPositionParams {
     y: number;
 }
 
+export type ViewerGetPointPositionResponse = Point3D;
+
 export interface ViewerExplodeParams {
     explode_factor: number;
     ids:            DataId[];
