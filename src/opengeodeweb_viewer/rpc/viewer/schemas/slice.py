@@ -1,3 +1,4 @@
+from opengeodeweb_microservice.schema_types import DataId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -20,7 +21,7 @@ class Slice(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    ids: List[str]
+    ids: List[DataId]
     slices: List[SliceElement]
 
 

@@ -1,3 +1,4 @@
+from opengeodeweb_microservice.schema_types import DataId, GeodeId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from typing import Dict, List, Union, Optional
@@ -19,7 +20,7 @@ class Highlight(DataClassJsonMixin):
         print_dataclass(self)
 
     field_type: FieldType
-    ids: List[str]
+    ids: List[DataId]
     x: float
     y: float
 
@@ -36,8 +37,8 @@ class HighlightResponse(DataClassJsonMixin):
 
     attributes: Optional[Dict[str, Union[float, List[float]]]] = None
     field_type: Optional[PickedFieldType] = None
-    geode_id: Optional[str] = None
-    id: Optional[str] = None
+    geode_id: Optional[GeodeId] = None
+    id: Optional[DataId] = None
     picked_id: Optional[int] = None
 
 

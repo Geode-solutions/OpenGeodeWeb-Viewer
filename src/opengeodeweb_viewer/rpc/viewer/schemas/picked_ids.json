@@ -11,12 +11,15 @@
     "ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "minLength": 1
+        "title": "DataId"
       }
     }
   },
-  "required": ["x", "y", "ids"],
+  "required": [
+    "x",
+    "y",
+    "ids"
+  ],
   "additionalProperties": false,
   "response": {
     "type": "object",
@@ -24,14 +27,16 @@
       "array_ids": {
         "type": "array",
         "items": {
-          "type": "string"
+          "title": "DataId"
         }
       },
       "viewer_id": {
-        "type": "integer"
+        "title": "ViewerId"
       }
     },
-    "required": ["array_ids"],
+    "required": [
+      "array_ids"
+    ],
     "additionalProperties": false
   }
 }

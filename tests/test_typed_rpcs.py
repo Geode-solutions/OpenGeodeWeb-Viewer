@@ -63,7 +63,7 @@ class _Protocol:
     @typed_rpc(PREFIX, schemas.highlight_route)
     def highlight(self, _params: schemas.Highlight) -> schemas.HighlightResponse:
         return schemas.HighlightResponse(
-            id="data",
+            id="0" * 32,
             picked_id=0,
             field_type=schemas.highlight.PickedFieldType.POINT,
         )

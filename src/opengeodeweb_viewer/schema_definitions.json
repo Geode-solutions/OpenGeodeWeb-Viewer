@@ -1,0 +1,262 @@
+{
+  "AttributeItem": {
+    "type": "integer",
+    "minimum": 0
+  },
+  "AttributeName": {
+    "type": "string",
+    "minLength": 1
+  },
+  "AttributeRangeMaximum": {
+    "type": "number"
+  },
+  "AttributeRangeMinimum": {
+    "type": "number"
+  },
+  "BlockIds": {
+    "type": "array",
+    "items": {
+      "title": "ViewerId",
+      "type": "integer"
+    },
+    "minItems": 1
+  },
+  "ColorMapPoints": {
+    "description": "Flat array of [value, r, g, b, ...]",
+    "type": "array",
+    "items": {
+      "type": "number"
+    },
+    "minItems": 8
+  },
+  "ColorRGB": {
+    "type": "object",
+    "properties": {
+      "red": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "green": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "blue": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      }
+    },
+    "required": [
+      "red",
+      "green",
+      "blue"
+    ],
+    "additionalProperties": false
+  },
+  "ColorRGBA": {
+    "type": "object",
+    "properties": {
+      "red": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "green": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "blue": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "alpha": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    },
+    "required": [
+      "red",
+      "green",
+      "blue",
+      "alpha"
+    ],
+    "additionalProperties": false
+  },
+  "DataId": {
+    "type": "string",
+    "minLength": 32,
+    "maxLength": 32
+  },
+  "EdgeWidth": {
+    "type": "number"
+  },
+  "Filename": {
+    "type": "string",
+    "minLength": 1
+  },
+  "GeodeEdgeMeshType": {
+    "type": "string",
+    "enum": [
+      "EdgedCurve2D",
+      "EdgedCurve3D"
+    ]
+  },
+  "GeodeId": {
+    "type": "string",
+    "minLength": 36,
+    "maxLength": 36
+  },
+  "GeodeMeshType": {
+    "type": "string",
+    "enum": [
+      "VertexSet",
+      "Graph",
+      "PointSet2D",
+      "PointSet3D",
+      "EdgedCurve2D",
+      "EdgedCurve3D",
+      "RasterImage2D",
+      "PolygonalSurface2D",
+      "PolygonalSurface3D",
+      "TriangulatedSurface2D",
+      "TriangulatedSurface3D",
+      "RegularGrid2D",
+      "LightRegularGrid2D",
+      "RasterImage3D",
+      "PolyhedralSolid3D",
+      "TetrahedralSolid3D",
+      "HybridSolid3D",
+      "RegularGrid3D",
+      "LightRegularGrid3D"
+    ]
+  },
+  "GeodeModelType": {
+    "type": "string",
+    "enum": [
+      "BRep",
+      "Section",
+      "StructuralModel",
+      "CrossSection",
+      "ImplicitStructuralModel",
+      "ImplicitCrossSection",
+      "HorizonStack3D"
+    ]
+  },
+  "GeodeObjectType": {
+    "type": "string",
+    "enum": [
+      "VertexSet",
+      "Graph",
+      "PointSet2D",
+      "PointSet3D",
+      "EdgedCurve2D",
+      "EdgedCurve3D",
+      "RasterImage2D",
+      "PolygonalSurface2D",
+      "PolygonalSurface3D",
+      "TriangulatedSurface2D",
+      "TriangulatedSurface3D",
+      "RegularGrid2D",
+      "LightRegularGrid2D",
+      "RasterImage3D",
+      "PolyhedralSolid3D",
+      "TetrahedralSolid3D",
+      "HybridSolid3D",
+      "RegularGrid3D",
+      "LightRegularGrid3D",
+      "BRep",
+      "Section",
+      "StructuralModel",
+      "CrossSection",
+      "ImplicitStructuralModel",
+      "ImplicitCrossSection",
+      "HorizonStack3D"
+    ]
+  },
+  "GeodePointMeshType": {
+    "type": "string",
+    "enum": [
+      "PointSet2D",
+      "PointSet3D"
+    ]
+  },
+  "GeodePolygonMeshType": {
+    "type": "string",
+    "enum": [
+      "RasterImage2D",
+      "PolygonalSurface2D",
+      "PolygonalSurface3D",
+      "TriangulatedSurface2D",
+      "TriangulatedSurface3D",
+      "RegularGrid2D",
+      "LightRegularGrid2D"
+    ]
+  },
+  "GeodePolyhedronMeshType": {
+    "type": "string",
+    "enum": [
+      "RasterImage3D",
+      "PolyhedralSolid3D",
+      "TetrahedralSolid3D",
+      "HybridSolid3D",
+      "RegularGrid3D",
+      "LightRegularGrid3D"
+    ]
+  },
+  "Opacity": {
+    "type": "number",
+    "minimum": 0,
+    "maximum": 1
+  },
+  "Point3D": {
+    "type": "object",
+    "properties": {
+      "x": {
+        "type": "number"
+      },
+      "y": {
+        "type": "number"
+      },
+      "z": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "x",
+      "y",
+      "z"
+    ],
+    "additionalProperties": false
+  },
+  "PointSize": {
+    "type": "number"
+  },
+  "ViewerElementsType": {
+    "type": "string",
+    "enum": [
+      "points",
+      "edges",
+      "polygons",
+      "polyhedra",
+      "default"
+    ]
+  },
+  "ViewerId": {
+    "type": "integer"
+  },
+  "ViewerObjectType": {
+    "type": "string",
+    "enum": [
+      "mesh",
+      "model"
+    ]
+  },
+  "Visibility": {
+    "type": "boolean"
+  }
+}

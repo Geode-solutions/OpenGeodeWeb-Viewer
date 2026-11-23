@@ -1,3 +1,4 @@
+from opengeodeweb_viewer.schema_types import Visibility
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from dataclasses_json import DataClassJsonMixin
@@ -10,7 +11,7 @@ class Axes(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    visibility: bool
+    visibility: Visibility
 
 
 @dataclass

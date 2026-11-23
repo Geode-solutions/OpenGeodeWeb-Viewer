@@ -1,3 +1,5 @@
+from opengeodeweb_microservice.schema_types import DataId
+from opengeodeweb_viewer.schema_types import ViewerId
 from pathlib import Path
 from opengeodeweb_microservice.schemas import Route, load_schema
 from typing import List, Optional
@@ -12,7 +14,7 @@ class PickedIDS(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    ids: List[str]
+    ids: List[DataId]
     x: float
     y: float
 
@@ -22,8 +24,8 @@ class PickedIDSResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    array_ids: List[str]
-    viewer_id: Optional[int] = None
+    array_ids: List[DataId]
+    viewer_id: Optional[ViewerId] = None
 
 
 picked_ids_route = Route(

@@ -5,9 +5,7 @@
     "ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "minLength": 32,
-        "maxLength": 32
+        "title": "DataId"
       }
     },
     "attributes": {
@@ -27,14 +25,13 @@
             ]
           },
           "item": {
-            "type": "integer",
-            "minimum": 0
+            "title": "AttributeItem"
           },
           "minimum": {
-            "type": "number"
+            "title": "AttributeRangeMinimum"
           },
           "maximum": {
-            "type": "number"
+            "title": "AttributeRangeMaximum"
           }
         },
         "required": [

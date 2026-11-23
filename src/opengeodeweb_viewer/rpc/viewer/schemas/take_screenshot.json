@@ -3,8 +3,7 @@
   "type": "object",
   "properties": {
     "filename": {
-      "type": "string",
-      "minLength": 1
+      "title": "Filename"
     },
     "output_extension": {
       "type": "string",

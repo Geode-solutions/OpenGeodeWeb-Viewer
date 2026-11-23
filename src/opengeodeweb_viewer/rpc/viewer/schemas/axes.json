@@ -3,7 +3,7 @@
   "type": "object",
   "properties": {
     "visibility": {
-      "type": "boolean"
+      "title": "Visibility"
     }
   },
   "required": [
