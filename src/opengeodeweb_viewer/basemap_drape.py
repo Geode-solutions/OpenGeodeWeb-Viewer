@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING, cast
 # Third party imports
 import numpy as np
 from vtkmodules.util.numpy_support import numpy_to_vtk, vtk_to_numpy
-from vtkmodules.vtkCommonCore import vtkPoints
-from vtkmodules.vtkCommonDataModel import vtkPlane, vtkPolyData
+from vtkmodules.vtkCommonCore import vtkIdList, vtkPoints
+from vtkmodules.vtkCommonDataModel import vtkPlane, vtkPolyData, vtkStaticCellLocator
 from vtkmodules.vtkFiltersCore import (
     vtkAppendPolyData,
     vtkClipPolyData,
@@ -23,8 +23,10 @@ if TYPE_CHECKING:
     from vtkmodules.vtkRenderingCore import vtkMapper
 
 MIN_UPWARD_RATIO = 0.7
-TOP_TOLERANCE_RATIO = 0.01
-MIN_TOP_TOLERANCE = 1.0
+# A surface is a piece of the topography when most of it is seen from above
+MIN_VISIBLE_RATIO = 0.5
+# Rays cast per surface: enough to tell a topography patch from a horizon under it
+MAX_VISIBILITY_SAMPLES = 200
 # Added to the global offset (2, 0) of every mapper: the basemap is drawn behind flat data.
 # Only a constant depth offset: a slope factor would grow at grazing angles and let the
 # data sides just under the basemap show through it
@@ -42,17 +44,31 @@ def _to_numpy(array: vtkDataArray) -> np.ndarray:
     return cast("np.ndarray", vtk_to_numpy(array))  # type: ignore[no-untyped-call]
 
 
-def upward_ratio(surface: vtkPolyData) -> float:
-    """Area weighted mean of |normal z|: 1 when horizontal, 0 when vertical.
-
-    The absolute value keeps surfaces whose normals point down.
-    """
+def _triangulated(surface: vtkPolyData) -> vtkPolyData:
+    """The triangles of the surface only: cell ids then follow the polygons."""
     triangles = vtkTriangleFilter()
     triangles.SetInputData(surface)
     triangles.PassLinesOff()
     triangles.PassVertsOff()
     triangles.Update()
-    output = triangles.GetOutput()
+    return cast("vtkPolyData", triangles.GetOutput())
+
+
+def _centroids(triangles: vtkPolyData, count: int) -> np.ndarray:
+    """Centroids of up to count triangles spread over the surface: inside each triangle,
+    a vertical ray never grazes an edge."""
+    points = _to_numpy(triangles.GetPoints().GetData()).astype(float)
+    cells = _to_numpy(triangles.GetPolys().GetConnectivityArray()).reshape(-1, 3)
+    picked = cells[np.linspace(0, len(cells) - 1, min(count, len(cells))).astype(int)]
+    return cast("np.ndarray", points[picked].mean(axis=1))
+
+
+def upward_ratio(surface: vtkPolyData) -> float:
+    """Area weighted mean of |normal z|: 1 when horizontal, 0 when vertical.
+
+    The absolute value keeps surfaces whose normals point down.
+    """
+    output = _triangulated(surface)
     if output.GetNumberOfPolys() == 0:
         return 0.0
     points = _to_numpy(output.GetPoints().GetData()).astype(float)
@@ -65,18 +81,63 @@ def upward_ratio(surface: vtkPolyData) -> float:
     return float(np.abs(cross[:, 2]).sum() / areas)
 
 
-def top_surfaces(
-    surfaces: list[vtkPolyData], data_top: float, z_extent: float
-) -> list[vtkPolyData]:
-    """Surfaces touching the top of the data and facing up, like a topography."""
-    tolerance = max(MIN_TOP_TOLERANCE, TOP_TOLERANCE_RATIO * z_extent)
-    # Bounds are cached by VTK: deep surfaces are discarded before any normal is computed
-    touching = [
+def top_surfaces(surfaces: list[vtkPolyData]) -> list[vtkPolyData]:
+    """Surfaces facing up and seen from above, like the pieces of a topography.
+
+    A topography is often split in patches at very different heights: a vertical ray is cast
+    from above the data through points of each surface, and the surface is kept when most
+    rays meet it first. A horizon under the topography is hidden by it, however shallow.
+    """
+    candidates = [
         surface
         for surface in surfaces
-        if surface.GetNumberOfPolys() > 0 and surface.GetBounds()[5] >= data_top - tolerance
+        if surface.GetNumberOfPolys() > 0 and upward_ratio(surface) >= MIN_UPWARD_RATIO
     ]
-    return [surface for surface in touching if upward_ratio(surface) >= MIN_UPWARD_RATIO]
+    if not candidates:
+        return []
+    triangulated = [_triangulated(surface) for surface in candidates]
+    append = vtkAppendPolyData()
+    for triangles in triangulated:
+        append.AddInputData(triangles)
+    append.Update()
+    merged = cast("vtkPolyData", append.GetOutput())
+    # The appended cells follow the inputs: the surface of each hit cell
+    owners = np.repeat(
+        np.arange(len(triangulated)), [triangles.GetNumberOfPolys() for triangles in triangulated]
+    )
+    locator = vtkStaticCellLocator()
+    locator.SetDataSet(merged)
+    locator.BuildLocator()
+    _, _, _, _, z_min, z_max = merged.GetBounds()
+    margin = max(1.0, z_max - z_min)
+    # Coincident surfaces (a patch saved twice) are both seen
+    height_tolerance = 1e-6 * margin
+    kept = []
+    for index, (surface, triangles) in enumerate(zip(candidates, triangulated, strict=True)):
+        centroids = _centroids(triangles, MAX_VISIBILITY_SAMPLES)
+        visible = 0
+        for x, y, z in centroids:
+            hit = _first_hit(locator, (x, y, z_max + margin), (x, y, z_min - margin))
+            if hit is not None and (owners[hit[0]] == index or abs(hit[1] - z) <= height_tolerance):
+                visible += 1
+        if visible >= MIN_VISIBLE_RATIO * len(centroids):
+            kept.append(surface)
+    return kept
+
+
+def _first_hit(
+    locator: vtkStaticCellLocator,
+    start: tuple[float, float, float],
+    end: tuple[float, float, float],
+) -> tuple[int, float] | None:
+    """The cell met first going from start to end, and the height where it is met."""
+    points = vtkPoints()
+    cell_ids = vtkIdList()
+    # The intersections come sorted along the line, from start to end
+    locator.IntersectWithLine(start, end, 0.0, points, cell_ids)
+    if cell_ids.GetNumberOfIds() == 0:
+        return None
+    return cell_ids.GetId(0), points.GetPoint(0)[2]
 
 
 def drape_polydata(surfaces: list[vtkPolyData], basemap: vtkPolyData) -> vtkPolyData:

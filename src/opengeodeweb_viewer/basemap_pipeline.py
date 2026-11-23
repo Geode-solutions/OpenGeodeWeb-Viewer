@@ -139,13 +139,10 @@ def _update_base(
     ]
     draped: list[vtkPolyData] = []
     if data:
-        bounds = [data_pipeline.actor.GetBounds() for data_pipeline in data]
-        data_top = max(bound[5] for bound in bounds)
-        z_extent = data_top - min(bound[4] for bound in bounds)
         surfaces = [
             surface for data_pipeline in data for surface in pipeline_surfaces(data_pipeline)
         ]
-        draped = top_surfaces(surfaces, data_top, z_extent)
+        draped = top_surfaces(surfaces)
     dataset = cast("vtkPolyData", pipeline.reader.GetOutputAsDataSet())
     basemap_top = dataset.GetBounds()[5]
     if draped:

@@ -70,15 +70,19 @@ def test_top_surfaces_keeps_the_topography_only() -> None:
     topography = _horizontal(0)
     horizon = _horizontal(-500)
     wall = _wall(0)
-    # Within 1 % of a 600 m extent
-    almost_top = _horizontal(-5)
-    kept = top_surfaces([topography, horizon, wall, almost_top], data_top=0, z_extent=600)
-    assert kept == [topography, almost_top]
+    # Only 5 m under the topography: still hidden by it, seen from above
+    shallow_horizon = _horizontal(-5)
+    kept = top_surfaces([topography, horizon, wall, shallow_horizon])
+    assert kept == [topography]
 
 
-def test_top_surfaces_tolerance_is_at_least_one_metre() -> None:
-    assert top_surfaces([_horizontal(-0.5)], data_top=0, z_extent=10) != []
-    assert top_surfaces([_horizontal(-2)], data_top=0, z_extent=10) == []
+def test_top_surfaces_keeps_every_topography_patch() -> None:
+    # A topography split in patches at very different heights, like the Pukekohe model:
+    # each one is seen from above, whatever its height
+    high = _plane((0, 0, 300), (10, 0, 300), (0, 10, 300), resolution=4)
+    low = _plane((10, 0, 20), (20, 0, 20), (10, 10, 20), resolution=4)
+    horizon = _plane((0, 0, -200), (20, 0, -200), (0, 10, -200), resolution=4)
+    assert top_surfaces([high, low, horizon]) == [high, low]
 
 
 def test_drape_polydata_reads_the_basemap_uv_above_each_point() -> None:
