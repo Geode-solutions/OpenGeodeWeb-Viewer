@@ -1,3 +1,4 @@
+import base64
 import contextlib
 import logging
 import os
@@ -128,7 +129,14 @@ class ServerMonitor:
             test_file_path = self.test_output_dir / f"test.{result['format']}"
             test_file_path.write_bytes(result["image"])
             path_image = self.images_dir_path / filename
-            return self.images_diff(test_file_path, path_image) == 0.0
+            same = self.images_diff(test_file_path, path_image) == 0.0
+            if not same:
+                # TEMPORARY: dump the CI render to regenerate the reference from the logs
+                encoded = base64.b64encode(result["image"]).decode()
+                chunk = 4000
+                for index in range(0, len(encoded), chunk):
+                    logger.warning("RENDER_DUMP %s %s", filename, encoded[index : index + chunk])
+            return same
 
     def _init_ws(self) -> None:
         self.send(
