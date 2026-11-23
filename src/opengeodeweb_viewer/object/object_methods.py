@@ -1,7 +1,8 @@
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 # Third party imports
+from vtkmodules.vtkCommonCore import reference
 from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
     vtkMultiBlockDataSet,
@@ -11,6 +12,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkActor,
     vtkCompositePolyDataMapper,
     vtkDataSetMapper,
+    vtkMapper,
 )
 
 # Local application imports
@@ -21,6 +23,9 @@ if TYPE_CHECKING:
     from opengeodeweb_viewer.vtk_pipeline import ColorMapKey, VtkPipeline
 
 logger = logging.getLogger(__name__)
+
+# Share of the gap between the polygons and lines offset factors given to the edges actors
+EDGES_DEPTH_FACTOR_SHARE = 0.2
 
 
 class VtkObjectView(VtkView):
@@ -262,6 +267,22 @@ class VtkObjectView(VtkView):
                 )
             )
 
+    @staticmethod
+    def match_edges_depth_to_polygons(mapper: vtkMapper) -> None:
+        # Edges drawn by their own wireframe actor are lines, and the global offsets push lines
+        # back less than polygons: the edges of a surface just behind another one showed through
+        # it. A fifth of the way to the polygons' factor removes most of it; from a quarter on,
+        # software rasterizers (OSMesa) already z-fight the edges with their own polygons.
+        polygon_factor: Any = reference(0.0)
+        polygon_units: Any = reference(0.0)
+        mapper.GetResolveCoincidentTopologyPolygonOffsetParameters(polygon_factor, polygon_units)
+        line_factor: Any = reference(0.0)
+        line_units: Any = reference(0.0)
+        mapper.GetResolveCoincidentTopologyLineOffsetParameters(line_factor, line_units)
+        mapper.SetRelativeCoincidentTopologyLineOffsetParameters(
+            EDGES_DEPTH_FACTOR_SHARE * (float(polygon_factor) - float(line_factor)), 0.0
+        )
+
     def ensure_edges_actor(self, pipeline: VtkPipeline) -> vtkActor:
         # Edges get their own actor so their scalars stay independent from the polygons
         if pipeline.edges_actor is not None:
@@ -269,6 +290,7 @@ class VtkObjectView(VtkView):
         mapper = vtkDataSetMapper()
         mapper.SetInputConnection(pipeline.filter.GetOutputPort())
         mapper.ScalarVisibilityOff()
+        self.match_edges_depth_to_polygons(mapper)
         actor = vtkActor()
         actor.SetMapper(mapper)
         actor.PickableOff()
