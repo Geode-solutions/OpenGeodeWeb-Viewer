@@ -13,10 +13,8 @@ from vtkmodules.vtkRenderingCore import (
     vtkDataSetMapper,
     vtkPolyDataMapper,
     vtkRenderer,
-    vtkTexture,
 )
 
-from opengeodeweb_viewer.basemap_pipeline import update_basemaps
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import (
     TILES_FOLDER,
     VtkMeshView,
@@ -252,19 +250,3 @@ def test_basemap_drape_dirty_only_for_its_draped_data() -> None:
     assert not view.getSharedObject("basemaps_dirty")
     view.set_shrink(["data"], 0.5)
     assert view.getSharedObject("basemaps_dirty")
-
-
-def test_exploded_data_is_not_draped() -> None:
-    view, basemap = _view_with_basemap()
-    assert basemap.basemap is not None
-    basemap.basemap.full_texture = vtkTexture()
-    database = view.get_data_base()
-    data = database["data"]
-    data.filter.SetInputConnection(data.reader.GetOutputPort())
-    data.filter.Update()
-    update_basemaps(database, vtkRenderer())
-    assert basemap.basemap.drape_actor is not None
-    # Exploded blocks are spread apart: the flat map rises above them, as without drape
-    data.explode_factor = 0.5
-    update_basemaps(database, vtkRenderer())
-    assert basemap.basemap.drape_actor is None

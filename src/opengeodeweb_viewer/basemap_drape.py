@@ -125,6 +125,16 @@ def top_surfaces(surfaces: list[vtkPolyData]) -> list[vtkPolyData]:
     return kept
 
 
+def shown_top_surfaces(surfaces: list[tuple[vtkPolyData, vtkPolyData]]) -> list[vtkPolyData]:
+    """Shown surfaces whose geometry before explosion is a top surface.
+
+    Each pair is a surface as shown, then as it was before explosion. Exploded blocks may lift
+    a horizon above the topography: the top surfaces are chosen before, then draped as shown.
+    """
+    kept = {id(original) for original in top_surfaces([original for _, original in surfaces])}
+    return [shown for shown, original in surfaces if id(original) in kept]
+
+
 def _first_hit(
     locator: vtkStaticCellLocator,
     start: tuple[float, float, float],

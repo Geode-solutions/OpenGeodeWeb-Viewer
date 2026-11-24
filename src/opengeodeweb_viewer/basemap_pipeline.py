@@ -14,7 +14,7 @@ from opengeodeweb_viewer.basemap_drape import (
     clipped_to_bounds,
     drape_actor,
     drape_polydata,
-    top_surfaces,
+    shown_top_surfaces,
 )
 
 if TYPE_CHECKING:
@@ -49,24 +49,38 @@ def basemaps(
 
 def pipeline_surfaces(pipeline: VtkPipeline) -> list[vtkPolyData]:
     """Visible surfaces of a data, after clipping, threshold, shrink and explosion."""
+    return [shown for shown, _ in pipeline_surface_pairs(pipeline)]
+
+
+def pipeline_surface_pairs(pipeline: VtkPipeline) -> list[tuple[vtkPolyData, vtkPolyData]]:
+    """Visible surfaces of a data as shown, each with its geometry before explosion."""
     if not pipeline.actor.GetVisibility():
         return []
     mapper = pipeline.mapper
     if isinstance(mapper, vtkCompositePolyDataMapper):
         attributes = mapper.GetCompositeDataDisplayAttributes()
         types = pipeline.block_component_types()
+        # The filter output is the data before explosion, with the same flat indices
+        originals = (
+            pipeline.extract_blocks(pipeline.filter.GetOutputDataObject(0))
+            if pipeline.explode_factor > 0
+            else pipeline.block_data_sets
+        )
         return [
-            block
-            for index, block in enumerate(pipeline.block_data_sets)
+            (block, original)
+            for index, (block, original) in enumerate(
+                zip(pipeline.block_data_sets, originals, strict=False)
+            )
             if types.get(index) == "surfaces"
             and isinstance(block, vtkPolyData)
+            and isinstance(original, vtkPolyData)
             and attributes.GetBlockVisibility(block)
         ]
     # Solids are unstructured grids: only polydata readers hold surfaces
     if not isinstance(pipeline.reader.GetOutputDataObject(0), vtkPolyData):
         return []
     output = pipeline.filter.GetOutput()
-    return [output] if output.GetNumberOfPolys() > 0 else []
+    return [(output, output)] if output.GetNumberOfPolys() > 0 else []
 
 
 def drape_planes(database: Mapping[str, VtkPipeline], basemap: BasemapState) -> list[Plane]:
@@ -131,21 +145,19 @@ def _update_base(
     basemap = cast("BasemapState", pipeline.basemap)
     if basemap.full_texture is None:
         return
-    # Only georeferenced data: the front sends their ids.
-    # Exploded blocks are spread apart: draping them would sink the flat map into the stack
+    # Only georeferenced data: the front sends their ids
     data = [
         database[data_id]
         for data_id in basemap.drape_ids
-        if data_id in database
-        and database[data_id].actor.GetVisibility()
-        and database[data_id].explode_factor == 0
+        if data_id in database and database[data_id].actor.GetVisibility()
     ]
     draped: list[vtkPolyData] = []
     if data:
+        # Chosen before explosion, which may lift a horizon above the topography
         surfaces = [
-            surface for data_pipeline in data for surface in pipeline_surfaces(data_pipeline)
+            pair for data_pipeline in data for pair in pipeline_surface_pairs(data_pipeline)
         ]
-        draped = top_surfaces(surfaces)
+        draped = shown_top_surfaces(surfaces)
     dataset = cast("vtkPolyData", pipeline.reader.GetOutputAsDataSet())
     basemap_top = dataset.GetBounds()[5]
     if draped:

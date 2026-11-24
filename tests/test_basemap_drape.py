@@ -11,6 +11,7 @@ from opengeodeweb_viewer.basemap_drape import (
     clipped_to_bounds,
     drape_actor,
     drape_polydata,
+    shown_top_surfaces,
     top_surfaces,
     upward_ratio,
 )
@@ -135,3 +136,14 @@ def test_surfaces_clipped_to_the_detail_bounds() -> None:
     assert x_min >= 0.0
     assert x_max <= 5.0 + 1e-9
     assert clipped_to_bounds([surface], (100.0, 110.0, 0.0, 10.0, -1.0, 1.0)) == []
+
+
+def test_shown_top_surfaces_are_chosen_before_explosion() -> None:
+    topography = _horizontal(0)
+    horizon = _horizontal(-500)
+    # Exploded: the horizon follows another block, lifted above the topography
+    exploded_topography = _horizontal(100)
+    exploded_horizon = _horizontal(200)
+    kept = shown_top_surfaces([(exploded_topography, topography), (exploded_horizon, horizon)])
+    # The exploded topography is draped where it is shown, the uncovered horizon is not
+    assert kept == [exploded_topography]
