@@ -131,11 +131,14 @@ def _update_base(
     basemap = cast("BasemapState", pipeline.basemap)
     if basemap.full_texture is None:
         return
-    # Only georeferenced data: the front sends their ids
+    # Only georeferenced data: the front sends their ids.
+    # Exploded blocks are spread apart: draping them would sink the flat map into the stack
     data = [
         database[data_id]
         for data_id in basemap.drape_ids
-        if data_id in database and database[data_id].actor.GetVisibility()
+        if data_id in database
+        and database[data_id].actor.GetVisibility()
+        and database[data_id].explode_factor == 0
     ]
     draped: list[vtkPolyData] = []
     if data:
