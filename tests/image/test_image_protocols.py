@@ -1,7 +1,9 @@
+import logging
 import math
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
 from vtkmodules.vtkCommonCore import VTK_COLOR_MODE_DIRECT_SCALARS
 from vtkmodules.vtkIOImage import vtkPNGReader
 from vtkmodules.vtkIOXML import vtkXMLImageDataReader
@@ -215,3 +217,24 @@ def test_image_actor_shows_unlit_unpickable_colors() -> None:
     assert pipeline.mapper.GetColorMode() == VTK_COLOR_MODE_DIRECT_SCALARS
     assert not pipeline.actor.GetProperty().GetLighting()
     assert not pipeline.actor.GetPickable()
+
+
+@pytest.mark.parametrize("view_class", [VtkImageView, VtkMeshView])
+def test_register_error_names_the_view(
+    view_class: type[VtkImageView | VtkMeshView],
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    view = view_class()
+
+    def missing_data(data_id: str) -> None:
+        msg = f"Data with id {data_id} not found in database"
+        raise LookupError(msg)
+
+    monkeypatch.setattr(view, "get_viewer_data", missing_data)
+    with (
+        caplog.at_level(logging.ERROR, logger="opengeodeweb_viewer.object.object_methods"),
+        pytest.raises(LookupError),
+    ):
+        view.register_dataset("missing", "missing", vtkXMLImageDataReader())
+    assert f"Error registering missing ({view_class.__name__})" in caplog.text

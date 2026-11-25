@@ -48,7 +48,7 @@ class VtkObjectView(VtkView):
             self.highlight(data)
             self.add_object(data_id, data)
         except Exception:
-            logger.exception("Error registering %s", data_id)
+            logger.exception("Error registering %s (%s)", data_id, type(self).__name__)
             raise
 
     def configure_actor(self, pipeline: VtkPipeline) -> None:
