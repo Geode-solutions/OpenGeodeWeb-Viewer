@@ -28,7 +28,7 @@ from opengeodeweb_viewer.utils_functions import (
     AttributeProtocol,
     create_color_transfer_function,
 )
-from opengeodeweb_viewer.vtk_pipeline import BasemapState, ColorMapKey, VtkPipeline
+from opengeodeweb_viewer.vtk_pipeline import BasemapState, ColorMapKey
 
 from . import schemas
 
@@ -69,22 +69,7 @@ class VtkMeshView(VtkObjectView):
     @typed_rpc(mesh_prefix, schemas.register_route)
     def register_mesh(self, params: schemas.Register) -> schemas.RegisterResponse:
         logger.debug("%s", self.mesh_schemas_dict["register"])
-        data_id = params.id
-        try:
-            viewer_data = self.get_viewer_data(data_id)
-            file_name = str(viewer_data.viewable_file)
-
-            reader = vtkXMLGenericDataObjectReader()
-            reader.SetFileName(str(Path(self.DATA_FOLDER_PATH) / data_id / file_name))
-            reader.Update()
-            mapper = vtkDataSetMapper()
-            data = VtkPipeline(reader, mapper)
-            self.setup_pipeline(data, params.name)
-            self.highlight(data)
-            self.add_object(data_id, data)
-        except Exception:
-            logger.exception("Error registering mesh %s", data_id)
-            raise
+        self.register_dataset(params.id, params.name, vtkXMLGenericDataObjectReader())
         return schemas.RegisterResponse()
 
     @typed_rpc(mesh_prefix, schemas.deregister_route)

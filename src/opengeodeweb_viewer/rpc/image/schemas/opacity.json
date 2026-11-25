@@ -1,0 +1,23 @@
+{
+  "rpc": "opacity",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "DataId"
+    },
+    "opacity": {
+      "title": "Opacity"
+    }
+  },
+  "required": [
+    "id",
+    "opacity"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

@@ -1,8 +1,9 @@
 import logging
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 # Third party imports
-from vtkmodules.vtkCommonCore import reference
+from vtkmodules.vtkCommonCore import VTK_COLOR_MODE_DIRECT_SCALARS, reference
 from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
     vtkMultiBlockDataSet,
@@ -16,11 +17,14 @@ from vtkmodules.vtkRenderingCore import (
 )
 
 # Local application imports
+from opengeodeweb_viewer.vtk_pipeline import VtkPipeline
 from opengeodeweb_viewer.vtk_protocol import VtkView
 
 if TYPE_CHECKING:
+    from vtkmodules.vtkIOXML import vtkXMLReader
+
     from opengeodeweb_viewer.utils_functions import ColorClassProtocol
-    from opengeodeweb_viewer.vtk_pipeline import ColorMapKey, VtkPipeline
+    from opengeodeweb_viewer.vtk_pipeline import ColorMapKey
 
 logger = logging.getLogger(__name__)
 
@@ -32,10 +36,28 @@ class VtkObjectView(VtkView):
     def __init__(self) -> None:
         super().__init__()
 
+    def register_dataset(self, data_id: str, name: str, reader: vtkXMLReader) -> None:
+        try:
+            viewer_data = self.get_viewer_data(data_id)
+            file_name = str(viewer_data.viewable_file)
+
+            reader.SetFileName(str(Path(self.DATA_FOLDER_PATH) / data_id / file_name))
+            reader.Update()
+            data = VtkPipeline(reader, vtkDataSetMapper())
+            self.setup_pipeline(data, name)
+            self.highlight(data)
+            self.add_object(data_id, data)
+        except Exception:
+            logger.exception("Error registering %s", data_id)
+            raise
+
+    def configure_actor(self, pipeline: VtkPipeline) -> None:
+        pipeline.mapper.SetColorModeToMapScalars()
+
     def add_object(self, data_id: str, data: VtkPipeline) -> None:
         self.register_object(data_id, data)
         data.actor.SetMapper(data.mapper)
-        data.mapper.SetColorModeToMapScalars()
+        self.configure_actor(data)
         data.mapper.SetResolveCoincidentTopologyLineOffsetParameters(1, -0.1)
         data.mapper.SetResolveCoincidentTopologyPolygonOffsetParameters(2, 0)
         data.mapper.SetResolveCoincidentTopologyPointOffsetParameter(-2)
@@ -99,10 +121,7 @@ class VtkObjectView(VtkView):
             if pipeline.edges_scalar_bar is not None:
                 pipeline.edges_scalar_bar.VisibilityOff()
         else:
-            if (
-                pipeline.mapper.GetScalarVisibility()
-                and pipeline.mapper.GetLookupTable() is not None
-            ):
+            if self.maps_scalars(pipeline.mapper):
                 pipeline.scalar_bar.VisibilityOn()
             self.update_style_scalar_bars_visibility(pipeline)
         self.update_scalar_bars_layout()
@@ -230,9 +249,18 @@ class VtkObjectView(VtkView):
         return actor
 
     @staticmethod
+    def maps_scalars(mapper: vtkMapper) -> bool:
+        # Direct scalars are colors: no lookup table, no scalar bar
+        return bool(
+            mapper.GetScalarVisibility()
+            and mapper.GetColorMode() != VTK_COLOR_MODE_DIRECT_SCALARS
+            and mapper.GetLookupTable() is not None
+        )
+
+    @staticmethod
     def polygons_color_map_key(pipeline: VtkPipeline) -> ColorMapKey | None:
         mapper = pipeline.mapper
-        if not mapper.GetScalarVisibility() or mapper.GetLookupTable() is None:
+        if not VtkObjectView.maps_scalars(mapper):
             return None
         minimum, maximum = mapper.GetScalarRange()
         return (

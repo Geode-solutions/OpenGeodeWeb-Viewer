@@ -13,6 +13,7 @@ from opengeodeweb_viewer.vtk_protocol import VtkView
 from . import schemas
 
 if TYPE_CHECKING:
+    from opengeodeweb_viewer.rpc.image.image_protocols import VtkImageView
     from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
     from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 
@@ -21,8 +22,14 @@ class VtkGenericView(VtkView):
     generic_prefix = "opengeodeweb_viewer.generic."
     generic_schemas_dict = get_schemas_dict(Path(__file__).parent / "schemas")
 
-    def __init__(self, mesh_protocols: VtkMeshView, model_protocols: VtkModelView) -> None:
+    def __init__(
+        self,
+        image_protocols: VtkImageView,
+        mesh_protocols: VtkMeshView,
+        model_protocols: VtkModelView,
+    ) -> None:
         super().__init__()
+        self.image_protocols = image_protocols
         self.mesh_protocols = mesh_protocols
         self.model_protocols = model_protocols
 
@@ -31,7 +38,9 @@ class VtkGenericView(VtkView):
         data_id = params.id
         specific_params = {"id": data_id, "name": params.name}
         viewer_object_type = self.get_viewer_data(data_id).viewer_object_type
-        if viewer_object_type == "mesh":
+        if viewer_object_type == "image":
+            self.image_protocols.register_image(specific_params)
+        elif viewer_object_type == "mesh":
             self.mesh_protocols.register_mesh(specific_params)
         elif viewer_object_type == "model":
             self.model_protocols.register_model(specific_params)
@@ -42,7 +51,9 @@ class VtkGenericView(VtkView):
         data_id = params.id
         specific_params = {"id": data_id}
         viewer_object_type = self.get_viewer_data(data_id).viewer_object_type
-        if viewer_object_type == "mesh":
+        if viewer_object_type == "image":
+            self.image_protocols.deregister_image(specific_params)
+        elif viewer_object_type == "mesh":
             self.mesh_protocols.deregister_mesh(specific_params)
         elif viewer_object_type == "model":
             self.model_protocols.deregister_model(specific_params)

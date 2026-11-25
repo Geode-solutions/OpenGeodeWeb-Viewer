@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<VTKFile type="ImageData" version="0.1" byte_order="LittleEndian" header_type="UInt32" compressor="vtkZLibDataCompressor">
+  <ImageData WholeExtent="0 3 0 2 0 1" Origin="0 0 0" Spacing="1 1 1" Direction="1 0 0 0 1 0 0 0 1">
+  <Piece Extent="0 3 0 2 0 1">
+    <PointData Scalars="Color">
+      <DataArray type="UInt8" Name="Color" NumberOfComponents="3" format="ascii" RangeMin="0" RangeMax="441.0963613542964">
+        0 0 255 85 0 255
+        170 0 255 255 0 255
+        0 127 255 85 127 255
+        170 127 255 255 127 255
+        0 254 255 85 254 255
+        170 254 255 255 254 255
+        0 0 0 85 0 0
+        170 0 0 255 0 0
+        0 127 0 85 127 0
+        170 127 0 255 127 0
+        0 254 0 85 254 0
+        170 254 0 255 254 0
+        <InformationKey name="L2_NORM_RANGE" location="vtkDataArray" length="2">
+          <Value index="0">
+            0
+          </Value>
+          <Value index="1">
+            441.09636135
+          </Value>
+        </InformationKey>
+      </DataArray>
+    </PointData>
+    <CellData>
+    </CellData>
+  </Piece>
+  </ImageData>
+</VTKFile>

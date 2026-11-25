@@ -1,0 +1,23 @@
+{
+  "rpc": "visibility",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "DataId"
+    },
+    "visibility": {
+      "title": "Visibility"
+    }
+  },
+  "required": [
+    "id",
+    "visibility"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

@@ -8,6 +8,23 @@ if TYPE_CHECKING:
     from tests.conftest import ServerMonitor
 
 
+def test_register_image(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    data_id = "00000000000000000000000123456789"
+    dataset_factory(
+        data_id=data_id,
+        viewable_file="hat_lambert2SG.vti",
+        viewer_object_type="image",
+        geode_object_type="RasterImage2D",
+        viewer_elements_type="polygons",
+    )
+
+    server.call(
+        VtkGenericView.generic_prefix + VtkGenericView.generic_schemas_dict["register"]["rpc"],
+        [{"id": data_id, "name": "hat_lambert2SG.vti"}],
+    )
+    assert server.compare_image("image/register.jpeg") is True
+
+
 def test_register_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
     data_id = "00000000000000000000000123456789"
     dataset_factory(data_id=data_id, viewable_file="hat.vtp", viewer_elements_type="polygons")
@@ -28,6 +45,16 @@ def test_register_model(server: ServerMonitor, dataset_factory: Callable[..., st
         [{"id": data_id, "name": "CrossSection.vtm"}],
     )
     assert server.compare_image("model/register.jpeg") is True
+
+
+def test_deregister_image(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
+    test_register_image(server, dataset_factory)
+
+    server.call(
+        VtkGenericView.generic_prefix + VtkGenericView.generic_schemas_dict["deregister"]["rpc"],
+        [{"id": "00000000000000000000000123456789"}],
+    )
+    assert server.compare_image("image/deregister.jpeg")
 
 
 def test_deregister_mesh(server: ServerMonitor, dataset_factory: Callable[..., str]) -> None:
