@@ -19,6 +19,7 @@ from wslink import server  # type: ignore[import-untyped]
 from opengeodeweb_viewer.config import Config, DevConfig, ProdConfig, TestConfig
 from opengeodeweb_viewer.egl_device import select_egl_device
 from opengeodeweb_viewer.rpc.generic.generic_protocols import VtkGenericView
+from opengeodeweb_viewer.rpc.image.image_protocols import VtkImageView
 from opengeodeweb_viewer.rpc.mesh.mesh_protocols import VtkMeshView
 from opengeodeweb_viewer.rpc.model.model_protocols import VtkModelView
 from opengeodeweb_viewer.rpc.protocols import MESH_PROTOCOLS, MODEL_PROTOCOLS
@@ -66,18 +67,22 @@ class _Server(VtkTypingMixin, ServerProtocol):
         self.setSharedObject("publisher", publisher)
 
         # Custom API
+        image_protocols = VtkImageView()
         mesh_protocols = VtkMeshView()
         model_protocols = VtkModelView()
         self.registerVtkWebProtocol(VtkView())
         self.registerVtkWebProtocol(VtkUtilsView())
         self.registerVtkWebProtocol(VtkViewerView())
+        self.registerVtkWebProtocol(image_protocols)
         self.registerVtkWebProtocol(mesh_protocols)
         for protocol_class in MESH_PROTOCOLS:
             self.registerVtkWebProtocol(protocol_class())
         self.registerVtkWebProtocol(model_protocols)
         for protocol_class in MODEL_PROTOCOLS:
             self.registerVtkWebProtocol(protocol_class())
-        self.registerVtkWebProtocol(VtkGenericView(mesh_protocols, model_protocols))
+        self.registerVtkWebProtocol(
+            VtkGenericView(image_protocols, mesh_protocols, model_protocols)
+        )
 
         # tell the C++ web app to use no encoding.
         # ParaViewWebPublishImageDelivery must be set to decode=False to match.

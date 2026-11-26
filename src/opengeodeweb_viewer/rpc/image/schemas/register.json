@@ -1,0 +1,23 @@
+{
+  "rpc": "register",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "DataId"
+    },
+    "name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "name"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}

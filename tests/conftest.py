@@ -211,13 +211,20 @@ def configure_test_environment() -> Generator[None]:
 @pytest.fixture
 def dataset_factory() -> Callable[..., str]:
     def create_dataset(
-        *, data_id: str, viewable_file: str, viewer_elements_type: str = "default"
+        *,
+        data_id: str,
+        viewable_file: str,
+        viewer_elements_type: str = "default",
+        viewer_object_type: str | None = None,
+        geode_object_type: str | None = None,
     ) -> str:
         session = get_session()
         is_model = viewable_file.lower().endswith(".vtm")
-        viewer_object_type = "model" if is_model else "mesh"
+        if viewer_object_type is None:
+            viewer_object_type = "model" if is_model else "mesh"
         # Required by the database, never read by the viewer
-        geode_object_type = "BRep" if is_model else "PolygonalSurface3D"
+        if geode_object_type is None:
+            geode_object_type = "BRep" if is_model else "PolygonalSurface3D"
 
         row = session.get(Data, data_id)
         if row is None:

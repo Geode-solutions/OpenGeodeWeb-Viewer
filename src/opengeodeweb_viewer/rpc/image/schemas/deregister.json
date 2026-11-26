@@ -1,0 +1,19 @@
+{
+  "rpc": "deregister",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "DataId"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {},
+    "required": [],
+    "additionalProperties": false
+  }
+}
