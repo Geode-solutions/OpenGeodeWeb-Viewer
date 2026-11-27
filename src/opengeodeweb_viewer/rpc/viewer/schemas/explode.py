@@ -17,11 +17,20 @@ class Explode(DataClassJsonMixin):
 
 
 @dataclass
+class ExplodedBound(DataClassJsonMixin):
+    def __post_init__(self) -> None:
+        print_dataclass(self)
+
+    bounds: List[float]
+    id: DataId
+
+
+@dataclass
 class ExplodeResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    pass
+    exploded_bounds: List[ExplodedBound]
 
 
 explode_route = Route(

@@ -1147,6 +1147,12 @@ export interface ViewerExplodeParams {
 }
 
 export interface ViewerExplodeResponse {
+    exploded_bounds: ExplodedBound[];
+}
+
+export interface ExplodedBound {
+    bounds: number[];
+    id:     DataId;
 }
 
 export interface ViewerClippingPlanesParams {

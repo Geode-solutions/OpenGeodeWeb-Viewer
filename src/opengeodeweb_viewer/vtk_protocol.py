@@ -102,9 +102,7 @@ class VtkTypingMixin:
     def getView(self, view_id: str) -> vtkRenderWindow:  # noqa: N802 VTK override
         return cast("vtkRenderWindow", super().getView(view_id))  # type: ignore[misc]
 
-    def registerVtkWebProtocol(  # noqa: N802 VTK override
-        self, protocol: object
-    ) -> None:
+    def registerVtkWebProtocol(self, protocol: object) -> None:  # noqa: N802 VTK override
         super().registerVtkWebProtocol(protocol)  # type: ignore[misc]
 
     def getApplication(self) -> vtkWebApplication:  # noqa: N802 VTK override
@@ -361,15 +359,21 @@ class VtkView(VtkTypingMixin, vtk_protocols.vtkWebProtocol):
             self.update_pipeline_filter(pipeline)
         self.mark_basemaps_dirty(data_ids)
 
-    def set_explode(self, data_ids: list[str], explode_factor: float) -> None:
+    def set_explode(self, data_ids: list[str], explode_factor: float) -> dict[str, list[float]]:
+        """Returns the bounds of each exploded data, for the simplified view of the client."""
+        exploded_bounds: dict[str, list[float]] = {}
         for data_id in data_ids:
             pipeline = self.get_vtk_pipeline(data_id)
             if not isinstance(pipeline.mapper, vtkCompositePolyDataMapper):
                 continue
             pipeline.explode_factor = explode_factor
             self.update_pipeline_filter(pipeline)
+            bounds = pipeline.exploded_bounds()
+            if bounds is not None:
+                exploded_bounds[data_id] = bounds
         # Even back to 0: the flat map was lifted over the exploded blocks
         self.mark_basemaps_dirty()
+        return exploded_bounds
 
     def set_slice(self, data_ids: list[str], slices: list[SliceElement]) -> list[int]:
         max_indices = [0, 0, 0]

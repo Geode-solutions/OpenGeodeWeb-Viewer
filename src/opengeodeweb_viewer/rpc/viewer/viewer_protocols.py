@@ -18,7 +18,11 @@ from vtkmodules.vtkInteractionWidgets import vtkOrientationMarkerWidget
 
 # Third party imports
 from vtkmodules.vtkIOImage import vtkJPEGWriter, vtkPNGWriter
-from vtkmodules.vtkRenderingAnnotation import vtkAxesActor, vtkCubeAxesActor, vtkScalarBarActor
+from vtkmodules.vtkRenderingAnnotation import (
+    vtkAxesActor,
+    vtkCubeAxesActor,
+    vtkScalarBarActor,
+)
 from vtkmodules.vtkRenderingCore import (
     vtkAbstractMapper,
     vtkActor,
@@ -34,6 +38,7 @@ from vtkmodules.vtkRenderingUI import vtkGenericRenderWindowInteractor
 
 from opengeodeweb_viewer.orientation_marker import NO_MARKER, build_marker, style_marker
 from opengeodeweb_viewer.rpc.viewer import schemas
+from opengeodeweb_viewer.rpc.viewer.schemas.explode import ExplodedBound
 from opengeodeweb_viewer.text_style import TextStyle
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 
@@ -390,8 +395,13 @@ class VtkViewerView(VtkView):
 
     @typed_rpc(viewer_prefix, schemas.explode_route)
     def set_explode_rpc(self, params: schemas.Explode) -> schemas.ExplodeResponse:
-        self.set_explode(params.ids, params.explode_factor)
-        return schemas.ExplodeResponse()
+        exploded_bounds = self.set_explode(params.ids, params.explode_factor)
+        return schemas.ExplodeResponse(
+            exploded_bounds=[
+                ExplodedBound(id=data_id, bounds=bounds)
+                for data_id, bounds in exploded_bounds.items()
+            ]
+        )
 
     @typed_rpc(viewer_prefix, schemas.slice_route)
     def set_slice_rpc(self, params: schemas.Slice) -> schemas.SliceResponse:

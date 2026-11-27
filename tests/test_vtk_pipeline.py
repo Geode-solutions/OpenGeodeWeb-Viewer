@@ -11,7 +11,7 @@ from vtkmodules.vtkCommonDataModel import (
 )
 from vtkmodules.vtkCommonExecutionModel import vtkTrivialProducer
 from vtkmodules.vtkFiltersGeneral import vtkShrinkFilter
-from vtkmodules.vtkFiltersSources import vtkCubeSource
+from vtkmodules.vtkFiltersSources import vtkCubeSource, vtkLineSource
 from vtkmodules.vtkIOXML import vtkXMLMultiBlockDataReader
 from vtkmodules.vtkRenderingCore import (
     vtkCompositeDataDisplayAttributes,
@@ -201,3 +201,35 @@ def test_explode_blocks_stacks_block_nested_in_another() -> None:
     outer_block, inner_block = z_ranges(explode(model_of(blocks), 1.0)[1])
     assert outer_block[0] == pytest.approx(0)
     assert inner_block[0] == pytest.approx(10 + GAP)
+
+
+def test_explode_blocks_shows_shared_lines_along_each_block() -> None:
+    line_polys: list[vtkPolyData] = []
+    for z in (5.0, 10.0, 2.0):
+        line = vtkLineSource()
+        line.SetPoint1(0, 0, z)
+        line.SetPoint2(10, 0, z)
+        line.Update()
+        line_polys.append(line.GetOutput())
+    lines = component_group("lines", line_polys)
+    blocks = component_group(
+        "blocks",
+        [solid([0, 10, 0, 10, 0, 5]), solid([0, 10, 0, 10, 5, 10])],
+    )
+    filtered_blocks, exploded_blocks = explode(model_of(lines, blocks), 1.0)
+    interface_line, upper_line, inner_line = exploded_blocks[:3]
+    interface_range, upper_range, inner_range = z_ranges([interface_line, upper_line, inner_line])
+    assert interface_range == pytest.approx((5, 5 + GAP))
+    assert upper_range == pytest.approx((10 + GAP, 10 + GAP))
+    assert inner_range == pytest.approx((2, 2))
+    assert interface_line.GetNumberOfCells() == 2 * filtered_blocks[0].GetNumberOfCells()
+    assert upper_line.GetNumberOfCells() == filtered_blocks[1].GetNumberOfCells()
+
+
+def test_exploded_bounds_follow_explode_factor() -> None:
+    model_source = vtkTrivialProducer()
+    model_source.SetOutput(stacked_model())
+    pipeline = VtkPipeline(model_source, vtkCompositePolyDataMapper())  # type: ignore[arg-type]
+    assert pipeline.exploded_bounds() == pytest.approx([0, 30, 0, 10, 0, 10])
+    pipeline.explode_factor = 0.5
+    assert pipeline.exploded_bounds() == pytest.approx([0, 30, 0, 10, 0, 10 + (4 + GAP) / 2])

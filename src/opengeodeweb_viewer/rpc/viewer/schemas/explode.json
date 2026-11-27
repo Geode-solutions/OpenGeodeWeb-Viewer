@@ -21,8 +21,35 @@
   "additionalProperties": false,
   "response": {
     "type": "object",
-    "properties": {},
-    "required": [],
+    "properties": {
+      "exploded_bounds": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "DataId"
+            },
+            "bounds": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 6,
+              "maxItems": 6
+            }
+          },
+          "required": [
+            "id",
+            "bounds"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "exploded_bounds"
+    ],
     "additionalProperties": false
   }
 }

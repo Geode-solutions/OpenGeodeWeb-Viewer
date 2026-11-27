@@ -13,12 +13,14 @@ from vtkmodules.vtkCommonDataModel import (
     vtkDataSet,
     vtkMultiBlockDataSet,
     vtkPlane,
+    vtkPolyData,
     vtkSelection,
     vtkSelectionNode,
+    vtkStaticPointLocator,
     vtkVector2d,
 )
 from vtkmodules.vtkCommonTransforms import vtkTransform
-from vtkmodules.vtkFiltersCore import vtkCleanPolyData, vtkCutter
+from vtkmodules.vtkFiltersCore import vtkAppendPolyData, vtkCleanPolyData, vtkCutter
 from vtkmodules.vtkFiltersExtraction import (
     vtkExtractGeometry,
     vtkExtractSelection,
@@ -67,7 +69,6 @@ if TYPE_CHECKING:
         ViewerElementsType,
         ViewerObjectType,
     )
-    from vtkmodules.vtkCommonDataModel import vtkPolyData
     from vtkmodules.vtkCommonExecutionModel import vtkAlgorithm
     from vtkmodules.vtkFiltersCore import vtkAppendFilter, vtkThreshold
     from vtkmodules.vtkIOXML import vtkXMLReader
@@ -79,6 +80,17 @@ logger = logging.getLogger(__name__)
 
 
 STACKING_GAP_RATIO = 0.05
+# A component lies on a block when its sampled points are block points,
+# within this ratio of the blocks diagonal
+BLOCK_POINT_TOLERANCE_RATIO = 1e-7
+COMPONENT_SAMPLE_COUNT = 16
+
+
+@dataclass
+class SourceComponent:
+    component_type: str
+    bbox: vtkBoundingBox
+    dataset: vtkDataSet
 
 
 @dataclass
@@ -355,6 +367,9 @@ class VtkPipeline:
     threshold_filters: list[vtkThreshold] = field(default_factory=list)
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
+    # The z shifts of each source component at full explosion,
+    # with the source time they were computed at
+    explode_shifts: tuple[int, dict[int, list[float]]] | None = None
     # Set by set_visibility: the basemap actors also hide on their own, without forgetting it
     visibility: bool = True
     # Set by apply_basemap: the data is a map under the other data
@@ -434,8 +449,8 @@ class VtkPipeline:
                 pruned.SetBlock(index, child)
         return pruned
 
-    def source_components(self) -> dict[int, tuple[str, vtkBoundingBox]]:
-        components: dict[int, tuple[str, vtkBoundingBox]] = {}
+    def source_components(self) -> dict[int, SourceComponent]:
+        components: dict[int, SourceComponent] = {}
         component_type = ""
         iterator = self.reader.GetOutputDataObject(0).NewTreeIterator()
         iterator.VisitOnlyLeavesOff()
@@ -447,7 +462,9 @@ class VtkPipeline:
             elif isinstance(component, vtkDataSet):
                 bbox = vtkBoundingBox(component.GetBounds())
                 if bbox.IsValid():
-                    components[iterator.GetCurrentFlatIndex()] = (component_type, bbox)
+                    components[iterator.GetCurrentFlatIndex()] = SourceComponent(
+                        component_type, bbox, component
+                    )
             iterator.GoToNextItem()
         return components
 
@@ -504,26 +521,133 @@ class VtkPipeline:
         )
         return stacked_shifts[lowest_id]
 
-    def explode_blocks(self, dataset: vtkMultiBlockDataSet) -> vtkMultiBlockDataSet:
+    @staticmethod
+    def sampled_points(dataset: vtkDataSet) -> list[tuple[float, float, float]]:
+        nb_points = dataset.GetNumberOfPoints()
+        if nb_points == 0:
+            return []
+        step = max(1, nb_points // COMPONENT_SAMPLE_COUNT)
+        point_ids = sorted({*range(0, nb_points, step), nb_points - 1})
+        return [dataset.GetPoint(point_id) for point_id in point_ids]
+
+    @staticmethod
+    def lies_on_block(
+        points: list[tuple[float, float, float]],
+        locator: vtkStaticPointLocator,
+        tolerance: float,
+    ) -> bool:
+        block = locator.GetDataSet()
+        for point in points:
+            block_point_id = locator.FindClosestPoint(point)
+            if block_point_id < 0 or math.dist(point, block.GetPoint(block_point_id)) > tolerance:
+                return False
+        return True
+
+    def adjacent_blocks(
+        self,
+        component: SourceComponent,
+        stacked_blocks: dict[int, vtkBoundingBox],
+        block_locators: dict[int, vtkStaticPointLocator],
+        tolerance: float,
+    ) -> list[int]:
+        """The blocks the component bounds: its points are points of their mesh."""
+        points = self.sampled_points(component.dataset)
+        if not points:
+            return []
+        adjacent_ids: list[int] = []
+        for flat_index, bbox in stacked_blocks.items():
+            padded_bbox = vtkBoundingBox(bbox)
+            padded_bbox.Inflate(tolerance)
+            if padded_bbox.Contains(component.bbox) and self.lies_on_block(
+                points, block_locators[flat_index], tolerance
+            ):
+                adjacent_ids.append(flat_index)
+        return adjacent_ids
+
+    def component_shifts(self) -> dict[int, list[float]]:
+        """The z shifts of each component at full explosion.
+
+        A component bounding blocks moved apart, as a line along two stacked blocks,
+        is shown along each of them, so that each block keeps all its boundary.
+        """
+        source = self.reader.GetOutputDataObject(0)
+        source_time = source.GetMTime()
+        if self.explode_shifts is not None and self.explode_shifts[0] == source_time:
+            return self.explode_shifts[1]
         components = self.source_components()
         stacked_blocks = {
-            flat_index: bbox
-            for flat_index, (component_type, bbox) in components.items()
-            if component_type == "blocks"
+            flat_index: component.bbox
+            for flat_index, component in components.items()
+            if component.component_type == "blocks"
         }
         stacked_shifts = self.stacking_shifts(stacked_blocks)
-        z_shifts = {
-            flat_index: (
-                stacked_shifts[flat_index]
-                if flat_index in stacked_shifts
-                else self.followed_shift(bbox, stacked_blocks, stacked_shifts)
+        stacked_bbox = vtkBoundingBox()
+        for bbox in stacked_blocks.values():
+            stacked_bbox.AddBox(bbox)
+        tolerance = BLOCK_POINT_TOLERANCE_RATIO * stacked_bbox.GetDiagonalLength()
+        block_locators: dict[int, vtkStaticPointLocator] = {}
+        for flat_index in stacked_blocks:
+            locator = vtkStaticPointLocator()
+            locator.SetDataSet(components[flat_index].dataset)
+            locator.BuildLocator()
+            block_locators[flat_index] = locator
+        shifts: dict[int, list[float]] = {}
+        for flat_index, component in components.items():
+            if flat_index in stacked_shifts:
+                shifts[flat_index] = [stacked_shifts[flat_index]]
+                continue
+            adjacent_ids = self.adjacent_blocks(
+                component, stacked_blocks, block_locators, tolerance
             )
-            for flat_index, (_, bbox) in components.items()
-        }
-        return self.translate_blocks(dataset, z_shifts)
+            shifts[flat_index] = (
+                sorted({stacked_shifts[block_id] for block_id in adjacent_ids})
+                if adjacent_ids
+                else [self.followed_shift(component.bbox, stacked_blocks, stacked_shifts)]
+            )
+        self.explode_shifts = (source_time, shifts)
+        return shifts
+
+    def explode_blocks(self, dataset: vtkMultiBlockDataSet) -> vtkMultiBlockDataSet:
+        return self.translate_blocks(dataset, self.component_shifts())
+
+    def exploded_bounds(self) -> list[float] | None:
+        """The bounds of the whole data, unfiltered, at the current explode factor."""
+        shifts = self.component_shifts() if self.explode_factor > 0 else {}
+        exploded_bbox = vtkBoundingBox()
+        for flat_index, component in self.source_components().items():
+            for z_shift in shifts.get(flat_index, [0.0]):
+                bounds = [component.bbox.GetBound(index) for index in range(6)]
+                bounds[4] += z_shift * self.explode_factor
+                bounds[5] += z_shift * self.explode_factor
+                exploded_bbox.AddBounds(bounds)
+        if not exploded_bbox.IsValid():
+            return None
+        return [exploded_bbox.GetBound(index) for index in range(6)]
+
+    @staticmethod
+    def translated(block: vtkDataSet, z_shift: float) -> vtkDataSet:
+        if z_shift == 0.0:
+            return block
+        translation = vtkTransform()
+        translation.Translate(0.0, 0.0, z_shift)
+        transform_filter = vtkTransformFilter()
+        transform_filter.SetInputData(block)
+        transform_filter.SetTransform(translation)
+        transform_filter.Update()
+        return cast("vtkDataSet", transform_filter.GetOutput())
+
+    def translated_copies(self, block: vtkDataSet, z_shifts: list[float]) -> vtkDataSet:
+        """The block translated by each shift, all in one dataset to keep its styles."""
+        if len(z_shifts) == 1 or not isinstance(block, vtkPolyData):
+            return self.translated(block, z_shifts[0] * self.explode_factor)
+        copies = vtkAppendPolyData()
+        for z_shift in z_shifts:
+            copies.AddInputData(self.translated(block, z_shift * self.explode_factor))
+        copies.Update()
+        return cast("vtkPolyData", copies.GetOutput())
 
     def translate_blocks(
-        self, dataset: vtkMultiBlockDataSet, z_shifts: dict[int, float]
+        self, dataset: vtkMultiBlockDataSet, z_shifts: dict[int, list[float]]
     ) -> vtkMultiBlockDataSet:
         translated_dataset = vtkMultiBlockDataSet()
         translated_dataset.CopyStructure(dataset)
@@ -531,15 +655,9 @@ class VtkPipeline:
         iterator.InitTraversal()
         while not iterator.IsDoneWithTraversal():
             block = iterator.GetCurrentDataObject()
-            z_shift = z_shifts.get(iterator.GetCurrentFlatIndex(), 0.0)
-            if isinstance(block, vtkDataSet) and z_shift != 0.0:
-                translation = vtkTransform()
-                translation.Translate(0.0, 0.0, z_shift * self.explode_factor)
-                transform_filter = vtkTransformFilter()
-                transform_filter.SetInputData(block)
-                transform_filter.SetTransform(translation)
-                transform_filter.Update()
-                translated_dataset.SetDataSet(iterator, transform_filter.GetOutput())
+            if isinstance(block, vtkDataSet):
+                block_shifts = z_shifts.get(iterator.GetCurrentFlatIndex(), [0.0])
+                translated_dataset.SetDataSet(iterator, self.translated_copies(block, block_shifts))
             elif block is not None:
                 translated_dataset.SetDataSet(iterator, block)
             iterator.GoToNextItem()
