@@ -19,6 +19,37 @@ export interface GenericDeregisterParams {
 export interface GenericDeregisterResponse {
 }
 
+export interface ImageVisibilityParams {
+    id:         DataId;
+    visibility: Visibility;
+}
+
+export interface ImageVisibilityResponse {
+}
+
+export interface ImageRegisterParams {
+    id:   DataId;
+    name: string;
+}
+
+export interface ImageRegisterResponse {
+}
+
+export interface ImageOpacityParams {
+    id:      DataId;
+    opacity: Opacity;
+}
+
+export interface ImageOpacityResponse {
+}
+
+export interface ImageDeregisterParams {
+    id: DataId;
+}
+
+export interface ImageDeregisterResponse {
+}
+
 export interface MeshCellsAttributeCellAttributeParams {
     id:             DataId;
     item:           AttributeItem;
@@ -1163,6 +1194,12 @@ export interface Schemas {
     readonly generic: {
       readonly register: (typeof json)["opengeodeweb_viewer"]["generic"]["register"] & TypedSchema<GenericRegisterParams, GenericRegisterResponse>;
       readonly deregister: (typeof json)["opengeodeweb_viewer"]["generic"]["deregister"] & TypedSchema<GenericDeregisterParams, GenericDeregisterResponse>;
+    };
+    readonly image: {
+      readonly visibility: (typeof json)["opengeodeweb_viewer"]["image"]["visibility"] & TypedSchema<ImageVisibilityParams, ImageVisibilityResponse>;
+      readonly register: (typeof json)["opengeodeweb_viewer"]["image"]["register"] & TypedSchema<ImageRegisterParams, ImageRegisterResponse>;
+      readonly opacity: (typeof json)["opengeodeweb_viewer"]["image"]["opacity"] & TypedSchema<ImageOpacityParams, ImageOpacityResponse>;
+      readonly deregister: (typeof json)["opengeodeweb_viewer"]["image"]["deregister"] & TypedSchema<ImageDeregisterParams, ImageDeregisterResponse>;
     };
     readonly mesh: {
       readonly cells: {
