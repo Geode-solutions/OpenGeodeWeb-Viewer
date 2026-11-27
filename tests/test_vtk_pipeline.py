@@ -203,23 +203,15 @@ def test_explode_blocks_stacks_block_nested_in_another() -> None:
     assert inner_block[0] == pytest.approx(10 + GAP)
 
 
-def segment(start: list[float], end: list[float]) -> vtkPolyData:
-    line = vtkLineSource()
-    line.SetPoint1(start)
-    line.SetPoint2(end)
-    line.Update()
-    return line.GetOutput()
-
-
 def test_explode_blocks_shows_shared_lines_along_each_block() -> None:
-    lines = component_group(
-        "lines",
-        [
-            segment([0, 0, 5], [10, 0, 5]),
-            segment([0, 0, 10], [10, 0, 10]),
-            segment([0, 0, 2], [10, 0, 2]),
-        ],
-    )
+    line_polys: list[vtkPolyData] = []
+    for z in (5.0, 10.0, 2.0):
+        line = vtkLineSource()
+        line.SetPoint1(0, 0, z)
+        line.SetPoint2(10, 0, z)
+        line.Update()
+        line_polys.append(line.GetOutput())
+    lines = component_group("lines", line_polys)
     blocks = component_group(
         "blocks",
         [solid([0, 10, 0, 10, 0, 5]), solid([0, 10, 0, 10, 5, 10])],
