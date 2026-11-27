@@ -17,7 +17,7 @@ class Explode(DataClassJsonMixin):
 
 
 @dataclass
-class ExplodedBounds(DataClassJsonMixin):
+class ExplodedBound(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
@@ -30,7 +30,7 @@ class ExplodeResponse(DataClassJsonMixin):
     def __post_init__(self) -> None:
         print_dataclass(self)
 
-    exploded_bounds: List[ExplodedBounds]
+    exploded_bounds: List[ExplodedBound]
 
 
 explode_route = Route(
@@ -39,4 +39,4 @@ explode_route = Route(
     response=ExplodeResponse,
 )
 
-__all__ = ["Explode", "ExplodeResponse", "ExplodedBounds", "explode_route"]
+__all__ = ["Explode", "ExplodeResponse", "explode_route"]
