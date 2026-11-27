@@ -80,7 +80,8 @@ logger = logging.getLogger(__name__)
 
 
 STACKING_GAP_RATIO = 0.05
-# A component lies on a block when its sampled points are block points, within this ratio of the blocks diagonal
+# A component lies on a block when its sampled points are block points,
+# within this ratio of the blocks diagonal
 BLOCK_POINT_TOLERANCE_RATIO = 1e-7
 COMPONENT_SAMPLE_COUNT = 16
 
@@ -366,7 +367,8 @@ class VtkPipeline:
     threshold_filters: list[vtkThreshold] = field(default_factory=list)
     shrink_filter: vtkShrinkFilter | None = None
     explode_factor: float = 0.0
-    # The z shifts of each source component at full explosion, with the source time they were computed at
+    # The z shifts of each source component at full explosion,
+    # with the source time they were computed at
     explode_shifts: tuple[int, dict[int, list[float]]] | None = None
     # Set by set_visibility: the basemap actors also hide on their own, without forgetting it
     visibility: bool = True
@@ -642,7 +644,7 @@ class VtkPipeline:
         for z_shift in z_shifts:
             copies.AddInputData(self.translated(block, z_shift * self.explode_factor))
         copies.Update()
-        return copies.GetOutput()
+        return cast("vtkPolyData", copies.GetOutput())
 
     def translate_blocks(
         self, dataset: vtkMultiBlockDataSet, z_shifts: dict[int, list[float]]

@@ -226,9 +226,10 @@ def test_explode_blocks_shows_shared_lines_along_each_block() -> None:
     )
     filtered_blocks, exploded_blocks = explode(model_of(lines, blocks), 1.0)
     interface_line, upper_line, inner_line = exploded_blocks[:3]
-    assert z_ranges([interface_line, upper_line, inner_line]) == pytest.approx(
-        [(5, 5 + GAP), (10 + GAP, 10 + GAP), (2, 2)]
-    )
+    interface_range, upper_range, inner_range = z_ranges([interface_line, upper_line, inner_line])
+    assert interface_range == pytest.approx((5, 5 + GAP))
+    assert upper_range == pytest.approx((10 + GAP, 10 + GAP))
+    assert inner_range == pytest.approx((2, 2))
     assert interface_line.GetNumberOfCells() == 2 * filtered_blocks[0].GetNumberOfCells()
     assert upper_line.GetNumberOfCells() == filtered_blocks[1].GetNumberOfCells()
 
