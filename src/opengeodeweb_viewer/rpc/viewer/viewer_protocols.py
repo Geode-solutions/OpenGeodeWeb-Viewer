@@ -38,6 +38,7 @@ from vtkmodules.vtkRenderingUI import vtkGenericRenderWindowInteractor
 
 from opengeodeweb_viewer.orientation_marker import NO_MARKER, build_marker, style_marker
 from opengeodeweb_viewer.rpc.viewer import schemas
+from opengeodeweb_viewer.rpc.viewer.schemas.explode import ExplodedBound
 from opengeodeweb_viewer.text_style import TextStyle
 from opengeodeweb_viewer.typed_rpc import typed_rpc
 
@@ -397,7 +398,7 @@ class VtkViewerView(VtkView):
         exploded_bounds = self.set_explode(params.ids, params.explode_factor)
         return schemas.ExplodeResponse(
             exploded_bounds=[
-                schemas.ExplodedBounds(id=data_id, bounds=bounds)
+                ExplodedBound(id=data_id, bounds=bounds)
                 for data_id, bounds in exploded_bounds.items()
             ]
         )
